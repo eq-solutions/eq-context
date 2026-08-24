@@ -73,7 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1582 feat(sites): link an existing site to another customer
+- #1583 fix(customers): clear 4 react-hooks/set-state-in-effect errors
 
 ---
 
