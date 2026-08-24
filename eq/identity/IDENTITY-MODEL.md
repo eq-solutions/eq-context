@@ -1,7 +1,7 @@
 ---
 title: EQ Solutions — Unified Identity & Permissions Model
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: Authoritative cross-product reference. Every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, anything that follows) conforms to this model. Governs the 5-tier role system, the platform-admin escape hatch, naming conventions for roles and permission keys, the invite flow, session lifecycle, the JWT shape that lets modules talk directly to Supabase, and (§3.3) identity data ownership between the control layer and tenant planes.
 read_priority: critical
 status: live
@@ -191,6 +191,26 @@ The candidate row — the **first** record anywhere naming the org — lands ~5 
 Until every intake path stamps it (or a second tenant's own destination is wired in), treat `workers-canonical-sync` as **still effectively single-tenant**, and treat any bulk write to `public.workers` as a roster-modifying operation (§3.3.1).
 - `eq-field/scripts/people-canonical-link.js` attempts to create canonical worker stubs **directly from the browser using jvkn's anon key**. `anon` holds no privilege on `public.workers`, so every call 401s and is silently swallowed — it fails closed and is not a live exposure, but it is dead code whose silent failure masks itself. Either give it a server-side path or delete it.
 - `postgres_fdw` was evaluated for this seam and **deliberately rejected** (it would place jvkn credentials inside a tenant DB) — see `eq/identity/service-canonical-identity-seam-2026-06-25.md`. Do not reach for it.
+
+#### 3.3.3 Shared DB objects — functions two pipelines can both fully replace
+
+**Registry, verified live 2026-08-24.** A handful of `app_data` functions on ehow are created and edited by BOTH eq-field's own hand-applied `supabase/migrations/*.sql` AND eq-shell's governed One Pipe (`tenant-migrate.yml` → `supabase/tenant-migrations/*.sql`). This table is the source of truth for that list — eq-shell's CLAUDE.md and eq-field's CLAUDE.md both reference it rather than restating it; keep any copy there in sync with this one, not the reverse.
+
+| Function | Plane | Why both repos touch it |
+|---|---|---|
+| `field_people_iud` | ehow only | INSTEAD OF trigger behind Field's Add Person/Edit Roster — eq-field owns the tenant-side permission gates (licence/agency/hire_company/rating/active/field_approved/user_id), eq-shell owns the upward identity push (§3.3 above) |
+| `field_people_removed_iud` | ehow only | Twin trigger for the archived/removed roster (Restore, hard-delete) |
+| `field_teams_iud`, `field_team_members_iud`, `field_team_supervisors_iud` | ehow only | Crew-scoping write path (eq-field feature); zaap has no `app_data.teams` at all |
+| `eq__guard_timesheet_status`, `eq__guard_leave_status` | ehow only | Status-transition gates on timesheets/leave |
+
+**The mechanism.** Postgres has no partial-body `ALTER FUNCTION` — every touch to any of these is a full `CREATE OR REPLACE FUNCTION`, so whichever pipeline applies last silently wins. The two pipelines don't even share a ledger: eq-field's hand-applied migrations land in the standard `supabase_migrations.schema_migrations`; eq-shell's One Pipe writes its own `app_data._eq_migrations`. Neither pipeline's tooling reads the other's.
+
+**Confirmed to happen for real, 2026-08-23/24.** eq-field PR #761 added the upward-identity-push block to `field_people_iud()` (§3.3 above), merged 09:33 UTC. eq-shell's `0270`/`0271` (a P0 trigger-reattach recovery + 3 permission gates, unrelated in intent, same day) independently rebuilt the same function from the pre-push baseline at 08:35–08:52 UTC — before PR #761 merged, so this wasn't even a live clobber, just two pipelines converging on the same object with zero visibility into each other. PR #761's migration then sat merged-but-never-applied, stale, for most of a day — a live landmine that would have silently reverted 0270/0271's three security gates if hand-applied as written. Restored by eq-shell `0273` (PR #1567, merged 2026-08-24) once someone happened to notice; not yet dispatched to ehow (separate explicit step, same posture as every other jvkn-identity-adjacent change).
+
+**Mitigation shipped 2026-08-24 (surfaces the collision, doesn't block it — neither pipeline can tell a real eq-field addition apart from its own intended change):**
+- eq-shell `scripts/migrate-tenants.mjs` — before applying any migration whose SQL fully replaces a registry function, fetches the function's current live `pg_get_functiondef` and surfaces it (fingerprint in the PR-visible plan output, full text in the CI log) so whoever approves the `tenant-migrate.yml` dispatch can diff it by eye first.
+- eq-field `tests/migration-shared-fn-guard.test.js` — CI lint requiring any committed migration that touches a registry function to carry a header comment acknowledging it's shared, pointing back to this table.
+- Neither closes the gap completely: eq-field has no live-DB CI at all (migrations are hand-applied, by design — see its own CLAUDE.md), so its side is a forcing-function at commit time, not a live check. Dispatch to ehow stays the human gate.
 
 ## 4. Naming conventions — non-negotiable
 
