@@ -61,10 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
+- #312 fix(security): root-cause the grant-stripping trigger + track a hand-applied RPC
 - #310 fix(retention): repair silently-broken licence purge cron + build orphan sweep
-
-**eq-field:**
-- #786 v3.5.568 — FIX: preferred-name mapper drift + Full Name data-loss risk
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
