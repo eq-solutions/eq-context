@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,15 @@ status: live
 # EQ Cards — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-cards: migration-ledger gap sweep (0100-0159) found clean; a merged-but-dangling branch found and cleaned up (2026-08-26)
+*Picked up the same class of problem the Bucket A sprint below closed for 0138 — handed a brief claiming that migration was still missing live. By the time this session checked, it was already applied (the Bucket A session below got there first); re-verified that directly against `information_schema` rather than trusting the brief, then extended the check to the rest of the recent range.*
+
+- [x] **Full spot-check of migrations 0100-0159 against live jvkn schema** — not name-matching against the ledger, which produced 2 false positives when tried first (once dismissed as a spawned task before realising the repo file existed under a renumbered name; corrected before it misled anyone). Verified every remaining candidate against actual `information_schema`/`pg_proc`/`pg_indexes` state instead. Six repo files initially looked unmatched by name (0110, 0113, 0114, 0115, 0117, 0118) — all six confirmed genuinely live already (0110/0113 are self-documented no-op backfills; the other four are live under ledger names that just didn't match by eye). Zero new instances of the 0138-style gap found.
+- [x] **Found and deleted a merged-but-still-open branch**: `claude/conor-licenses-cards-84ecf5` (the Conor Horgan/Nelson Sareto photo-NULL fix — [PR #318](https://github.com/eq-solutions/eq-cards/pull/318), migration `0161_promote_labour_hire_photo_on_claim.sql` + new `promote-labour-hire-photo` edge function). Fully merged and live, but the branch and its worktree were left behind. Verified the branch's true current tip (not a stale cached ref — it had moved past what an earlier check saw, including a same-day CI fixup folding a grant into 0161 itself) was byte-identical to `origin/main` before deleting, both directly and via an independent merge-readiness audit. Local + remote branch deleted. Worktree removal partially failed on a Windows file lock (same recurring pattern as `remove-wedge-alert-0da7e2`, see memory) — git-side cleanup succeeded, physical folder left orphaned, harmless.
+- [~] **Found the config.toml `verify_jwt` gap PR #319 (below) didn't cover**: `promote-labour-hire-photo` (added by #318, which PR #319 predates) has no explicit `[functions.promote-labour-hire-photo]` block either — same fix, same rationale, just a third function PR #319 couldn't have known about yet. Spawned as a background task; Royce has started it in a separate session. _(added 2026-08-26)_
 
 ---
 
