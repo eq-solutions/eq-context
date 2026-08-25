@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-field:**
+- #782 v3.5.562 — Edit Roster keyboard flow + row-batched save (Tier 1)
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
 **eq-service:**
