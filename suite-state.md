@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-25
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-24 (nightly cron)_
+_Last verified: 2026-08-25 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,10 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-24)
-
-**eq-field:**
-- #775 v3.5.555 — BUG-009 sweep: 5 more confirm()/prompt() calls silently no-op'd inside the Shell iframe
+## Open PRs (as of 2026-08-25)
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -77,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-24)
+## System Health (as of 2026-08-25)
 
 **CI on main:**
 
