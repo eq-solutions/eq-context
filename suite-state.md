@@ -63,11 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #311 feat(cards): paginate admin worker roster and invite RPCs
 - #310 fix(retention): repair silently-broken licence purge cron + build orphan sweep
-- #309 docs: eq-cards sessions default to their own worktree, hook-enforced
 
 **eq-field:**
 - #786 v3.5.567 — FIX: preferred-name mapper drift + Full Name data-loss risk
-- #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
