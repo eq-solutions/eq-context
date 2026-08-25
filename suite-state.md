@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #303 fix(profile): give the profile error state a real retry action
 - #302 fix(security): revoke anon/PUBLIC grants on 9 eq_cards worker RPCs
 - #301 fix(cards): make every licence field copyable, and say so in words
 
