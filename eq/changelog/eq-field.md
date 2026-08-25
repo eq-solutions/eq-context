@@ -1,13 +1,25 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). Don't mark field.md superseded_by until those 5 entries are folded in here — that's Royce's call, not automatic.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-26 (PR #792 MERGED + LIVE, v3.5.572 — fillWeek() protects pre-entered days from Ctrl+Enter overwrite)
+- Royce asked whether "Copy Last Week" overwrites roster days workers have already filled in ahead of time. It doesn't — `copyLastWeek()` (batch.js) has only ever filled empty cells. But the question surfaced that `fillWeek()` (what Ctrl+Enter calls) had the opposite, unprotected behaviour: it unconditionally overwrote Tue–Fri with Monday's value, skipping only TAFE/education days. A day someone had already entered was silently clobbered — arguably the more urgent version of the exact risk Royce was asking about, since Ctrl+Enter is used far more often than Copy Last Week.
+- Surfaced explicitly and confirmed via AskUserQuestion before changing live, weekly-used behaviour rather than patching it silently. Royce: "Protect existing entries" (match `copyLastWeek()`'s fill-empty-only rule) + "Hold for now" (no dedicated Fill-week button as Ctrl+Enter backup insurance — Tab already fills a row without a mouse).
+- `fillWeek()` now skips any day that already holds a value, in addition to the existing TAFE-day skip. Toast reflects what was skipped and why. Verified via an isolated Node test running the actual shipped function body — 17/17 assertions across 6 scenarios, including exact-wording regression checks on the pre-existing TAFE-skip and common-case toast text.
+- Full test suite, lint (0 errors, 908 warnings unchanged from baseline), bundle check, and cache-buster check all clean. Confirmed live via `field.eq.solutions/sw.js`.
+
+## 2026-08-25 (PR #790 MERGED + LIVE, v3.5.571 — Edit Roster: name-column alignment fix + Ctrl+Enter vs the site-code dropdown)
+- Closes out the Ctrl+Enter regression left open at an earlier close: Royce confirmed via two screenshots that the site-code autocomplete dropdown does appear while typing in a roster cell — the leading hypothesis for why Ctrl+Enter's focus-jump silently no-op'd for him. Fixed by registering the keydown handler in the capture phase (`roster-editor-keyboard.js`), so it runs ahead of the native `<input list="site-datalist">` handling instead of getting swallowed by it.
+- Same message also reported the name column's width shifting depending on whether a roster cell was filled. Live-measured before touching anything: `.editor-name` had `min-width:160px`/`max-width:200px` with no fixed width, so it sized to its own text content — a 2-character name produced a ~39px narrower column than a 27-character name, shifting every day-column's position and width in that row. Fixed with a fixed 200px width; re-measured identical across short and long names after.
+- The capture-phase mechanism itself was verified via a real dispatched `KeyboardEvent` through the real listener (`preventDefault()` confirmed firing) — full end-to-end (commit + fill + focus jump together) was not re-verified this pass, judged low-risk since the underlying commit/fill/focus-jump logic was unchanged from its own prior same-day verification; only the listener's registration phase changed.
+- Full test suite, lint (0 new warnings), bundle check, and cache-buster check all clean (caught and fixed real drift on `base.css` + `app-state.js`). Confirmed live via `field.eq.solutions/sw.js`.
 
 ## 2026-08-25 (PR #788 MERGED + LIVE, v3.5.569 — observability.js: stop reporting local dev-server errors to production Sentry)
 - Investigated Sentry issue `EQ-FIELD-Y` ("_ROSTER_WEEKDAYS already declared", flagged on the prior session-close card as "a rare crash, 2 people since July") before writing any code.

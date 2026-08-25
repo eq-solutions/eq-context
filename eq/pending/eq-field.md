@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -35,8 +35,8 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 ## eq-field: Edit Roster speed — Feature Toggles, keyboard/paste Tiers 1+2, then a still-open Ctrl+Enter regression (2026-08-25)
 
-- [ ] **Still reported broken after the fix (PR #787) deployed — unresolved, first thing to check next session.** Royce ran the exact clean, controlled test asked for (empty Monday cell, type a value, Ctrl+Enter once) post-deploy and reported "cursor didn't move." Deployment/version drift was re-checked and ruled out. Leading unconfirmed hypothesis: the site-code `<datalist>` autocomplete dropdown on that input may be intercepting/swallowing the Enter keypress in the real browser before it reaches the app's own keydown handler — untested this session, since the sandboxed browser pane here has no way to reproduce a real autocomplete popup's native keyboard interception. Royce was asked (a) whether a suggestion dropdown appears while typing, and (b) to try typing the value, tapping Escape, then Ctrl+Enter — **no reply was ever received on this specific question**; the conversation moved on to other topics (a different Sentry investigation, then the copy/paste-parity discussion below) without confirming either way. Still genuinely open, not just quiet. _(added 2026-08-25)_
 - [ ] **`/decide` pass: recommended making "Copy Last Week" (already built, empty-cells-only, non-destructive) the default first move every week**, ahead of any manual typing or further keyboard/paste tooling — a bigger lever than per-cell speed if week-to-week site assignment is genuinely stable, which real screenshot evidence suggests but wasn't directly confirmed (no two consecutive real weeks were diffed). Not yet confirmed or actioned by Royce. _(added 2026-08-25)_
+- [ ] **Dedicated "Fill week" button (Ctrl+Enter backup insurance) — proposed, held.** Raised as a keyboard-only fallback in case Ctrl+Enter broke again; Royce's call was to hold since Tab already fills a row without touching the mouse. Only worth building if Tab/paste turn out insufficient in real use. _(added 2026-08-26)_
 
 ---
 
