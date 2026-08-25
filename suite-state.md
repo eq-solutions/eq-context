@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #301 fix(cards): make every licence field copyable, and say so in words
 
 **eq-field:**
-- #783 v3.5.563 — People editor: settable Preferred Name
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
 **eq-service:**
