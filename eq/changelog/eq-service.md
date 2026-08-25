@@ -9,6 +9,12 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-08-25 (PR #815 MERGED + LIVE — @eq-solutions/roles bumped to v2.7.5)
+- Mirrors the same bump already shipped in eq-shell: Supervisor no longer holds `audit.view` (eq-roles [PR #31](https://github.com/eq-solutions/eq-roles/pull/31), released `v2.7.5`). Royce asked for this repo's pin to follow directly after that close.
+- `package.json` only — this repo doesn't track `pnpm-lock.yaml` in git, unlike eq-shell.
+- Verified via `pnpm run build`: TypeScript clean; the build's later page-data-collection step failed on missing Supabase env vars in the local scratch worktree only (no `.env.local`), confirmed unrelated once CI's `tsc + next build` and `Typecheck + audit` both passed. `Integration tests (Supabase local)` failed — this repo's own documented pre-existing-failure class for that job, not a merge blocker.
+- Merged without an admin override (`mergeStateStatus: UNSTABLE`, not `BLOCKED`) since the failing job isn't a required check here. [PR #815](https://github.com/eq-solutions/eq-service/pull/815). Confirmed live via `listSiteDeploys` filtered to `context: production` (the newest deploy overall was an unrelated Dependabot preview — worth filtering explicitly rather than trusting `per_page:1`).
+
 ## 2026-08-23 (PR #807 + #808 + #809 MERGED + LIVE — suite-wide sweep: PUBLIC-granted functions, not just missing-authenticated ones)
 - Triggered by the two eq-cards grant restorations the same day (see that repo's changelog, PR #295/#296): a full-history replay of every GRANT/REVOKE across this repo's migrations (adapting `check-function-grants.mjs`'s own diff-only logic to full-history) to check for the same silently-dropped-grant bug class here. Found a bigger, differently-shaped issue instead — several functions were reachable via `GRANT ... TO PUBLIC`, invisible to a `grantee IN ('authenticated','anon')` filter even though PUBLIC functionally includes anon. A routine grant-restore became a suite-wide PUBLIC-grant audit across all three canonical planes (jvkn/zaap/ehow) — zaap confirmed clean throughout.
 - **#807**: `service.get_customer_period_summary` — PUBLIC/anon revoked, `authenticated` granted.

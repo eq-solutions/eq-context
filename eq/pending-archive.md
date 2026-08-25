@@ -26,6 +26,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-solves-service: @eq-solutions/roles pin bumped to v2.7.5 — built, merged, live (2026-08-25) (fully closed, no open items remain)
+*Mirrors the same bump already shipped in eq-shell (see `eq/pending/eq-shell.md`'s "Permissions/nav audit" entry, and `eq/changelog/eq-service.md`) — Supervisor no longer holds `audit.view`. Royce asked for this repo's pin to follow, directly after that close.*
+
+- [x] `package.json` bumped `#v2.7.4` → `#v2.7.5`. This repo doesn't track `pnpm-lock.yaml` in git at all (confirmed via `git ls-files` + `.gitignore` — neither lists it), unlike eq-shell — so no lockfile diff to commit alongside it.
+- [x] Verified via `pnpm run build` in an isolated worktree: TypeScript compiled clean (`Finished TypeScript in 47s`); the build then failed at Next.js's page-data-collection step on missing `NEXT_PUBLIC_SUPABASE_URL`/`NEXT_PUBLIC_SUPABASE_ANON_KEY` — expected with no `.env.local` in a scratch worktree, confirmed unrelated once CI passed both `tsc + next build` and `Typecheck + audit` cleanly. `Integration tests (Supabase local)` failed, matching this repo's own documented pre-existing-failure class for that job.
+- [x] [PR #815](https://github.com/eq-solutions/eq-service/pull/815), squash-merged with no override needed (`mergeStateStatus: UNSTABLE`, not `BLOCKED` — the failing job isn't a required check here, unlike eq-shell's schema-drift block). Confirmed live: `service.eq.solutions`, commit `625fb4f5`, deploy state `ready`, published.
+
+---
+
 ## eq-shell: CustomersPage.tsx — 4 pre-existing react-hooks/set-state-in-effect errors fixed, PR #1583 merged and live (2026-08-25) (fully closed, no open items remain)
 *Handed over as a fully-specified finding (file, exact eslint output, line numbers, and which pattern fits which call site), not discovered fresh this session — verified live first rather than trusted as-is.*
 
