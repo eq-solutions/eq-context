@@ -72,7 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1602 fix(access-control): Preview-a-person's summary line still showed raw keys
+- #1603 fix(labour-hire): promote licence photos on the other 2 claim doors
 
 ---
 
