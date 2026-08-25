@@ -9,6 +9,38 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-25 (branch protection enabled on `main` — first time this repo has had any)
+- Required checks (`Analyze and test`, `Migration hygiene`, `Function grants preserved`), `strict: true` (branch must be up to date before merge), `enforce_admins: true` (deliberately not the GitHub default — every merge that day used an admin-level token, so leaving admins exempt would make the protection trivially bypassable). Triggered by watching PR #307 merge before its own CI had finished.
+- Self-inflicted bootstrap bug found and fixed same day: PR #312 renamed the `function-grants` job itself, so the required-check name it was written against no longer matched anything that branch's CI would ever report. Fixed by updating the required-context config, not by using the `--admin` override that had been authorized.
+
+## 2026-08-25 (PR #314 MERGED — 8 more hand-applied migrations found and retroactively tracked)
+- Same "applied live, never committed to a migration file" pattern PR #312 found once (`0032_licence_backing`) — swept properly this time via `schema_migrations` + full `git log --all` cross-reference. 8 real gaps closed (`0040`-`0044`, `0061`, `0062`, `0146_v2`), 2 false positives caught and skipped. One (`0044`) shipped as a deliberate no-op — live drift found while tracking it (a data-surgery target account is back to a state opposite what the migration set 2 months ago) needs Royce's call, not a silent replay.
+
+## 2026-08-25 (PR #313 MERGED — accessibility sweep across 8 feature areas)
+- Real bug, not cosmetic: the wallet tile's privacy toggle and Renew button were nested inside an `excludeSemantics: true` wrapper, discarding all descendant semantics — both completely unreachable to a screen reader. Fixed by narrowing the exclusion and wiring an explicit `Semantics(onTap:)` on the narrowed region. Plus measured (not guessed) WCAG contrast fixes, shared-widget loading-state announcements, icon-only-button labels across auth/consent/onboarding/settings. `flutter analyze` clean, 85/85 tests incl. goldens.
+
+## 2026-08-25 (PR #312 MERGED + APPLIED LIVE — root-caused this repo's single biggest source of incidents)
+- `eq_enforce_function_privacy` (event trigger, fires on every function CREATE/REPLACE in `public`/`shell_control`) was unconditionally stripping grants with no memory of what a function had a moment before — root cause of the 9h Cards-signup outage, the 3-day dead claim flow, and 8+ emergency grant-restore migrations. Fixed to snapshot-and-restore. Caught its own contamination bug in a first draft (naive "proacl IS NULL" new-function check would have made new functions *more* exposed, not less) before shipping — corrected to compare against `pg_default_acl` directly.
+- Swept all 13 functions matching the same risk shape, not just the one found; `eq_cards_preview_invite` was the one real gap (anon access never recorded as a decision, only inherited from bootstrap) — explicit `GRANT` migration, applied live, confirmed a no-op against current access.
+
+## 2026-08-25 (PR #311 MERGED — pagination added to admin worker/invite RPCs)
+- No list in this repo paginated before. `p_limit`/`p_offset` (default 50, cap 200) + `p_worker_id` on `eq_cards_admin_list_workers`/`eq_cards_admin_list_invites` — the worker-id filter specifically because paginating the roster would have silently broken `AdminWorkerDetailScreen` for anyone past page one. Load-tested afterward at 10x/50x synthetic scale on a disposable branch: nothing degrades.
+
+## 2026-08-25 (PR #310 MERGED + LIVE — retention/purge job actually shipped, a critical bug caught before it touched anything)
+- Spec said "not yet implemented"; a `pg_cron` job had actually been half-built and silently failing every real run since 2026-06-27 (Supabase's own storage-delete guard rejecting a raw SQL delete). First fix attempt bypassed that guard directly — caught on review before merge: doing so removes the tracking row but never calls the Storage API, so it would have logged success while leaving the real file (a licence photo) orphaned in the bucket forever. Real fix uses a proper Edge Function + this repo's existing two-phase dispatch/reconcile pattern (mirrors migration 0084). Cron left deliberately disabled.
+
+## 2026-08-25 (PR #308 MERGED — 4 more doc-drift gaps closed)
+- `ARCHITECTURE.md` §7.4 widget list (4 listed, 11 real, 3 of the 4 original descriptions also wrong), §14 vibe-coding rules (still framed pre-v1.1), §10.2 analytics properties, `docs/PRODUCT-TIERS.md` (untouched since April). `STATUS.md` separately retired into `AGENTS.md`, PR #306.
+
+## 2026-08-25 (PR #307 MERGED — migration-hygiene CI only checked a PR against itself, not against live main)
+- Couldn't catch two PRs (#298, #300) each adding the same migration number independently — added a live cross-check against `origin/main` at CI-run-time. Fired correctly, twice more, later the same session on different PRs. Known residual gap stated in the PR: two PRs green before either merges can still collide without `strict` branch protection forcing an update — added same day.
+
+## 2026-08-25 (PR #305 MERGED + DEPLOYED — signup_completed firing ~33x/person, not once)
+- Cross-tab gotrue `BroadcastChannel` replay (Cards runs standalone + inside the Shell iframe at once) plus no real idempotency. Fixed with a layered claim (in-memory + persisted, reload-then-check for cross-tab). Bonus: `app_opened.is_first_open` wasn't over-firing, it was never emitted at all — fixed too. Raw volume drops ~97% at the cutover; that's the bug leaving, not signups collapsing.
+
+## 2026-08-25 (PR #301 MERGED + DEPLOYED — tap-to-copy affordance fixed)
+- The app's core interaction was silently teaching users it didn't work: two near-identical row widgets on the licence detail screen, only one of which was actually tappable, no visual difference. Deleted the dead one — every field copyable now. Added a permanent hint line instead of a first-run tooltip; measured icon contrast before assuming a colour bump would help (it wouldn't have). `copy_field` metric has a real discontinuity from this deploy date.
+
 ## 2026-08-25 (PR #309 MERGED — eq-cards sessions now default to their own worktree, hook-enforced)
 - The bare `C:\Projects\eq-cards` checkout is shared by every concurrent Claude Code session — its branch/HEAD can change between one tool call and the next with no action by the session it happens to. Recurred 4 times (2026-08-16, 2026-08-17 x2, 2026-08-19, 2026-08-25), the last a near-miss where a delete instruction, correct when given, went stale between turns and nearly destroyed a just-merged migration when the root moved underneath it.
 - New enforcement lives in the `eq-context` repo, not this one: `hooks/pre_tool_use.py` rule **F15** (rung 4) blocks `Edit`/`Write`/`NotebookEdit`/`MultiEdit` against the bare root outright, excluding `.claude/worktrees/*`. Points at `EnterWorktree` — one call, no clone/setup dance. Not sandbox-gated (every recurrence happened natively on Windows). Full detail: `eq-context` `system/failures.md` → F15.
