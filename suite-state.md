@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-25)
 
-**eq-cards:**
-- #318 fix(licences): promote labour-hire photos/documents at claim time
-
 **eq-field:**
 - #793 v3.5.573 — Prestart: Reopen-for-correction + Records-tab export photo parity
 
