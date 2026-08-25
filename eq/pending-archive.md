@@ -9540,7 +9540,7 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 - [x] 14 new automated tests: the check starts on the very first tap; it does not try to start again on a second tap; a failed start shows an error and saves nothing; location-capture degrades gracefully (starts anyway, with no coordinates) whether the tech denies location or the device doesn't support it at all.
 - [x] Whole existing maintenance-page test suite re-run alongside it — 120 of 120 passing, nothing else broken.
 - [x] eq-service [PR #795](https://github.com/eq-solutions/eq-service/pull/795) — tests only, no app behaviour changed — merged; the real build-and-typecheck safety check confirmed green after merge.
-- [x] Found in passing, not part of this task but worth knowing: this repo's "merge" button doesn't actually wait for its own safety checks to finish first — armed it to merge automatically once checks passed, and it went through immediately instead of waiting, before the main build check had even finished (it did pass, just after the fact, confirmed separately). Logged in [worktree-registry.md](../../system/worktree-registry.md) so the next merge on this repo doesn't assume otherwise.
+- [x] Found in passing, not part of this task but worth knowing: this repo's "merge" button doesn't actually wait for its own safety checks to finish first — armed it to merge automatically once checks passed, and it went through immediately instead of waiting, before the main build check had even finished (it did pass, just after the fact, confirmed separately). Logged in [worktree-registry.md](../system/worktree-registry.md) so the next merge on this repo doesn't assume otherwise.
 
 ---
 
