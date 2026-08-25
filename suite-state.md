@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #305 fix(analytics): make signup_completed fire once per person, not ~33x
 
 **eq-field:**
+- #785 v3.5.564 — People save: only patch fields that actually changed
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
 **eq-service:**
@@ -73,6 +74,9 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1590 fix(staff): Staff-page edit resent every field on every save, clobbering concurrent changes
 
 ---
 
