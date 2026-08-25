@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
+- #313 fix(a11y): sweep auth/licences/connections/consent/legal/onboarding/settings
 - #312 fix(security): root-cause the grant-stripping trigger + track a hand-applied RPC
 - #310 fix(retention): repair silently-broken licence purge cron + build orphan sweep
 
