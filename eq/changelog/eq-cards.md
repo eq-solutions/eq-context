@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-26 (PRs #315-317 MERGED — Bucket-A backlog sprint: tenant hardcode, dependency bump, CI hygiene)
+- PR #315: `SKS_TENANT_ID` generalised into data-driven routing in both `workers-canonical-sync` and `licence-canonical-sync`. Zero behaviour change for SKS today (verified live: no worker yet carries a non-SKS `origin_org_id`).
+- PR #316: edge-function deploys now target only what changed (job-history-based auto-detect, manual override input, `_shared/` change still forces full redeploy); `supabase/setup-cli` v1→v3 clears a confirmed-live Node 20 deprecation warning. A script-injection risk (dispatch input spliced via `${{ }}` directly into a `run:` block) was caught and fixed before merge, not after.
+- PR #317: `eq_roles` v2.5.5 → v2.7.5, verified additive via a direct package-source diff (not just changelog prose) — zero app code changes needed. Migration `0131` (a related, separate SQL permission gate) remains explicitly unapplied pending Royce's own go-ahead; this bump doesn't touch that decision.
+- Migration `0138_worker_origin_org_id` (merged 3 days earlier in PR #293) was found never actually applied to live jvkn — applied directly with Royce's confirmation, closing a real gap before the next new labour-hire candidate would have hit it.
+
 ## 2026-08-25 (branch protection enabled on `main` — first time this repo has had any)
 - Required checks (`Analyze and test`, `Migration hygiene`, `Function grants preserved`), `strict: true` (branch must be up to date before merge), `enforce_admins: true` (deliberately not the GitHub default — every merge that day used an admin-level token, so leaving admins exempt would make the protection trivially bypassable). Triggered by watching PR #307 merge before its own CI had finished.
 - Self-inflicted bootstrap bug found and fixed same day: PR #312 renamed the `function-grants` job itself, so the required-check name it was written against no longer matched anything that branch's CI would ever report. Fixed by updating the required-context config, not by using the `--admin` override that had been authorized.
