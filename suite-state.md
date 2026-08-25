@@ -61,10 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #299 fix(profile): give the profile error state a real retry action
-- #298 fix(licences): narrow getById query + drop redundant licences/workers indexes
+- #300 fix(security): guard access-request RPC against NULL auth.uid()
 
 **eq-field:**
+- #783 v3.5.563 — People editor: settable Preferred Name
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
 **eq-service:**
