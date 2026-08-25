@@ -13,18 +13,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: link an existing site to another customer — built, merged, live (2026-08-25)
-*Royce was pricing an SKS job for Convergint at Equinix SY3, a real site already owned by a different customer, and didn't want a duplicate site record. `sites.customer_id` was a strict single FK with no way to attach an existing site to a second customer anywhere in the app.*
-
-- [x] **Built via a full Plan-mode pass**: new `app_data.site_customer_links` table (service-role-only from the start, not a copy of `contact_customer_links`' original overgrant — see changelog for why that matters), `eq_list_sites()` extended so the Quotes site picker needs no frontend change, new `link_site_customer`/`unlink_site_customer` actions, new **Link site** button + owner-badge/Unlink-only UI on the Customers page. [PR #1582](https://github.com/eq-solutions/eq-shell/pull/1582), merged, live.
-- [x] **A duplicate concurrent session building the same feature from scratch was found and closed** (Royce's call) — no collateral loss, confirmed live.
-- [x] **Migration dispatched** — collided with #1581's own `eq_list_sites` change; a separate concurrent session (EQ Ops one, see the section below) found and fixed the same collision from the other direction and fleet-dispatched both. Live-verified directly on ehow: table, grants, and function body all correct.
-
-**Deferred:**
-- [ ] **Not click-tested live** — no login credentials this session. Handed Royce the exact steps (Customers page → Convergint → Link site → search "Equinix SY3" → confirm badge/Unlink-only controls → confirm it appears in a Convergint quote's site picker). Not yet confirmed done. _(added 2026-08-25)_
-
----
-
 ## eq-shell: EQ Ops cost/charge-rate wiring + Edit Site "couldn't save" — three separate root causes, all fixed live (2026-08-25)
 *Royce reported two symptoms in one message: quote line-item cost sometimes not relating to the charge rate, and not being able to change a site's details from EQ Ops "just now." Traced to three unrelated causes — a real UI wiring gap, a merged-but-undispatched migration, and a same-morning migration collision surfaced only by dispatching.*
 
