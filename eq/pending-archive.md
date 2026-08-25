@@ -9896,3 +9896,12 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 - [x] `task_c95a3685` closed — both issues answered. No code changes needed in either repo.
 
 ---
+
+## eq-field: Site Audits — Submit silently did nothing when a non-conformance was flagged, inside the Shell iframe (2026-08-25) (fully closed, no open items remain)
+*Same BUG-009 family as eq-shell's sandboxed-iframe confirm()/prompt() bug class — the Field iframe has no `allow-modals`, so `confirm()`/`prompt()` return `false`/`null` silently, no dialog. PR #773 (v3.5.555) fixed the first sibling case in Prestart/Toolbox and named the remaining files as follow-ups.*
+
+- [x] **`audits.js`'s `submitAudit()` converted to the shared `#modal-confirm` dialog** — new local `_auditConfirm()` helper, not a call into `SiteReportsShared` (`audits.js` can be lazy-loaded alone via the 'audits' tab bundle, where `site-reports-shared.js` isn't guaranteed loaded). eq-field [PR #776](https://github.com/eq-solutions/eq-field/pull/776) (v3.5.556), squash-merged, confirmed live.
+- [x] **`timesheets-approvals.js`'s Query + Approve all** — both call sites reuse `timesheets.js`'s existing `_tsConfirm` (same lazy bundle, extracted from it originally). eq-field [PR #774](https://github.com/eq-solutions/eq-field/pull/774) (v3.5.557), squash-merged, confirmed live. Found already-done by a concurrent session mid-investigation of the remaining sweep, before any duplicate work started on it.
+- [x] **The remaining 6 files** (`audit.js`, `apprentices.js`, `journal.js`, `timesheets-export.js`, `tender-pipeline.js`, plus `apprentices.js`'s `resolveFollowUp` prompt originally triaged non-blocking) — all closed in one PR. eq-field [PR #775](https://github.com/eq-solutions/eq-field/pull/775) (v3.5.558), squash-merged, confirmed live via `field.eq.solutions/sw.js`. Built independently and identically (same 5 files, same 7 call sites, same helper-per-file pattern) by two concurrent sessions at once — this session's own copy was discarded, unpushed, at the final pre-push freshness check once the collision was confirmed live; no duplicate PR opened. PR #775's version is slightly more complete (also fixed the non-blocking `apprentices.js:1232` prompt rather than leaving it) and slightly cleaner in one spot (`tender-pipeline.js`'s `_quickPushToSchedule` converted to a plain `async function` rather than wrapped in `.then()`).
+
+---

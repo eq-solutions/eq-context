@@ -9,6 +9,15 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #775 MERGED + LIVE, v3.5.558 — BUG-009 sweep: 5 more files, 7 confirm()/prompt() calls silently no-op'd inside the Shell iframe)
+- Closed out the BUG-009 sweep PR #773 started: `audit.js` (Revert + its concurrent-edit re-confirm), `apprentices.js` (add/remove custom skill, plus the previously-non-blocking "how did it go?" follow-up note), `journal.js` (delete entry), `timesheets-export.js` (import CSV — reuses `timesheets.js`'s `_tsConfirm`), `tender-pipeline.js` (push to roster — `_quickPushToSchedule` converted to a plain `async function`). All were silently no-op'ing inside eq-shell's sandboxed Field iframe (no `allow-modals`), blocking real SKS supervisors.
+- `eslint.config.js`: `apprentices.js` and `tender-pipeline.js` both landed slightly over their grandfathered line ceilings from the new helpers — bumped one 50-increment each.
+- Backfilled here 2026-08-25 by a different session, which independently built the identical fix in parallel and discarded its own copy once this PR was found already merged and live — not this changelog's original author. eq-field [PR #775](https://github.com/eq-solutions/eq-field/pull/775), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.558`).
+
+## 2026-08-25 (PR #774 MERGED + LIVE, v3.5.557 — Timesheets Approvals: Query + Approve all silently did nothing inside the Shell iframe)
+- `timesheets-approvals.js`'s Query and Approve-all actions on the supervisor Approvals queue called `window.confirm()` directly — silently no-op'd inside eq-shell's sandboxed Field iframe. Both call sites now `await` the existing `_tsConfirm` helper already defined in `timesheets.js` (used there for fill/copy/repeat) — no new helper added, since this file is extracted from `timesheets.js` and always loaded in the same lazy bundle.
+- Same BUG-009 family PR #773 swept and named as a follow-up. Backfilled here 2026-08-25 by a different session (found already merged and live while investigating the remaining sweep) — not this changelog's original author.
+
 ## 2026-08-25 (PR #768 MERGED + LIVE v3.5.552 — access-control review: permission-matrix v2.6, crew-scoping widened to Leave, timesheets RLS fail-open closed)
 - Royce reviewed all 94 Field access-control levers row-by-row via a Claude-built review artifact; 6 role-default changes landed: 4 dead Project Hours keys removed (feature retired at v3.4.71, controlled nothing since), `leave.archive` narrowed to manager-only, labour_hire gained `leave.view_own_balance`/`leave.submit_request`, prestart/toolbox create+submit opened to every Field role, `field.manage_recognitions` moved to opt-in-only.
 - `crewFilterFragment` widened from timesheets-only to also scope Leave reads — same crew-filtering pattern on both tables now.
