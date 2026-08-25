@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-26 (PR #1599 + #1602 MERGED + LIVE — Preview-a-person's permission lists made plain English and grouped)
+- Royce, reviewing the live "Preview a person" tab: "not all of them are in plain english... not organised in a way that helps a user know what the story is." "Effective permissions" was a flat wall of raw dot-notation keys; "Field permissions" was already readable but one undifferentiated list of 66.
+- Both now group by module with plain-English labels, collapsed by default. `PermPillPicker` (already used by Base Permissions and Custom Groups) gained a `readOnly` mode rather than building a new component — same grouping, same labels, just plain pills. Raw key still on hover. Fixed a module-coverage gap along the way: `admin.*`/`audit.*`/`cards.*` keys (deliberately excluded from the grant/revoke pickers, since they're role-fixed) needed their own labelled section for the *effective*-permissions view, which legitimately includes them. [PR #1599](https://github.com/eq-solutions/eq-shell/pull/1599).
+- A `/decide` pass ("anything else worth chasing") found the "Group grants:"/"Role overrides:" summary line one row above still showed raw keys — closed via `labelForAnyKey()` (already existed, handles both canonical and Field-fine keys safely). [PR #1602](https://github.com/eq-solutions/eq-shell/pull/1602).
+- Verified: `tsc -b --force`, `pnpm run build`, `eslint` all clean on both PRs. Not click-tested live — local `netlify dev` hit this repo's known Node 24/Vite breakage (React never mounts).
+
 ## 2026-08-25 (PR #1600 MERGED + LIVE — sign-in mobile placeholder clarity + /login session-check gap)
 - The QR-code sign-in screen's mobile-number field had a realistic-looking placeholder (`0412 345 678`) over an empty value — people scanning the link read it as pre-filled and never entered their own number. Changed to `Enter mobile number` on both the send-code and PIN-login mobile inputs.
 - Root-caused a live repeat-sign-in report (worker 0418480091, SKS): not a session-TTL issue — `shell_control.audit_log` showed 4 full phone+email+OTP join-flow completions in 16 minutes, same device. `/login` rendered the sign-in form unconditionally, unlike `/` (`RootRoute`), which already redirects a valid session to the tenant home. Fixed by routing `/login` through the same check, so re-opening a QR/SMS link while already signed in goes straight to the tenant home instead of re-running the join/OTP flow.

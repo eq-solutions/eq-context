@@ -11226,3 +11226,13 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 - [x] `task_c95a3685` closed — both issues answered. No code changes needed in either repo.
 
 ---
+
+## eq-shell: Access Control's "Preview a person" permission lists made plain English and grouped — built, merged, live (2026-08-26) (fully closed, no open items remain)
+*Royce reviewed the live "Preview a person" tab shipped earlier in this same continuous session and asked to make it "easier to digest" — "not all of them are in plain english... not organised in a way that helps a user know what the story is." A `/decide` pass afterward ("anything else worth chasing") surfaced one more spot with the same problem.*
+
+- [x] **"Effective permissions" and "Field permissions" now group by module with plain-English labels**, collapsed by default (confirmed with Royce via `AskUserQuestion` over always-expanded, so a Manager's 100+ permissions stay scannable). Reused rather than reinvented: `PermPillPicker` (already used by Base Permissions and Custom Groups) gained a `readOnly` mode — same grouping, same labels, same component, just plain pills instead of toggle buttons. Raw key still on hover. [PR #1599](https://github.com/eq-solutions/eq-shell/pull/1599), merged, confirmed live (commit `c280d34d`).
+- [x] **Fixed a module-coverage gap found while building it**: the existing `MODULES` grouping (built for the grant/revoke pickers) deliberately excludes `admin.*`/`audit.*`/`cards.*` since those are role-fixed and never delegable — but a person's *effective* permission set legitimately includes them. Added a superset lookup built from the full `PERMISSIONS` export so those land in a labelled section instead of an unlabelled fallback bucket. Same PR.
+- [x] **`/decide` follow-up**: the "Group grants:" / "Role overrides:" summary line directly above those sections still joined raw keys (`+quotes.approve, +entity.manage_activation`) — same problem, one line up from the fix. Closed via `labelForAnyKey()` (already existed, already used elsewhere on this page, safely handles both canonical and Field-fine keys). [PR #1602](https://github.com/eq-solutions/eq-shell/pull/1602), merged, confirmed live (commit `66f7d88a`).
+- [x] Both verified via `tsc -b --force` + `pnpm run build` + `eslint`, all clean. Not click-tested live — local `netlify dev` hit this repo's known, pre-existing Node 24/Vite breakage (`@vitejs/plugin-react can't detect preamble`, confirmed live, React never mounts) — folded into the existing "Preview a person not click-tested" item in `eq/pending/eq-shell.md` rather than logged twice.
+
+---
