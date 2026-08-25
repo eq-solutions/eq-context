@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #318 fix(licences): promote labour-hire photos/documents at claim time
 
 **eq-field:**
+- #793 v3.5.573 — Prestart: Reopen-for-correction + Records-tab export photo parity
 - #791 v3.5.571 — Weekly Supervisor Digest moves into Manage → Email Templates
 
 **eq-service:**
@@ -73,6 +74,9 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1602 fix(access-control): Preview-a-person's summary line still showed raw keys
 
 ---
 
