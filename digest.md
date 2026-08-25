@@ -8,34 +8,35 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-25 02:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-25 08:02 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-25 00:12 UTC → 2026-08-25 02:51 UTC)
+## Since last refresh (2026-08-25 02:51 UTC → 2026-08-25 08:02 UTC)
 
-- Merged: eq-shell [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_si
-- Merged: eq-shell [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with c
-- Merged: eq-shell [#1570](https://github.com/eq-solutions/eq-shell/pull/1570) perf(token-exchange): bound the audit-log write
-- Merged: eq-shell [#1568](https://github.com/eq-solutions/eq-shell/pull/1568) docs(security): SEC-60 status update
-- Merged: eq-shell [#1565](https://github.com/eq-solutions/eq-shell/pull/1565) docs(security): mark SEC-61 closed in the sprint doc
-- Merged: eq-shell [#1564](https://github.com/eq-solutions/eq-shell/pull/1564) perf(warm-ping): warm the tenant-client cache, not just the 
-- Merged: eq-shell [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60
-- Merged: eq-shell [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with 
-- ⚠ Needs you: 6 → 7 (new items)
+- Merged: eq-shell [#1586](https://github.com/eq-solutions/eq-shell/pull/1586) feat(quotes): collapse rate library by category, remove brok
+- Merged: eq-shell [#1572](https://github.com/eq-solutions/eq-shell/pull/1572) fix(field-people): job_title dead-write + emergency contact 
+- Merged: eq-shell [#1571](https://github.com/eq-solutions/eq-shell/pull/1571) fix(field-people): stamp activated_by/activated_at on reacti
+- Merged: eq-shell [#1569](https://github.com/eq-solutions/eq-shell/pull/1569) feat(migrate-tenants): warn on shared cross-repo function re
+- Merged: eq-shell [#1567](https://github.com/eq-solutions/eq-shell/pull/1567) fix(field-people): restore identity push dropped by 0270/027
+- Merged: eq-shell [#1566](https://github.com/eq-solutions/eq-shell/pull/1566) docs(security): SEC-63 status update
+- Merged: eq-shell [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file 
+- Merged: eq-shell [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Sta
+- ✅ Needs you: 7 → 6
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (6)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 4 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
-- 🔴 **Cron failing** — `md-health-backstop.yml` 2 consecutive scheduled run(s) failed, last success 2026-08-24 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-25.md](sessions/2026-08-25.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (217)
+## 🙋 Waiting on you (219)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — no login credentials this session. Handed Royce the exact steps (Customers page → Convergint → Link site → search "Equinix SY3" → confirm badge/Unlink-only controls → confirm it appears in a Convergint quote's site picker). Not yet confirmed done. _(added 2026-08-25)_
+- **eq-shell** · **Cost/charge-rate fix not click-tested live** — verified via `tsc -b --force` and code-path tracing only; local Netlify/Vite dev tooling is documented broken under Node 24 in this repo, and the feature is auth-gated (EQ Ops). Worth a real click-through next time someone edits a quote line's Rate with a Cost already entered. _(added 2026-08-25)_
 - **eq-shell** · **Not click-tested for real user-perceived speed** — both fixes verified via commit-ancestry + deploy state, not a fresh Staff-page load timed by a person. _(added 2026-08-24)_
 - **eq-shell** · **Nelson Sareto's Resend click reproduced the identical duplicate-key error after the fix was confirmed live.** No fresh Postgres duplicate-key log entry appears after the deploy's publish time, and Nelson's `worker_invites` row is unchanged — pointing toward a stale/leftover error banner rather than a genuinely new failure, but **not confirmed**. Asked Royce to refresh and retry; no response yet. If it still fails post-refresh: leading unverified hypothesis is the new `unclaimed` SELECT's `error` being silently discarded, falling through to the old broken `INSERT` path — needs Netlify function-log evidence or a defensive fix (surface `unclaimedErr` explicitly). _(added 2026-08-24)_
 - **eq-shell** · **S2 (sprint doc) still open** — `entity-actions.ts`/`entity-patch.ts` gate asset writes on `entity.edit`/`entity.delete` (the CRM tier) rather than `equipment.edit`/`equipment.view`, aligned by coincidence today, not design. Needs Royce's call: re-point the keys, or document the CRM-tiering as deliberate. _(added 2026-08-23)_
@@ -46,17 +47,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — both new fixes verified via live grants/policy queries and full CI, not an actual signed-in non-permission-holder attempting either blocked action. _(added 2026-08-23)_
 - **eq-shell** · **Not click-tested live** — an Employee's quote list, and confirming they can't open another employee's quote by pasting its ID into the URL. _(added 2026-08-23)_
 - **eq-shell** · **Sentry access still not sorted** — both the Sentry MCP connector and Royce's own logged-in Chrome hit an auth wall this session, which is why the exact click-by-click trigger for the reported occurrences couldn't be pinned down with full certainty (the fix covers the whole class of failure regardless of the precise trigger). Worth revisiting once either is authorized. _(added 2026-08-23)_
-- **eq-shell** · **Not click-tested live** — verified via eslint/tsc and commit-ancestry against the live deploy, not an actual `?open=<id>` link clicked by a person. Worth confirming next time someone opens a Staff deep-link from the "Ask anything" bar or a Resourcing row click. _(added 2026-08-23)_
-- **eq-shell** · **`0258`-`0261` (the 4 ehow-only migrations) still not dispatched** — dispatching each (with `--slug=<tenant>` matching its declared plane) remains explicitly Royce's call. _(added 2026-08-23, narrowed from "none of the 5" — one of the five is now done)_
-_…and 205 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 207 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
-| eq-solves-service | ✓ success | 0d ago | 6 | 4d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-solves-service | ✓ success | 1d ago | 6 | 4d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 6d ago | 0 | — |
 
@@ -78,6 +77,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-25 | eq-shell | [#1586](https://github.com/eq-solutions/eq-shell/pull/1586) feat(quotes): collapse rate library by category, remove broken By |
 | 2026-08-25 | eq-shell | [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_sites c |
 | 2026-08-25 | eq-shell | [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with cost s |
 | 2026-08-25 | eq-shell | [#1583](https://github.com/eq-solutions/eq-shell/pull/1583) fix(customers): clear 4 react-hooks/set-state-in-effect errors |
@@ -92,13 +92,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-24 | eq-shell | [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes |
 | 2026-08-24 | eq-shell | [#1575](https://github.com/eq-solutions/eq-shell/pull/1575) record(access): backfill Field access for nine Cards-door claims |
 | 2026-08-24 | eq-shell | [#1574](https://github.com/eq-solutions/eq-shell/pull/1574) feat(onboarding): chase unclaimed invites, and explain the login  |
-| 2026-08-24 | eq-shell | [#1573](https://github.com/eq-solutions/eq-shell/pull/1573) feat(staff): surface mobilisation readiness on the staff list |
-_Showing 15 of 117 · full record in [sessions/](sessions/)_
+_Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (269 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (57 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-shell** (273 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-cards** (58 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (131 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (96 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -129,9 +128,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1736 | 193 / 78 | 225 | 45 |
-| [eq-cards](eq/pending/eq-cards.md) | 431 | 44 / 14 | 49 | 11 |
-| [eq-field](eq/pending/eq-field.md) | 856 | 106 / 29 | 53 | 25 |
+| [eq-shell](eq/pending/eq-shell.md) | 1767 | 196 / 80 | 229 | 45 |
+| [eq-cards](eq/pending/eq-cards.md) | 437 | 45 / 14 | 49 | 11 |
+| [eq-field](eq/pending/eq-field.md) | 862 | 107 / 29 | 53 | 25 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -200,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 02:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 08:02 UTC._
