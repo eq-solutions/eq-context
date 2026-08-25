@@ -70,7 +70,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1584 fix(quotes): keep markup% in sync when rate is edited with cost set
-- #1583 fix(customers): clear 4 react-hooks/set-state-in-effect errors
 
 ---
 
