@@ -9,6 +9,15 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #788 MERGED + LIVE, v3.5.569 — observability.js: stop reporting local dev-server errors to production Sentry)
+- Investigated Sentry issue `EQ-FIELD-Y` ("_ROSTER_WEEKDAYS already declared", flagged on the prior session-close card as "a rare crash, 2 people since July") before writing any code.
+- Both lifetime occurrences trace to a local dev-server test session, not a real user — confirmed via each event's own tags: 2026-07-27 was `environment:development`, `url:http://localhost:8890/` (a prior session's own local test harness, already flagged as noise in that session's own reflection log at the time); 2026-08-25 was this session's own earlier manual test-script injection against real production, confirmed via matching `cid`/`tenant_slug`/`embedded`/source-URL tags.
+- `observability.js`'s own header comment already claimed "inert on previews/local" — the code never actually implemented that for `development`. `SENTRY_DSN` is a hardcoded public key with no environment gate, so any local dev server reports straight into the same shared production Sentry project as real users.
+- Fix: `_report()`'s DSN checks now also bail when `_env() === 'development'`, matching the file's own already-stated intent. `preview`/`production` reporting is untouched.
+- Live-verified against the actual local dev server this noise came from: `window.EQ_OBS.enabled === false` on localhost with the fix live, and `EQ_OBS.captureException()` produces zero network requests to Sentry's ingest endpoint (previously the same call from a local host successfully posted to production Sentry).
+- Sentry issue `EQ-FIELD-Y` marked resolved with an explanatory comment.
+- eq-field [PR #788](https://github.com/eq-solutions/eq-field/pull/788), squash-merged, confirmed live via `field.eq.solutions/sw.js` and direct bundle-byte inspection.
+
 ## 2026-08-25 (PR #789 MERGED + LIVE, v3.5.570 — FIX: TAFE Holidays config could silently lose ranges when added quickly)
 - Royce reported adding 4 TAFE holiday date ranges and having them not save properly.
 - Root cause: rapid Add clicks fired overlapping, unserialized saves — each captured the in-memory list at its own start time, and whichever save finished last (not necessarily last-clicked) won the database row. The screen always showed all 4 ranges (rendered from memory), so nothing looked wrong until a reload exposed the gap.
