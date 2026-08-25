@@ -61,6 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
+- #311 feat(cards): paginate admin worker roster and invite RPCs
+- #310 fix(retention): repair silently-broken licence purge cron + build orphan sweep
 - #309 docs: eq-cards sessions default to their own worktree, hook-enforced
 
 **eq-field:**
@@ -76,7 +78,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1594 chore(deps): bump @eq-solutions/roles to v2.7.5
 - #1593 chore(drift): allowlist eq_cards_get_my_licence — sourced in eq-cards PR #298
 - #1592 feat(admin): govern is_platform_admin grants, with an audit trail
 - #1591 fix(access-control): reconcile app-tile drift, make Preview a person show real nav
