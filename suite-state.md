@@ -60,6 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-25)
 
+**eq-cards:**
+- #317 chore(deps): bump eq_roles v2.5.5 -> v2.7.5
+- #316 fix(ci): target edge-function deploys, drop deprecated setup-cli
+
 **eq-field:**
 - #791 v3.5.571 — Weekly Supervisor Digest moves into Manage → Email Templates
 
@@ -70,6 +74,9 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1600 fix(auth): sign-in mobile placeholder clarity + /login session-check gap
 
 ---
 
