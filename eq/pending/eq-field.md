@@ -19,13 +19,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: access-control review (permission-matrix v2.6), crew-scoping widened to Leave, timesheets RLS fail-open closed (2026-08-24/25)
-*PR #768. Companion leave.js file-size fix is its own section below ("leave.js file-size debt") — not repeated here.*
+## eq-field: access-control review (permission-matrix v2.6/v2.7), crew-scoping widened to Leave, timesheets RLS fail-open closed (2026-08-24/25)
 
 - [ ] **Royce hasn't yet granted himself `field.manage_recognitions`** — it's opt-in-only now (same shape as `field.manage_pipeline`); switch it on for yourself from Shell's Access Control (Custom Group) when convenient. _(added 2026-08-25)_
-- [ ] **`people.edit_own` reachability, unresolved** — flagged during the review that editing one's own profile may currently be unreachable in the UI for non-manager roles even though the permission is granted; not investigated further this session. _(added 2026-08-25)_
 - [ ] **Per-tenant hiding of specific leave permissions, floated, not built** — Shell's Access Control screen would need a per-tenant visibility layer; out of scope for eq-field alone. _(added 2026-08-25)_
-- [ ] **A push to PR #768 got zero GitHub Actions runs for 24h+, cause unknown** — confirmed via the Actions API directly (`total_count: 0`), not a display/watch lag; other branches got normal runs in the same window, and the same PR's earlier/later commits ran fine. Never root-caused. Worth a note if it recurs — the fix each time is a fresh commit (a rebase, in this case) to force a new synchronize event. _(added 2026-08-25)_
+- [ ] **A push to PR #768 got zero GitHub Actions runs for 24h+, cause unknown** — confirmed via the Actions API directly (`total_count: 0`), not a display/watch lag; other branches got normal runs in the same window, and the same PR's earlier/later commits ran fine. Never root-caused. Worth a note if it recurs — the fix each time is a fresh commit (a rebase, in this case) to force a new synchronize event. Did NOT recur on this review's own follow-up (PR #778 got 3 normal Actions runs). _(added 2026-08-25)_
 
 ---
 

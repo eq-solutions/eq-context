@@ -9,6 +9,13 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #778 MERGED + LIVE, v3.5.560 — permission-matrix.js v2.7: people.edit_own flagged unwired)
+- Closes the last open item from the 2026-08-24 access-control review (PR #768). Royce asked to "steelman" `people.edit_own` before deciding its fate; confirmed in code first — it's granted to manager/supervisor/employee/apprentice by default, but `editPerson()` (`people.js`) gates flatly on `canManagePeople()` with no self-edit exception, so the key has never been read anywhere outside its own matrix definition.
+- Presented the steelman (worker self-service for stale contact details) against the counter (Shell's `/settings/profile` already owns self-service profile editing) via a direct choice; Royce picked "mark it unwired, build nothing."
+- Comment/doc-only — `permission-matrix.js` v2.6→v2.7, key stays defined (so Access Control doesn't silently drop a lever) but is now flagged unwired, same pattern as the existing v2.5 Phase 3 PREP cluster (`field.manage_sites`/`manage_managers`/`manage_job_numbers`/`manage_projects`/`manage_audits`/`view_audit_log`). No grant or behavioural change.
+- Also re-verified two other items from the same review while in the file: `field.manage_sites` and `field.view_audit_log` are both still genuinely unbuilt — nothing to reconcile against Shell/canonical yet, nothing shipped for either.
+- eq-field [PR #778](https://github.com/eq-solutions/eq-field/pull/778), squash-merged, confirmed live via `field.eq.solutions/sw.js` (`v3.5.560`).
+
 ## 2026-08-24 (PR #770 MERGED + LIVE, v3.5.551 — site internal contacts: "Ask for / Backup" shown on schedule + site cards)
 - Second half of the first-morning remediation (see eq-cards PR #297 / eq-shell's site-contacts PRs, both in the 2026-08-24/25 entries of their own changelogs): even once Field access works, a worker showing up alone with a sick manager had no way to know who else to call on site.
 - New shared helper `_siteInternalContactsHtml()` in `roster.js` renders "📞 Ask for: [name] — [phone]" / "Backup: [name] — [phone]" whenever a site carries `primary_contact_name`/`secondary_contact_name`; renders nothing when a site has none, so it's silent for sites still waiting on data. Wired into both the per-day site card (My Schedule) and the Sites page card.
