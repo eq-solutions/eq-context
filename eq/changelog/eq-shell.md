@@ -9,6 +9,18 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-25 (PR #1596 + #1593 MERGED + LIVE — schema-drift gap closed: 3 backfilled control-plane functions, 1 cross-repo allowlist)
+- The required `Schema drift + anon-grant + policy-lint` check was blocking every open eq-shell PR tonight regardless of diff — root-caused to 4 live jvkn functions with no matching migration file. `_grant_fix_scratch_test`/`_grant_fix_scratch_test_2` had already been dropped live (scratch/test artifacts from an unrelated session); `eq_cards_get_my_licence` is cross-repo, fully sourced in eq-cards, allowlisted here instead of duplicated ([PR #1593](https://github.com/eq-solutions/eq-shell/pull/1593)).
+- `eq_sweep_orphaned_licence_photos`, `_eq_storage_dispatch`, `eq_confirm_retention_purge_dispatch` were real and genuinely unsourced — a deliberately-built retention/cleanup subsystem for the `licence-photos` storage bucket, backfilled with migrations documenting exactly what's live (body + grants verified via `pg_get_functiondef`/`information_schema.role_routine_grants`, both `postgres`/`service_role`-only, no anon/authenticated). [PR #1596](https://github.com/eq-solutions/eq-shell/pull/1596).
+- Found in the process: this retention/purge feature is itself incomplete (`eq_finalize_deleted_accounts`, a third job type its own confirm logic already anticipates, doesn't exist live yet) — someone is actively building it on jvkn without committing migrations as they go. Backfilled what exists; flagged rather than chased further.
+
+## 2026-08-25 (PR #1595 MERGED + LIVE — access-control sweep follow-up sprint: S2/S4/S5 closed)
+- Closes `docs/access-control-sweep-followup-sprint.md`'s remaining items. S1/S3 turned out to already be shipped 2026-08-23 (PRs #1556/#1552) — the doc's own "Not started" header was never updated after either merge, corrected here too.
+- S2: asset archive/edit/delete deliberately stays on the CRM tier (`entity.edit`/`entity.delete`), documented rather than re-pointed to `equipment.*` — verified live that both currently resolve to the identical `{manager, supervisor}` set, and there's no `equipment.delete` key at all.
+- S4: `ai.use` recorded as confirmed-dead in `permission-enforcement-baseline.json` — describes an unbuilt AI-assistant capability, no fix planned.
+- S5: `service.do_work` recorded as likely-unenforced-in-eq-solves-service, cross-repo, not this repo's fix.
+- No behaviour change anywhere in this PR — comments and documentation only.
+
 ## 2026-08-25 (eq-roles #31 + eq-shell #1591/#1592/#1594 MERGED + LIVE — Supervisor's audit.view fix, honest "Preview a person", governed platform-admin grants)
 - Supervisor no longer holds `audit.view` — the "Audit log" nav link was always gated on `admin.list_users` (manager-only) regardless, so the grant never reached anything a Supervisor could act on. Fixed at the source in `@eq-solutions/roles` ([PR #31](https://github.com/eq-solutions/eq-roles/pull/31), released `v2.7.5`), pin bumped in eq-shell ([PR #1594](https://github.com/eq-solutions/eq-shell/pull/1594)).
 - Fixed a real drift bug found along the way: `TenantHome.tsx`'s dashboard tile filter and `HubLayout.tsx`'s sidebar filter had independently diverged on whether a platform admin bypasses Ops's tenant-entitlement check. Unified into one `isAppTileVisible()`. "Preview a person" on Access Control now shows the real landing surface + section list instead of raw permission-key pills, reusing the same live gating functions. [PR #1591](https://github.com/eq-solutions/eq-shell/pull/1591).
