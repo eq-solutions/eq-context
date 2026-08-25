@@ -60,10 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-25)
 
-**eq-cards:**
-- #305 fix(analytics): make signup_completed fire once per person, not ~33x
-
 **eq-field:**
+- #786 v3.5.565 — FIX: preferred-name mapper drift + Full Name data-loss risk
 - #785 v3.5.564 — People save: only patch fields that actually changed
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
