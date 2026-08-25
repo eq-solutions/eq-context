@@ -13,6 +13,26 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: 8 more untracked-ledger migrations found and closed — follow-up to #312's flagged gap (PR #314, merged 2026-08-25)
+*PR #312 (`fix/grant-trigger-root-cause`, still open) flagged but didn't chase down "other `NNNN_description`-named ledger entries with no matching repo file" while tracking `0032_licence_backing`. This session ran that dedicated pass.*
+
+- [x] Queried jvkn's `supabase_migrations.schema_migrations` directly for all 96 `NNNN_`-convention entries, cross-referenced each against complete `git log --all` (every branch, every rename — caught and fixed a methodology bug mid-session: an initial `--diff-filter=A`-only pass silently missed renamed-into filenames, though it turned out not to change any conclusion once re-verified properly). Found **8 real gaps**, not the 2 originally suspected (`0044`/`0052` pairs) — `0052`'s pair turned out fully tracked already; `0044`'s other half was a real gap, plus 7 more from two other incidents (2026-06-22 self-signup rollout, 2026-06-29 onboarding-dedup window) and today's `0146_..._v2` hotfix.
+- [x] Caught 2 false positives before writing anything (`0063_onboarding_dedup_prevention`, `0064_onboarding_dedup_cleanup`) — already tracked, just filed under renumbered repo names (`0062_onboarding_dedup_prevention.sql`, `0063_onboarding_dedup_cleanup.sql`) with byte-identical content. Found by re-checking descriptive suffix, not just full name, before concluding "missing."
+- [x] 8 new tracking migrations (`0152`-`0159`), same pattern as #312's own `0148`: `CREATE OR REPLACE`/DDL matching **current live state**, not the stale original statement where they'd since diverged — 3 of 4 functions in one gap (`0041_self_signup_rpcs`) had been substantially rewritten by later, already-tracked migrations since 2026-06-22.
+- [x] One exception shipped deliberately inert: `0044`'s data-surgery migration (`0156`) — live state has genuinely diverged (one target account no longer exists under its id, the other is back to `active = true`, opposite of what the migration set two months ago). Documented the original statement verbatim in a comment rather than silently replaying unverified data surgery against today's live accounts. Flagged in the PR for a call, not resolved.
+- [x] Caught a real CI failure before pushing: `scripts/check-function-grants.mjs` failed on the self-signup-RPCs file (2 of 4 functions had prior file-tracked grant history the lint replays as a baseline) — fixed with explicit trailing `GRANT`s, reverified locally against the actual script rather than assumed clean.
+- [x] Ran the Session Gate brief properly — `eq-guard` blocked the first file write (brief not yet run this session), ran `/brief eq-cards` in full, which surfaced that main had moved again mid-brief (PR #310 merged) and a same-named-but-unrelated branch (`docs/close-remaining-gaps` → already-merged #308, pure naming coincidence, no overlap). Royce's "Confirmed, go ahead" before writing anything.
+- [x] eq-cards [PR #314](https://github.com/eq-solutions/eq-cards/pull/314), CI green (migration hygiene, function grants, collision-vs-main all verified locally before push, not just assumed from CI), merged (squash `9a15766`) on Royce's "go".
+
+**Deferred:**
+- [ ] **`0044`'s live drift** — one of its two target accounts (`ecf0aec4-…`) is `active = true` today on jvkn, the opposite of what that migration set on 2026-06-22. Could be a legitimate re-onboarding since, or a real regression; not established, flagged in PR #314 rather than guessed at. _(added 2026-08-25)_
+- [ ] **No live `apply_migration` calls made against jvkn for any of the 8 new files** — deliberately held back pending a separate explicit go, unlike #312's own precedent of applying its tracking file live before merge (for the "proves it's a no-op" value). Files are correct as documented either way; applying live would only add a redundant confirming ledger row, not change what's true. _(added 2026-08-25)_
+
+**Notes:**
+- Confirms the pattern PR #312 predicted: "other `NNNN_description`-named ledger entries with no matching repo file, and their numbers silently reused later, are plausible elsewhere in this history." They were — 8 of them, across 3 separate incidents spanning 2026-06-22 to today.
+
+---
+
 ## eq-cards: sessions now default to their own worktree — hook-enforced, not just documented (2026-08-25)
 *Follow-on to the section below (the duplicate-`0142` verification). Immediately after that close, Royce asked to check who had taken the bare root out from under this session mid-task — traced to a concurrent session (`local_b525bcf3`, owner of PR #300, the PR whose migration created the `0142` collision in the first place) switching the root's branch twice while three sessions shared it. Royce's instruction in response: "make eq-cards sessions default to their own worktree."*
 
