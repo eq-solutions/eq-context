@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-25 (PR #1586 + #1587 + #1589 MERGED + LIVE — Ops Setup cleanup: collapsible rate library, By Client removed, Estimators self-maintaining, archive window is a setting)
+- Rate library ("Preset line items") now collapses per category with a count instead of rendering everything expanded. [PR #1586](https://github.com/eq-solutions/eq-shell/pull/1586).
+- Removed "By Client" (button + accordion view + `eq_list_client_groups()`) rather than fix it — reproduced its `varchar`/`text` type-mismatch live on both tenants; it only ever had one group with one member, and #1582 (site↔customer links) now covers the same real case generally. Migration `0281` drops the dead RPC. Same PR.
+- Estimators: dropped the unused Setup admin list (zero entries ever, on either tenant) and its write RPCs/table; `eq_list_estimators()` now derives `(name, initials)` from real quote history instead. [PR #1587](https://github.com/eq-solutions/eq-shell/pull/1587), migration `0282`.
+- The invoiced-quotes-auto-archive-after-N-days window moved from a hardcoded SQL literal into `pricing_config.invoiced_archive_days`, an editable Setup field. Same PR #1587, migration `0283`.
+- Follow-up: shortened the new archive-days field's label so it stops wrapping and breaking the Default Rates grid's alignment. [PR #1589](https://github.com/eq-solutions/eq-shell/pull/1589).
+- All three migrations (0281/0282/0283) dispatched and confirmed live on both zaap and ehow.
+
 ## 2026-08-25 (PR #1582 MERGED + LIVE — link an existing site to another customer)
 - Royce was pricing an SKS job for Convergint at Equinix SY3 — a real, existing site already owned by a different customer (Equinix Australia Pty Ltd) — and didn't want to create a duplicate site record. Traced: `app_data.sites.customer_id` is a single FK, and neither the Customers page's "Add site" nor the Quotes job-pricing site picker had any way to attach an existing site to a second customer.
 - Scoped via a full Plan-mode pass (2 parallel Explore agents) before writing anything: confirmed eq-field's `field_sites` view and eq-solves-service's `service.sites`/`service.customers`/`get_sites_for_map()` all derive their single "owning customer" from the same `sites.customer_id` FK, so the fix had to be strictly additive — never touch that column or its FK, never touch those two repos.
