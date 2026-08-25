@@ -16,6 +16,17 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: CustomersPage.tsx — 4 pre-existing react-hooks/set-state-in-effect errors fixed, PR #1583 merged and live (2026-08-25) (fully closed, no open items remain)
+*Handed over as a fully-specified finding (file, exact eslint output, line numbers, and which pattern fits which call site), not discovered fresh this session — verified live first rather than trusted as-is.*
+
+- [x] Verified the 4 errors live via a fresh `eslint` run before starting, matching the handoff exactly. One handoff detail — a "`LinkSiteModal` fix to mirror" — didn't exist anywhere in the repo (not locally, not on `origin/main`) at the time; flagged as a discrepancy rather than invented or ignored. Turned out to be real, very recent work (PR #1582) that landed mid-session, after the task was handed off.
+- [x] Fixed each effect with the pattern that actually matched it, not a blanket fix: `queueMicrotask` defer for the 2 genuine-I/O effects (same shape as PR #1504), a render-time prevId-guard for the reset-on-selection effect (same pattern as `SplitPanel.tsx`'s `prevStaffId`, PR #1525), `useMemo` + a `prevDupGroups` guard replacing the pure-derived-state effect. `npx eslint` → 0 errors (was 4); `pnpm run build` → clean.
+- [x] Opened as a clean single-commit PR from a fresh branch off `main` rather than the working branch directly — that branch also carried an unrelated pre-existing P0 commit (`672bf380`, field-people trigger reattach) whose content had already shipped to `main` under a different hash via squash-merge; bundling it would have put a misleading P0-looking commit into a lint-only PR's history for no reason.
+- [x] A concurrent session (`eq-shell-9e`) squash-merged an unrelated site-linking PR (#1582) to the same file mid-review, producing a real import-line merge conflict. Confirmed via direct cross-session message that nothing else was in flight on the file before touching it, then rebased and resolved (kept both import additions), re-verified `eslint`/`pnpm run build` clean post-rebase, re-ran CI to green, merged on Royce's explicit "merge when safe."
+- [x] [PR #1583](https://github.com/eq-solutions/eq-shell/pull/1583), squash-merged, confirmed live via the Netlify deploy API directly (`state: ready`, exact `commit_ref` match, `published_at` set, 261s build time) — not assumed from a green CI check alone.
+
+---
+
 ## eq-field: 3 already-applied ehow JWT-tenant-gate migrations had no git record — fixed, and the underlying gap closed with automated tooling (2026-08-24) (fully closed, no open items remain)
 
 - [x] Committed `20260823_apprentice_tables_jwt_tenant_gate_inert.sql` / `20260823_audit_apprentice_tables_jwt_tenant_gate.sql` / `20260823_ehow_second_wave_jwt_tenant_gate.sql` — applied live to ehow 2026-08-23 (01:06–01:56 UTC) but left as untracked files in the shared root checkout, one file's header still reading "DRAFT — NOT APPLIED" a full day after the hand-apply. Re-verified all 25 touched tables' live `pg_policies` match file content exactly before committing; corrected the stale header. eq-field [PR #764](https://github.com/eq-solutions/eq-field/pull/764), merged, live (docs-only, no app code — nothing to redeploy).
