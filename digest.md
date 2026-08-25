@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-25 21:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-25 21:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-25 21:42 UTC → 2026-08-25 21:44 UTC)
+## Since last refresh (2026-08-25 21:44 UTC → 2026-08-25 21:47 UTC)
 
-- Merged: eq-shell [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_si
-- Merged: eq-shell [#1583](https://github.com/eq-solutions/eq-shell/pull/1583) fix(customers): clear 4 react-hooks/set-state-in-effect erro
-- Merged: eq-shell [#1582](https://github.com/eq-solutions/eq-shell/pull/1582) feat(sites): link an existing site to another customer
-- Merged: eq-shell [#1581](https://github.com/eq-solutions/eq-shell/pull/1581) feat(sites): self-serve internal contacts in Edit Site modal
-- Merged: eq-shell [#1579](https://github.com/eq-solutions/eq-shell/pull/1579) data(sites): SY5 primary/secondary internal contacts
-- Merged: eq-shell [#1577](https://github.com/eq-solutions/eq-shell/pull/1577) feat(sites): add primary/secondary internal contact columns
-- Merged: eq-shell [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes
-- Merged: eq-shell [#1574](https://github.com/eq-solutions/eq-shell/pull/1574) feat(onboarding): chase unclaimed invites, and explain the l
+- Merged: eq-shell [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still s
+- Merged: eq-shell [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with c
+- Merged: eq-shell [#1580](https://github.com/eq-solutions/eq-shell/pull/1580) feat(sites): surface internal contacts on the field_sites vi
+- Merged: eq-shell [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-so
+- Merged: eq-shell [#1575](https://github.com/eq-solutions/eq-shell/pull/1575) record(access): backfill Field access for nine Cards-door cl
+- Merged: eq-shell [#1573](https://github.com/eq-solutions/eq-shell/pull/1573) feat(staff): surface mobilisation readiness on the staff lis
+- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
+- Merged: eq-solves-service [#809](https://github.com/eq-solutions/eq-service/pull/809) fix(security): close anon access on get_assets_for_grouping 
 
 ## ⚠ Needs you (8)
 
@@ -54,7 +54,7 @@ _…and 222 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 6 | 5d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-25 | eq-shell | [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still showed |
 | 2026-08-25 | eq-shell | [#1600](https://github.com/eq-solutions/eq-shell/pull/1600) fix(auth): sign-in mobile placeholder clarity + /login session-ch |
 | 2026-08-25 | eq-shell | [#1601](https://github.com/eq-solutions/eq-shell/pull/1601) fix(auth): await last_login_at bump, add drift healer for the Sta |
 | 2026-08-25 | eq-shell | [#1599](https://github.com/eq-solutions/eq-shell/pull/1599) fix(access-control): group Preview-a-person's permission lists by |
@@ -92,7 +93,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-25 | eq-shell | [#1589](https://github.com/eq-solutions/eq-shell/pull/1589) fix(quotes): shorten archive-days label so Default Rates fields l |
 | 2026-08-25 | eq-shell | [#1588](https://github.com/eq-solutions/eq-shell/pull/1588) fix(staff): quick-toggle Supervisor ON needs a category |
 | 2026-08-25 | eq-shell | [#1587](https://github.com/eq-solutions/eq-shell/pull/1587) feat(quotes): auto-derive estimators from history, make archive w |
-| 2026-08-25 | eq-shell | [#1586](https://github.com/eq-solutions/eq-shell/pull/1586) feat(quotes): collapse rate library by category, remove broken By |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 21:44 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 21:47 UTC._
