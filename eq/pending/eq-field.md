@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: feature-toggles.js — named the two adjustable-thing patterns (2026-08-25)
+*Royce asked whether Field needs a bigger "features menu" now that it has this many small on/off surfaces. Ran a `/decide` pass first — grounded the "10s if not 100s" premise against live code (actual count: 2 formal toggles + ~20 permission grants, which already has its own admin page + 1 shared digest-settings blob) before judging. Call: don't build a bigger registry yet, name the two existing patterns instead so the next adjustable thing has an obvious home. `scripts/feature-toggles.js` header comment now documents both: admin toggle (shared JSON blob, same shape as digest-settings.js's digest_sections) vs. per-person setting (own row, e.g. managers.digest_opt_in). Docs only, no behaviour change. eq-field [PR #781](https://github.com/eq-solutions/eq-field/pull/781) (v3.5.562), squash-merged, confirmed live via field.eq.solutions/sw.js.*
+
+- [ ] **Flip condition, not yet met**: if Royce identifies 5+ specific new admin toggles wanted soon, build the registry properly then (a real key→metadata table, not the hardcoded array) — retrofitting after ad hoc entries pile up is the rebuild the `/decide` pass wanted to avoid. Currently 2 entries in `FEATURE_TOGGLE_DEFS`. _(added 2026-08-25)_
+
+---
+
 ## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24)
 
 - [ ] **Only Equinix SY5 has real contact data** (Matthew Miller / Scott Hotson). CA1, SY1, SY2, SY3, SY4, SY9 show nothing yet — needs real names + numbers from Royce, entered via eq-shell's Edit Site modal (`eq/pending/eq-shell.md`, PR #1581) — no migration needed any more. _(added 2026-08-25)_

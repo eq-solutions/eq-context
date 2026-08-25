@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #781 MERGED + LIVE, v3.5.562 — feature-toggles.js: name the two adjustable-thing patterns)
+- Docs only, no behaviour change. Royce asked whether Field needs a bigger "features menu" now that it has this many small on/off surfaces — ran a `/decide` pass first: grounded the "10s if not 100s" premise against live code (actual count: 2 formal toggles + ~20 permission grants + 1 shared digest-settings blob), call was don't build a bigger registry yet.
+- `scripts/feature-toggles.js` header comment now names the two existing patterns so the next adjustable thing has an obvious home: admin toggle (this file — shared JSON blob, same shape as digest-settings.js's digest_sections) vs. per-person setting (own row, e.g. managers.digest_opt_in).
+- Revisit if `FEATURE_TOGGLE_DEFS` grows past single digits (currently 2).
+
 ## 2026-08-25 (PR #778 MERGED + LIVE, v3.5.560 — permission-matrix.js v2.7: people.edit_own flagged unwired)
 - Closes the last open item from the 2026-08-24 access-control review (PR #768). Royce asked to "steelman" `people.edit_own` before deciding its fate; confirmed in code first — it's granted to manager/supervisor/employee/apprentice by default, but `editPerson()` (`people.js`) gates flatly on `canManagePeople()` with no self-edit exception, so the key has never been read anywhere outside its own matrix definition.
 - Presented the steelman (worker self-service for stale contact details) against the counter (Shell's `/settings/profile` already owns self-service profile editing) via a direct choice; Royce picked "mark it unwired, build nothing."
