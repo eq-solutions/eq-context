@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Staff-page edit resent every field on every save — PR open, blocked on unrelated CI (2026-08-25)
+*Paired fix for the same Zemi Asri incident logged in `eq/pending/eq-field.md`. `SplitPanel.tsx` and `StaffPage.tsx`'s `MobileSheet` both sent the full 18-field edit form to `entity-patch.ts` on every save, regardless of what the user touched — `entity-patch.ts` itself is fine (allow-listed, partial UPDATE, no full-snapshot behaviour). Same root cause already hit twice before (Brian Griffin-Colls DOB overwrite 2026-08-17, Mohammed Hussain blocked-save 2026-08-18), each time band-aided one field at a time instead of fixed at the source.*
+
+- [x] **Built**: new `buildStaffPatch()` (`staffTypes.ts`) diffs the candidate save against the `StaffRow` the edit started from, wired into both `SplitPanel.handleSave` and `MobileSheet.handleSave`. 7 new unit tests (`staffTypes.test.ts`). Full suite 430 tests, 428 pass / 2 pre-existing skips / 0 fail. `tsc -b` clean, eslint 0 new errors. eq-shell [PR #1590](https://github.com/eq-solutions/eq-shell/pull/1590).
+- [ ] **NOT merged — blocked on an unrelated required check**, `Schema drift + anon-grant + policy-lint`, failing on `public.eq_cards_get_my_licence`: a live control-plane function on jvkn with no matching migration file, hand-applied out-of-band by someone/something unrelated to this PR. Marked `BLOCKING` in the check's own output and will fail on any eq-shell PR right now, not just this one — needs someone to either write the missing migration or triage it into `KNOWN_UNSOURCED`. _(added 2026-08-25)_
+- [ ] **UX question for Royce, not yet decided**: a genuine no-op Staff-page save now closes the panel silently (no toast) where it previously always showed a sometimes-false "Record updated." Flagged in the PR; needs a call on whether that's fine or wants its own toast. _(added 2026-08-25)_
+- [ ] **`employment_type_locked_by_shell` audit needed** — see `eq/pending/eq-field.md`, same item, cross-referenced here since the flag and its consumer (`entity-patch.ts`, `workers-canonical-sync`) live in this repo. _(added 2026-08-25)_
+
+**Deferred:**
+- [ ] **Not click-tested live** — no live SKS credentials in this environment. _(added 2026-08-25)_
+
+---
+
 ## eq-shell: Staff list quick-toggle — Supervisor ON now asks for a category — built, merged, live (2026-08-25)
 *Royce reported the Staff list's Supervisor quick-toggle pill 400ing when turned on — `entity-patch.ts` has required a `supervisor_category` since 2026-08 (after 3 real people broke Field's Supervision list with a blank one), but the list-row pill was never updated to satisfy it. Read the full context (both the quick-toggle handler and the guard) before proposing a UX, then confirmed with Royce which of 3 options he wanted.*
 

@@ -9,6 +9,13 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #785 MERGED + LIVE, v3.5.566 — People save: only patch fields that actually changed)
+- Real incident: Royce corrected Zemi Asri's Group to Direct and start date via Edit Person; save succeeded, but employment_type reverted to Labour Hire ~6s later. Root cause: `savePersonToSB()` unconditionally resent all 19 columns on every save — eq-shell's Staff-page edit panel had the identical shape and clobbered this specific write with a stale snapshot on an unrelated field save.
+- New `_diffRow()` helper (`scripts/supabase-entities.js`) diffs the outgoing PATCH against the record the modal was opened from and sends only what changed. Side effect: `archived`/`pin`/`dob` are now also protected against the same clobber.
+- Fourth known incident of this exact bug class (Brian Griffin-Colls DOB overwrite 2026-08-17, Mohammed Hussain blocked-save 2026-08-18, the ehow `staff_derive_dob_from_cards` locked-edit guard PR #767/#769 2026-08-24) — the first three were each band-aided one field at a time; this fix closes the actual source.
+- Paired fix on eq-shell (`SplitPanel.tsx`/`StaffPage.tsx`, `buildStaffPatch`) — eq-shell [PR #1590](https://github.com/eq-solutions/eq-shell/pull/1590), open, blocked on an unrelated pre-existing CI check (see eq-shell changelog).
+- Branch landed at v3.5.566 after two rebases — 3 other PRs (#783/#784/#787) merged concurrently, one an urgent live hotfix. Caught mid-fix: `app-state.js`'s own `index.html` script tag needs its own version bump separate from `supabase-entities.js`'s — missed initially, `check-cache-busters.mjs` caught it before push.
+
 ## 2026-08-25 (PR #781 MERGED + LIVE, v3.5.562 — feature-toggles.js: name the two adjustable-thing patterns)
 - Docs only, no behaviour change. Royce asked whether Field needs a bigger "features menu" now that it has this many small on/off surfaces — ran a `/decide` pass first: grounded the "10s if not 100s" premise against live code (actual count: 2 formal toggles + ~20 permission grants + 1 shared digest-settings blob), call was don't build a bigger registry yet.
 - `scripts/feature-toggles.js` header comment now names the two existing patterns so the next adjustable thing has an obvious home: admin toggle (this file — shared JSON blob, same shape as digest-settings.js's digest_sections) vs. per-person setting (own row, e.g. managers.digest_opt_in).
