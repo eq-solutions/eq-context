@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-25 (PR #309 MERGED — eq-cards sessions now default to their own worktree, hook-enforced)
+- The bare `C:\Projects\eq-cards` checkout is shared by every concurrent Claude Code session — its branch/HEAD can change between one tool call and the next with no action by the session it happens to. Recurred 4 times (2026-08-16, 2026-08-17 x2, 2026-08-19, 2026-08-25), the last a near-miss where a delete instruction, correct when given, went stale between turns and nearly destroyed a just-merged migration when the root moved underneath it.
+- New enforcement lives in the `eq-context` repo, not this one: `hooks/pre_tool_use.py` rule **F15** (rung 4) blocks `Edit`/`Write`/`NotebookEdit`/`MultiEdit` against the bare root outright, excluding `.claude/worktrees/*`. Points at `EnterWorktree` — one call, no clone/setup dance. Not sandbox-gated (every recurrence happened natively on Windows). Full detail: `eq-context` `system/failures.md` → F15.
+- This repo's own change: one guardrail bullet in `AGENTS.md` naming the rule and pointing at the hook, built in its own worktree per the practice it documents. [PR #309](https://github.com/eq-solutions/eq-cards/pull/309), squash-merged (`1ea4e68`), CI green (3/3).
+- Stated scope boundary: git verbs (a commit landing on whichever branch the root is on) are left open in this pass — Edit/Write was the dominant, best-evidenced vector (3 of 4 recurrences).
+
 ## 2026-08-25 (PR #304 MERGED — duplicate migration number `0142` had CI red on `main` and on every open PR)
 - PRs #298 and #300 merged within ~2 minutes of each other (19:18:44 and 19:20:51) each carrying a migration numbered `0142` — `0142_get_my_licence_rpc.sql` and `0142_guard_and_revoke_anon_respond_to_access_request.sql`. The `migration-hygiene` job's "No duplicate migration numbers" check went red on `main`, and because PR checks run against the merge with `main`, it also failed on **every open PR in the repo including ones adding no migrations at all** (e.g. #301) — the failure looked unrelated to whatever each PR was actually changing.
 - [PR #304](https://github.com/eq-solutions/eq-cards/pull/304) renamed the later-added file to `0144_guard_and_revoke_anon_respond_to_access_request.sql` (`0143` was the ceiling on `main`). Pure rename — `similarity index 100%`, 0 insertions / 0 deletions, no SQL touched. Repo filenames are cosmetic: the jvkn ledger tracks by name/timestamp, not the `NNNN` prefix (`supabase/MIGRATIONS.md`, and the 0071 collision precedent).
