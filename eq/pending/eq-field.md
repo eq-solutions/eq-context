@@ -49,6 +49,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: settable Preferred Name — closes the write-side gap on an already-wired read path, then a same-day production bug (2026-08-25)
+
+- [ ] **Worker self-service for their own preferred name — not built.** The new field is supervisor-gated like every other field in that modal, consistent with the standing v3.5.560 decision that self-edit belongs in Shell's `/settings/profile`, not a Field-side editor. Flagged, not decided: a worker's own chosen name is arguably the one field in that form they should be able to set themselves. Royce's call if/when Shell's self-service profile work resumes. _(added 2026-08-25)_
+- [ ] **Full click-through save round-trip (type a value, click Save, confirm it persists) as a Supervisor — still not completed.** The demo tenant's supervisor-escalation flow doesn't resolve cleanly in headless browser automation. `editPerson()` correctly populating an existing record's fields (the READ side) was confirmed via real DOM checks against the real shipped code; the WRITE side (clicking Save, confirming the PATCH actually lands) is still only verified via direct SQL/isolated script, not a real click. _(added 2026-08-25)_
+
+---
+
 ## eq-field: feature-toggles.js — named the two adjustable-thing patterns (2026-08-25)
 *Royce asked whether Field needs a bigger "features menu" now that it has this many small on/off surfaces. Ran a `/decide` pass first — grounded the "10s if not 100s" premise against live code (actual count: 2 formal toggles + ~20 permission grants, which already has its own admin page + 1 shared digest-settings blob) before judging. Call: don't build a bigger registry yet, name the two existing patterns instead so the next adjustable thing has an obvious home. `scripts/feature-toggles.js` header comment now documents both: admin toggle (shared JSON blob, same shape as digest-settings.js's digest_sections) vs. per-person setting (own row, e.g. managers.digest_opt_in). Docs only, no behaviour change. eq-field [PR #781](https://github.com/eq-solutions/eq-field/pull/781) (v3.5.562), squash-merged, confirmed live via field.eq.solutions/sw.js.*
 

@@ -9,6 +9,14 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #786 MERGED + LIVE, v3.5.568 — FIX: preferred-name mapper drift + Full Name data-loss risk)
+- Within minutes of the Preferred Name feature (below) going live, Royce hit Edit Person on Mohammed Hussain's own real record and found it broken: Full Name showed "Nabeel" instead of "Mohammed Hussain", Preferred Name and Job Title both showed blank despite both being set moments earlier.
+- Root cause: `_mapPeopleRows()`'s field allowlist had drifted out of sync with `app_data.field_people` — missing `preferred_name` plus 5 pre-existing fields `editPerson()` has always tried to populate (`first_name`/`last_name`/`job_title`/`emergency_contact_mobile`/`emergency_contact_relationship`). Full Name was also being read from the preferred-name-coalesced `p.name` instead of raw first/last — an unchanged Save would have overwritten `first_name`/`last_name` with "Nabeel" for real.
+- Confirmed live via direct query that the database itself was never wrong throughout — a pure client-side display bug, no data was actually lost.
+- Verified end-to-end against the real shipped code, not just an isolated script: forced the real `people.js` to load past the login gate in a deploy preview, injected a row shaped like Mohammed Hussain's actual record, called the real `editPerson()`, and read every field back off the real DOM — Full Name, Preferred Name, Job Title, Mobile, Email, and all three Emergency Contact fields all came back correct.
+- Landed at v3.5.568 after three same-day version-collision rebases — against #787, #785, and #780 in turn, each independently claiming this branch's version number before it could merge.
+- eq-field [PR #786](https://github.com/eq-solutions/eq-field/pull/786), squash-merged on explicit "yes", confirmed live via `field.eq.solutions/sw.js`.
+
 ## 2026-08-25 (PR #780 MERGED + LIVE, v3.5.567 — Edit Roster week-picker: pin a "Current: ..." row when paged away)
 - Royce, from a screenshot: the week-picker dropdown's visible window didn't include the currently-selected week after paging via Earlier/Later, no visible answer to "where am I." Hand-computed date arithmetic confirmed the popover's paging math was already correct and matched the screenshot exactly — the real gap was that the existing `.current` bold-highlight (v3.5.400) has nothing to attach to once the active week scrolls out of the rendered window.
 - `_renderWeekPickerPop` now recomputes the current-week index fresh every render and prepends a pinned "Current: <label>" row whenever that index falls outside the visible slice. New `_recenterWeekPicker()` resets the popover back to the active week without navigating away.
@@ -21,6 +29,13 @@ status: live
 - Fixed by resolving who's next by name before the commit/fill, then re-querying the fresh DOM by name+day after — a name survives a re-render, a DOM node reference doesn't.
 - Checked the "table isn't aligned" half too: computed styles for the grid's columns read identical across every row shape — no CSS regression found.
 - **Still reported broken by Royce after this deployed** ("cursor didn't move" on a clean re-test) — see `eq/pending/eq-field.md` for the open investigation; leading unconfirmed hypothesis is the site-code `<datalist>` autocomplete swallowing the Enter keypress.
+
+## 2026-08-25 (PR #783 MERGED + LIVE, v3.5.563 — People editor: settable Preferred Name)
+- Royce asked whether Field had ever built a way to call someone by a chosen/nickname, using "Mohammed Hussain likes to be called Nabeel" as the example. `app_data.staff.preferred_name` already existed and was already read by Leave, Contacts, and — via a shared name-resolution delegation — Roster and Timesheets too. The only real gap was that nothing in Field could ever set the column.
+- New "Preferred Name" field on the Add/Edit Person modal, wired through a migration extending `app_data.field_people`'s view + its `field_people_iud()` write trigger on ehow — a cross-repo shared-registry function eq-shell's own tenant-migrations pipeline can also touch (live definition pulled from ehow first, cites IDENTITY-MODEL.md §3.3.3).
+- Mohammed Hussain's `preferred_name` set to "Nabeel" for real on ehow — that was the actual ask, not a test-then-revert.
+- Landed at v3.5.563 alongside PR #784's own independent claim to the same number (same-day collision, both left as historical record rather than renumbered after the fact).
+- eq-field [PR #783](https://github.com/eq-solutions/eq-field/pull/783), squash-merged on explicit "Merge it", confirmed live via `field.eq.solutions/sw.js`.
 
 ## 2026-08-25 (PR #784 MERGED + LIVE, v3.5.563 — Edit Roster paste, Tier 2)
 - Second half of the roster-editor speed scope Royce approved (Tier 1 + Tier 2 of a 3-tier plan). A tab/newline-delimited clipboard block (e.g. copied from a spreadsheet) spreads across days x people from the pasted-into cell — every value runs through the same `updateCell()` commit path manual typing uses, so it batches into Tier 1's save/toast/audit logic for free.
