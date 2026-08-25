@@ -74,6 +74,8 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1592 feat(admin): govern is_platform_admin grants, with an audit trail
+- #1591 fix(access-control): reconcile app-tile drift, make Preview a person show real nav
 - #1590 fix(staff): Staff-page edit resent every field on every save, clobbering concurrent changes
 
 ---
