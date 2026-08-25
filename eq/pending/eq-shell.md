@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Staff list quick-toggle — Supervisor ON now asks for a category — built, merged, live (2026-08-25)
+*Royce reported the Staff list's Supervisor quick-toggle pill 400ing when turned on — `entity-patch.ts` has required a `supervisor_category` since 2026-08 (after 3 real people broke Field's Supervision list with a blank one), but the list-row pill was never updated to satisfy it. Read the full context (both the quick-toggle handler and the guard) before proposing a UX, then confirmed with Royce which of 3 options he wanted.*
+
+- [x] **UX confirmed with Royce**: inline popover picker, over routing to the full edit panel or defaulting to a generic category with no picker.
+- [x] **Built**: turning Supervisor OFF stays a single click. Turning it ON now opens a small popover of the 5 fixed categories right at the pill — reuses the existing Trade-tags cell's popover pattern (`InlineMultiSelectCell`) rather than inventing new UI — and commits `is_supervisor` + `supervisor_role` + `supervisor_category` together once one's picked. No backend change — `entity-patch.ts`'s guard was already correct. [PR #1588](https://github.com/eq-solutions/eq-shell/pull/1588), `tsc -b` clean, eslint 0 new warnings, 421/423 tests pass (2 pre-existing skips), merged, confirmed live via Netlify deploy record (`2b2898dc`, state ready, context production).
+
+**Deferred:**
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real click-through on the Staff list: turn Supervisor on for a test person via the pill, confirm the category popover appears, pick one, confirm it saves. _(added 2026-08-25)_
+
+---
+
 ## eq-shell: EQ Ops Setup cleanup — Rate library collapse, By Client removed, Estimators now self-maintaining, archive window is a setting (2026-08-25)
 *Direct continuation of the same-day cost/charge-rate session — Royce came back with 4 more Ops Setup questions ("is the estimator option still relevant", "how long does invoiced stay before archiving, is there a setting", "collapse the rate library", "By Client shows an error"), then asked to build the two design recommendations that came out of discussing them.*
 

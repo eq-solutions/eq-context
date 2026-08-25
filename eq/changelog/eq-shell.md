@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-25 (PR #1588 MERGED + LIVE — Staff list Supervisor quick-toggle needs a category)
+- The Staff list's Supervisor quick-toggle pill always 400'd when turned on — `handleQuickToggle` sent `is_supervisor`+`supervisor_role` but never `supervisor_category`, and `entity-patch.ts` has required one since 2026-08 (after 3 real people broke Field's Supervision list with a blank category). The full edit panel already guarded this client-side; the list-row pill never got the same treatment.
+- Turning Supervisor OFF stays a single click. Turning it ON now opens a small popover of the 5 fixed categories right at the pill — reuses the existing Trade-tags cell's popover pattern (`InlineMultiSelectCell`) — and commits `is_supervisor` + `supervisor_role` + `supervisor_category` together once one's picked. UX chosen by Royce over two alternatives (route to the full edit panel; default to a generic category with no picker). No backend/DB change. [PR #1588](https://github.com/eq-solutions/eq-shell/pull/1588).
+- Verified pre-merge: `tsc -b` clean, `eslint` 0 new warnings, `pnpm test` 421/423 pass (2 pre-existing skips). Not click-tested live (no Shell credentials in that session) — flagged as an open follow-up.
+- Confirmed live post-merge via the Netlify API, not just a green merge: newest `state: ready` / `context: production` deploy's `commit_ref` (`2b2898dc`) matched the merge commit exactly.
+
 ## 2026-08-25 (PR #1586 + #1587 + #1589 MERGED + LIVE — Ops Setup cleanup: collapsible rate library, By Client removed, Estimators self-maintaining, archive window is a setting)
 - Rate library ("Preset line items") now collapses per category with a count instead of rendering everything expanded. [PR #1586](https://github.com/eq-solutions/eq-shell/pull/1586).
 - Removed "By Client" (button + accordion view + `eq_list_client_groups()`) rather than fix it — reproduced its `varchar`/`text` type-mismatch live on both tenants; it only ever had one group with one member, and #1582 (site↔customer links) now covers the same real case generally. Migration `0281` drops the dead RPC. Same PR.
