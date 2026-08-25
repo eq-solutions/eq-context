@@ -68,9 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #810 chore(deps): bump the eq-design-system group with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
 
-**eq-shell:**
-- #1584 fix(quotes): keep markup% in sync when rate is edited with cost set
-
 ---
 
 ## System Health (as of 2026-08-25)
@@ -80,7 +77,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ✓ success |
+| eq-shell | ? in_progress |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
