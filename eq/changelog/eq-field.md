@@ -14,6 +14,30 @@ status: live
 - `_renderWeekPickerPop` now recomputes the current-week index fresh every render and prepends a pinned "Current: <label>" row whenever that index falls outside the visible slice. New `_recenterWeekPicker()` resets the popover back to the active week without navigating away.
 - Landed at v3.5.567 after FIVE same-day version-collision rebases — against #781, #784, #783, #787, and #785 in turn, each independently claiming this branch's version number before it could merge.
 
+## 2026-08-25 (PR #787 MERGED + LIVE, v3.5.565 — Edit Roster: fix Ctrl+Enter losing focus on Monday)
+- Live regression report right after Tier 2 shipped: "not even control enter works when entering on a monday" + "table isn't aligned. All over the shop."
+- Root cause: `fillWeek()` (called by Ctrl+Enter) always calls `renderEditor()`, which replaces `#editor-content`'s entire `innerHTML` — detaching the input element the keydown handler held a reference to. `_updateCellCommit()` does the same conditionally, for multi-job sites. The old focus-jump helper's `indexOf()` against the rebuilt DOM could never match the stale reference, so it silently no-oped every time on Ctrl+Enter (100% reproducible) and intermittently on plain Enter.
+- Data was never at risk — the Monday value and Tue-Fri fill both saved correctly throughout (state-layer, not DOM-dependent). Only the focus jump was lost.
+- Fixed by resolving who's next by name before the commit/fill, then re-querying the fresh DOM by name+day after — a name survives a re-render, a DOM node reference doesn't.
+- Checked the "table isn't aligned" half too: computed styles for the grid's columns read identical across every row shape — no CSS regression found.
+- **Still reported broken by Royce after this deployed** ("cursor didn't move" on a clean re-test) — see `eq/pending/eq-field.md` for the open investigation; leading unconfirmed hypothesis is the site-code `<datalist>` autocomplete swallowing the Enter keypress.
+
+## 2026-08-25 (PR #784 MERGED + LIVE, v3.5.563 — Edit Roster paste, Tier 2)
+- Second half of the roster-editor speed scope Royce approved (Tier 1 + Tier 2 of a 3-tier plan). A tab/newline-delimited clipboard block (e.g. copied from a spreadsheet) spreads across days x people from the pasted-into cell — every value runs through the same `updateCell()` commit path manual typing uses, so it batches into Tier 1's save/toast/audit logic for free.
+- Caught and fixed a real toast-overwrite bug via browser testing: the "ran out of people/days on screen" clipping warning fired immediately then got silently overwritten ~600ms later by the routine per-row save toast landing on the same element. Delayed the clipping warning to land last instead.
+- eq-field [PR #784](https://github.com/eq-solutions/eq-field/pull/784), squash-merged, confirmed live via `field.eq.solutions/sw.js`.
+
+## 2026-08-25 (PR #782 MERGED + LIVE, v3.5.562 — Edit Roster keyboard flow + row-batched save, Tier 1)
+- Royce, watching himself manually re-key a week of roster data cell-by-cell for QA: "help improve this process... complete the week via keyboard as an example?" Scoped 3 tiers in chat first, no code — Royce picked "Tier 1 and 2" to deepen.
+- New `scripts/roster-editor-keyboard.js`: Enter commits and moves down to the next person, same day; Ctrl+Enter (Monday only) commits, fills Mon-Fri, and jumps to the next person's Monday. Several fast edits to one person's row batch into one save/toast/audit_log row instead of one each (Royce's explicit call, via AskUserQuestion, to batch the audit trail too — not just the network write).
+- eq-field [PR #782](https://github.com/eq-solutions/eq-field/pull/782), squash-merged, confirmed live via `field.eq.solutions/sw.js`.
+
+## 2026-08-25 (PR #779 MERGED + LIVE, v3.5.561 — Feature Toggles admin page; roster credential-gate + job-picker off by default; Name-column tint)
+- Royce, live on the Edit Roster screenshot: "toggle this feature off for now" (the missing-credential assignment modal) + "the name column looks terrible" + the per-cell job-number dropdown making the grid ragged, plus a standing ask for "a features setup page where we can turn on and turn off all of the little additions we keep doing."
+- New Manage → Feature Toggles page (`scripts/feature-toggles.js`) — on/off switches for small UX additions, replacing one-off code flags. `roster_credential_gate` and `roster_job_picker` both shipped OFF by default.
+- Name column's red "missing credential" badge text replaced with a plain red-tinted background + left border — same information, less visual noise.
+- eq-field [PR #779](https://github.com/eq-solutions/eq-field/pull/779), squash-merged, confirmed live via `field.eq.solutions/sw.js`.
+
 ## 2026-08-25 (PR #785 MERGED + LIVE, v3.5.566 — People save: only patch fields that actually changed)
 - Real incident: Royce corrected Zemi Asri's Group to Direct and start date via Edit Person; save succeeded, but employment_type reverted to Labour Hire ~6s later. Root cause: `savePersonToSB()` unconditionally resent all 19 columns on every save — eq-shell's Staff-page edit panel had the identical shape and clobbered this specific write with a stale snapshot on an unrelated field save.
 - New `_diffRow()` helper (`scripts/supabase-entities.js`) diffs the outgoing PATCH against the record the modal was opened from and sends only what changed. Side effect: `archived`/`pin`/`dob` are now also protected against the same clobber.
