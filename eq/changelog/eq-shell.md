@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-25 (PR #1598 MERGED + LIVE — dropped a KNOWN_UNSOURCED entry made redundant by #1596)
+- `eq_sweep_orphaned_licence_photos` was allowlisted in `check-control-plane-drift.mjs` by PR #1593's own second commit, then made redundant ~35s later when PR #1596 landed a real backfill migration sourcing the same function for real — `collectSourcedFunctions()` matches real source files before the check ever reaches `KNOWN_UNSOURCED`, so the entry was dead weight from the moment both merged. Removed via [PR #1598](https://github.com/eq-solutions/eq-shell/pull/1598), no functional change. Confirmed live (commit `4a0db11d`).
+- A second, similarly-redundant pair (`_eq_storage_dispatch`/`eq_confirm_retention_purge_dispatch`, prepared as a follow-up commit on the same original branch) never reached `main` at all — the redundancy against #1596 was caught before merging, closed unmerged as [PR #1597](https://github.com/eq-solutions/eq-shell/pull/1597) instead.
+
 ## 2026-08-25 (PR #1596 + #1593 MERGED + LIVE — schema-drift gap closed: 3 backfilled control-plane functions, 1 cross-repo allowlist)
 - The required `Schema drift + anon-grant + policy-lint` check was blocking every open eq-shell PR tonight regardless of diff — root-caused to 4 live jvkn functions with no matching migration file. `_grant_fix_scratch_test`/`_grant_fix_scratch_test_2` had already been dropped live (scratch/test artifacts from an unrelated session); `eq_cards_get_my_licence` is cross-repo, fully sourced in eq-cards, allowlisted here instead of duplicated ([PR #1593](https://github.com/eq-solutions/eq-shell/pull/1593)).
 - `eq_sweep_orphaned_licence_photos`, `_eq_storage_dispatch`, `eq_confirm_retention_purge_dispatch` were real and genuinely unsourced — a deliberately-built retention/cleanup subsystem for the `licence-photos` storage bucket, backfilled with migrations documenting exactly what's live (body + grants verified via `pg_get_functiondef`/`information_schema.role_routine_grants`, both `postgres`/`service_role`-only, no anon/authenticated). [PR #1596](https://github.com/eq-solutions/eq-shell/pull/1596).
