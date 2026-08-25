@@ -61,8 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #302 fix(security): revoke anon/PUBLIC grants on 9 eq_cards worker RPCs
-- #301 fix(cards): make every licence field copyable, and say so in words
+- #305 fix(analytics): make signup_completed fire once per person, not ~33x
 
 **eq-field:**
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
