@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #780 MERGED + LIVE, v3.5.567 — Edit Roster week-picker: pin a "Current: ..." row when paged away)
+- Royce, from a screenshot: the week-picker dropdown's visible window didn't include the currently-selected week after paging via Earlier/Later, no visible answer to "where am I." Hand-computed date arithmetic confirmed the popover's paging math was already correct and matched the screenshot exactly — the real gap was that the existing `.current` bold-highlight (v3.5.400) has nothing to attach to once the active week scrolls out of the rendered window.
+- `_renderWeekPickerPop` now recomputes the current-week index fresh every render and prepends a pinned "Current: <label>" row whenever that index falls outside the visible slice. New `_recenterWeekPicker()` resets the popover back to the active week without navigating away.
+- Landed at v3.5.567 after FIVE same-day version-collision rebases — against #781, #784, #783, #787, and #785 in turn, each independently claiming this branch's version number before it could merge.
+
 ## 2026-08-25 (PR #785 MERGED + LIVE, v3.5.566 — People save: only patch fields that actually changed)
 - Real incident: Royce corrected Zemi Asri's Group to Direct and start date via Edit Person; save succeeded, but employment_type reverted to Labour Hire ~6s later. Root cause: `savePersonToSB()` unconditionally resent all 19 columns on every save — eq-shell's Staff-page edit panel had the identical shape and clobbered this specific write with a stale snapshot on an unrelated field save.
 - New `_diffRow()` helper (`scripts/supabase-entities.js`) diffs the outgoing PATCH against the record the modal was opened from and sends only what changed. Side effect: `archived`/`pin`/`dob` are now also protected against the same clobber.

@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Edit Roster week-picker — pin a "Current: ..." row when paged away from the active week (2026-08-25)
+*Royce, from a screenshot: the week-picker dropdown's visible window didn't include the currently-selected week, no way to tell "where am I" once paged away via Earlier/Later. Confirmed via hand-computed date arithmetic that the popover's paging math itself was correct (matched the screenshot exactly) — the gap was that the existing `.current` bold-highlight (v3.5.400) has nothing to attach to once the active week scrolls out of the rendered window.*
+
+- [ ] **Not click-tested live through a rendered popover** — verified function-level (`toggleWeekPicker`/`_shiftWeekPickerWindow`/`_recenterWeekPicker` called directly against a real DOM built in-page) since no authenticated SKS session was reachable this session, same standing limitation as most entries in this file. The click handlers just call these same functions with no extra logic, so this is a smaller gap than most, but not zero. eq-field [PR #780](https://github.com/eq-solutions/eq-field/pull/780) (v3.5.567), squash-merged, confirmed live via `field.eq.solutions/sw.js`. _(added 2026-08-25)_
+
+---
+
 ## eq-field: People save — dirty-field diffing, closes a live data-clobber bug (Zemi Asri, 2026-08-25)
 *Royce reported a real incident: corrected Zemi Asri's Group to Direct and start date via Edit Person, save succeeded, but employment_type reverted to Labour Hire ~6s later. Traced end-to-end: `savePersonToSB()` unconditionally resent all 19 columns on every save regardless of what changed — eq-shell's Staff-page edit panel had the identical shape and was the one that clobbered this specific write with a stale snapshot on an unrelated field save.*
 
