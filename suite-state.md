@@ -61,10 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #308 docs: close 4 gaps the same-day governance audit missed
+- #309 docs: eq-cards sessions default to their own worktree, hook-enforced
 
 **eq-field:**
-- #786 v3.5.566 — FIX: preferred-name mapper drift + Full Name data-loss risk
+- #786 v3.5.567 — FIX: preferred-name mapper drift + Full Name data-loss risk
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
 **eq-service:**
@@ -76,6 +76,8 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1594 chore(deps): bump @eq-solutions/roles to v2.7.5
+- #1593 chore(drift): allowlist eq_cards_get_my_licence — sourced in eq-cards PR #298
 - #1592 feat(admin): govern is_platform_admin grants, with an audit trail
 - #1591 fix(access-control): reconcile app-tile drift, make Preview a person show real nav
 - #1590 fix(staff): Staff-page edit resent every field on every save, clobbering concurrent changes
