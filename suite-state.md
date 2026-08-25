@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #316 fix(ci): target edge-function deploys, drop deprecated setup-cli
+- #318 fix(licences): promote labour-hire photos/documents at claim time
 
 **eq-field:**
 - #791 v3.5.571 — Weekly Supervisor Digest moves into Manage → Email Templates
