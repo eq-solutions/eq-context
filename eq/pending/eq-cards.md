@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-25
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,12 @@ status: live
 # EQ Cards — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-cards: field-access unlock trigger — root cause was two claim doors, not a portal failure (PR #297) (2026-08-24)
+
+- [ ] **Conor Horgan and Nelson Sareto — the two workers from the original incident — still haven't claimed.** Re-verified live 2026-08-25: both `workers` rows exist, `user_id` still null, invites created 2026-08-20, valid until 2026-09-03. See `eq/pending/eq-shell.md`'s "resend-worker-invite" entry for the fuller thread. _(added 2026-08-24, updated 2026-08-25)_
 
 ---
 

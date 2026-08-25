@@ -13,6 +13,30 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: link an existing site to another customer — built, merged, live (2026-08-25)
+*Royce was pricing an SKS job for Convergint at Equinix SY3, a real site already owned by a different customer, and didn't want a duplicate site record. `sites.customer_id` was a strict single FK with no way to attach an existing site to a second customer anywhere in the app.*
+
+- [x] **Built via a full Plan-mode pass**: new `app_data.site_customer_links` table (service-role-only from the start, not a copy of `contact_customer_links`' original overgrant — see changelog for why that matters), `eq_list_sites()` extended so the Quotes site picker needs no frontend change, new `link_site_customer`/`unlink_site_customer` actions, new **Link site** button + owner-badge/Unlink-only UI on the Customers page. [PR #1582](https://github.com/eq-solutions/eq-shell/pull/1582), merged, live.
+- [x] **A duplicate concurrent session building the same feature from scratch was found and closed** (Royce's call) — no collateral loss, confirmed live.
+- [x] **Migration dispatched** — collided with #1581's own `eq_list_sites` change; a separate concurrent session (EQ Ops one, see the section below) found and fixed the same collision from the other direction and fleet-dispatched both. Live-verified directly on ehow: table, grants, and function body all correct.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no login credentials this session. Handed Royce the exact steps (Customers page → Convergint → Link site → search "Equinix SY3" → confirm badge/Unlink-only controls → confirm it appears in a Convergint quote's site picker). Not yet confirmed done. _(added 2026-08-25)_
+
+---
+
+## eq-shell: mobilisation-readiness visibility + unclaimed-invite alerting + clearer login dead-end (2026-08-24)
+
+- [ ] **The alert is alert-only** — it now *notices* an unclaimed invite daily, but nothing acts on that notice automatically. Same open thread as the "resend-worker-invite" entry below. _(added 2026-08-24)_
+
+---
+
+## eq-shell: site internal contacts — schema + self-serve Edit Site UI (2026-08-24/25)
+
+- [ ] **6 of 8 renamed Equinix sites still have no contact data** — CA1, SY1, SY2, SY3, SY4, SY9. No derivation path exists (checked `staff.default_site_id`, `schedule_entries.supervisor_id`, `sites.notes` — all 0%-populated); needs real names + numbers from Royce, then entered via the Edit Site modal. _(added 2026-08-25)_
+
+---
+
 ## eq-shell: EQ Ops cost/charge-rate wiring + Edit Site "couldn't save" — three separate root causes, all fixed live (2026-08-25)
 *Royce reported two symptoms in one message: quote line-item cost sometimes not relating to the charge rate, and not being able to change a site's details from EQ Ops "just now." Traced to three unrelated causes — a real UI wiring gap, a merged-but-undispatched migration, and a same-morning migration collision surfaced only by dispatching.*
 
@@ -55,15 +79,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: resend-worker-invite always collided with its own unclaimed-invite index — fixed + live; Nelson's retry still unconfirmed (2026-08-24)
-*Direct follow-up to the 2026-08-23 "labour-hire licence promotion gap" entry below: Royce clicked Resend on Conor Horgan's existing pending invite looking for that entry's own fix, and hit a live 500 instead — a separate, previously-undiscovered bug.*
-
-- [x] **Root cause confirmed**: `resend-worker-invite.ts` did an unconditional `INSERT` into `worker_invites`, colliding with the `worker_invites_org_worker_unclaimed_unique` partial index every time it ran for its own documented purpose (refreshing a pending/expired invite — exactly the case where an unclaimed row already exists). `create-worker-invite.ts` already had the correct existing-row check; this file was never brought in line after the index shipped (migration 0118).
-- [x] **Fixed**: mirrors `create-worker-invite.ts`'s pattern — look up the existing unclaimed row, `UPDATE` in place (new token, refreshed profile data, expiry pushed +30 days), only `INSERT` when the worker's most recent invite was already claimed. eq-shell [PR #1562](https://github.com/eq-solutions/eq-shell/pull/1562), merged, confirmed live via exact Netlify `commit_ref` match (deploy `6a8b8085`).
-
-**Deferred:**
 - [ ] **Nelson Sareto's Resend click reproduced the identical duplicate-key error after the fix was confirmed live.** No fresh Postgres duplicate-key log entry appears after the deploy's publish time, and Nelson's `worker_invites` row is unchanged — pointing toward a stale/leftover error banner rather than a genuinely new failure, but **not confirmed**. Asked Royce to refresh and retry; no response yet. If it still fails post-refresh: leading unverified hypothesis is the new `unclaimed` SELECT's `error` being silently discarded, falling through to the old broken `INSERT` path — needs Netlify function-log evidence or a defensive fix (surface `unclaimedErr` explicitly). _(added 2026-08-24)_
 - [ ] **Neither Conor nor Nelson has a confirmed-successful Resend since the fix shipped** — only Nelson's was attempted, ambiguously (above). Supersedes/continues the 2026-08-23 item below ("Royce still needs to click Resend for Conor Horgan and Nelson Sareto") — leave that item open too until both are confirmed. _(added 2026-08-24)_
 - [ ] **`resend-worker-invite-unclaimed-unique-bug` memory entry corrected but the underlying question is still open** — don't treat it as fully closed until Nelson's retry outcome is known. _(added 2026-08-24)_
+- [ ] **Re-verified live 2026-08-25 — still unclaimed, both of them.** `workers` rows exist for both (created 2026-08-20), `user_id` is null on both, `worker_invites` rows are `claimed_at: null`, valid until 2026-09-03. This is the single most pressing open item from the whole first-morning remediation thread (`eq/pending/eq-cards.md` PR #297 entry) — everything else built this week (readiness column, unlock trigger, alerting, site contacts) is infrastructure for a problem that, for the two people it actually happened to, is not yet fixed. _(added 2026-08-25)_
 
 ---
 

@@ -1,13 +1,20 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-24 (PR #297 MERGED + APPLIED LIVE — field-access unlock trigger; root cause was two claim doors, not a portal failure)
+- Royce described a bad first morning for two new SKS labour-hire workers at an Equinix site — uploaded via the labour-hire portal, expected to be set up in EQ, but Field access hadn't unlocked. Initial assumption (the portal not stamping Field access) was wrong.
+- Live data showed the real cause: Shell has two separate claim doors — the Core door (email+PIN via `accept-invite.ts`) stamps `shell_control.users.field_access_unlocked_at` on claim; the Cards door (phone-OTP via `eq_cards_claim_invite`, the labour-hire path) never did. A worker could fully claim through Cards and still hit a silent Field 403.
+- Fixed via a trigger, not the claim function itself — `eq_cards_claim_invite` has a documented history of grant-drift outages (0121/0139/0140) whenever `CREATE OR REPLACE`d. `tg_unlock_field_access_on_invite_claim()`, an `AFTER UPDATE` trigger on `public.worker_invites` firing on `claimed_at` NULL→NOT NULL, stamps the unlock (reason `admin_invited`), non-fatal on error. Migration 0141, applied live to jvkn, verified via a 3-part check (structure/grants/behavioural replay).
+- 9-account backfill for people already caught by the pre-fix gap, done in eq-shell PR #1575 (reason `admin_invited_backfill`, deliberately distinct from `documents_verified` so it can't be re-locked by the licence-change sync trigger).
+- Still open: the two workers the incident actually happened to (Conor Horgan, Nelson Sareto) hadn't claimed as of 2026-08-25 — see `eq/pending/eq-cards.md`.
 
 ## 2026-08-23 (PR #295 + #296 MERGED + APPLIED LIVE — two admin RPC grants silently dropped by migration 0131, restored)
 - Found while investigating the licence-photo bug below: `eq_cards_admin_upsert_worker` and `eq_cards_admin_create_invite` both lost their `authenticated` EXECUTE grant when migration `0131` replaced them — same bug class as the #0111 incident (`eq_enforce_function_privacy` REVOKEs on every `CREATE OR REPLACE` on this repo's guarded schemas and doesn't warn; a migration must re-GRANT explicitly or the replace silently narrows access). Live ~1 week undetected on `upsert_worker`; both blocked their front-end callers with a bare permission-denied.

@@ -13,6 +13,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24)
+
+- [ ] **Only Equinix SY5 has real contact data** (Matthew Miller / Scott Hotson). CA1, SY1, SY2, SY3, SY4, SY9 show nothing yet — needs real names + numbers from Royce, entered via eq-shell's Edit Site modal (`eq/pending/eq-shell.md`, PR #1581) — no migration needed any more. _(added 2026-08-25)_
+
+---
+
 ## eq-field: access-control review (permission-matrix v2.6), crew-scoping widened to Leave, timesheets RLS fail-open closed (2026-08-24/25)
 *PR #768. Companion leave.js file-size fix is its own section below ("leave.js file-size debt") — not repeated here.*
 

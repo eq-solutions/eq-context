@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-24 (PR #770 MERGED + LIVE, v3.5.551 — site internal contacts: "Ask for / Backup" shown on schedule + site cards)
+- Second half of the first-morning remediation (see eq-cards PR #297 / eq-shell's site-contacts PRs, both in the 2026-08-24/25 entries of their own changelogs): even once Field access works, a worker showing up alone with a sick manager had no way to know who else to call on site.
+- New shared helper `_siteInternalContactsHtml()` in `roster.js` renders "📞 Ask for: [name] — [phone]" / "Backup: [name] — [phone]" whenever a site carries `primary_contact_name`/`secondary_contact_name`; renders nothing when a site has none, so it's silent for sites still waiting on data. Wired into both the per-day site card (My Schedule) and the Sites page card.
+- Only Equinix SY5 has real contact data so far (Matthew Miller / Scott Hotson) — the other 6 renamed Equinix sites need names/numbers from Royce, enterable via eq-shell's self-serve Edit Site modal (PR #1581) with no further eq-field change needed.
+
 ## 2026-08-25 (PR #771 MERGED + LIVE, v3.5.553 — Prestart/Toolbox/Diary: "+ Add by name" doing nothing in the Shell iframe)
 - Royce reported real SKS crew feedback: clicking "+ Add by name" on Prestart did nothing — no dialog, no error. Root cause: `addPrestartCrewManual()` (and the identical `addDiaryAttendanceManual`/`addToolboxAttendeeManual`) called native `window.prompt()`. Confirmed against eq-shell's actual `FieldIframe.tsx` source, not assumed from general Chrome behaviour: the Field iframe is sandboxed without `allow-modals`, so per the HTML spec `prompt()`/`confirm()`/`alert()` inside it are required to return null/false immediately, no dialog, no exception — deterministic, not a browser-version heuristic.
 - Fixed all three instances in one pass, not just the reported one — same bug, three places. New `createNamePromptController()` in `site-reports-shared.js`, matching the existing `createSignatureController` injection pattern; same validation as before (trim, 80-char cap, empty bail) at every call site.
