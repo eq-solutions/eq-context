@@ -13,6 +13,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: SEC-45 migration renumbered past a second collision (0135→0144); confirmed it duplicates an already-merged fix (2026-08-25)
+*Branch `claude/sec-45-revoke-authenticated-invite-resolver`'s untracked `0135` draft was already flagged by the 2026-08-23 session below ("a stale untracked migration draft... fully superseded by an already-merged same-purpose migration under a different number (0136). Flagged to Royce, not deleted") — this session picked that thread back up and actually renumbered it. Fresh survey (local tree + `origin/main` + `git log --all` across every branch, since this repo keeps hitting this pattern) found `main` had moved to `0143` by now, past the `0135`/`0136` collision that was live two days ago.*
+
+- [x] Renumbered the untracked file `0135_revoke_authenticated_find_or_create_worker_for_invite.sql` → `0144_revoke_authenticated_find_or_create_worker_for_invite.sql` (next free number above every local/remote branch's claimed numbers), header self-reference corrected to match. The unrelated, already-merged `0135_reject_deactivated_identity_on_worker_link.sql` (file #1 at the real `0135`) untouched. No SQL logic changed — rename/renumber only, per explicit instruction. Not committed — left for whoever drives that branch's PR.
+- [x] **Re-confirmed the 2026-08-23 finding still holds**: `0136_revoke_authenticated_worker_invite_resolver.sql` (live on `origin/main`) runs the identical `REVOKE EXECUTE ... FROM authenticated` against the identical function (`eq_cards_find_or_create_worker_for_invite`), same root-cause reasoning, same sole-legitimate-caller trace. Asked Royce directly this time rather than just flagging it: confirmed to finish the renumber anyway and leave the file untracked rather than delete it — whoever drives the branch's PR decides at review time whether the redundant-but-harmless duplicate is worth keeping.
+- [x] Ruled out a decoy: `origin/claude/fix-0135-self-reference-cleanup` looked like a competing renumber of the same file but is unrelated — a 2026-08-23 comment-only fixup to *file #1* (the real `0135`)'s own stale `[0134]` self-references, left over from its own earlier PR #287 rename.
+- [x] Spawned background task `task_46928df0` ("Resolve duplicate SEC-45 fix: 0136 vs 0144") so whoever picks up that branch's PR has the full context without re-deriving it.
+
+**Deferred:**
+- [ ] **0136 vs 0144 final disposition** — keep as a harmless duplicate, drop, or correct 0144's own header (it claims "no later grant/revoke statement... after the 2026-07-27 backfill," which `0136` now contradicts). Tracked in `task_46928df0`. _(added 2026-08-25)_
+
+**Notes:**
+- Pre-existing, unrelated to this task: `origin/main` itself already carries two different files both numbered `0142` (`0142_get_my_licence_rpc.sql` and `0142_guard_and_revoke_anon_respond_to_access_request.sql` — the latter is this same branch's own PR #300 content, documented in the section below). Not touched, flagging so it isn't lost.
+- Brief-gate (Rule 0.6) fired mid-task via `guard.js`'s brief-gate check on the Edit tool; ran `/brief eq-cards` before completing the header edit, Royce confirmed via the 0136-duplicate question above before the edit landed.
+
+---
+
 ## eq-cards: governance docs (ARCHITECTURE/README/STATUS/CHANGELOG) were 87 days stale and actively wrong — corrected, committed, live on PR #300 (2026-08-25)
 *A repo review flagged specific stale claims: auth described as "phone-as-identity retired" (flipped back to mobile-primary 2026-08-15, PR #246); deploy described as auto-on-merge (explicit-only since 2026-08-14); README pointed at a PIN app-lock deleted 2026-08-15 (PR #249) that was never wired into the router; stack table drifted 15+ versions behind `pubspec.yaml`; folder tree still showed 5 feature folders against the current 12. Docs-only task, no code/migration changes, all claims verified against live `pubspec.yaml`/git log/`test/` before rewriting.*
 
