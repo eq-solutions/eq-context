@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
+- #314 docs(migrations): track 8 more ledger entries with no matching repo file
 - #312 fix(security): root-cause the grant-stripping trigger + track a hand-applied RPC
 
 **eq-service:**
@@ -80,7 +81,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ? queued |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
