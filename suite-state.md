@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-25)
 
-**eq-cards:**
-- #300 fix(security): guard access-request RPC against NULL auth.uid()
-
 **eq-field:**
 - #783 v3.5.563 — People editor: settable Preferred Name
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
