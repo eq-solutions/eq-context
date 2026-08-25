@@ -302,16 +302,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: appMetadata JWT root-cause — the real reason self-join signups got stuck looping, plus fresh-signup polish and an OCR auth hardening — three PRs merged, live (2026-08-05)
-*Continuation of the same-day shell-handoff work below — started from a new-user report ("William... gets stuck looping back to the open wallet page") that turned out to be a structural bug, not a one-off.*
-
-
-**Deferred:**
-- [ ] **Only the last 10 days of signups were checked for the stuck-appMetadata pattern** — the 4 unblocked accounts are the ones caught in that window; any self-join/auto-provision-only account older than that with a never-updated `raw_app_meta_data` would still show the same symptom if they ever come back and retry. No full historical audit run. _(added 2026-08-05)_
-- [x] **William's own Cards `public.workers.first_name/last_name`** — RESOLVED, checked live 2026-08-25: `first_name="William", last_name="Brown"`, not blank. Backfilled at some point since this was logged; no longer an issue.
-
----
-
 ## eq-cards: WebOTP auto-fill for phone sign-in — shipped, and exposed a manual-deploy gate that had gone unnoticed (2026-08-05)
 
 - [ ] **Royce to test on his Samsung/Android Chrome** now that the code and the SMS template are live together for the first time — not yet confirmed working end-to-end. No fix exists for iOS Safari (WebOTP isn't implemented there); manual entry stays as-is on that platform.

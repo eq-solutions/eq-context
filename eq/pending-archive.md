@@ -132,6 +132,17 @@ Overhauled the worker connection flow so a declined worker isn't left in the dar
 
 ---
 
+## eq-cards: appMetadata JWT root-cause — the real reason self-join signups got stuck looping, plus fresh-signup polish and an OCR auth hardening — three PRs merged, live (2026-08-05) (fully closed, no open items remain)
+*Continuation of the same-day shell-handoff work below — started from a new-user report ("William... gets stuck looping back to the open wallet page") that turned out to be a structural bug, not a one-off.*
+
+
+**Deferred:**
+- [x] **Only the last 10 days of signups were checked for the stuck-appMetadata pattern** — RESOLVED, full-history audit run live 2026-08-26: only 19 accounts in jvkn's entire history have ever shown the missing-`tenant_id` signature. 18 of 19 are dated 2026-07-31 through 2026-08-25 (after the fix shipped) and every one has since signed in successfully — proof the JWT-read fix (`jwt_app_metadata.dart`) is working for every new self-join signup, not just the 4 originally caught. The lone pre-fix outlier (created 2026-07-14) never signed in at all and has no linked worker row — an abandoned/never-verified signup, not an instance of this bug. Zero accounts found needing further action; no code or data change required.
+- [x] **William's own Cards `public.workers.first_name/last_name`** — RESOLVED, checked live 2026-08-25: `first_name="William", last_name="Brown"`, not blank. Backfilled at some point since this was logged; no longer an issue.
+- **Archive note (2026-08-26 Bucket-A sprint):** zero open items remain — moved verbatim, no content dropped.
+
+---
+
 ## eq-cards: 8 more untracked-ledger migrations found and closed — follow-up to #312's flagged gap (PR #314, merged 2026-08-25) (fully closed, no open items remain)
 *PR #312 (`fix/grant-trigger-root-cause`, still open) flagged but didn't chase down "other `NNNN_description`-named ledger entries with no matching repo file" while tracking `0032_licence_backing`. This session ran that dedicated pass.*
 
