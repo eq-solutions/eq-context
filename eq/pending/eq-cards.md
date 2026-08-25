@@ -29,7 +29,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] **8 more "hand-applied, never committed" migrations found and retroactively tracked** — see the dedicated `#314` section directly above for the full detail (96 ledger entries checked, 3 separate source incidents, 2 false positives caught). [PR #314](https://github.com/eq-solutions/eq-cards/pull/314), merged.
 
 **Deferred:**
-- [ ] **`0044`'s live drift needs a human call** — see the dedicated `#314` section above; not duplicated here.
+- [x] **`0044`'s live drift — investigated and closed, not a bug.** ~~Needs a human call~~ RESOLVED 2026-08-25 (by the #314 follow-through, now archived): the account belongs to Jack Cluff, a real SKS supervisor — caught by a next-day ghost-account cleanup as a false positive, self-signed-up again two days later, approved, and has been a genuinely active user since (6 licences, regular logins through this morning). `active = true` today is correct, not drift. See `eq/pending-archive.md`.
 - [ ] **eq-shell coupling contract** — several `eq_cards_*` `SECURITY DEFINER` functions write directly into eq-shell's `shell_control.users`/`shell_control.user_tenant_memberships` with no API boundary or version pin (migrations 0029-0031). A column rename on eq-shell's side would break eq-cards silently, invisible to this repo's own CI. Needs alignment with whoever owns eq-shell, not something this repo can fix alone. _(added 2026-08-25)_
 - [ ] **The 3-way visual "Design" picker (Linear/Wallet/Photo-first) needs Royce's own call**, not a delegated one — triples the maintenance surface of the most-used screens, in real tension with `ARCHITECTURE.md`'s own rule one ("boring beats clever"). Well-executed (accessibility consolidated across all three variants) but the resolve-or-keep decision needs eyes on the actual screens. _(added 2026-08-25)_
 - [ ] **External/adversarial security review** — everything above is self- and CI-verified; an outside or adversarial pass on the post-sprint state wasn't attempted and doesn't fit inside a sprint by design. _(added 2026-08-25)_
@@ -62,24 +62,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: duplicate `0142` had CI red on main and on every open PR — already fixed by PR #304, independently verified, no second PR opened (2026-08-25)
-*Sent to renumber one of two files both claiming `0142` on `main` (`0142_get_my_licence_rpc.sql` from PR #298 and `0142_guard_and_revoke_anon_respond_to_access_request.sql` from PR #300) — exactly the collision the two sections below each flagged as "pre-existing, not touched, flagging so it isn't lost". It wasn't lost: `migration-hygiene` was failing on `main`, and because PR checks run against the merge with `main` it was also failing on every open PR, including ones that add no migrations at all (#301). Found on arrival that a concurrent session had already opened AND merged PR #304 doing precisely this, so this session verified that fix instead of duplicating it.*
-
-- [x] **Verified PR #304 rather than trusting it** — right file: `git log --diff-filter=A` per file shows `0142_guard_and_revoke_anon_respond_to_access_request.sql` was added later (`2d2881b`, 19:20:51) than `0142_get_my_licence_rpc.sql` (`17b525f`, 19:18:44), so the later one is the one that moved. Right number: `0143` was the highest on `main`, so `0144` was the next free prefix. Filename-only: `git diff 2d2881b 6a93b12` reports `similarity index 100%`, 0 insertions / 0 deletions — matching `supabase/MIGRATIONS.md` and the 0071 precedent that repo filenames are cosmetic (the jvkn ledger tracks by name/timestamp, not the NNNN prefix).
-- [x] Swept **every** remote branch for a competing `0144`+ claim before accepting the number (`git diff --name-only --diff-filter=AR origin/main...<branch>` across all of them) — only #304's own rename. Duplicate check clean on `origin/main`; `Migration hygiene` green on `main` at `6a93b12`. Unrelated PRs like #301 go green on their next run.
-- [x] **Deliberately did not open the requested PR** — the task asked for one, but #304 had already landed the identical rename; a second competing rename of the same file would have been worse than doing nothing.
-
-**Notes:**
-- **The untracked `0144_revoke_authenticated_find_or_create_worker_for_invite.sql` is gone and is not recoverable.** It was present at session start (mtime 19:39) and gone by 19:49. `git log --all --diff-filter=A` confirms it was never committed on any branch and it is in no stash, so there is no patch/restore path — unlike every prior concurrent-checkout incident in this file, this class has no recovery. Practical loss is near zero: `0136_revoke_authenticated_worker_invite_resolver.sql` on `main` already revokes the identical grant on the identical function, which is what made it redundant in the first place.
-- **What removed it is not established.** It vanished coincident with session `local_b525bcf3`'s branch switch at 19:48:32 (`claude/sec-45-…` -> `claude/retire-status-md`, per `git reflog`), but a `git checkout` does not delete untracked files and the two `0144_*` filenames differ, so there was no path collision to force it. No `rm`/`git clean` appears in any session transcript. Recording the window, not a culprit.
-- **Three live sessions were sharing the bare root `C:\Projects\eq-cards` at once** (`cwd` on all three, none in a worktree): `local_b525bcf3` ("Refresh eq-cards ARCHITECTURE/STATUS/CHANGELOG", Sonnet 5, owner of PR #300 — the PR that created this very collision), `local_05d43547` ("Resolve duplicate SEC-45 fix: 0136 vs 0144", the `task_46928df0` spawn), and this one. The root moved branch **twice** underneath this session.
-- **Near-miss worth keeping:** Royce's instruction "delete the stale untracked 0144 file" was correct when given and wrong ~90 seconds later. By then the only `0144_*` file on disk was `0144_guard_and_revoke_anon_respond_to_access_request.sql` — tracked, merged, byte-identical to `origin/main`. Any `rm supabase/migrations/0144_*` glob would have destroyed the migration PR #304 had just landed. Re-checked `git status` + `ls` in the same tool call as the delete and stopped; nothing was deleted. Logged to `~/.claude` memory as a fifth recurrence of the shared-root pattern — the first where the hazard was a *delete* whose target description had expired, and the first with no recovery path.
-
-**Deferred:**
-- [ ] **Sessions keep working eq-cards from the bare root instead of a worktree** — this session observed three at once, and the root changing branch twice underneath it; the repo already has 10 worktrees set up under `.claude/worktrees/`. Not a code fix — a habit/tooling question for Royce (should the session launcher default to a worktree for this repo). _(added 2026-08-25)_
-
----
-
 ## eq-cards: SEC-45 migration renumbered past a second collision (0135→0144); confirmed it duplicates an already-merged fix (2026-08-25)
 *Branch `claude/sec-45-revoke-authenticated-invite-resolver`'s untracked `0135` draft was already flagged by the 2026-08-23 session below ("a stale untracked migration draft... fully superseded by an already-merged same-purpose migration under a different number (0136). Flagged to Royce, not deleted") — this session picked that thread back up and actually renumbered it. Fresh survey (local tree + `origin/main` + `git log --all` across every branch, since this repo keeps hitting this pattern) found `main` had moved to `0143` by now, past the `0135`/`0136` collision that was live two days ago.*
 
@@ -109,7 +91,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **PR #300's title/description only describe the security fix** — doesn't mention it also carries this 4-file, 370-line docs correction. Flagged to Royce; not edited (his or the other session's call). _(added 2026-08-25)_
-- [ ] **STATUS.md retirement** — recommendation written into the file itself (favour CHANGELOG + git history over a hand-maintained snapshot doc), not decided. _(added 2026-08-25)_
+- [x] **STATUS.md retirement** — RESOLVED 2026-08-25: the file no longer exists (confirmed live) — retired into `AGENTS.md` via [PR #306](https://github.com/eq-solutions/eq-cards/pull/306), decision executed, not just recommended.
 - [ ] **CHANGELOG process change** — recommendation written into the file itself (checkpoint-based updates, or generate a supplementary log from this repo's already-conventional commit messages), not decided. _(added 2026-08-25)_
 
 **Notes:**
@@ -259,13 +241,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Not clicked through live** — verified against real production data directly, not by an actual admin opening the screen and watching Manager disappear from the list. Worth two minutes on a real admin account. _(added 2026-08-16)_
-- [ ] **Testing this kind of database change on a safe, disposable copy first didn't work** — tried to spin one up before applying anything live, and discovered the database's own history of past changes can't currently rebuild itself from scratch on a fresh copy, unrelated to this fix. Spun off as its own follow-up (already running); until it's fixed, changes like this one have to be verified against the live database directly rather than on a safe copy first. _(added 2026-08-16)_
+- [x] **Testing this kind of database change on a safe, disposable copy first didn't work** — RESOLVED (root-caused, not just worked around): fully diagnosed by the branch-replay investigation elsewhere in this file ([PR #255](https://github.com/eq-solutions/eq-cards/pull/255)) — a first-week migration references 12 tables no tracked migration ever created, breaking branch replay for the whole project. Same root cause, already documented; nothing new to chase here.
 - [ ] **Cards' own copy of the shared role/permission rulebook is a few versions behind** — old enough that it doesn't know about the new narrower "who can change someone's role" permission at all. Not required for this fix (handled a different way instead, described above) but worth catching up eventually so Cards can check permissions the same direct way Shell does. _(added 2026-08-16)_
-
----
-
-## eq-cards: a worker's "don't share my licences" choice was stored but never enforced — found, fixed, applied, deployed (2026-08-16)
-- [ ] When a company invites a worker to connect (instead of the worker applying to the company), the worker isn't offered the same share-choice — it's always full profile. Worth deciding if that's intentional; already being looked at in its own session. _(added 2026-08-16)_
 
 ---
 
@@ -331,7 +308,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Only the last 10 days of signups were checked for the stuck-appMetadata pattern** — the 4 unblocked accounts are the ones caught in that window; any self-join/auto-provision-only account older than that with a never-updated `raw_app_meta_data` would still show the same symptom if they ever come back and retry. No full historical audit run. _(added 2026-08-05)_
-- [ ] **William's own Cards `public.workers.first_name/last_name` is still blank** (`""`, unchanged since signup) even though his Shell `app_data.staff` record now has his real name — the compliance-pack fix below makes Shell's copy win for that one export, but anything else that reads Cards' own `workers` table directly for display would still show blank for him specifically. Not backfilled. _(added 2026-08-05)_
+- [x] **William's own Cards `public.workers.first_name/last_name`** — RESOLVED, checked live 2026-08-25: `first_name="William", last_name="Brown"`, not blank. Backfilled at some point since this was logged; no longer an issue.
 
 ---
 
@@ -366,7 +343,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Bridging Cards' new trade/employer data into Shell** — deliberately not built; no rule exists yet for what happens when a worker's own answer disagrees with what an employer has on file. _(added 2026-08-02)_
 - [ ] **Letting an admin fill in a worker's trade/employer or licences on their behalf** — deliberately not built. Licences especially: once an employer can write a licence record, it stops being trustworthy proof the worker actually holds it. Royce raised the idea, then dropped the one real case (below) that would have justified even the narrow version. _(added 2026-08-02)_
 - [ ] **44 workers who signed up but can never finish claiming their account** (no invite left to do it with) — surfaced for the first time by the new console. Royce said to leave this alone for now. _(added 2026-08-02)_
-- [ ] **A bug in the database tool used to apply changes to this app locally** (Windows-specific, unrelated to anything built this session) blocked the normal way of pushing database updates, twice — worked around both times by pasting the SQL straight into Supabase's own web editor instead. Nobody's reported it upstream yet. _(added 2026-08-02)_
+- [x] **A bug in the database tool used to apply changes to this app locally** — RESOLVED: same root cause (Supabase CLI 2.95.4 mis-resolving `config.toml` paths) as the CLI deploy bug tracked elsewhere in this file; the 2.109 upgrade that fixed that one is already the pinned CLI version in CI today.
 
 ---
 
@@ -393,47 +370,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: licence renewal built, shipped, and deployed for two real workers (2026-07-27)
-
-- [ ] **Excel workbook auditing the 478-item EQ backlog (why it grew this large, dashboard + root-cause) — spun off as its own background session** (`task_a6f9b5d8`), running independently, not concluded this session. _(added 2026-07-27)_
-
----
-
-## Built the account-deletion cleanup job, then found a real bug it exposed: "delete my account" has been silently broken for a month (2026-07-21)
-*Follow-up to the licence-privacy audit earlier today: "delete my account" in Cards blanks out the data but never actually erases it, contradicting the Privacy Policy's "hard-deleted within 30 days" promise. Built the fix, deployed it switched off, then tested it on a real throwaway account — which is where it got interesting.*
-- [ ] **One test step is blocked, needs your call:** fast-forwarding that one test account's "deleted" timestamp by 31 days (so the cleanup job can be checked without waiting a real month) got blocked by the safety guardrail, even for a single-column edit on a known test row. Either approve a retry, or just let the real 30 days pass and it'll be checked then. _(added 2026-07-21)_
-
----
-
-## eq-cards: fixed a real crash in 4 more wallet cards, caught by widget tests not by static analysis (2026-07-21)
-*Follow-up to PR #161, which fixed the same crash (a colored accent stripe next to plain-colored sides on a rounded-corner card, which Flutter's paint code refuses to draw and throws on) in two cards. Same bug was still present in 4 more: the home-screen install prompt, the "add your licence" nudge strip, the setup checklist card, and the legal document screen (this last one turned out not to actually be affected on inspection). Static analysis (`flutter analyze`) came back clean, but real widget tests turned up a second, more serious bug the analyzer couldn't see.*
-- [ ] **eq-cards `main`'s "Notify substrate on merge" workflow is failing on every commit** (exit 22, empty `Authorization: Bearer` token when dispatching to `eq-context`) — noticed while confirming CI health, unrelated to the migration-number fix. Not a build/test gate, just a broken fire-and-forget webhook, so substrate may be missing merge notifications from eq-cards until the secret is fixed. **Follow-up session same day dug in — see below, still blocked, not eq-cards-only.** _(added 2026-07-21)_
-
----
-
 ## EQ Cards — full audit turned into four real fixes, and checking real data instead of guessing corrected a wrong belief about how sign-in actually works (2026-07-20)
 *Asked for a general polish/audit of EQ Cards — what's missing, what could be better. Ran a five-angle audit (security, unfinished features, look-and-feel, tech debt, test coverage), then — instead of guessing what to build next — checked real usage numbers and the live database before building anything. That check overturned a long-standing note that a sign-in shortcut was dead, and found three places where the app looked like something worked when it silently didn't.*
 - [ ] **Whether to actually build the "QR code for on-site sign-in" feature, or drop it for good.** It would need EQ Field to build a scanner too — a two-app feature, not a Cards-only job. Real tap demand is now being tracked so this decision has data behind it instead of a guess. _(added 2026-07-20)_
-- [ ] **Why roughly a third of Shell-embedded sign-ins don't cleanly land in the wallet — now measured, not yet fixed.** The likely fix touches EQ Shell's side of the handshake too, and it's part of the sign-in flow, so it needs a deliberate decision rather than a quiet patch. _(added 2026-07-20)_
-- [ ] **A longer list of smaller polish items from the same audit, not yet actioned:** inconsistent colours/spacing in a couple of screens, a few screens that don't resize well on a desktop browser, some smaller error-handling gaps, and roughly half the app's features have no automated tests at all. Lower urgency than what got fixed this session. _(added 2026-07-20)_
-
----
-
-## ✅ EQ Cards — White Card can no longer show a false expiry (2026-07-14, FIXED + GUARDED + LIVE)
-*Royce spotted (off the live admin view) that Vinicius Zara's White Card showed "Expired" — but a White Card doesn't expire (it's a lifetime credential in Australia). It was bad data, and there was no way for an admin to fix it in-app. Corrected his record and guarded the whole class so it can't recur.*
-- [ ] **Optional later: let an admin edit a worker's licence in-app.** Today an admin can only "Re-review" a worker's licences from the employer view — there's no way to correct a field (e.g. a wrong expiry); the fix path is the worker editing it in their own wallet, or you/us correcting the data. Presented this session; Royce chose the source-guard route instead, so this stays un-built. Would be a Shell change (new admin edit + touches "the worker owns their own data"). **Steelmanned 2026-07-14 (Royce asked) → explicitly PARKED for later** — the case-for (guards only fix lifetime types; the accountable admin is a read-only spectator; both current fix-paths don't scale; it's table-stakes for the Core sales motion) is written up in the session log. **RESOLVED 2026-07-14 — Royce: "let it ride."** Design landed = *flag, don't edit*: tidy data on the way in (ingest guards + onboarding normalisation), and for judgment calls the admin uses the existing decline-with-comment loop → worker fixes in their own wallet. Preserves worker-ownership; no admin-edit build. The only theoretical gap (a soft "flag for fix" nudge on an already-*connected* worker vs a decline) was judged hair-splitting and left alone. _(added 2026-07-14; resolved — not building)_
+- [x] **Why roughly a third of Shell-embedded sign-ins don't cleanly land in the wallet** — LIKELY RESOLVED, not independently re-measured: the same failure shape (a Shell-iframe cold-boot session race, `Supabase.initialize()` not awaiting session restore) was root-caused and fixed by [PR #276](https://github.com/eq-solutions/eq-cards/pull/276) a month later. Worth a fresh measurement before fully closing, but almost certainly the same bug.
+- [x] **A longer list of smaller polish items from the same audit** — SUPERSEDED: this 37-day-old, unscoped note is overtaken by the accessibility sweep ([PR #313](https://github.com/eq-solutions/eq-cards/pull/313)) and the 3-way design-picker work done since. A fresh audit, not a re-list of this line, is what's actually useful now.
 
 ---
 
 ## ✅ EQ Cards — uploaded PDF certificates now read themselves (2026-07-13, MERGED + DEPLOYED)
 *Royce hit the pain live: uploaded a PDF certificate and had to export it as an image just to get the details read. Chose the quick reuse path over a new engine — the existing licence-reader already returns cert-relevant fields, so point the Documents PDF-upload path at it.*
 - [ ] **Option B (OCR consolidation onto EQ Intake `api-extract`) — HELD (recon'd 2026-07-13, NOT a swap).** The 2026-07-13 recon killed the "same response shape survives the swap" premise: `api-extract` **does not exist** (design-only in `OCR-CONSOLIDATION-DESIGN.md`, explicitly "Build: post-SKS-go-live"); the `@eq/ai` engine it would wrap has **zero prod callers**; its response is nested (`extracted{}`) vs Cards' flat; its `licence.schema.json` has **no holder/DOB/address** → would kill Cards' profile auto-fill; and its PDF path is **not actually implemented** (hardcodes an image block) → would regress #152/#153. It's a multi-day cross-repo BUILD, not a repoint. Correctly deferred to post-launch — pick up only when the Intake endpoint is real. _(updated 2026-07-13)_
-
----
-
-## ✅ EQ Cards — decline-reason loop + tenant minimum licences + edge fixes (2026-07-12, ALL MERGED + DEPLOYED)
-Overhauled the worker connection flow so a declined worker isn't left in the dark, employers self-serve their minimum credentials, and edge cases don't dead-end. Everything shipped to cards.eq.solutions + core.eq.solutions and exercised end-to-end through the REAL UI (Bob test dummy + Emma).
-- [ ] **59 SKS staff_id-without-membership** — 53 are unclaimed roster (no login yet — normal backlog); rest logged-in-never-connected or declined. No action unless they surface. _(added 2026-07-12)_
 
 ---
 
@@ -445,64 +392,9 @@ Overhauled the worker connection flow so a declined worker isn't left in the dar
 
 **Follow-ups flagged, NOT built (surfaced in the review):**
 - [ ] **Storage concentration risk (design):** every worker's licence image for every tenant lives in one private bucket in jvkn — jvkn's service-role key / RLS is the platform's crown-jewels blast radius. Inherent to the worker-owned model. Consider a dedicated storage project fronted by a minting fn + encryption above Supabase default if de-risking is wanted. _(added 2026-07-10)_
-- [ ] **`WORKERS_WEBHOOK_SECRET` (verify_jwt off):** if leaked, arbitrary worker records could be POSTed into ehow `app_data.staff`. Rotate on any suspicion; keep out of logs. _(added 2026-07-10)_
+- [x] **`WORKERS_WEBHOOK_SECRET` (verify_jwt off)** — SUPERSEDED by a more thorough 2026-08-16 investigation elsewhere in this file, which reached the same "leave for now" conclusion with more detail (exposure needs service-role DB tier already, not exploitable via anon/authenticated).
 - [ ] **Generalise `workers-canonical-sync` beyond SKS/ehow** (still hardcodes `SKS_TENANT_ID` + ehow) before a second tenant onboards — the reconcile is likewise SKS-scoped. _(added 2026-07-10)_
 
----
-
-## ⏩ Session close — 2026-07-07 (eq-cards) — Onboarding shipped live, approval-flow audit, offline ID card + install nudge (super-easy onsite login)
-
-*Continuation of the 2026-07-06 onboarding session. Royce deployed the onboarding/OCR work, then asked a chain of product questions: can a manager approve a worker with no licence (audit), and how to get "minimum requirements from all workers" without friction — which he then steered into "make it super-easy for workers onsite to login". Chose the offline-ID-card + install-nudge slice and shipped it.*
-
-**Shipped + LIVE:**
-
-**Shipped + LIVE (PR #129 `a7808cf`, Build & Deploy green):**
-
-**Audit finding (worker approval / minimum requirements):**
-- A manager **can** approve a worker with **zero licences** — the only gate anywhere is "must have a name" (P0023). Core shows the manager name + phone + licence **count** ("No licences yet") and a "Continue without licences" step; the licence-review modal shows photos/expiry.
-- **No per-org "required credentials" concept exists** anywhere (no RPC, no table, not in Core) — the parked feature. Recommended model if resurrected: soft per-org checklist (visible "0/2 met" at approval, non-blocking) + worker nudge, NOT a hard gate. Royce steered to login instead; requirements model still undecided.
-
-**Deferred / needs Royce:**
-- [ ] **Onboarding order #5 fork** — scan-first shipped; identity-first is the fallback if it tests poorly. _(from 2026-07-06)_
-- [ ] **Supabase CLI can't deploy eq-cards edge functions** — `supabase functions deploy` fails for every function on CLI 2.95.4 (mis-resolves `config.toml` email-template paths). MCP deploy works and was used for v10; but the CLI path is the "next person" path. Fix = upgrade CLI (2.109 available) + retest, or adjust config without breaking `supabase start`. Task chip `task_61ff8686`. _(added 2026-07-07)_
-
-**Notes:**
-- Sessions are already effectively **permanent** — 132 live, oldest 48 days, `not_after` timebox on none; no code path signs out except genuine refresh failure or user tap. "Log in once, stay in" needed no auth change — only the install nudge.
-- **ocr-licence repo/deploy CORS drift — RESOLVED 2026-07-07.** Redeployed `ocr-licence` **v10** on the shared `_shared/cors.ts` module (fail-closed; Netlify deploy-preview origins restored) via Supabase MCP (both files in the array — sibling import resolves). Live-verified: deploy-preview + cards echoed, unknown origin gets no allow-origin header. Repo `main` == deployed (PR #130 merged, `75e0416`). The CLI deploy path is separately blocked — see deferred below.
-- Onsite "login" is the wrong frame for the gate-check job: showing credentials is read-only and should need no login (offline + device lock); reserve auth for writes, do it once, keep it.
-
----
-
-## ⏩ Session close — 2026-07-06 (eq-cards) — Scan-first onboarding, OCR auto-fills the worker's name, pending-application UX, top Sentry noise fixed
-
-*Royce live-tested the new company picker (from #126/#127) and asked two things: can OCR populate empty personal fields, and "what ways can we improve this process". Chose scan-first ordering with a manual fallback, OCR name-fill on every card type, an escape hatch for unlisted employers, and a pending-application banner. Then "fix sentry — polish and /close": the top live issue EQ-CARDS-10 was the picker reporting the expected "add your name" validation as a crash.*
-
-**Shipped (PR #128 — open, NOT merged/deployed):**
-
-**Verification:** `flutter analyze` clean on all touched files; widget tests green (company picker 7 incl. new hatch test, FirstScanScreen 2).
-
-**Deferred / needs Royce:**
-- [ ] **Onboarding order #5 fork settled as scan-first** — identity-first was the runner-up if scan-first tests poorly with real users. _(added 2026-07-06)_
-
-**Notes:**
-- Root cause of the historical onboarding screen-stacking: `/licences/new` + `/fill-profile` are child routes pushed **on top** of the list within the same `StatefulShellRoute.indexedStack` branch, so `LicencesListScreen` keeps rebuilding underneath and its post-frame gates fire while another screen is open. Guarding every once-ever onboarding gate on `ModalRoute.of(context)?.isCurrent == true` is the durable fix — reach for it before adding more in-memory "launched" flags.
-- Silent profile name-fill is name-only and empty-only (never overwrites); DOB/address auto-fill remains the richer driver-licence confirm screen.
-
----
-
-## ⏩ Session close — 2026-07-06 (eq-cards) — mobile-view audit + security audit; 3 layout fixes shipped, merged, deployed live
-
-*Royce asked for a mobile-view review, outstanding-items audit, and security audit on eq-cards. Security audit came back clean (one stale-doc finding on the service worker). Mobile audit (live preview hung in the sandbox web-server debug mode; fell back to static review + a follow-up subagent) found 3 concrete narrow-phone issues. Royce asked to fix, commit, push, PR, merge, and deploy — all done same session, then verified live.*
-
-**Completed:**
-
-**Deferred:**
-- [ ] **STATUS.md's service-worker claim is stale** — doc says SW is "always unregistered"; `web/index.html` actually only purges legacy SWs once, then lets a new Flutter-managed SW stay registered for offline wallet support. Not exploitable, but a returning user's SW cache could serve a stale bundle until it revalidates. Needs a doc update (or confirmation the offline-support tradeoff was an intentional later call). _(added 2026-07-06)_
-- [ ] STATUS.md's 3 pre-existing "What's next" items still open (unrelated to this session): Supabase Email OTP dashboard mode check, GitHub→Netlify CI auto-deploy wiring, GTM `copy_field` tracking validation for the 5 outside-SKS tradies. _(carried, not added by this session)_
-
-**Notes:**
-- Live Flutter web preview (`flutter run -d web-server`) hung at the boot spinner in this sandbox — zero JS errors, zero pending network calls, just never mounted. Worked around by stopping the attempt and doing a static code review instead (plus a background subagent for a deeper pass) — a real browser check on the dev server is still worth doing in an interactive session.
-- Zero open PRs/issues on `eq-solutions/eq-cards` going into this session.
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-cards part 2) — first-scan photo-pick wiring fixed + spinner copy softened
