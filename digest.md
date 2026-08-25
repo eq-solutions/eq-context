@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-25 08:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-25 08:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-25 08:02 UTC → 2026-08-25 08:04 UTC)
+## Since last refresh (2026-08-25 08:04 UTC → 2026-08-25 08:13 UTC)
 
-- Merged: eq-shell [#1573](https://github.com/eq-solutions/eq-shell/pull/1573) feat(staff): surface mobilisation readiness on the staff lis
-- Merged: eq-shell [#1570](https://github.com/eq-solutions/eq-shell/pull/1570) perf(token-exchange): bound the audit-log write
-- Merged: eq-shell [#1568](https://github.com/eq-solutions/eq-shell/pull/1568) docs(security): SEC-60 status update
-- Merged: eq-shell [#1565](https://github.com/eq-solutions/eq-shell/pull/1565) docs(security): mark SEC-61 closed in the sprint doc
-- Merged: eq-shell [#1564](https://github.com/eq-solutions/eq-shell/pull/1564) perf(warm-ping): warm the tenant-client cache, not just the 
-- Merged: eq-shell [#1563](https://github.com/eq-solutions/eq-shell/pull/1563) docs(security): sprint doc for SEC-61/SEC-63/SEC-60
-- Merged: eq-shell [#1562](https://github.com/eq-solutions/eq-shell/pull/1562) fix(labour-hire): resend-worker-invite always collided with 
-- Merged: eq-shell [#1559](https://github.com/eq-solutions/eq-shell/pull/1559) feat(staff): show PDF/document preview in the licence review
+- Merged: eq-shell [#1574](https://github.com/eq-solutions/eq-shell/pull/1574) feat(onboarding): chase unclaimed invites, and explain the l
+- Merged: eq-shell [#1572](https://github.com/eq-solutions/eq-shell/pull/1572) fix(field-people): job_title dead-write + emergency contact 
+- Merged: eq-shell [#1571](https://github.com/eq-solutions/eq-shell/pull/1571) fix(field-people): stamp activated_by/activated_at on reacti
+- Merged: eq-shell [#1569](https://github.com/eq-solutions/eq-shell/pull/1569) feat(migrate-tenants): warn on shared cross-repo function re
+- Merged: eq-shell [#1567](https://github.com/eq-solutions/eq-shell/pull/1567) fix(field-people): restore identity push dropped by 0270/027
+- Merged: eq-shell [#1566](https://github.com/eq-solutions/eq-shell/pull/1566) docs(security): SEC-63 status update
+- Merged: eq-shell [#1561](https://github.com/eq-solutions/eq-shell/pull/1561) docs(security): close SEC-58 — control-plane ledger 54-file 
+- Merged: eq-shell [#1560](https://github.com/eq-solutions/eq-shell/pull/1560) feat(staff): show pending labour-hire credentials on the Sta
 
 ## ⚠ Needs you (6)
 
@@ -80,6 +80,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-25 | eq-shell | [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_sites c |
 | 2026-08-25 | eq-shell | [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with cost s |
 | 2026-08-25 | eq-shell | [#1583](https://github.com/eq-solutions/eq-shell/pull/1583) fix(customers): clear 4 react-hooks/set-state-in-effect errors |
+| 2026-08-25 | eq-field | [#779](https://github.com/eq-solutions/eq-field/pull/779) v3.5.560 — Feature Toggles admin page; roster credential-gate + j |
 | 2026-08-25 | eq-field | [#778](https://github.com/eq-solutions/eq-field/pull/778) v3.5.560 — permission-matrix.js v2.7: flag people.edit_own as unw |
 | 2026-08-25 | eq-field | [#777](https://github.com/eq-solutions/eq-field/pull/777) v3.5.559 — audit.js/audits.js: fix _auditConfirm() name collision |
 | 2026-08-25 | eq-field | [#775](https://github.com/eq-solutions/eq-field/pull/775) v3.5.558 — BUG-009 sweep: 5 more confirm()/prompt() calls silentl |
@@ -90,14 +91,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-24 | eq-shell | [#1577](https://github.com/eq-solutions/eq-shell/pull/1577) feat(sites): add primary/secondary internal contact columns |
 | 2026-08-24 | eq-shell | [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-sourced |
 | 2026-08-24 | eq-shell | [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes |
-| 2026-08-24 | eq-shell | [#1575](https://github.com/eq-solutions/eq-shell/pull/1575) record(access): backfill Field access for nine Cards-door claims |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (273 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (58 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (131 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (130 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (96 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (17 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -129,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1767 | 196 / 80 | 229 | 45 |
 | [eq-cards](eq/pending/eq-cards.md) | 437 | 45 / 14 | 49 | 11 |
-| [eq-field](eq/pending/eq-field.md) | 862 | 107 / 29 | 53 | 25 |
+| [eq-field](eq/pending/eq-field.md) | 860 | 106 / 29 | 53 | 25 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 08:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 08:13 UTC._
