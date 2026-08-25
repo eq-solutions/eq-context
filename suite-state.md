@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #317 chore(deps): bump eq_roles v2.5.5 -> v2.7.5
 - #316 fix(ci): target edge-function deploys, drop deprecated setup-cli
 
 **eq-field:**
