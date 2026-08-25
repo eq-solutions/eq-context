@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: QR-code sign-in confusion — placeholder read as pre-filled, and a real repeat-login root cause found + both fixed live (2026-08-25)
+*Royce: "a lot of people seem to get confused by the initial sign in screen when I send them a QR CODE... they seem to think the number is populated." Mid-task, Royce separately flagged a specific worker (0418480091) "telling me they had to keep signing in" — investigated against live `shell_control.audit_log` rather than guessing.*
+
+- [x] **Placeholder fix**: the mobile-number field's placeholder (`0412 345 678`) is a realistic-looking AU number, empty value underneath — people scanning the QR link read it as already filled in and never typed their own. Changed to `Enter mobile number` on both the send-code and PIN-login mobile inputs, [LoginPage.tsx](https://github.com/eq-solutions/eq-shell/blob/main/src/pages/LoginPage.tsx).
+- [x] **Real root cause found for the repeat-sign-in report**: pulled the actual audit trail for 0418480091 (SKS tenant, supervisor role) — not a session-expiry issue (7-day cookie, well inside the window). They completed the full phone+email+OTP join flow **4 times in 16 minutes**, same device/IP, every one a genuine success. Cause: `/login` rendered the sign-in form unconditionally, unlike `/` (`RootRoute`), which already redirects a valid session straight to the tenant home. Re-opening the same QR/SMS link while already signed in dropped them back into a full join/OTP round-trip every time instead of straight into WorkerHome. Fixed by routing `/login` through the same `RootRoute` check.
+- [x] Both shipped in one PR, [eq-shell #1600](https://github.com/eq-solutions/eq-shell/pull/1600), squash-merged (`358c5500`) on Royce's "merge it when the deploy preview checks out" — confirmed live via exact Netlify `commit_ref` match against the newest ready production deploy (`published_at` 2026-08-25T21:26:40Z), not just a green build. Queued ~9 minutes behind PR #1601 in the Netlify build pipeline (unrelated, merged moments earlier) — not an error, just sequential queueing; noted since it broke from this repo's usual few-second merge-to-live pattern.
+
+**Deferred:**
+- [ ] **`admin.review_cards` permission denials, SKS supervisor role** — the same worker (0418480091) hit a `permission.denied` wall for `admin.review_cards` 4 times while investigating the above. Not chased further — may be correctly scoped (supervisors not meant to review cards) or may be a real gap; wasn't the question asked. Worth a look if it comes up again. _(added 2026-08-25)_
+- [ ] **Authenticated-redirect branch of the `/login` fix not click-tested live** — confirmed the unauthenticated path still renders correctly on the deploy preview (placeholder fix visually verified there too), and the redirect branch itself reuses `RootRoute`'s logic already proven continuously on `/` in production — but nobody has actually re-opened `/login` with a real valid session cookie and watched the redirect fire. Worth confirming next time someone revisits a QR/SMS link while already signed in. _(added 2026-08-25)_
+
+---
+
 ## eq-shell: Access-control sweep follow-up sprint — closed (S1–S5), S6 still open (2026-08-25)
 *Royce: "eq-shell, the access-control sprint" — continuing `docs/access-control-sweep-followup-sprint.md`. Its own "Not started" status header turned out to be stale: S1 and S3 had already shipped 2026-08-23 (PRs #1556/#1552), the header was just never updated after either merge — corrected in the same pass as closing the rest.*
 

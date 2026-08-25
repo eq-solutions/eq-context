@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-25 (PR #1600 MERGED + LIVE — sign-in mobile placeholder clarity + /login session-check gap)
+- The QR-code sign-in screen's mobile-number field had a realistic-looking placeholder (`0412 345 678`) over an empty value — people scanning the link read it as pre-filled and never entered their own number. Changed to `Enter mobile number` on both the send-code and PIN-login mobile inputs.
+- Root-caused a live repeat-sign-in report (worker 0418480091, SKS): not a session-TTL issue — `shell_control.audit_log` showed 4 full phone+email+OTP join-flow completions in 16 minutes, same device. `/login` rendered the sign-in form unconditionally, unlike `/` (`RootRoute`), which already redirects a valid session to the tenant home. Fixed by routing `/login` through the same check, so re-opening a QR/SMS link while already signed in goes straight to the tenant home instead of re-running the join/OTP flow.
+- Confirmed live via exact Netlify `commit_ref` match (`358c5500`) against the newest ready production deploy, not just a green build.
+
 ## 2026-08-25 (PR #1598 MERGED + LIVE — dropped a KNOWN_UNSOURCED entry made redundant by #1596)
 - `eq_sweep_orphaned_licence_photos` was allowlisted in `check-control-plane-drift.mjs` by PR #1593's own second commit, then made redundant ~35s later when PR #1596 landed a real backfill migration sourcing the same function for real — `collectSourcedFunctions()` matches real source files before the check ever reaches `KNOWN_UNSOURCED`, so the entry was dead weight from the moment both merged. Removed via [PR #1598](https://github.com/eq-solutions/eq-shell/pull/1598), no functional change. Confirmed live (commit `4a0db11d`).
 - A second, similarly-redundant pair (`_eq_storage_dispatch`/`eq_confirm_retention_purge_dispatch`, prepared as a follow-up commit on the same original branch) never reached `main` at all — the redundancy against #1596 was caught before merging, closed unmerged as [PR #1597](https://github.com/eq-solutions/eq-shell/pull/1597) instead.
