@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #793 v3.5.573 — Prestart: Reopen-for-correction + Records-tab export photo parity
-- #791 v3.5.571 — Weekly Supervisor Digest moves into Manage → Email Templates
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
