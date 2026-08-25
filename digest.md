@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-25 09:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-25 09:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-25 08:57 UTC → 2026-08-25 09:09 UTC)
+## Since last refresh (2026-08-25 09:09 UTC → 2026-08-25 09:14 UTC)
 
-- Merged: eq-shell [#1589](https://github.com/eq-solutions/eq-shell/pull/1589) fix(quotes): shorten archive-days label so Default Rates fie
-- Merged: eq-shell [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-so
-- Merged: eq-shell [#1575](https://github.com/eq-solutions/eq-shell/pull/1575) record(access): backfill Field access for nine Cards-door cl
-- Merged: eq-shell [#1573](https://github.com/eq-solutions/eq-shell/pull/1573) feat(staff): surface mobilisation readiness on the staff lis
-- Merged: eq-shell [#1570](https://github.com/eq-solutions/eq-shell/pull/1570) perf(token-exchange): bound the audit-log write
-- Merged: eq-shell [#1568](https://github.com/eq-solutions/eq-shell/pull/1568) docs(security): SEC-60 status update
-- Merged: eq-shell [#1565](https://github.com/eq-solutions/eq-shell/pull/1565) docs(security): mark SEC-61 closed in the sprint doc
-- Merged: eq-shell [#1564](https://github.com/eq-solutions/eq-shell/pull/1564) perf(warm-ping): warm the tenant-client cache, not just the 
+- Merged: eq-shell [#1579](https://github.com/eq-solutions/eq-shell/pull/1579) data(sites): SY5 primary/secondary internal contacts
+- Merged: eq-shell [#1577](https://github.com/eq-solutions/eq-shell/pull/1577) feat(sites): add primary/secondary internal contact columns
+- Merged: eq-shell [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes
+- Merged: eq-shell [#1574](https://github.com/eq-solutions/eq-shell/pull/1574) feat(onboarding): chase unclaimed invites, and explain the l
+- Merged: eq-shell [#1572](https://github.com/eq-solutions/eq-shell/pull/1572) fix(field-people): job_title dead-write + emergency contact 
+- Merged: eq-shell [#1571](https://github.com/eq-solutions/eq-shell/pull/1571) fix(field-people): stamp activated_by/activated_at on reacti
+- Merged: eq-shell [#1569](https://github.com/eq-solutions/eq-shell/pull/1569) feat(migrate-tenants): warn on shared cross-repo function re
+- Merged: eq-shell [#1567](https://github.com/eq-solutions/eq-shell/pull/1567) fix(field-people): restore identity push dropped by 0270/027
 
 ## ⚠ Needs you (6)
 
@@ -54,8 +54,8 @@ _…and 210 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 1d ago | 6 | 4d |
-| eq-field | ✓ success | 0d ago | 2 | 0d |
-| eq-cards | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 7d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -83,6 +83,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-25 | eq-shell | [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_sites c |
 | 2026-08-25 | eq-shell | [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with cost s |
 | 2026-08-25 | eq-shell | [#1583](https://github.com/eq-solutions/eq-shell/pull/1583) fix(customers): clear 4 react-hooks/set-state-in-effect errors |
+| 2026-08-25 | eq-field | [#782](https://github.com/eq-solutions/eq-field/pull/782) v3.5.562 — Edit Roster keyboard flow + row-batched save (Tier 1) |
 | 2026-08-25 | eq-field | [#781](https://github.com/eq-solutions/eq-field/pull/781) v3.5.562 — feature-toggles.js: name the two adjustable-thing patt |
 | 2026-08-25 | eq-field | [#779](https://github.com/eq-solutions/eq-field/pull/779) v3.5.560 — Feature Toggles admin page; roster credential-gate + j |
 | 2026-08-25 | eq-field | [#778](https://github.com/eq-solutions/eq-field/pull/778) v3.5.560 — permission-matrix.js v2.7: flag people.edit_own as unw |
@@ -90,7 +91,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-25 | eq-field | [#775](https://github.com/eq-solutions/eq-field/pull/775) v3.5.558 — BUG-009 sweep: 5 more confirm()/prompt() calls silentl |
 | 2026-08-24 | eq-shell | [#1582](https://github.com/eq-solutions/eq-shell/pull/1582) feat(sites): link an existing site to another customer |
 | 2026-08-24 | eq-shell | [#1581](https://github.com/eq-solutions/eq-shell/pull/1581) feat(sites): self-serve internal contacts in Edit Site modal |
-| 2026-08-24 | eq-shell | [#1580](https://github.com/eq-solutions/eq-shell/pull/1580) feat(sites): surface internal contacts on the field_sites view |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 09:09 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 09:14 UTC._
