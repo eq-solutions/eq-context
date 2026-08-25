@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #314 docs(migrations): track 8 more ledger entries with no matching repo file
 - #312 fix(security): root-cause the grant-stripping trigger + track a hand-applied RPC
 
 **eq-service:**
@@ -69,8 +68,11 @@ _If this file is >48h old, the cron is broken._
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
-- #810 chore(deps): bump the eq-design-system group with 2 updates
+- #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1598 chore(drift): drop redundant eq_sweep_orphaned_licence_photos allowlist entry
 
 ---
 
