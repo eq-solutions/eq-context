@@ -2,7 +2,7 @@
 title: EQ Field — Changelog
 owner: Royce Milmlow
 last_updated: 2026-08-26
-scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). Don't mark field.md superseded_by until those 5 entries are folded in here — that's Royce's call, not automatic.
+scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
@@ -287,6 +287,11 @@ status: live
 - Unrelated small fix mid-thread: `logoutUser()` never touched Shell's session cookie, so the sidebar Logout button was a no-op when Shell-embedded — now hidden in that mode only (v3.5.533).
 - All merged, live.
 
+## 2026-08-20 (PR #738 MERGED — v3.5.529, Timesheets identity scoping + mobile card-row fix)
+- Non-manager workers could see every other worker's hours on Timesheets, not just their own — `_getTsFilteredPeople()` had no identity scoping at all, only editing was ever gated. Now filters non-managers to their own row (agency logins exempted).
+- Also fixed mobile Timesheets card rows rendering ~2x oversized — a bare `.empty` class collided with an unrelated generic empty-state placeholder rule.
+- eq-field [PR #738](https://github.com/eq-solutions/eq-field/pull/738) (v3.5.529), merged, live.
+
 ## 2026-08-19 (PR #737 MERGED — dashboard licence-alert card also flags missing required credentials)
 - Companion to PR #734 below — same gap, second surface. The dashboard's licence-expiry alert card only ever showed held-but-lapsing licences, same blind spot the roster badge had before #734.
 - `getLicenceExpiryAlerts()` (people.js) now emits missing-required entries too (sorted ahead of expired/expiring); `renderLicenceExpiryAlert()` (dashboard.js) gets a third headline state ("Licence Missing") and a row variant with no action button.
@@ -315,6 +320,25 @@ status: live
 - Re-audited `20260816_timesheets_leave_own_crew_write.sql`: still not applied to ehow (no `eq__caller_is_approver` function, no RESTRICTIVE write policy on either table) — write is still tenant-only, unrestricted by role or crew.
 - Drafted `20260819_timesheets_leave_own_crew_write_actor_identity.sql`, re-pointing the same access-control logic at `eq__caller_actor_staff_id` (the real-identity claim already live on the read side, `20260819_timesheets_leave_actor_identity_fix.sql`). Committed to branch `claude/timesheets-leave-write-actor-identity` — not merged, not applied.
 - Held on the same blocker as 2026-08-16: 38 of 99 SKS staff still unlinked (31 plain workers), applying today would lock them out of saving their own timesheet/leave. Royce reconfirmed the hold.
+
+## 2026-08-19 (PR #735 MERGED — v3.5.528, Documents to Sign: pilot widened to a second signer)
+- Documents to Sign pilot widened to a second real signer, after eq-shell's onboarding auto-push fired 12 real document sign-offs at an existing SKS electrician (a start_date correction misread as a new-starter event) with no screen anywhere for him to act on them.
+- eq-field [PR #735](https://github.com/eq-solutions/eq-field/pull/735) (v3.5.528), merged, live.
+
+## 2026-08-19 (PR #736 MERGED — v3.5.527, apprentice list scoping + permission-matrix nav fixes)
+- Fixed the apprentice list showing every apprentice instead of just the caller's own card — root cause was a boot-order race (lazy-loaded `apprentices.js` meant the boot-time data fetch silently never ran on a direct deep-link visit), not the scoping logic itself.
+- Also: Timesheets nav hidden from apprentice/employee/labour_hire on desktop (mobile already had this), Prestarts/Toolboxes made visible to every role (permission matrix already granted it, nav never reflected it), Site Audits restored to manager-only.
+- eq-field [PR #736](https://github.com/eq-solutions/eq-field/pull/736) (v3.5.527), merged, live.
+
+## 2026-08-19 (PR #730 MERGED — v3.5.526, Edit Roster icon overflow + Sites collapsible groups)
+- Edit Roster row-action icons no longer overflow their column on Labour Hire rows.
+- Sites page customer groups are now collapsible (large groups default collapsed, search force-expands matches).
+- eq-field [PR #730](https://github.com/eq-solutions/eq-field/pull/730) (v3.5.526), merged, live.
+
+## 2026-08-19 (PR #729 MERGED — v3.5.525, Job Numbers nav placement + Digest settings role gate)
+- Job Numbers mobile drawer item moved out of a stale "Beta" section into Manage.
+- Digest settings (recipient list + section toggles) restricted to manager/supervisor roles — was viewable/editable by every role including apprentices. Digest recipient list collapses on mobile.
+- eq-field [PR #729](https://github.com/eq-solutions/eq-field/pull/729) (v3.5.525), merged, live.
 
 ## 2026-08-18 (PR #727 MERGED — v3.5.524, boot-perf: recognitions.js moved off the critical path)
 - Third and final candidate from the 2026-07-28 "audit which of the ~34 always-loaded boot scripts actually need to block first paint" item. `loadAcknowledgments()` removed from the boot-time `Promise.all([...])` and replaced with a render-when-ready pattern (`_ensureAcknowledgmentsLoaded()`, mirrors `leave.js`'s existing `_ensureLeaveLoaded()`), wired into `openPersonProfile()` via a new `openPersonProfileSafe()` dispatcher (mirrors `openLeaveRequestSafe()`) on both its Dashboard and People-screen entry points.
