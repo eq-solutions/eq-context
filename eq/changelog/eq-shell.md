@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-25
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-25 (PR #1584 + #1585 MERGED + LIVE — EQ Ops cost/charge-rate wiring + Edit Site internal-contacts migration gap)
+- `QuotesModule.tsx`'s `updateLineItem` reconciled Cost↔Rate↔Markup% one-directionally: editing Rate directly while a Cost was already set left Cost and Markup% stale, so the on-screen markup no longer matched cost vs. rate. Added the missing back-solve. [PR #1584](https://github.com/eq-solutions/eq-shell/pull/1584).
+- Diagnosed "can't change a site's details from EQ Ops" as migration `0279_eq_list_sites_internal_contacts.sql` (part of #1581, merged the same morning) sitting undispatched — not a permission gap. Dispatched `tenant-migrate.yml`; `0279` applied live on zaap + ehow.
+- That dispatch hard-failed on `0280_site_customer_links.sql` (#1582, merged concurrently) — it redefined the same `eq_list_sites` function against the pre-0279 signature and would have silently dropped 0279's new columns; Postgres's own signature-change guard caught it first. Fixed and merged both column sets back together, [PR #1585](https://github.com/eq-solutions/eq-shell/pull/1585), redispatched — `0280` now live on both planes too. `eq_list_sites`'s return type verified live on both zaap and ehow: all 15 columns present.
 
 ## 2026-08-25 (PR #1583 MERGED + LIVE — CustomersPage.tsx: 4 pre-existing react-hooks/set-state-in-effect errors cleared)
 - Handed over as a fully-specified finding (file, exact eslint output, line numbers) — verified live before starting rather than trusted as-is; one detail in the handoff (a referenced `LinkSiteModal` fix to mirror) didn't exist anywhere in the repo at the time, flagged rather than assumed.

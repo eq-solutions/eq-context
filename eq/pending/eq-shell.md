@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-25
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,18 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: EQ Ops cost/charge-rate wiring + Edit Site "couldn't save" — three separate root causes, all fixed live (2026-08-25)
+*Royce reported two symptoms in one message: quote line-item cost sometimes not relating to the charge rate, and not being able to change a site's details from EQ Ops "just now." Traced to three unrelated causes — a real UI wiring gap, a merged-but-undispatched migration, and a same-morning migration collision surfaced only by dispatching.*
+
+- [x] **Cost/charge-rate wiring, fixed**: `updateLineItem` in `QuotesModule.tsx` only reconciled Cost↔Rate↔Markup% one way — editing Cost or Markup always recomputed Rate, but editing Rate directly while a Cost was already set left Cost and Markup% untouched, so the three values could silently drift apart with no error (the on-screen Markup% just went stale). Added the missing branch: Rate edited with Cost present now back-solves Markup% from the existing Cost + new Rate, keeping `rate = cost × (1 + markup/100)` true after any single-field edit. eq-shell [PR #1584](https://github.com/eq-solutions/eq-shell/pull/1584), `tsc -b --force` clean, merged.
+- [x] **Site edit "couldn't change it" — not a permission rule, a dispatch gap**: Royce's own commit that morning (#1581, self-serve internal contacts in the Edit Site modal) had merged, but its migration `0279_eq_list_sites_internal_contacts.sql` — the piece that makes EQ Ops' `eq_list_sites()` RPC actually *return* the 4 new contact columns — hadn't been dispatched to either tenant plane yet. Until dispatched, EQ Ops loaded every site with those fields blank regardless of what was stored, so Edit Site always opened empty and a save read back blank through the same stale RPC — indistinguishable from "nothing saved." Confirmed live that no data had actually been lost (the real Equinix SY5 contact record, backfilled the day before, was still intact). Dispatched `tenant-migrate.yml` (fleet) — `0279` applied cleanly on both zaap and ehow.
+- [x] **That dispatch surfaced a second, unrelated bug**: a different migration, `0280_site_customer_links.sql` (PR #1582, "link a site to another customer" — merged by a concurrent session ~90 minutes into this one), also redefines `eq_list_sites` but was written against the pre-0279 column list ("same signature as 0141, no DROP needed"). It would have silently dropped 0279's 4 new columns; Postgres's own signature-change guard (42P13) caught it and hard-failed instead, before touching any schema — but it also blocked the fleet migration pipeline for any *future* dispatch until fixed. Merged both features' column lists back together (added the missing `DROP FUNCTION IF EXISTS`, carried 0279's 4 columns through 0280's version) — eq-shell [PR #1585](https://github.com/eq-solutions/eq-shell/pull/1585), merged, redispatched, `0280` now applied cleanly on both zaap and ehow too. Verified end-to-end: `eq_list_sites`'s live return type on both planes now carries all 15 columns.
+
+**Deferred:**
+- [ ] **Cost/charge-rate fix not click-tested live** — verified via `tsc -b --force` and code-path tracing only; local Netlify/Vite dev tooling is documented broken under Node 24 in this repo, and the feature is auth-gated (EQ Ops). Worth a real click-through next time someone edits a quote line's Rate with a Cost already entered. _(added 2026-08-25)_
 
 ---
 
