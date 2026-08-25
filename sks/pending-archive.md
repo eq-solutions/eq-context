@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-25
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -508,6 +508,17 @@ output).*
 ---
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-23 — open items remain in pending.md)
+
+
+---
+
+## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14) (rotated 2026-08-25 — open items remain in pending.md)
+
+- [x] **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). **Found already done, corrected 2026-08-24**: this item still read open, but both rows verified live with `active=false`, `updated_at=2026-08-14` — same day the item was added, just never ticked off. Not this session's work; whoever/whatever flipped them didn't close the loop here. _(added 2026-08-14)_
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-25 — open items remain in pending.md)
 
 
 ---
