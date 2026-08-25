@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: TAFE holidays config could silently lose ranges when added quickly (2026-08-25)
+*Royce: "tafe holidays dont save / I added in 4 ranges and they didnt save properly." Reproduced against the real save code in an isolated harness rather than guessed at — confirmed a real async race, not a one-off glitch.*
+
+- [x] **Root cause: unserialized overlapping saves.** Typing several date ranges and clicking Add each time fired one save per click without waiting for the previous one — each save captured whatever the in-memory list looked like at ITS OWN start time, and completion order isn't guaranteed to match click order. Whichever save happened to finish last won the database row, which wasn't necessarily the one holding all 4 ranges. The on-screen list still showed all 4 the whole time (rendered straight from memory), so nothing looked wrong until a reload re-fetched from the database.
+- [x] **Fixed**: every save now chains through one promise (`_tafeSaveChain`), so a queued save only reads the list once it's actually its turn to run — by which point every earlier add has already landed in memory, so the database always ends up matching what's on screen.
+- [x] **Second, smaller bug fixed in the same pass**: the update request wasn't asking the database to confirm whether it actually matched a row, so a successful save was silently followed by a redundant duplicate-create attempt every time (harmless, but wasted work).
+- [x] **Proof, not just reasoning**: new permanent regression test runs the real save code 20 times with randomized network timing — the old logic lost data in roughly half those runs, the fixed logic lost none. Test stays in the repo to catch any future regression.
+- [ ] **Not click-tested live through the real TAFE Holidays admin screen** — same standing sandbox limitation as most entries in this file (no authenticated SKS session reachable here). Verified via the isolated reproduction above plus full lint/test/drift CI, not a real click-through of typing 4 ranges and reloading. Worth 2 minutes to confirm for real next time someone's in the app. _(added 2026-08-25)_
+
+eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570), squash-merged on explicit "yes", confirmed live via `field.eq.solutions/sw.js`.
+
+---
+
 ## eq-field: Edit Roster week-picker — pin a "Current: ..." row when paged away from the active week (2026-08-25)
 *Royce, from a screenshot: the week-picker dropdown's visible window didn't include the currently-selected week, no way to tell "where am I" once paged away via Earlier/Later. Confirmed via hand-computed date arithmetic that the popover's paging math itself was correct (matched the screenshot exactly) — the gap was that the existing `.current` bold-highlight (v3.5.400) has nothing to attach to once the active week scrolls out of the rendered window.*
 

@@ -9,6 +9,13 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-25 (PR #789 MERGED + LIVE, v3.5.570 — FIX: TAFE Holidays config could silently lose ranges when added quickly)
+- Royce reported adding 4 TAFE holiday date ranges and having them not save properly.
+- Root cause: rapid Add clicks fired overlapping, unserialized saves — each captured the in-memory list at its own start time, and whichever save finished last (not necessarily last-clicked) won the database row. The screen always showed all 4 ranges (rendered from memory), so nothing looked wrong until a reload exposed the gap.
+- Fixed by chaining every save through one promise so each queued save reads the list only once its turn arrives, after every earlier add has landed. A secondary bug (an always-redundant duplicate-create request after every save, from a misread database response) was fixed in the same pass.
+- Proved with an isolated regression test running the real save code 20 times under randomized network timing: the old logic lost data in roughly half the runs, the fixed logic lost none. Test committed as a permanent regression guard.
+- eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789), squash-merged on explicit "yes", confirmed live via `field.eq.solutions/sw.js`.
+
 ## 2026-08-25 (PR #786 MERGED + LIVE, v3.5.568 — FIX: preferred-name mapper drift + Full Name data-loss risk)
 - Within minutes of the Preferred Name feature (below) going live, Royce hit Edit Person on Mohammed Hussain's own real record and found it broken: Full Name showed "Nabeel" instead of "Mohammed Hussain", Preferred Name and Job Title both showed blank despite both being set moments earlier.
 - Root cause: `_mapPeopleRows()`'s field allowlist had drifted out of sync with `app_data.field_people` — missing `preferred_name` plus 5 pre-existing fields `editPerson()` has always tried to populate (`first_name`/`last_name`/`job_title`/`emergency_contact_mobile`/`emergency_contact_relationship`). Full Name was also being read from the preferred-name-coalesced `p.name` instead of raw first/last — an unchanged Save would have overwritten `first_name`/`last_name` with "Nabeel" for real.
