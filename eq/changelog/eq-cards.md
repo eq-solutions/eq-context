@@ -1,13 +1,19 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-25
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-25 (docs governance audit — ARCHITECTURE/README/STATUS/CHANGELOG corrected, rides in PR #300)
+- A repo review found eq-cards' governance docs 87+ days stale and actively wrong, not just outdated: `ARCHITECTURE.md` still described "phone-as-identity retired" email-only auth (flipped back to mobile-primary 2026-08-15 via PR #246) and auto-deploy-on-merge (explicit-only since 2026-08-14, `deploy.yml`); `README.md` pointed at a PIN app-lock deleted 2026-08-15 (PR #249) that had never been wired into the router; the stack table had drifted 15+ versions behind `pubspec.yaml` (Riverpod 2.x → 3.x among them); the folder tree still showed 5 feature folders against the current 12.
+- Rewrote all four files against live evidence (`pubspec.yaml`, `git log`, `test/`, the actual source files each claim referenced) — no guessing. `STATUS.md` and `CHANGELOG.md` each got a dated, self-contained recommendation (retire STATUS.md in favour of CHANGELOG + git history; move this file to checkpoint-based or commit-generated updates) rather than a unilateral process change — Royce's call either way.
+- Committed `a9b9840` on `claude/sec-45-revoke-authenticated-invite-resolver`, the same branch a concurrent session was using for its own live security fix (migration `0142`). One of that session's commits briefly swept this session's staged docs into its own commit; self-corrected (reset + re-commit) without this session's intervention before the docs were committed separately and cleanly. Both now ship together in [PR #300](https://github.com/eq-solutions/eq-cards/pull/300).
+- No code or migration changes.
 
 ## 2026-08-24 (PR #297 MERGED + APPLIED LIVE — field-access unlock trigger; root cause was two claim doors, not a portal failure)
 - Royce described a bad first morning for two new SKS labour-hire workers at an Equinix site — uploaded via the labour-hire portal, expected to be set up in EQ, but Field access hadn't unlocked. Initial assumption (the portal not stamping Field access) was wrong.

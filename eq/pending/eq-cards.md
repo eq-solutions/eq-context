@@ -13,6 +13,26 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: governance docs (ARCHITECTURE/README/STATUS/CHANGELOG) were 87 days stale and actively wrong — corrected, committed, live on PR #300 (2026-08-25)
+*A repo review flagged specific stale claims: auth described as "phone-as-identity retired" (flipped back to mobile-primary 2026-08-15, PR #246); deploy described as auto-on-merge (explicit-only since 2026-08-14); README pointed at a PIN app-lock deleted 2026-08-15 (PR #249) that was never wired into the router; stack table drifted 15+ versions behind `pubspec.yaml`; folder tree still showed 5 feature folders against the current 12. Docs-only task, no code/migration changes, all claims verified against live `pubspec.yaml`/git log/`test/` before rewriting.*
+
+- [x] `ARCHITECTURE.md` — auth model (§16 Q4/§17/§18), deploy trigger (§13.1), stack table (§1), `image_cropper` history, testing coverage (§12 — all four "Pending" items are done), scope list (§15 — multi-org/boss-dashboards/Apple Wallet shipped), dated Revisions entry.
+- [x] `README.md` — dead PIN app-lock claim replaced with the real `BiometricGate` behaviour (fail-open, mobile-only, no-op on web).
+- [x] `STATUS.md` — rewritten current (auth table, deploy process). Flags itself with a dated recommendation to consider retiring in favour of CHANGELOG + git history — Royce's call, not decided.
+- [x] `CHANGELOG.md` — backfilled 2026-06-04→2026-08-25 by shipped theme (multi-tenant support, boss-side console, certificates merged into licences, PIN added-then-removed, Apple Wallet, Show mode, profile-pack export, offline cache, labour-hire intake, security hardening), plus a process note recommending a lighter-weight approach given ~4-5 commits/day.
+- [x] Committed (`a9b9840`) and pushed to `claude/sec-45-revoke-authenticated-invite-resolver` — the same branch a concurrent session was using for its own security fix (migration `0142`, PR #300). Both now ride in PR #300 together.
+
+**Deferred:**
+- [ ] **PR #300's title/description only describe the security fix** — doesn't mention it also carries this 4-file, 370-line docs correction. Flagged to Royce; not edited (his or the other session's call). _(added 2026-08-25)_
+- [ ] **STATUS.md retirement** — recommendation written into the file itself (favour CHANGELOG + git history over a hand-maintained snapshot doc), not decided. _(added 2026-08-25)_
+- [ ] **CHANGELOG process change** — recommendation written into the file itself (checkpoint-based updates, or generate a supplementary log from this repo's already-conventional commit messages), not decided. _(added 2026-08-25)_
+
+**Notes:**
+- **This branch's local checkout had its upstream tracking misconfigured to `origin/main` instead of its own remote branch** — a bare `git push` here would have pushed a feature branch straight onto `main`, no PR, bypassing review. Caught before pushing (checked `git branch -vv` first), pushed with an explicit `local:remote` refspec instead, then fixed the tracking (`git branch --set-upstream-to`) on request.
+- **A concurrent session was actively committing to this exact branch, in this exact shared root, during this session** — its own security fix (migration `0142`) landed while the docs work was staged. One of its commits swept up this session's already-`git add`-staged doc changes (likely via `git commit -a`), producing one commit with both unrelated bodies of work under a security-only message. **Self-corrected without this session's intervention**: that commit was `git reset HEAD~1`'d and re-committed with only the security fix, by whatever was driving the other session — the docs changes came back as clean unstaged working-tree edits, fully intact, then were committed separately and cleanly. New, reassuring data point for eq-cards' version of the concurrent-checkout collision pattern already well-documented for eq-context/eq-field/eq-shell elsewhere in this file and in `sessions/`: at least one class of this failure (staged-change sweep-in) appears to have a working self-correction mechanism here, not just a manual recovery playbook.
+
+---
+
 ## eq-cards: field-access unlock trigger — root cause was two claim doors, not a portal failure (PR #297) (2026-08-24)
 
 - [ ] **Conor Horgan and Nelson Sareto — the two workers from the original incident — still haven't claimed.** Re-verified live 2026-08-25: both `workers` rows exist, `user_id` still null, invites created 2026-08-20, valid until 2026-09-03. See `eq/pending/eq-shell.md`'s "resend-worker-invite" entry for the fuller thread. _(added 2026-08-24, updated 2026-08-25)_
