@@ -60,8 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-25)
 
+**eq-cards:**
+- #308 docs: close 4 gaps the same-day governance audit missed
+
 **eq-field:**
-- #786 v3.5.565 — FIX: preferred-name mapper drift + Full Name data-loss risk
+- #786 v3.5.566 — FIX: preferred-name mapper drift + Full Name data-loss risk
 - #780 v3.5.562 — week picker: pin "Current: ..." row when paged away
 
 **eq-service:**
