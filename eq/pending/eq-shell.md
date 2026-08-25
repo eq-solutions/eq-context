@@ -31,7 +31,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] **S4** — `ai.use` has zero enforcement anywhere in eq-shell. Royce confirmed: describes an unbuilt suite-wide AI-assistant capability, not a live gap. Recorded in `permission-enforcement-baseline.json` under a new `confirmed_dead_no_fix_planned` category.
 - [x] **S5** — `service.do_work` looks unenforced in eq-solves-service (an outside grep, not a session in that repo). Royce confirmed: record as scoped, cross-repo, not eq-shell's fix.
 - [x] eq-shell [PR #1595](https://github.com/eq-solutions/eq-shell/pull/1595), admin-override merged, confirmed on `main`.
-- [ ] **S6 — not code.** Neither of the 2026-08-23 sweep's own live fixes (`staff_conversations` write gate, GM Reports direct-API bypass) has been click-tested by a person yet. Whenever convenient, on you or whoever's got a live session. _(added 2026-08-25)_
+- [ ] **S6 — not code.** Neither of the 2026-08-23 sweep's own live fixes (`staff_conversations` write gate, GM Reports direct-API bypass) has been click-tested by a person yet. Whenever convenient, on you or whoever's got a live session. **Click-test steps written and delivered to Royce in chat 2026-08-26** — Fix A (`staff_conversations`): sign in without `staff.manage_conversations`, confirm no write path via the UI *and* via a direct browser-console insert (RLS, not just a hidden button). Fix B (GM Reports): sign in as manager, confirm periods/jobs/invoice-run/forecast screens still load, confirm archive/delete on a report period still works. Still needs an actual person to run it. _(added 2026-08-25)_
 
 ---
 
