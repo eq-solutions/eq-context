@@ -883,5 +883,50 @@ te("the failure ledger itself (quotes it by design)",
 te("non-markdown file", md_write(os.path.join(ROOT, "scripts", "whatever.py"), F13_PHANTOM), 0, OFF)
 
 print()
+print("=== F15 - concurrent-session Edit/Write in the shared eq-cards bare root (must BLOCK) ===")
+# A throwaway fixture path, never the real C:\Projects\eq-cards — CI has no
+# reason to have that directory, mirroring F9's own f9_repo fixture pattern.
+# Pure string check (no repo_root_for() shellout), so unlike f9_repo this
+# doesn't need to be a real git repo — nothing here reads the filesystem.
+cards_root = tempfile.mkdtemp(prefix="eq_cards_f15_")
+CARDS_ENV = {"EQ_CARDS": cards_root, "EQ_FORCE_GUARD": "0"}
+
+
+def edit_at(path, tool="Edit"):
+    key = "notebook_path" if tool == "NotebookEdit" else "file_path"
+    return {"tool_name": tool, "tool_input": {key: path}}
+
+
+te("Edit a file directly under the bare root",
+   edit_at(os.path.join(cards_root, "lib", "main.dart")), 2, CARDS_ENV)
+te("Write a brand-new file under the bare root",
+   {"tool_name": "Write", "tool_input": {"file_path": os.path.join(cards_root, "lib", "new.dart")}},
+   2, CARDS_ENV)
+te("NotebookEdit under the bare root",
+   edit_at(os.path.join(cards_root, "notes.ipynb"), "NotebookEdit"), 2, CARDS_ENV)
+te("Windows backslash path form",
+   edit_at(cards_root.replace("/", "\\") + "\\lib\\main.dart"), 2, CARDS_ENV)
+te("bare root itself, no trailing segment", edit_at(os.path.join(cards_root, "AGENTS.md")), 2, CARDS_ENV)
+te("BLOCKS with sandbox guard explicitly OFF (proves F15 isn't sandbox-scoped)",
+   edit_at(os.path.join(cards_root, "lib", "main.dart")), 2, dict(CARDS_ENV, EQ_FORCE_GUARD="0"))
+te("blocks with the sandbox guard ON too",
+   edit_at(os.path.join(cards_root, "lib", "main.dart")), 2, dict(CARDS_ENV, EQ_FORCE_GUARD="1"))
+
+print("=== F15 - the sanctioned escape valve and controls (must NOT block) ===")
+te("EnterWorktree's own location (.claude/worktrees/*) is exempt",
+   edit_at(os.path.join(cards_root, ".claude", "worktrees", "my-slot", "lib", "main.dart")),
+   0, CARDS_ENV)
+te("EQ_CARDS_ROOT_OK=1 escape hatch for a deliberate root task",
+   edit_at(os.path.join(cards_root, "lib", "main.dart")), 0, dict(CARDS_ENV, EQ_CARDS_ROOT_OK="1"))
+te("a sibling directory sharing the name as a PREFIX, not the real repo",
+   edit_at(cards_root + "-other-repo/lib/main.dart"), 0, CARDS_ENV)
+te("a completely different repo — control, F15 must stay dormant",
+   edit_at(os.path.join(NOGIT_CWD, "lib", "main.dart")), 0, CARDS_ENV)
+te("Bash git status against the bare root — F15 checks Edit/Write only, not git verbs (stated scope boundary)",
+   bash_at("git status", cards_root), 0, CARDS_ENV)
+te("EQ_CARDS unset — dormant against the real default path with no fixture pointed at it",
+   edit_at(os.path.join(NOGIT_CWD, "lib", "main.dart")), 0, {"EQ_FORCE_GUARD": "0"})
+
+print()
 print("  {} passed, {} failed".format(passed, failed))
 sys.exit(1 if failed else 0)

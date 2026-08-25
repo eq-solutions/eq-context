@@ -45,6 +45,19 @@ Blocks the failures prose could not stop:
       does not — push from the other checkout instead, so git's own
       fast-forward check can refuse loudly on divergence instead of a
       filesystem copy silently clobbering.
+  F15 The SHARED eq-cards checkout (C:\\Projects\\eq-cards) — same "one shared
+      checkout, many concurrent Claude Code sessions" shape as F9, but no
+      compound git op is needed to get hurt: an ordinary Edit/Write lands in
+      whichever tree the root happens to be checked out to at that instant,
+      and the root's branch/HEAD can change between one tool call and the
+      next with zero git action by the session it happens to. Recurred
+      2026-08-16, 2026-08-17 (x2), 2026-08-19, 2026-08-25. Fix: block
+      Edit/Write/NotebookEdit/MultiEdit in the bare root outright — this repo
+      already ships a one-call escape valve (EnterWorktree) with no
+      clone/setup dance, so the true cost of a false block is lower than F9's.
+      Scope boundary, stated plainly: git verbs (commit landing on the wrong
+      branch) are a known, smaller, real risk left OPEN by this pass — see
+      system/failures.md -> F15.
 
 Scope: F2/F6/the git-lock block are Linux sandbox (Cowork) only — on the Beelink
 (Windows) Claude Code writes and runs git natively; neither bug applies there, so
@@ -121,6 +134,21 @@ GIT_VERBS = (r"\bgit\s+(add|commit|push|pull|rm|mv|checkout|merge|rebase|status|
 # EQ_CONTEXT override matches the convention session_start.py already uses.
 SHARED_EQ_CONTEXT = (os.environ.get("EQ_CONTEXT", r"C:\Projects\eq-context")
                       .replace("\\", "/").rstrip("/").lower())
+
+# F15 — the SHARED eq-cards checkout (C:\Projects\eq-cards) takes Edit/Write from
+# several concurrent Claude Code sessions against the same working tree — the same
+# "one shared checkout, many writers" shape as F9's eq-context, but a different
+# damage mechanism: no compound git op is required. An ordinary Edit/Write lands
+# in whichever tree the shared root happens to be checked out to at that instant,
+# and the root's own branch/HEAD can change between one tool call and the next
+# with zero git action by the session it happens to (2026-08-25: session
+# local_b525bcf3 switched the shared root's branch twice, mid-task, while this
+# session and a third were both still working in it). EQ_CARDS override matches
+# the EQ_CONTEXT convention above. Unlike eq-context, this repo already has a
+# sanctioned, one-call escape valve (EnterWorktree) — no clone/setup dance — so
+# the true cost of a false block here is lower than F9's own.
+SHARED_EQ_CARDS = (os.environ.get("EQ_CARDS", r"C:\Projects\eq-cards")
+                    .replace("\\", "/").rstrip("/").lower())
 # Both tolerate an optional `-C <path>` between "git" and the verb — without
 # it, `git -C <path> commit ...` (a real invocation shape in this environment,
 # same fix guard.js's reflection-gate rule already made for itself 2026-07-26)
@@ -505,6 +533,26 @@ def is_shared_eq_context(root):
     clone has a different root and correctly returns False here even though
     `git rev-parse --show-toplevel` still calls it a perfectly good repo."""
     return bool(root) and root.rstrip("/").lower() == SHARED_EQ_CONTEXT
+
+
+def eq_cards_bare_root_path(path):
+    """F15 — True for a path inside the eq-cards BARE root working tree; False
+    for a path inside any of its .claude/worktrees/* (EnterWorktree's own,
+    documented, exclusive worktree location). A worktree's files live nested
+    on disk under the bare root, so a plain prefix check ALONE would wrongly
+    also match every worktree — this excludes that one subtree explicitly.
+
+    Deliberately a string check, not repo_root_for()'s git-shellout: that
+    function exists to make F9 robust against arbitrary shell-command text
+    (a `cd`/`-C` this file has to discover). This check has nothing to
+    discover — EnterWorktree's location is a fixed, documented convention,
+    not something only git can resolve — so a real subprocess + up to a 5s
+    timeout per Edit/Write call would be pure cost with no accuracy gain."""
+    p = (path or "").replace("\\", "/").lower()
+    if p != SHARED_EQ_CARDS and not p.startswith(SHARED_EQ_CARDS + "/"):
+        return False
+    rest = p[len(SHARED_EQ_CARDS):]
+    return "/.claude/worktrees/" not in rest
 
 
 def _strip_quoted(s):
@@ -900,6 +948,36 @@ def main():
             f"  same bullet (wrong / corrected / no longer / F13) and this passes.\n\n"
             f"  system/failures.md -> F13 · rules/deployment.md\n"
         )
+
+    # --- F15: shared eq-cards checkout — same "one shared root, many concurrent
+    # sessions" shape as F9, no compound git op needed. Deliberately NOT gated on
+    # in_sandbox() — every occurrence so far (2026-08-16, 2026-08-17 x2,
+    # 2026-08-19, 2026-08-25) happened natively on the Beelink, same as F9/F13.
+    # Edit/Write/NotebookEdit/MultiEdit only — git verbs in this one checkout are
+    # a known, real, SMALLER risk (branch-identity, not F9(a)'s index-sweep
+    # mechanism) deliberately left open here; see system/failures.md -> F15 for
+    # the scope boundary stated plainly rather than implied away.
+    if tool in EDIT_TOOLS:
+        path15 = ti.get("file_path") or ti.get("notebook_path") or ""
+        if eq_cards_bare_root_path(path15) and os.environ.get("EQ_CARDS_ROOT_OK") != "1":
+            block(
+                f"BLOCKED by pre_tool_use (F15, rung 4).\n\n"
+                f"  {tool} in the SHARED eq-cards checkout ({SHARED_EQ_CARDS}).\n"
+                f"  This repo takes commits from multiple Claude Code sessions at\n"
+                f"  once, all against the same working directory — its branch and\n"
+                f"  HEAD can change between one tool call and the next with no\n"
+                f"  action of your own (2026-08-25: the root switched branch twice,\n"
+                f"  mid-task, under a session that never touched git itself). An\n"
+                f"  Edit/Write here can land on someone else's branch, get swept\n"
+                f"  into their next commit, or simply vanish if the root moves on\n"
+                f"  before you commit (2026-08-16, 2026-08-17 x2, 2026-08-19).\n\n"
+                f"  Work in your own worktree instead — one call, no clone/setup:\n"
+                f"    EnterWorktree\n\n"
+                f"  Deliberately investigating the bare root itself (not editing\n"
+                f"  code in it)? Read-only commands (git status/log/diff, cat) are\n"
+                f"  never blocked — only Edit/Write/NotebookEdit/MultiEdit are.\n\n"
+                f"  system/failures.md -> F15.\n"
+            )
 
     if not in_sandbox():
         sys.exit(0)
