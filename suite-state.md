@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1593 chore(drift): allowlist eq_cards_get_my_licence — sourced in eq-cards PR #298
-- #1590 fix(staff): Staff-page edit resent every field on every save, clobbering concurrent changes
 
 ---
 
