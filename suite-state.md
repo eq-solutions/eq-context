@@ -61,11 +61,10 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-25)
 
 **eq-cards:**
-- #311 feat(cards): paginate admin worker roster and invite RPCs
 - #310 fix(retention): repair silently-broken licence purge cron + build orphan sweep
 
 **eq-field:**
-- #786 v3.5.567 — FIX: preferred-name mapper drift + Full Name data-loss risk
+- #786 v3.5.568 — FIX: preferred-name mapper drift + Full Name data-loss risk
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -76,6 +75,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1595 docs(security): close S2/S4/S5 from the access-control sweep follow-up sprint
 - #1593 chore(drift): allowlist eq_cards_get_my_licence — sourced in eq-cards PR #298
 - #1592 feat(admin): govern is_platform_admin grants, with an audit trail
 - #1591 fix(access-control): reconcile app-tile drift, make Preview a person show real nav
