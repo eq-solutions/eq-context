@@ -13,9 +13,32 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: organisations anon-read regression — 3rd occurrence, root-caused + fixed live (2026-08-26)
+*Found while chasing an unrelated PR's (#1615, see section below) failing required "Schema drift + anon-grant + policy-lint" check — same red check another session hit on a different PR earlier the same day and admin-merged past (this file's "blank-name worker records" section, above).*
+
+- [x] **Root-caused**: two migrations — `0163_resolve_admin_read_policy_overlap` and `0164_drop_orphaned_anon_organisations_read` — applied directly to jvkn's live database at 10:34:23/10:34:50 UTC today. **Neither exists anywhere in this repo's git history, on any branch, ever** — applied out-of-band, bypassing the migration pipeline entirely, by an unidentified actor. `0164`'s name suggests a good-faith "resolve overlapping read policies" cleanup that mistook a deliberate anon bootstrap-read policy for dead weight and dropped it.
+- [x] **Third occurrence of the same failure mode on the same table.** The anon pre-login bootstrap read on `public.organisations` (EQ Field's tenant/host lookup before login) was established 2026-07-12 (PR #787), broke silently, and was restored 2026-08-23 as incident #1530 via a dedicated policy (`organisations_anon_bootstrap_read`) kept deliberately separate from `organisations_read` (the authenticated/tenant-scoped policy) for exactly this reason. `0163`/`0164` broke it a third time.
+- [x] **Fixed live**: restored `organisations_anon_bootstrap_read` verbatim (same shape as the #1530 fix) — `organisations_read` untouched. Verified directly against jvkn before and after. The Supabase MCP's own `apply_migration` call was blocked by the Claude Code auto-mode classifier for a direct production DDL write (expected/correct — this needs a human), so Royce hand-applied it via the Supabase SQL editor. Paper-trailed as `supabase/migrations/2026_08_26_restore_organisations_anon_bootstrap_read_again.sql`, eq-shell [PR #1618](https://github.com/eq-solutions/eq-shell/pull/1618), merged, deploy-ancestry-confirmed live.
+- [ ] **WHO/WHAT ran `0163`/`0164` is still unknown** — not investigated further this session (root-causing the actor wasn't blocking the fix). Since neither migration has a corresponding repo file, they'll keep showing as informational drift on every future schema-drift run for this project, and there's no durable guard yet against a 4th occurrence of this exact failure mode. _(added 2026-08-26)_
+- [ ] Spawned a background investigation (`task_873144b9`) into today's unusually heavy concurrent-merge/deploy-skip churn while this was happening — separate session, ended, outcome not yet reviewed by this session. May or may not be related to how `0163`/`0164` landed unreviewed. _(added 2026-08-26)_
+
+---
+
+## eq-shell: self-join QR links — dead-end Delete fixed, list decluttered (2026-08-26)
+*Royce: "im trying to delete QR codes and it wont let me, they delete but then pop back up." Then: "I want to avoid a long list of QR codes — how do we manage this list better?"*
+
+- [x] **Root cause**: a deactivated self-join link that anyone has actually joined through can never be deleted (a real Postgres FK from `user_tenant_memberships.self_join_code_id` protects join history, by design) — the backend correctly 409s, but the admin UI showed a "Delete" button on every deactivated link regardless, then silently reverted the optimistic removal on failure. Every row with a nonzero join count was a guaranteed dead end.
+- [x] **Fixed**: rows with `join_count > 0` now show "Can't delete — already used" instead of a Delete button that could never succeed; links with 0 joins still get a working Delete. eq-shell [PR #1610](https://github.com/eq-solutions/eq-shell/pull/1610), merged, live.
+- [x] **List-management follow-up**: ran a `/decide` pass on "hide deactivated links by default" — caught that `active` never auto-flips false on expiry (only checked at join-time), so expired-but-still-`active` links were *also* quietly piling up, undercutting a naive "just hide deactivated" fix. Built the corrected version: default view shows only Active + not-expired; Deactivated and expired links collapse behind a "Show deactivated & expired (N)" toggle. eq-shell [PR #1615](https://github.com/eq-solutions/eq-shell/pull/1615), merged, live — required resolving a real merge conflict against `main` mid-session (this repo's own already-squashed #1610 colliding with the pre-squash copy underneath #1615; verified as a self-conflict only, resolved cleanly).
+
+**Deferred:**
+- [ ] **Not click-tested live by a person** — no live Shell session/credentials in this environment. Worth a pass: on the join-links page, confirm a used deactivated link shows "Can't delete — already used" with no button, confirm the "Show deactivated & expired (N)" toggle expands/collapses correctly and the count matches. _(added 2026-08-26)_
+
+---
+
 ## eq-shell: blank-name worker records — 3rd distinct gap found + fixed live, admin-override merged (2026-08-26)
 
-- [ ] **The "Schema drift + anon-grant + policy-lint" required check is still red on `main`** — a live anon-grant regression on the jvkn control plane (an intentional anon-read table no longer actually anon-readable). Confirmed unrelated to this fix (touches zero SQL, same check was green on `main` 46 minutes before this PR's run) but it blocked GitHub's branch protection outright; merged via `gh pr merge --admin` on Royce's explicit go rather than investigated. Worth a look before the next eq-shell merge trips the same block — table not yet identified. _(added 2026-08-26)_
+- [x] **The "Schema drift + anon-grant + policy-lint" required check that was red on `main` — table identified, root-caused, and fixed live by a later session the same day.** It was `public.organisations` on jvkn losing its anon pre-login bootstrap-read policy — full writeup in this file's own "organisations anon-read regression" section below. _(resolved 2026-08-26 — see below)_
 - [ ] **2 other blank-name rows already sit in `app_data.field_people_removed` on ehow** (found earlier this session during the sks-nsw-labour reconciliation) — same shape as Don Milmlow's record below, not yet identified or backfilled. _(added 2026-08-26)_
 - [ ] **Not click-tested live by a person** — verified via `tsc -b --force`, eslint, live Supabase tracing of the exact chain, and a production commit-ancestry check, not a real join-flow click-through as a brand-new user. _(added 2026-08-26)_
 
