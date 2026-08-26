@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -25,6 +25,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [x] **Diagnostic breadcrumb shipped, not a root-cause fix.** `scripts/supabase.js`'s `sbFetch()` now reports via `EQ_OBS` (one-per-tab) when a JWT-routed write has no `x-eq-actor` actor id despite the tab having minted a real one earlier in the session — the exact shape of the still-unexplained Mark Brame gap. eq-field [PR #803](https://github.com/eq-solutions/eq-field/pull/803), squash-merged on explicit "merge it into main", live (merging `main` auto-deploys to field.eq.solutions). Needed a same-PR fix to a real cache-buster drift-guard failure first — `scripts/supabase.js` changed but its `?v=` tag in `index.html` hadn't moved; bumped `3.5.508` → `3.5.579`.
 - [ ] **Overlaps `task_66de20f0`** (Royce's independently-started background session investigating the same gap) — see eq-shell.md for what this session already ruled out before shipping the breadcrumb, so that task doesn't redo it.
+
+---
+
+## eq-field: Leave/incident email links fixed, Approve/Reject scanner-prescan hole closed (2026-08-26)
+*Started from "how is the supervisor list populated?" (leave-approver dropdown — answered from live `app_data.field_managers`: filters the 20-row Supervision list to `category ∈ {Supervisor, Executive}`, currently 10 people). A screenshot of the Edit Supervision Category modal failing with "Failed to fetch" led to a live-confirmed eq-shell bug (below). Mid-session, four more bugs arrived from a real leave-approval email screenshot: "email doesn't work", "Approve/Reject do nothing", "SKS logo not present", "Review in app link goes to field.eq.solutions not core.eq.solutions". Full detail in `eq/changelog/eq-field.md`'s 2026-08-26 entries.*
+
+- [x] **eq-field [PR #804](https://github.com/eq-solutions/eq-field/pull/804) MERGED (v3.5.580).** New `EmailBranding.appUrl()` fixes "Review/View in app" links in leave + incident emails — they used `window.location.origin`, which inside the Shell iframe is always `field.eq.solutions` (the iframe's own src), never `core.eq.solutions`. `approve-leave.js`'s GET path no longer mutates a leave request (closes the endpoint's own documented "email security scanner silently actions the link" risk — Royce's explicit go via AskUserQuestion first); only a real POST from the new confirm page applies the decision. Also corrected `send-email.js`'s stale CORS allowlist. New `tests/approve-leave-interstitial.test.js` (18/18).
+- [x] **SKS email logo + the general "does nothing" report checked and ruled out as code bugs.** Both the branding data (`organisations.branding.sidebarLogoHtml` on jvkn) and the image URL (curled directly, 200 OK) are correct — likely the receiving mail security gateway blocking the remote image, not Field. No fix possible or needed from this side.
+- [ ] **eq-shell's `entity-patch` Netlify function has no CORS headers** — confirmed live via a direct `OPTIONS` curl (`204`, zero `Access-Control-Allow-*` headers), which is why Field's "🏷 Edit category" Supervision action fails with "Failed to fetch" even with a valid Bearer token. Fix belongs in eq-shell, not here. Spun off as background task `task_ecdfb245`; Royce started it in a separate session, not yet reported back as of this close. _(added 2026-08-26)_
+- [ ] **Not click-tested live.** The new confirm-interstitial page (GET renders it, POST applies the decision) is verified at the handler-logic level (isolated Node harness driving the real `exports.handler`, 18/18 assertions) but not against an actual email delivered to and clicked from a real inbox — sending a real message to test it was out of scope for unilateral action. Worth a real click-through next time a genuine SKS leave request goes through email. _(added 2026-08-26)_
 
 ---
 
@@ -484,7 +494,6 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 ## eq-field: canonical worker-link duplicate guard, roster keyboard nav, Prestart/Toolbox export + lock, supervisor taxonomy + zaap parity — four PRs merged (2026-08-04)
 
-- [ ] **John Angangan and Jack Cluff still need a Supervision category set.** Scott Hotson (the third person originally flagged) already has his set — confirmed live against ehow 2026-08-04: category "Project Management", job title "Project Manager", no further action needed for him. eq-shell [PR #1236](https://github.com/eq-solutions/eq-shell/pull/1236) merged (`6808f8e4`) — the Staff form now blocks Save if Supervisor is checked without a category, plus a matching server-side guard in `entity-patch.ts` so the same rule holds for the inline roster-row Supervisor checkbox (a separate write path with no category field in its own UI at all) and can't be bypassed by a direct API call either. [PR #1237](https://github.com/eq-solutions/eq-shell/pull/1237) merged (`cce8834`) landed the same validation logic a second time from a separate concurrent session — rebased to drop the now-redundant duplicate (it became a no-op once #1236 was already on `main`) and keep only its other, unrelated change: hides the Company field for Direct employees. Fixing Angangan + Cluff must go through Shell's own UI (`core.eq.solutions/sks/staff`), not a database patch — Royce's explicit call both times this came up; a migration was drafted and explicitly declined in favour of the UI path. Both confirmed to get category "Supervisor". Follow-up task `task_99cb6058` spawned and already started in a separate session as of this close. **Production deploy independently verified** (separate session, after losing the merge race by seconds): Netlify deploy for `cce8834` reached `state: ready`/`context: production` on `main`, published 2026-08-04T10:11:21Z (227s build), and a live smoke test (`verify-shell-session` → 401) confirmed core.eq.solutions is actually serving it — upgrades the changelog's "auto-deployed" from assumption to verified fact. _(added 2026-08-04, updated 2026-08-04)_
 - [ ] **Multiple concurrent Claude sessions were pushing to eq-field's `main` throughout this session** — two real version-number collisions happened and were caught/resolved live, but this is a standing risk with the current strict-monotonic-versioning convention, not a one-off. Worth knowing if it keeps happening. _(added 2026-08-04)_
 
 ---
