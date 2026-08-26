@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: RLS-initplan/FK-index hardening reapplied (0162), 0131 header correction reverted (2026-08-26)
+
+Reapplied the 2026-05-31 RLS-initplan/FK-index fix to 8 policies and 15 foreign keys created or recreated since then (including `workers.origin_org_id` from migration 0138) — confirmed live via `get_advisors`: all 8 public-schema `auth_rls_initplan` warnings and all 15 unindexed-FK warnings cleared. `eq_format_au_mobile`'s search_path hardened too. [PR #323](https://github.com/eq-solutions/eq-cards/pull/323), merged and applied to live jvkn.
+
+Also found migration `0131` has actually been live since 2026-08-16 (its header wrongly said "NOT YET APPLIED") — started fixing the header, but CI (`check-function-grants.mjs`) correctly flagged that touching an already-applied migration's function definitions looks like a fresh redefine with no grant statement, the exact pattern that broke these functions' grants the first time 0131 ran. Reverted the file edit rather than force it through; the correction lives in the changelog instead.
+
+- [ ] **`organisations_anon_bootstrap_read` grants unconditional anon SELECT on the whole `organisations` table** — found while scoping this fix, deliberately excluded from it. Plausibly a deliberate pre-login "find my company" read, but worth confirming before anyone touches or extends it. _(added 2026-08-26)_
+- [ ] **3 tables have overlapping permissive SELECT policies** (`organisations`, `org_credential_requirements`, `org_join_requirements`) — real but low-priority performance overlap; consolidating means merging policy logic, not a mechanical rewrite, so left out of this pass. _(added 2026-08-26)_
+
 ## eq-cards + eq-shell + eq-field: eq-shell's synthetic cards.eq.solutions email — stopped from ever displaying as real, merged + deployed live across all three apps (2026-08-26)
 *Royce: a phone-only-signup worker's real email was never captured (`shell_control.users.email` null since signup), and eq-shell's internal GoTrue placeholder (`${user.id}@cards.eq.solutions`, minted so a magic-link token has something to key on — working as designed, Sentry EQ-SHELL-13 context) was silently standing in for it, showing as a real address on his EQ Field/Cards profile. Asked to investigate every place it could display across eq-cards + eq-shell, and check whether PR #1125's existing email-capture nudge already covered it, before writing any code.*
 
