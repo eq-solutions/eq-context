@@ -71,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1628 feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invariants for jvkn
 - #1627 docs(security): paper-trail 0162/0163 + correct CONTROL-PLANE-LEDGER (3rd occurrence)
-- #1625 fix(security): stop staff-active drift sweep from logging out multi-tenant workers
 
 ---
 
