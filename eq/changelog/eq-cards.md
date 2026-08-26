@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -15,6 +15,7 @@ status: live
 - PR #317: `eq_roles` v2.5.5 → v2.7.5, verified additive via a direct package-source diff (not just changelog prose) — zero app code changes needed. Migration `0131` (a related, separate SQL permission gate) remains explicitly unapplied pending Royce's own go-ahead; this bump doesn't touch that decision.
 - Migration `0138_worker_origin_org_id` (merged 3 days earlier in PR #293) was found never actually applied to live jvkn — applied directly with Royce's confirmation, closing a real gap before the next new labour-hire candidate would have hit it.
 - PR #319: added the missing explicit `[functions.admin-attach-licence-photo]` / `[functions.labour-hire-candidate-intake]` blocks to `supabase/config.toml` (`verify_jwt = false`). Live check confirmed both already ran that way via an undeclared dashboard override — nothing was broken, but a future deploy treating config.toml as authoritative could have silently reset either to the platform default and 401'd every real caller.
+- PR #320: closed the same gap for the one function #319 couldn't have covered yet — `promote-labour-hire-photo` (added by #318, which #319 predates by ~8 minutes). Live-verified both sides: already `verify_jwt=false` via undeclared dashboard override before the fix, and confirmed the fix holds after a real redeploy the same day (a Royce-triggered `Build & Deploy` run) — the function's first deploy through the actual CI pipeline (version 1→2), `verify_jwt` still `false`, not reset to the platform default.
 
 ## 2026-08-25 (branch protection enabled on `main` — first time this repo has had any)
 - Required checks (`Analyze and test`, `Migration hygiene`, `Function grants preserved`), `strict: true` (branch must be up to date before merge), `enforce_admins: true` (deliberately not the GitHub default — every merge that day used an admin-level token, so leaving admins exempt would make the protection trivially bypassable). Triggered by watching PR #307 merge before its own CI had finished.

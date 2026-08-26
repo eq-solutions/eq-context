@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,15 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-cards: migration-ledger gap sweep (0100-0159) found clean; a merged-but-dangling branch found and cleaned up (2026-08-26) (fully closed, no open items remain)
+*Picked up the same class of problem the Bucket A sprint (below, now archived) closed for 0138 — handed a brief claiming that migration was still missing live. By the time this session checked, it was already applied; re-verified that directly against `information_schema` rather than trusting the brief, then extended the check to the rest of the recent range.*
+
+- [x] **Full spot-check of migrations 0100-0159 against live jvkn schema** — not name-matching against the ledger, which produced 2 false positives when tried first (once dismissed as a spawned task before realising the repo file existed under a renumbered name; corrected before it misled anyone). Verified every remaining candidate against actual `information_schema`/`pg_proc`/`pg_indexes` state instead. Six repo files initially looked unmatched by name (0110, 0113, 0114, 0115, 0117, 0118) — all six confirmed genuinely live already (0110/0113 are self-documented no-op backfills; the other four are live under ledger names that just didn't match by eye). Zero new instances of the 0138-style gap found.
+- [x] **Found and deleted a merged-but-still-open branch**: `claude/conor-licenses-cards-84ecf5` (the Conor Horgan/Nelson Sareto photo-NULL fix — [PR #318](https://github.com/eq-solutions/eq-cards/pull/318), migration `0161_promote_labour_hire_photo_on_claim.sql` + new `promote-labour-hire-photo` edge function). Fully merged and live, but the branch and its worktree were left behind. Verified the branch's true current tip (not a stale cached ref — it had moved past what an earlier check saw, including a same-day CI fixup folding a grant into 0161 itself) was byte-identical to `origin/main` before deleting, both directly and via an independent merge-readiness audit. Local + remote branch deleted. Worktree removal partially failed on a Windows file lock (same recurring pattern as `remove-wedge-alert-0da7e2`, see memory) — git-side cleanup succeeded, physical folder left orphaned, harmless.
+- [x] **Closed the config.toml `verify_jwt` gap that PR #319 didn't cover**: `promote-labour-hire-photo` (added by #318, which PR #319 predates by ~8 minutes) had no explicit `[functions.promote-labour-hire-photo]` block either — same fix, same rationale, just a third function PR #319 couldn't have known about yet. Verified live via Supabase MCP first (jvkn already ran it with `verify_jwt=false`, an undeclared dashboard override) and confirmed via source (`index.ts` + migration `0161`) it shares the identical `LABOUR_HIRE_INTAKE_SECRET` / `eq_verify_labour_hire_intake_secret` gate as `labour-hire-candidate-intake`, not a Supabase JWT. [PR #320](https://github.com/eq-solutions/eq-cards/pull/320), merged (squash `b892113`) on Royce's "merge". **Confirmed the fix held under a real redeploy the same day**: the next `Build & Deploy` run (`workflow_dispatch`, 2026-08-26T00:00Z, triggered by Royce from a separate session) redeployed the function for the first time through the actual CI pipeline — version 1→2, `entrypoint_path` switched from an ad-hoc dashboard/temp path to the real repo path — and `verify_jwt` came out `false` exactly as declared, not reset to the platform default.
 
 ---
 
