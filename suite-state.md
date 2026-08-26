@@ -60,11 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-26)
 
-**eq-cards:**
-- #323 fix(migrations): correct 0131's stale header, add RLS/FK/search-path hardening
-
 **eq-field:**
-- #799 docs(migrations): reconcile field_job_number_overrides ledger with live ehow
+- #800 v3.5.577 — Contacts: off-roster people no longer default-visible
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
