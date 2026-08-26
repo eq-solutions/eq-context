@@ -13,6 +13,27 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards + eq-shell: labour-hire licence photos root-caused across all three claim paths, fixed, backfilled, verified live (2026-08-26)
+*Royce: "i got conor to login but his licenses dont load in cards," then clarified it was specifically photos, missing in both Shell and Cards, for Conor Horgan and Nelson Sareto. Investigated against live jvkn data throughout rather than assuming the intake pipeline was at fault.*
+
+- [x] **Root cause traced to three independent places, not one.** The labour-hire intake pipeline genuinely uploads every photo/PDF at intake time (confirmed: files intact in `licence-photos/pending-credentials/{worker_id}/...`, correct byte counts) — nothing was ever lost. But none of the three places that create the real `public.licences` row at claim time ever carried the file reference into `photo_front_url`/`document_url`: this repo's own `eq_cards_claim_invite` RPC, and eq-shell's `shell-join-tenant.ts` and `accept-invite.ts` (which had ported the same promotion logic on 2026-08-23 rather than sharing it, inheriting the identical gap). Even a raw path copy wouldn't have worked — the storage RLS policy on `licence-photos` requires the licence's own id to already appear in the file path, which is impossible for a file uploaded before that row exists.
+- [x] **Built one shared fix instead of three.** New Supabase edge function `promote-labour-hire-photo` (jvkn/eq-canonical): given a licence id, downloads the pending file and re-uploads it under the `{tenant}/{user}/{licence}/{slot}` convention every other working licence photo already uses, then points the row at it. Idempotent — safe to call on an already-fixed licence, or one with nothing to promote. All three claim paths now call this one function instead of duplicating the logic a third and fourth time.
+- [x] **eq-cards side**: migration `0161` wires `eq_cards_claim_invite` to dispatch the new function via `pg_net` (fire-and-forget, wrapped so a photo hiccup can never block a real claim). eq-cards [PR #318](https://github.com/eq-solutions/eq-cards/pull/318), merged. **Real CI catch along the way**: the first draft's `CREATE OR REPLACE` had no trailing `GRANT`, which `check-function-grants.mjs` correctly flagged — this repo's own grant-stripping event trigger would have silently locked `authenticated` out of claiming invites on any future replay. Fixed by folding the grant into the same migration file (a separate follow-up file doesn't satisfy the check, by design) before merge.
+- [x] **eq-shell side**: same fix ported into `shell-join-tenant.ts` and `accept-invite.ts`, calling the same edge function. Used a bounded 10s-timeout await rather than true fire-and-forget — this repo has a documented failure mode where Netlify freezes the function container the instant a response returns, silently killing genuinely-unawaited calls. Reused the existing `LABOUR_HIRE_INTAKE_SECRET`/`SUPABASE_URL` env vars (verified live, no new secrets). eq-shell [PR #1603](https://github.com/eq-solutions/eq-shell/pull/1603), squash-merged, confirmed live via exact commit-ancestry match against the newest production deploy.
+- [x] **Backfilled Conor's and Nelson's 8 existing licences** via direct calls to the new function — all 8 succeeded, byte counts matched the original files exactly. **Click-tested live**: opened `core.eq.solutions/sks/staff`, both workers' rows now show real, rendering licence photos/documents (not placeholders or broken links).
+- [x] **Related, separately-tracked follow-up**: `promote-labour-hire-photo` (added by this work) is missing its own `[functions.promote-labour-hire-photo]` verify_jwt block in `config.toml` — found and spawned as a background task by a concurrent same-day session (see `eq/pending-archive.md`'s "migration-ledger gap sweep" entry), not duplicated here.
+
+---
+
+## eq-cards: "You're ready for site" success banner removed outright, deployed live (2026-08-26)
+*Royce: "we keep seeing 'youre ready for site' can you get rid of that in eq cards" — a 2026-08-19 fix (archived, see `eq/pending-archive.md`) addressed one specific recurrence cause but the banner itself remained; rather than chase further recurrence causes, removed the feature entirely on Royce's explicit instruction.*
+
+- [x] Deleted the once-ever "You're ready for site." bottom sheet from `licences_list_screen.dart` — the method, its call site, the SharedPreferences key, and all related now-dead state, cleanly (verified no dangling references before shipping).
+- [x] eq-cards [PR #321](https://github.com/eq-solutions/eq-cards/pull/321), merged, **deployed live** on Royce's explicit "deploy" — dispatched `Build & Deploy`, confirmed the deployed run's commit SHA (`dd199c8`) exactly matches the removal commit, both jobs (Flutter web build, edge functions) succeeded independently.
+- [x] Branch protection required an up-to-date-with-main merge twice during this session (heavy concurrent commit traffic on this repo today) — rebased and re-verified CI green both times before merging.
+
+---
+
 ## eq-cards: deep-dive review (Security/Scalability/UI-UX/Code&Docs/Product-Value) → two-sprint remediation, 10 more PRs merged, branch protection enabled, 3 real bugs caught before shipping (2026-08-25)
 *Asked to deep-dive-review EQ Cards and rate it. Published a 5-category scorecard (Security 6, Scalability 6, UI/UX 7, Code&Docs 7, Product Value 7 /10) as an artifact, then a sprint plan to close the gap to 9/10 with an explicit honesty note that Product Value can't be moved by engineering alone. Royce approved starting immediately; this section covers everything built off that plan, continuing past where the sections below (PR #298/#300/#302/#304, already logged by other sessions) leave off.*
 
@@ -113,12 +134,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: field-access unlock trigger — root cause was two claim doors, not a portal failure (PR #297) (2026-08-24)
-
-- [ ] **Conor Horgan and Nelson Sareto — the two workers from the original incident — still haven't claimed.** Re-verified live 2026-08-25: both `workers` rows exist, `user_id` still null, invites created 2026-08-20, valid until 2026-09-03. See `eq/pending/eq-shell.md`'s "resend-worker-invite" entry for the fuller thread. _(added 2026-08-24, updated 2026-08-25)_
-
----
-
 ## eq-cards: workers-canonical-sync no longer creates a staff row on a non-INSERT (PR #292) (2026-08-23)
 *Closes the mis-filing hazard proven live the same day — a phone backfill on jvkn put a Cards user with no SKS connection onto SKS's roster for ~10 minutes. Full detail in `eq/changelog/eq-cards.md`; the architectural analysis is in [`IDENTITY-MODEL.md` §3.3.1/§3.3.2](../identity/IDENTITY-MODEL.md).*
 
@@ -158,18 +173,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **No real action buttons yet.** Each queue row is tagged which app (Cards/Field) owns the fix, but stays read-only — nothing in this app today can re-invite in bulk or force a sync retry, so a button would have nowhere real to go. Building those is separate follow-on work, your call whether/when. _(added 2026-08-20)_
 - [ ] **The Cards↔Field "bridge" is one-directional.** `eq_cards_platform_stats()` only queries jvkn (Cards' own database) — it can say how many Cards workers have been linked into Field, but not give Field's own independent total to reconcile against. A genuine two-sided view needs a second query into ehow, not built this session. _(added 2026-08-20)_
-
----
-
-## eq-cards: "You're ready for site" Wallet banner kept reappearing through the Shell embed — fixed, live (2026-08-19)
-*Royce uploaded a screenshot of the once-ever success banner reappearing on every Wallet visit; confirmed it only happened through Shell (`core.eq.solutions/sks/cards`), never standalone on cards.eq.solutions.*
-
-- [x] **Root cause**: the banner's once-ever flag is namespaced per real auth user id (`_uidSuffix`, added to fix an earlier demo-phone-reuse bug). Supabase's client `initialize()` doesn't wait for session restore to finish, so on a cold Flutter boot — which is exactly what a Shell iframe reload triggers — the check could run before `currentUser` resolved, silently falling back to an unsuffixed key and defeating the once-ever guard.
-- [x] **Fix**: if the user id isn't resolved yet when the check runs, skip entirely (no read/write, no "checked" flag set) so it retries cleanly on the next rebuild once auth settles, instead of writing under the wrong key. eq-cards [PR #276](https://github.com/eq-solutions/eq-cards/pull/276), merged, deployed live.
-- [x] Investigated via a bug-fixer agent — read the vendored Supabase client source directly to confirm the race exists in code, not just theorised; ruled out a per-visit-different-uid handoff issue and GoRouter's session gate as the cause.
-
-**Deferred:**
-- [ ] **Couldn't rule out browser-level storage partitioning (Safari ITP / Chrome CHIPS) as a second contributing factor** for cross-origin iframe storage — that would be inherent browser behaviour, not an app bug, and isn't fixable in this repo. No Sentry/Chrome MCP access in that session to check live frequency either. _(added 2026-08-19)_
 
 ---
 
@@ -355,8 +358,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Brian Griffin-Colls' First Aid/CPR certificate itself still needs updating** — the bug that silently dropped his attempt is now fixed, but his original update was never captured; someone still needs to redo it (himself, or an admin via the Staff page). _(added 2026-07-28)_
 
 **Note:** the earlier eq-shell duplicate-licence fix (PR #1060) and its CI-surfaced `rls_introspection` finding are already fully covered further down this file and in today's session log (resolved as SEC-15/SEC-16) — a follow-up chip spun off for that finding this session was superseded by the time it could run; no separate entry needed here.
-
----
 
 ---
 

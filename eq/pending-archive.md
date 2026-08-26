@@ -16,6 +16,44 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-cards: field-access unlock trigger — root cause was two claim doors, not a portal failure (PR #297) (2026-08-24) (fully closed 2026-08-26)
+*Section trimmed to its one remaining open item at an earlier close; its full built-write-up lives in `eq/changelog/eq-cards.md` and `sessions/2026-08-24.md`.*
+
+- [x] ~~Conor Horgan and Nelson Sareto — the two workers from the original incident — still haven't claimed~~ — resolved: both claimed 2026-08-25, both click-tested live 2026-08-26. See `eq/pending/eq-cards.md`'s 2026-08-26 entry for the deeper photo-promotion gap this surfaced and fixed.
+
+---
+
+## eq-cards: "You're ready for site" Wallet banner kept reappearing through the Shell embed — fixed, live (2026-08-19) (fully closed 2026-08-26, superseded by outright removal)
+*Royce uploaded a screenshot of the once-ever success banner reappearing on every Wallet visit; confirmed it only happened through Shell (`core.eq.solutions/sks/cards`), never standalone on cards.eq.solutions.*
+
+- [x] **Root cause**: the banner's once-ever flag is namespaced per real auth user id (`_uidSuffix`, added to fix an earlier demo-phone-reuse bug). Supabase's client `initialize()` doesn't wait for session restore to finish, so on a cold Flutter boot — which is exactly what a Shell iframe reload triggers — the check could run before `currentUser` resolved, silently falling back to an unsuffixed key and defeating the once-ever guard.
+- [x] **Fix**: if the user id isn't resolved yet when the check runs, skip entirely (no read/write, no "checked" flag set) so it retries cleanly on the next rebuild once auth settles, instead of writing under the wrong key. eq-cards [PR #276](https://github.com/eq-solutions/eq-cards/pull/276), merged, deployed live.
+- [x] Investigated via a bug-fixer agent — read the vendored Supabase client source directly to confirm the race exists in code, not just theorised; ruled out a per-visit-different-uid handoff issue and GoRouter's session gate as the cause.
+- [x] **Superseded outright 2026-08-26**: Royce reported still seeing it ("we keep seeing 'you're ready for site'") — rather than chase this fix's recurrence further, removed the whole success-sheet feature from `licences_list_screen.dart` (method, call site, SharedPreferences key, all now-dead state) on Royce's explicit "get rid of that." eq-cards [PR #321](https://github.com/eq-solutions/eq-cards/pull/321), merged, **deployed live** on Royce's explicit "deploy" (`dd199c8`, confirmed via exact commit-ancestry match against the dispatched deploy run, both jobs — Flutter web build and edge functions — green independently). The 2026-08-19 fix's own deferred item (browser storage partitioning as a second contributing factor) is now moot — there's nothing left to partition-guard.
+
+---
+
+## eq-shell: labour-hire licence promotion gap — Shell-join claim door was silently dropping credentials, root-caused + fixed (2026-08-23) (fully closed 2026-08-26, no open items remain)
+*Royce, from a Staff page screenshot: why aren't the labour-hire licences (Conor Horgan, Nelson Sareto) showing up. Resolves the open question left by the 2026-08-21 "Labour-hire claim gate" entry (archived) about whether the Shell-join claim flow alone promotes credentials.*
+
+- [x] **Root cause confirmed live, three layers deep**: (1) both candidates' invites went unclaimed — approved 33 min before PR #1513's auto-send-claim-email fix went live, so no email ever sent; (2) even once claimed, the claim link (`shellJoinUrl()`) routes through `shell-join-tenant.ts`, which links the account correctly but never promotes `worker_credentials` into `public.licences` — that promotion loop only ever existed inside `eq_cards_claim_invite`, a separate Postgres RPC used by the Cards app's own claim flow; (3) confirmed concretely, not just by code reading: 0 of 8 `worker_credentials` rows in the entire database had ever been promoted — all 8 belonging to these two candidates.
+- [x] **Fixed**: ported the same promote-or-update loop from `eq_cards_claim_invite` into `shell-join-tenant.ts`. eq-shell [PR #1517](https://github.com/eq-solutions/eq-shell/pull/1517), squash-merged (`4231788f`), confirmed live via exact Netlify `commit_ref` match, on Royce's explicit "merge."
+- [x] **Companion gap flagged and spun off**: `accept-invite.ts` (Shell's other claim door — desktop email+PIN) has the identical gap. Spawned as a background task; produced eq-shell [PR #1519](https://github.com/eq-solutions/eq-shell/pull/1519), squash-merged, confirmed live via Netlify deploy polled to `state: ready` (not just merged), on Royce's explicit "merge it."
+- [x] **Both candidates claimed 2026-08-25; a deeper, separate gap surfaced and was fixed 2026-08-26.** Credentials promoted correctly (type/number/dates), but neither claim door ever carried the photo/document reference into the real licence row — the ported promotion loop copied `metadata` wholesale without extracting it, and even the raw path wouldn't have passed the owner storage RLS policy (needs the licence's own id already in the path). Fixed in eq-shell [PR #1603](https://github.com/eq-solutions/eq-shell/pull/1603) (both `shell-join-tenant.ts` and `accept-invite.ts`, calling a new shared jvkn edge function so all three claim doors — including `eq_cards_claim_invite` — use one implementation instead of three), squash-merged, confirmed live via exact commit-ancestry match. Full root-cause and fix detail in `eq/pending/eq-cards.md`'s 2026-08-26 entry / `sessions/2026-08-26.md`.
+- [x] **Click-tested live 2026-08-26** — opened `core.eq.solutions/sks/staff`, both Conor's and Nelson's rows confirmed showing real, working licence photos/documents.
+
+---
+
+## eq-shell: Staff list showed "None recorded" for approved-but-unclaimed labour-hire candidates, indistinguishable from having nothing on file — fixed (2026-08-23) (fully closed 2026-08-26, no open items remain)
+*Direct follow-up to the same day's compliance-pack Pending-section work: Royce, from a screenshot of the Staff list, pointed out that Conor Horgan and Nelson Sareto both show "None recorded" in the Licences column even though each has 4 real uploaded credentials pending — a manager scanning the list has no way to tell that apart from someone with genuinely nothing on file, without opening the row.*
+
+- [x] **Threaded `pendingLicByStaff`** (already computed in the parent component for the per-person detail view built earlier today) into both list renderers — `StaffList` (desktop table) and `MobileStaffList` — as a new prop, same pattern as the existing `licByStaff`.
+- [x] **Extended `LicChips`'s empty state**: when a row has zero confirmed licences AND pending credentials exist, shows "N uploaded — not signed up to Cards yet" (styled to match the existing "Not signed in" Login-column convention) instead of the generic "None recorded". Genuinely licence-free people are unaffected — pending-candidate and confirmed-licence are mutually exclusive states by construction (a pending row only exists while `user_id IS NULL`, which is exactly when `licences.user_id` can't have a row yet either).
+- [x] eq-shell [PR #1560](https://github.com/eq-solutions/eq-shell/pull/1560), merged (`72852dcd`) on Royce's explicit "yes, merge it," confirmed live via the deploy reaching `state: ready` (published 19:38:54, not just merge status).
+- [x] **Click-tested live 2026-08-26** — opened `core.eq.solutions/sks/staff`, searched and opened both Conor's and Nelson's rows directly. Both now show real licence records with working photo/document previews, not "None recorded."
+
+---
+
 ## eq-cards: migration-ledger gap sweep (0100-0159) found clean; a merged-but-dangling branch found and cleaned up (2026-08-26) (fully closed, no open items remain)
 *Picked up the same class of problem the Bucket A sprint (below, now archived) closed for 0138 — handed a brief claiming that migration was still missing live. By the time this session checked, it was already applied; re-verified that directly against `information_schema` rather than trusting the brief, then extended the check to the rest of the recent range.*
 

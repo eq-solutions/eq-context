@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-26 (PR #318 + #321 MERGED + LIVE — labour-hire licence photos fixed across 3 claim paths, "You're ready for site" removed)
+- Conor Horgan's and Nelson Sareto's labour-hire licence photos weren't showing in Shell or Cards. Root cause: three independent claim-time code paths (this repo's `eq_cards_claim_invite`, plus eq-shell's `shell-join-tenant.ts`/`accept-invite.ts`) each created the real licence row without ever carrying the uploaded photo/document reference across — the file itself was always intact in storage, just never linked. A raw path copy wouldn't have worked either: the storage RLS policy requires the licence's own id to already be in the file path.
+- New edge function `promote-labour-hire-photo` (jvkn) does the real fix — copies the pending file to the correct path convention and points the row at it, idempotent, shared by all three claim paths instead of three separate implementations. Migration `0161` wires this repo's own claim RPC to call it. [PR #318](https://github.com/eq-solutions/eq-cards/pull/318), merged. The companion eq-shell fix is [PR #1603](https://github.com/eq-solutions/eq-shell/pull/1603) — see `eq/changelog/eq-shell.md`.
+- Backfilled both workers' 8 existing licences; confirmed live by opening their Staff-page rows directly and seeing real photos render.
+- "You're ready for site" (the once-ever Wallet success banner) removed outright on Royce's request, rather than chasing a second recurrence cause beyond the 2026-08-19 fix. [PR #321](https://github.com/eq-solutions/eq-cards/pull/321), merged and explicitly deployed — confirmed via exact commit-SHA match on the deploy run.
+
 ## 2026-08-26 (PRs #315-317 MERGED — Bucket-A backlog sprint: tenant hardcode, dependency bump, CI hygiene)
 - PR #315: `SKS_TENANT_ID` generalised into data-driven routing in both `workers-canonical-sync` and `licence-canonical-sync`. Zero behaviour change for SKS today (verified live: no worker yet carries a non-SKS `origin_org_id`).
 - PR #316: edge-function deploys now target only what changed (job-history-based auto-detect, manual override input, `_shared/` change still forces full redeploy); `supabase/setup-cli` v1→v3 clears a confirmed-live Node 20 deprecation warning. A script-injection risk (dispatch input spliced via `${{ }}` directly into a `run:` block) was caught and fixed before merge, not after.

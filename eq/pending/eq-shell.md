@@ -151,10 +151,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: resend-worker-invite always collided with its own unclaimed-invite index — fixed + live; Nelson's retry still unconfirmed (2026-08-24)
-- [ ] **Nelson Sareto's Resend click reproduced the identical duplicate-key error after the fix was confirmed live.** No fresh Postgres duplicate-key log entry appears after the deploy's publish time, and Nelson's `worker_invites` row is unchanged — pointing toward a stale/leftover error banner rather than a genuinely new failure, but **not confirmed**. Asked Royce to refresh and retry; no response yet. If it still fails post-refresh: leading unverified hypothesis is the new `unclaimed` SELECT's `error` being silently discarded, falling through to the old broken `INSERT` path — needs Netlify function-log evidence or a defensive fix (surface `unclaimedErr` explicitly). _(added 2026-08-24)_
-- [ ] **Neither Conor nor Nelson has a confirmed-successful Resend since the fix shipped** — only Nelson's was attempted, ambiguously (above). Supersedes/continues the 2026-08-23 item below ("Royce still needs to click Resend for Conor Horgan and Nelson Sareto") — leave that item open too until both are confirmed. _(added 2026-08-24)_
-- [ ] **`resend-worker-invite-unclaimed-unique-bug` memory entry corrected but the underlying question is still open** — don't treat it as fully closed until Nelson's retry outcome is known. _(added 2026-08-24)_
-- [ ] **Re-verified live 2026-08-25 — still unclaimed, both of them.** `workers` rows exist for both (created 2026-08-20), `user_id` is null on both, `worker_invites` rows are `claimed_at: null`, valid until 2026-09-03. This is the single most pressing open item from the whole first-morning remediation thread (`eq/pending/eq-cards.md` PR #297 entry) — everything else built this week (readiness column, unlock trigger, alerting, site contacts) is infrastructure for a problem that, for the two people it actually happened to, is not yet fixed. _(added 2026-08-25)_
+- [ ] **Nelson Sareto's Resend click reproduced the identical duplicate-key error after the fix was confirmed live.** No fresh Postgres duplicate-key log entry appears after the deploy's publish time, and Nelson's `worker_invites` row is unchanged — pointing toward a stale/leftover error banner rather than a genuinely new failure, but **not confirmed**. If this specific banner-vs-real-failure question ever resurfaces: leading unverified hypothesis was the new `unclaimed` SELECT's `error` being silently discarded, falling through to the old broken `INSERT` path. Moot for Conor/Nelson themselves — both claimed successfully 2026-08-25 (see archived entries) — but the resend button's own behaviour in this edge case was never directly re-tested. _(added 2026-08-24)_
 
 ---
 
@@ -179,18 +176,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **S2 (sprint doc) still open** — `entity-actions.ts`/`entity-patch.ts` gate asset writes on `entity.edit`/`entity.delete` (the CRM tier) rather than `equipment.edit`/`equipment.view`, aligned by coincidence today, not design. Needs Royce's call: re-point the keys, or document the CRM-tiering as deliberate. _(added 2026-08-23)_
 - [ ] **S6 (sprint doc), now larger** — not click-tested live: the original two fixes (`staff_conversations`, GM Reports) plus this round's three (`invite-users-batch.ts`'s guard, both Intake fixes). All verified via live grants/policy/function-body queries and full CI, not an actual signed-in session attempting the blocked action. _(added 2026-08-23)_
 - [ ] **`ai.use` and `service.do_work` still unresolved** — carried over from the sprint doc, untouched this round. _(added 2026-08-23)_
-
----
-
-## eq-shell: Staff list showed "None recorded" for approved-but-unclaimed labour-hire candidates, indistinguishable from having nothing on file — fixed (2026-08-23)
-*Direct follow-up to the same day's compliance-pack Pending-section work: Royce, from a screenshot of the Staff list, pointed out that Conor Horgan and Nelson Sareto both show "None recorded" in the Licences column even though each has 4 real uploaded credentials pending — a manager scanning the list has no way to tell that apart from someone with genuinely nothing on file, without opening the row.*
-
-- [x] **Threaded `pendingLicByStaff`** (already computed in the parent component for the per-person detail view built earlier today) into both list renderers — `StaffList` (desktop table) and `MobileStaffList` — as a new prop, same pattern as the existing `licByStaff`.
-- [x] **Extended `LicChips`'s empty state**: when a row has zero confirmed licences AND pending credentials exist, shows "N uploaded — not signed up to Cards yet" (styled to match the existing "Not signed in" Login-column convention) instead of the generic "None recorded". Genuinely licence-free people are unaffected — pending-candidate and confirmed-licence are mutually exclusive states by construction (a pending row only exists while `user_id IS NULL`, which is exactly when `licences.user_id` can't have a row yet either).
-- [x] eq-shell [PR #1560](https://github.com/eq-solutions/eq-shell/pull/1560), merged (`72852dcd`) on Royce's explicit "yes, merge it," confirmed live via the deploy reaching `state: ready` (published 19:38:54, not just merge status).
-
-**Deferred:**
-- [ ] **Not click-tested live** — verified via the deploy's exact commit match, not by anyone actually opening `core.eq.solutions/sks/staff` and looking at Conor's/Nelson's rows. _(added 2026-08-23)_
 
 ---
 
@@ -342,19 +327,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **`20260816_timesheets_leave_own_crew_write.sql`'s identity-helper bug** — flagged as `task_c6df5631`, in progress in a separate session as of this entry. _(added 2026-08-23)_
 - [x] **`0262` (PR #753/SEC-37, zaap) dispatched** — a different session (this one) hit a real plane-scope-guard bug blocking the dispatch (see the PR #1516 section below), fixed it (PR #1524), then dispatched `--slug=eq` successfully and verified live. Full detail in `ops/security-register.md` (SEC-37) and today's session log.
 - [ ] **`0258`-`0261` (the 4 ehow-only migrations) still not dispatched** — dispatching each (with `--slug=<tenant>` matching its declared plane) remains explicitly Royce's call. _(added 2026-08-23, narrowed from "none of the 5" — one of the five is now done)_
-
----
-
-## eq-shell: labour-hire licence promotion gap — Shell-join claim door was silently dropping credentials, root-caused + fixed (2026-08-23)
-*Royce, from a Staff page screenshot: why aren't the labour-hire licences (Conor Horgan, Nelson Sareto) showing up. Resolves the open question left by the 2026-08-21 "Labour-hire claim gate" entry (archived) about whether the Shell-join claim flow alone promotes credentials.*
-
-- [x] **Root cause confirmed live, three layers deep**: (1) both candidates' invites went unclaimed — approved 33 min before PR #1513's auto-send-claim-email fix went live, so no email ever sent; (2) even once claimed, the claim link (`shellJoinUrl()`) routes through `shell-join-tenant.ts`, which links the account correctly but never promotes `worker_credentials` into `public.licences` — that promotion loop only ever existed inside `eq_cards_claim_invite`, a separate Postgres RPC used by the Cards app's own claim flow; (3) confirmed concretely, not just by code reading: 0 of 8 `worker_credentials` rows in the entire database had ever been promoted — all 8 belonging to these two candidates.
-- [x] **Fixed**: ported the same promote-or-update loop from `eq_cards_claim_invite` into `shell-join-tenant.ts`. eq-shell [PR #1517](https://github.com/eq-solutions/eq-shell/pull/1517), squash-merged (`4231788f`), confirmed live via exact Netlify `commit_ref` match, on Royce's explicit "merge."
-- [x] **Companion gap flagged and spun off**: `accept-invite.ts` (Shell's other claim door — desktop email+PIN) has the identical gap. Spawned as a background task; produced eq-shell [PR #1519](https://github.com/eq-solutions/eq-shell/pull/1519), squash-merged, confirmed live via Netlify deploy polled to `state: ready` (not just merged), on Royce's explicit "merge it."
-
-**Deferred:**
-- [ ] **Royce still needs to click Resend for Conor Horgan and Nelson Sareto** (`core.eq.solutions/admin/workers`) — the fix only fires on claim; nothing promotes until they actually verify. _(added 2026-08-23)_
-- [ ] **Not click-tested live, either claim door** — both #1517 (Shell-join) and #1519 (accept-invite.ts) verified via `tsc -b --force`/eslint and exact commit-ancestry against the live deploy, not an actual claim walked through by a person. Worth confirming once Conor or Nelson claims. _(added 2026-08-23)_
 
 ---
 

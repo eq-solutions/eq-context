@@ -1,13 +1,22 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-26
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
 ---
 
 # Cross-Repo — Pending
+
+---
+
+## eq-shell + jvkn: a worker's synthetic auth-keying email was displaying as if it were real (2026-08-26)
+*While diagnosing the labour-hire photo issue (see `eq/pending/eq-cards.md`), Royce spotted a worker's Field profile showing `93b24e16-...@cards.eq.solutions` as their email and asked what was happening — expected it to be his real icloud address.*
+
+- [x] **Traced, not guessed**: `shell_control.users.email` had been `null` since signup (2026-07-01, phone-only) — never a real bug or an overwrite. eq-shell's `mint-cards-otp.ts` deliberately falls back to a synthetic `{user_id}@cards.eq.solutions` address when a phone-only user has no email, purely to give GoTrue something to key a magic-link on for the Shell→Cards handoff (a documented, working-as-designed fallback — Royce confirmed this exact behaviour live 2026-08-03, Sentry EQ-SHELL-13). That synthetic value then propagated into `auth.users`/`profiles`/`workers` via existing sync triggers, with no way for the display layer to know it wasn't a real address.
+- [x] **Fixed the specific person**: Royce supplied the real address (`cicero.junior@icloud.com`) for Cicero Goncalves Da Silva Junior. Updated `shell_control.users.email` (the canonical field) plus `public.profiles.email`/`public.workers.email` directly (checked for a collision first — this exact codebase has prior history of email-collision bugs). `auth.users` will self-correct automatically next time he opens Cards (`ensureAuthUser`'s existing sync logic detects and repairs the mismatch) — deliberately did not hand-edit `auth.users`/`auth.identities` directly.
+- [~] **Systemic follow-up spawned and already running**: stop the synthetic placeholder from ever displaying as a real email anywhere a person sees it, and add a gentle (non-blocking — an earlier hard gate here already caused a worse bug once) nudge encouraging phone-only-signup workers to add a real email. Royce: "we dont want that happening - we want to encourage people to fill in their email." Background task, started by Royce in a separate session; investigate whether PR #1125's existing email-capture nudge already covers part of this before building anything new. _(added 2026-08-26)_
 
 ---
 
