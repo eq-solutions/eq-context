@@ -70,7 +70,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1612 fix(staff): let a manager remove a bad licence from the expired-metric count
-- #1610 fix(auth): stop offering Delete on self-join links that have been used
 - #1609 fix(entity-patch): derive isProd from request Host, not process.env.CONTEXT
 
 ---
