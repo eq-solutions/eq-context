@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: per-user sidebar simplification ("Interface: Simple") — built, merged, live (2026-08-26)
+*Royce: "Sharon [office manager] is easily overwhelmed by her permissions' full sidebar — she only needs Records and EQ Field to look at timesheets. Whats a good way of doing this?"*
+
+- [x] **New axis, not a permission change**: sidebar visibility (`nav_scope`, per user × tenant) is fully independent of what a user is *allowed* to do (`useCan`/`PermKey`) — never grants access, only hides items the user's permissions already allow. Canonical item list + filter logic centralised once (`src/lib/navScope.ts`), consumed identically by the sidebar, the admin edit page, and the access-control preview rather than reimplemented per surface.
+- [x] **Built**: `shell_control.user_tenant_memberships.nav_scope` (jsonb, nullable — null = Full) + `eq_get_tenant_user` RPC updated to return it, both applied live on jvkn. New `nav-scope` Netlify function, gated `admin.manage_groups`. Admin control lives on `AdminEditUser.tsx` (Full/Simple toggle + grouped checkboxes, one write per click, optimistic with rollback on failure — same pattern as the Security-groups section above it). `AccessControlPage`'s existing preview extended to show "Interface: Simple (N shown)" so a write can be spot-checked without a second login. eq-shell [PR #1617](https://github.com/eq-solutions/eq-shell/pull/1617), merged, deploy-confirmed live.
+- [x] **Merge briefly blocked by the live `organisations` anon-read incident** (see the "organisations anon-read regression" section in this file — same root cause, unrelated to this PR's own content). Unblocked once Royce hand-applied that fix; re-ran the required check clean, merged after.
+
+**Deferred:**
+- [ ] **Not click-tested live by a person** — verified via `tsc -b`, the access-control preview panel, and production deploy-ancestry, not an actual signed-in session in Simple mode. Worth two minutes: set a test user to Simple with just Records + EQ Field checked, sign in as them, confirm the sidebar actually narrows and nothing else regresses. _(added 2026-08-26)_
+- [ ] **Sharon herself not yet switched over** — this session built the mechanism only; applying it to her account and deciding which items she keeps is Royce's call. _(added 2026-08-26)_
+
+---
+
 ## eq-shell: organisations anon-read regression — 3rd occurrence, root-caused + fixed live (2026-08-26)
 *Found while chasing an unrelated PR's (#1615, see section below) failing required "Schema drift + anon-grant + policy-lint" check — same red check another session hit on a different PR earlier the same day and admin-merged past (this file's "blank-name worker records" section, above).*
 
