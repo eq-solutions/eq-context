@@ -23,6 +23,13 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## SEC-1 digest de-escalation gap — `/decide` pass run, needs Royce's steer (2026-08-26)
+*The 2026-08-21 "de-escalate from active nagging" call above was never mechanically wired into the digest generator — SEC-1 has fired as an identical top-line P0 across at least 4 sessions since (2026-08-23 through 2026-08-26).*
+
+- [ ] **`eq-context/.github/scripts/refresh_digest.py`'s `security_open_critical()` (~line 565) has no way to mark a register row "open but explicitly de-escalated"** — it surfaces any Status cell starting with OPEN/STILL OPEN as a top-line 🔴, full stop; the function's own docstring already names SEC-1 as the known exemplar of this exact gap. `/decide` verdict: worth adding a dated `DE-ESCALATED (re-escalates YYYY-MM-DD)` token the parser explicitly excludes — but only if Royce wants smart suppression over the current deliberately-blunt "every open P0 always nags forever" behaviour, which may itself be an intentional safety property (same failure class as `system/failures.md` F4/F5: ungoverned state quietly overriding a governed contract). **Needs Royce's steer**: build the convention, leave it blunt on purpose, or just hand-adjust today's display. _(added 2026-08-26)_
+
+---
+
 ## SEC-19 — sks-labour PIN credential leak: CLOSED. SEC-1 residual risk: still open, next step offered (2026-07-30)
 
 Royce asked for "simple security upgrades that won't affect people using sks nsw labour," then set the real constraint: no login/UX changes. Investigation (live-verified, not doc-assumed) found the anon key could read `people.pin` directly — worse than SEC-1's PII framing, a live login-credential leak, not just data. `loadFromSupabase`'s bulk roster fetch shipped every worker's plaintext PIN on every session. Full writeup: `ops/security-register.md` SEC-19.
