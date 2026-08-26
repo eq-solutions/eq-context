@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-26)
 
-**eq-cards:**
-- #322 fix: stop showing/saving eq-shell's synthetic placeholder email
-
 **eq-field:**
 - #795 fix: hide the synthetic cards.eq.solutions placeholder email
 
