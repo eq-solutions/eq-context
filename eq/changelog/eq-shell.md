@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -13,6 +13,13 @@ status: live
 - `entity-patch.ts`'s CORS allowlist derived prod-vs-dev from `process.env.CONTEXT`, which Netlify Functions don't reliably propagate — live-reproduced as `isProd` reading `false` in real production, silently dropping both real Field origins and breaking every cross-origin Field→Shell write through this endpoint ("Failed to fetch", reported via the Supervision category modal). [PR #1609](https://github.com/eq-solutions/eq-shell/pull/1609) derives `isProd` from the request's own Host header instead — squash-merged (`363554fa`).
 - `cards-api.ts` runs the identical pattern — live-verified not currently broken, hardened preemptively. [PR #1613](https://github.com/eq-solutions/eq-shell/pull/1613), merged.
 - Post-merge, `field.eq.solutions` specifically kept showing the pre-fix symptom — traced to a stale Netlify edge cache entry (the rejected pre-fix response carried no `Vary: Origin`, so it wasn't keyed by origin) poisoned by the diagnosis session's own pre-fix testing, not a flaw in the fix. Cleared via a manual redeploy; confirmed stable. Full writeup: `eq/pending/eq-shell.md`.
+
+## 2026-08-27 (PR #1629 MERGED + LIVE — control-plane drift gate unblocked, eq_cards_admin_sync_tenant_access allowlisted)
+- The required "Schema drift + anon-grant + policy-lint" check was blocking every open eq-shell PR on a pre-existing, unrelated gap first flagged in the entry below (2026-08-26, PR #1622/#1623 — admin-merged past it, not fixed at the time): `public.eq_cards_admin_sync_tenant_access` live on jvkn with no matching eq-shell migration file.
+- Root-caused, not assumed: traced to eq-cards [PR #325](https://github.com/eq-solutions/eq-cards/pull/325) (`0165_admin_sync_tenant_access_on_roster_removal.sql`, merged by Royce as `c1fcc9b`) — the jvkn-side half of the tenant-access-sync feature whose eq-shell caller already merged as [PR #1621](https://github.com/eq-solutions/eq-shell/pull/1621) (`field-identity-push.ts`, whose own commit message names this RPC as "shipping separately" from eq-cards). Not a bypass — a cross-repo function this repo's checker can't see into eq-cards' own migrations tree, same shape as 9 other already-allowlisted functions.
+- Allowlisted in `scripts/check-control-plane-drift.mjs`'s `KNOWN_UNSOURCED`, matching the file's existing documentation convention (source PR, merge commit, grants, cross-repo caller). Deliberately not a competing `CREATE FUNCTION` migration in eq-shell — this session's own investigation found a same-day sibling memory record already documenting that exact mistake as a corrected false premise for a different function (`0162`/`0163`/`0164`).
+- [PR #1629](https://github.com/eq-solutions/eq-shell/pull/1629), all checks green including the drift gate itself, squash-merged (`21b33c85` → `1bab20ef`) on Royce's explicit "merge when safe". `gh pr merge`'s local cleanup hit the same sibling-worktree-holds-`main` snag as other sessions this week; the merge itself succeeded, confirmed via a direct GitHub API read before trusting the failing exit code. Deploy-verified live via Netlify's per-deploy `commit_ref` (not the site's cached "current deploy" pointer, which still showed the prior commit for several minutes after merge) — `ready` at 19:29:50Z.
+- Not independently verified against a live `pg_get_functiondef` body/grant diff — no Supabase Management API credentials available this session; verification was the eq-cards source file's explicit grants plus the drift check's own live-existence query. Flagged in both the allowlist comment and `eq/pending/eq-shell.md`.
 
 ## 2026-08-26 (PR #1622 + #1623 MERGED + LIVE — organisations anon-read ledger corrected, CHECK 10's own bugs fixed)
 - Follow-up to the 3rd organisations anon-read regression documented below (PR #1618): that fix never touched `CONTROL-PLANE-LEDGER.md`, so its row for the 08-23 restore was still bare "confirmed live" hours after the 3rd drop. [PR #1622](https://github.com/eq-solutions/eq-shell/pull/1622) corrects it — independently re-verified live against jvkn rather than trusting #1618's own claims — squash-merged (`32464507`).
