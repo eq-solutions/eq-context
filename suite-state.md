@@ -69,11 +69,9 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1629 chore(drift): allowlist eq_cards_admin_sync_tenant_access — sourced in eq-cards
 - #1628 feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invariants for jvkn
 - #1627 docs(security): paper-trail 0162/0163 + correct CONTROL-PLANE-LEDGER (3rd occurrence)
 - #1625 fix(security): stop staff-active drift sweep from logging out multi-tenant workers
-- #1620 DIAGNOSTIC ONLY — do not merge — entity-patch host/url echo
 
 ---
 
