@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-26)
 
 **eq-field:**
-- #808 v3.5.583 — Timesheets: Fill Week button, dedicated Approved column, narrower Name column
+- #809 v3.5.583 — SKS canonical roster: fix inert realtime sync + register local writes
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -70,6 +70,9 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1633 feat(drift-guard): CHECK 14 — tenant/self/org isolation invariant for jvkn
 
 ---
 
