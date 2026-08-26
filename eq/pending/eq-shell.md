@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,12 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: multi-project-code sites (MOD10-style) — pattern decided, build scoped, not yet built (2026-08-27)
+
+- [ ] **Build `app_data.site_projects`** so one canonical Site can carry multiple project/module codes (e.g. SKS's Telstra SLDC hosting MOD10, MOD11...) without duplicating the Site row. Schema + UI scoped this session (a child table modeled on `site_customer_links`/migration 0280's service-role-only RLS pattern, plus a nested-row expansion in `CustomersPage.tsx`'s Sites table) and handed off as a ready-to-paste build prompt — not yet started. Needs its own eq-shell worktree/session. Decision logged in `ops/decisions.md` (2026-08-26, Status: Proposed — confirm with Royce before merging, this is new surface area). _(added 2026-08-27)_
 
 ---
 
