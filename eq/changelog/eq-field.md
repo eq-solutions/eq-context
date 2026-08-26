@@ -9,6 +9,10 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-26 (PR #795 MERGED + LIVE — synthetic cards.eq.solutions placeholder email hidden across worker/contact displays)
+- Companion to eq-cards' same-day fix (see `eq/changelog/eq-cards.md`). The two Supabase row-mappers feeding `STATE.people[]`/`STATE.managers[]` now normalize eq-shell's synthetic `${user.id}@cards.eq.solutions` placeholder the same way a genuinely-missing email already renders — covers a worker's own Profile tab, the peer "Person Profile" modal, the Contacts/Managers rosters + edit modals, CSV exports, and timesheet/leave notification toasts in one change.
+- Deploy verified live via direct Netlify commit-ancestry check (`8f61dd59`, ready/published/production).
+
 ## 2026-08-26 (PR #794 MERGED + LIVE, v3.5.575 — Home + drawer: Workbench/ESS quick links, SKS-only)
 - Royce relayed a request from Cicero, a field worker, via a screenshot of Cicero's phone on EQ Field's Home tab (Shell-embedded, `core.eq.solutions`): could Field link out to Workbench (SKS's job/project tool) and the payroll site, so workers only need one app/bookmark. Real URLs from Royce: `workbench.sks.com.au`, `technology-ess.sks.com.au` (Employee Self Service).
 - Asked to steelman his own "small icons" idea before building: recommended a secondary icon row on Home (below "Team week / Who's with me," not mixed into the primary tile grid) plus a persistent entry in the "More" drawer — the drawer matters because the stated goal needs reachability from every screen, not just Home. Royce: "go ahead and build it."

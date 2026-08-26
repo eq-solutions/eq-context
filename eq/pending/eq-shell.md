@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: synthetic cards.eq.solutions placeholder email — stopped from rendering/emailing, merged + deployed live (2026-08-26)
+*Full detail (investigation across all 3 repos, PR #1125 scope-check, the fix plan) in `eq/pending/eq-cards.md` (2026-08-26) — eq-cards-side pointer here since that's where the root cause and full writeup live.*
+
+- [x] `verify-shell-session.ts`, `AdminUserList.tsx`/`AdminEditUser.tsx`, and send-guards on `cards-approve-staff.ts`/`reset-user-pin.ts` (both previously attempted a real `sendEmail()` to the fake address while telling the admin it had sent). Bonus: `WorkerHome.tsx` greeting hardened against the same "derive a name from a UUID" bug class as the 2026-08-16 "Good evening, Contact" incident. eq-shell [PR #1604](https://github.com/eq-solutions/eq-shell/pull/1604), squash-merged, **deploy verified live** via commit-ancestry check against Netlify (`190d09d9`, ready, published, production context) — not just assumed from the merge.
+- [x] First merge attempt hit a transient GitHub API connection error; verified the PR was still genuinely `OPEN` before retrying, avoiding a possible double-merge.
+
+---
+
 ## eq-shell: EQ Ops quote-open P0 (dangling table join) fixed + dispatched live; mobile Commercials layout overlap fixed (2026-08-26)
 *Royce: "all quotes i try to open give me this error" — screenshot showed `relation "app_data.quote_estimators" does not exist`, hitting Simon Bramall on every quote he opened in `/ops`.*
 

@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: synthetic cards.eq.solutions placeholder email — hidden across worker/contact displays, merged + deployed live (2026-08-26)
+*Full detail (investigation across all 3 repos, PR #1125 scope-check, the fix plan) in `eq/pending/eq-cards.md` (2026-08-26) — eq-cards-side pointer here since that's where the root cause and full writeup live.*
+
+- [x] Single choke point: the two Supabase row-mappers feeding `STATE.people[]`/`STATE.managers[]` now normalize a synthetic email like this codebase's existing "no email" state — covers a worker's own Profile tab, the peer "Person Profile" modal, Contacts/Managers rosters + edit modals, CSV exports, and timesheet/leave notification toasts in one place. eq-field [PR #795](https://github.com/eq-solutions/eq-field/pull/795), squash-merged, **deploy verified live** via commit-ancestry check (`8f61dd59`, ready, published, production context).
+- [x] Surfaced unrelated pre-existing CI drift (`build-bundles.mjs --check`/`check-cache-busters.mjs` both fail against `origin/main` itself) while verifying — confirmed unrelated to this change, spun off as background task `task_bc389479` rather than fixed inline. Royce has already started that task running in a separate session.
+
+---
+
 ## eq-field: Home + drawer quick links to Workbench/ESS, SKS-only (2026-08-26)
 *Royce, relaying a request from Cicero (a field worker) via a screenshot of his phone on EQ Field's Home tab: could Field link out to Workbench and the payroll site (ESS), so workers only need one app/bookmark. Built and shipped same session — eq-field [PR #794](https://github.com/eq-solutions/eq-field/pull/794) (v3.5.575), merged, live.*
 

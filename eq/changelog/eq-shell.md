@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-26 (PR #1604 MERGED + LIVE — synthetic cards.eq.solutions placeholder email stopped from rendering/emailing)
+- Companion to eq-cards' same-day fix (see `eq/changelog/eq-cards.md`) for the same synthetic `${user.id}@cards.eq.solutions` GoTrue placeholder. `verify-shell-session.ts`'s session response, the admin Users list (`AdminUserList.tsx`) and detail page (`AdminEditUser.tsx`) all now treat the placeholder as an absent email, same as the existing empty-state.
+- `cards-approve-staff.ts` and `reset-user-pin.ts` both previously fired a real `sendEmail()` at the fake address (a connection-approval email and a PIN-reset link respectively) while telling the admin it had sent — both now refuse instead.
+- `WorkerHome.tsx`'s greeting fallback hardened against deriving a display name from a UUID-shaped email local part — same bug class as the 2026-08-16 "Good evening, Contact" incident, different placeholder.
+- Deploy verified live via direct Netlify commit-ancestry check (`190d09d9`, ready/published/production), not assumed from the merge.
+
 ## 2026-08-26 (PR #1603 MERGED + LIVE — labour-hire licence photos fixed on both Shell claim doors)
 - Companion fix to eq-cards' same-day photo-promotion work (see `eq/changelog/eq-cards.md`): `shell-join-tenant.ts` and `accept-invite.ts` both ported a credential-promotion loop from eq-cards' `eq_cards_claim_invite` on 2026-08-23, inheriting a gap where the uploaded photo/document reference never made it onto the real licence row. Both now call a new shared jvkn edge function (`promote-labour-hire-photo`) right after promoting each credential, via a bounded-timeout await (not true fire-and-forget — this repo's Netlify functions freeze their container the instant a response returns, silently dropping genuinely-unawaited calls). Reused the existing `LABOUR_HIRE_INTAKE_SECRET`/`SUPABASE_URL` env vars.
 - Squash-merged, confirmed live via exact commit-ancestry match against the newest production deploy. Also closed out two outstanding "not click-tested live" items for Conor Horgan/Nelson Sareto tracked since 2026-08-23 — both now confirmed rendering real licence photos on `core.eq.solutions/sks/staff`.

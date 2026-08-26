@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-26 (PR #322 MERGED — eq-shell's synthetic cards.eq.solutions placeholder email hidden from display + closed at the write source)
+- A phone-only-signup worker's real email was never captured; eq-shell's internal GoTrue placeholder (`${user.id}@cards.eq.solutions`) was silently showing as if it were real on the worker's own Profile tab, Settings, employment record, and more. `profile_edit_screen.dart` no longer prefills the Email field from the raw Supabase Auth session (the one path that could have permanently written the placeholder into `profiles.email`); `Profile.fromJson`/`Worker.fromJson` now sanitize it at parse time, covering every downstream screen at once; Settings' "Signed in as" row and PostHog's `identify()` get the same guard.
+- Also closed the `workers-canonical-sync` edge function's two email-copy points (merge + insert branches) against the same placeholder — the SKS→ehow leg that feeds EQ Field's rosters, found to live in this repo (not eq-shell, as first reported) partway through the fix.
+- Companion fixes in eq-shell (PR #1604) and eq-field (PR #795) — see those repos' own changelogs.
+
 ## 2026-08-26 (PR #318 + #321 MERGED + LIVE — labour-hire licence photos fixed across 3 claim paths, "You're ready for site" removed)
 - Conor Horgan's and Nelson Sareto's labour-hire licence photos weren't showing in Shell or Cards. Root cause: three independent claim-time code paths (this repo's `eq_cards_claim_invite`, plus eq-shell's `shell-join-tenant.ts`/`accept-invite.ts`) each created the real licence row without ever carrying the uploaded photo/document reference across — the file itself was always intact in storage, just never linked. A raw path copy wouldn't have worked either: the storage RLS policy requires the licence's own id to already be in the file path.
 - New edge function `promote-labour-hire-photo` (jvkn) does the real fix — copies the pending file to the correct path convention and points the row at it, idempotent, shared by all three claim paths instead of three separate implementations. Migration `0161` wires this repo's own claim RPC to call it. [PR #318](https://github.com/eq-solutions/eq-cards/pull/318), merged. The companion eq-shell fix is [PR #1603](https://github.com/eq-solutions/eq-shell/pull/1603) — see `eq/changelog/eq-shell.md`.
