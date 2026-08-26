@@ -12665,3 +12665,13 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 - [x] `task_c95a3685` closed — both issues answered. No code changes needed in either repo.
 
 ---
+
+## eq-field: Edit Roster Ctrl+Enter race condition — Fill Week didn't fill on the first press (2026-08-26)
+*Royce reported two symptoms from a screenshot of the Edit Roster grid: the Fill Week button "looks like it saves but then this happens" (many rows showing empty Tue-Fri), and Ctrl+Enter "kind of working" — jumps to the next row but only fills if you click back and press it a second time.*
+
+- [x] **Root cause found and fixed**: `updateCell()` always commits through `_rosterGateAssignment()`, which is unconditionally async even with its own feature toggle off. The keyboard handler called `fillWeek()` synchronously right after `updateCell(el)`, so it read Monday's value before the keystroke just typed had actually landed — the first Ctrl+Enter press filled nothing (or a stale value) while focus still jumped away regardless; a second press on the same row then read the committed value and worked. Fixed by making the fill and the focus jump wait for the real commit. eq-field [PR #805](https://github.com/eq-solutions/eq-field/pull/805) (v3.5.582), merged on explicit "merge when safe", confirmed live via `field.eq.solutions/sw.js`.
+- [x] **Investigated the "Fill Week reverts" report per Royce's explicit ask to check the mouse button too — did not hold up.** That button doesn't go through the buggy code path at all. Checked the exact people/week from the screenshot directly against live ehow: every row had the correct data. The audit log showed a real ~5-minute Ctrl+Enter burst that lined up almost exactly with the screenshot's own timestamp — the screenshot most likely caught the grid mid-traversal, not actual data loss.
+- [x] **A same-day version collision was caught and resolved cleanly**: another change ([PR #806](https://github.com/eq-solutions/eq-field/pull/806), a Preferred Name fix) merged first and had already claimed the same release number — renumbered this one (v3.5.581 → v3.5.582), resolved the resulting changelog/reflection-log merge conflicts by keeping both write-ups in landing order, and re-ran the full check suite before merging.
+- [x] **Two real but unrelated gaps found in the SKS canonical roster write path along the way, deliberately not fixed here** — see `eq/pending/eq-field.md`'s 2026-08-26 entry for the two open follow-ups this spawned.
+
+---

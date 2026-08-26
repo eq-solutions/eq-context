@@ -999,3 +999,10 @@ Items when triggered:
 
 ---
 
+
+## eq-field: SKS canonical roster write/sync gaps found during the Ctrl+Enter fix (2026-08-26)
+
+- [ ] **SKS roster saves never get a real database id back from reads**, so every save always does a full week rewrite instead of a targeted one-cell update — harmless today, but means the "someone else is editing this" conflict warning can never fire for SKS. `task_867a4c80`. Full write-up: `eq/changelog/eq-field.md` 2026-08-26 (eq-field PR #805). _(added 2026-08-26)_
+- [ ] **Live cross-supervisor sync is effectively broken for SKS's roster specifically** — two people editing the roster at once won't see each other's changes until the next 30-second refresh, not live. `task_10ff7138`. Same source as above. _(added 2026-08-26)_
+
+---
