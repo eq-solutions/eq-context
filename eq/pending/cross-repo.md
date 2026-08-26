@@ -20,6 +20,18 @@ status: live
 
 ---
 
+## eq-field + eq-shell + eq-cards: "Remove from roster" doesn't cut a worker's Cards/Shell connection (2026-08-26)
+*Royce asked what happens to a labour-hire worker's Cards access and Shell/Core tenant membership when SKS removes them from EQ Field's roster — whether "Remove from roster" actually severs the link. Traced the architecture, then verified live against a real case rather than guessing.*
+
+- [x] **Traced Cards' Connections screen to its real backing RPCs**: `eq-cards/lib/features/connections/data/connections_repository.dart` — reads/writes `org_access_requests` (the privacy-safe employer-connect pathway), not raw `org_memberships`.
+- [x] **Verified live against a real, recent case**: a worker pulled off SKS's EQ Field roster this morning (`app_data.staff.active` flipped `false` on ehow at `05:10:15`). None of the three records that actually govern what the worker/Shell see moved: `public.org_memberships.status` (jvkn, still `active`, unchanged since 2026-06-24), `public.org_access_requests.status` (jvkn, still `approved`, unchanged since 2026-08-20), `shell_control.user_tenant_memberships.active` (jvkn, still `true`, unchanged since membership creation 2026-05-29).
+- [x] **Reported as a finding, no code touched** — matches the standing "live app = draft-and-report" rule; a fix wasn't requested and wasn't built.
+
+**Deferred:**
+- [ ] **Whether "Remove from roster" should cascade to `org_memberships`/`org_access_requests`/`shell_control.user_tenant_memberships` is an open decision, not yet made.** If it should, the shape is either flipping those three directly from `eq-field/scripts/people.js`'s archive action, or a sync job keyed off `app_data.staff.active`. Needs Royce's call — this touches access revocation, not a silent fix. _(added 2026-08-26)_
+
+---
+
 ## eq-context + eq-shell + eq-field: field_people_iud cross-repo migration coordination gap — closed, restoration migration dispatched live (2026-08-24)
 *Investigated a specific incident: eq-field's own hand-applied migrations and eq-shell's governed One Pipe both edit a handful of `app_data` functions on ehow with no shared ledger between them — confirmed to have actually happened on `field_people_iud()` on 2026-08-23 (eq-field PR #761's upward-identity-push vs eq-shell's 0270/0271, same day). Verified live rather than trusting the task's own framing, which turned out wrong in two ways: 0270/0271 weren't "unrelated" busywork, they were eq-shell's own P0 recovery from a 5-day outage its earlier migration (0249) had silently caused; and PR #761 was never actually applied to ehow — it sat merged-but-dormant in git for most of a day, a live landmine that would have silently reverted 0270/0271's three security gates if hand-applied as written.*
 
