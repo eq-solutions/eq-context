@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Home + drawer quick links to Workbench/ESS, SKS-only (2026-08-26)
+*Royce, relaying a request from Cicero (a field worker) via a screenshot of his phone on EQ Field's Home tab: could Field link out to Workbench and the payroll site (ESS), so workers only need one app/bookmark. Built and shipped same session — eq-field [PR #794](https://github.com/eq-solutions/eq-field/pull/794) (v3.5.575), merged, live.*
+
+- [ ] **Neither link brings a worker back to Field.** Tapping either opens a second browser tab with no return affordance — delivers "one bookmark," not fully "one app," which is the softer version of the goal Royce actually stated. No reasonable client-side fix exists without native-app affordances Field doesn't have; named rather than left implicit in the shipped changelog copy. Only worth revisiting if it turns out to actually bother people in practice. _(added 2026-08-26)_
+
+---
+
 ## eq-field: TAFE holidays config could silently lose ranges when added quickly (2026-08-25)
 *Royce: "tafe holidays dont save / I added in 4 ranges and they didnt save properly." Reproduced against the real save code in an isolated harness rather than guessed at — confirmed a real async race, not a one-off glitch.*
 
