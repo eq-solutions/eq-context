@@ -69,7 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1617 feat(access-control): per-person sidebar visibility scope
+- #1618 fix(security): restore organisations anon bootstrap-read policy (3rd occurrence)
 - #1615 feat(auth): collapse deactivated & expired self-join links by default
 - #1609 fix(entity-patch): derive isProd from request Host, not process.env.CONTEXT
 
@@ -83,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 |------|--------|
 | eq-service | ✓ success |
 | eq-shell | ✓ success |
-| eq-field | ? pending |
+| eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
