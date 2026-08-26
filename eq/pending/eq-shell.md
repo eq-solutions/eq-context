@@ -13,6 +13,30 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Mark Brame role-change check — role change confirmed working, stale record archived (2026-08-26)
+*Royce: "I recently had Mark Brame in as a manager and then I changed his account to employee but I don't think it changed anything in the view... can you double check this? I have since deleted him." Root-caused entirely from live jvkn/ehow queries plus a codebase trace — no guessing. The two gaps this investigation found are their own sections elsewhere in this file (both already built, merged, live) — this section covers the original question and Mark's own record only.*
+
+- [x] **The role change genuinely worked.** `shell_control.users.role` and `shell_control.user_tenant_memberships.role` both read `employee`, consistently, and the permission matrix was actively enforcing it — Mark's only real session (2026-08-20) hit five explicit `permission.denied` audit rows for admin-tier actions (`admin.review_cards`, `admin.list_users`, `admin.invite_user`, `field.view_licences`).
+- [x] **Found the real source of "didn't change anything in the view"**: Admin > Users' `EqRole` (the login/permission gate) and the Staff page's `is_supervisor`/`supervisor_role` field (a job-title-style text flag, "NSW General Manager" on Mark's `app_data.staff` row) are two unrelated fields, on two different databases, edited on two different screens. Changing one never touches the other. Memory: `eqrole-vs-staff-supervisor-two-manager-concepts`.
+- [x] **"He could still see everything as a manager" — chased to ground.** Zero security-group membership at the time (his one group, a calendar-digest mailing list, carried no permission grants and was removed before his first login). What *was* broader than a plain employee were SKS-tenant-wide role overrides (service job create/close/reopen, prestart/toolbox reports) applying to every SKS employee, not personal to Mark. Royce accepted this as the likely explanation rather than asking for deeper Field-side verification.
+- [x] **Mark's stale `app_data.staff` record archived** on Royce's explicit confirmation (`active=false`, `on_roster=false`) — his Shell login had been deactivated twice (2026-08-20, 2026-08-23) but the staff/roster record had never followed, so he was still showing as an active NSW General Manager on the SKS roster.
+- [x] **What actually flipped his `app_data.staff.active` to false in the first place was investigated and resolved by a follow-up session** (see this file's own "staff/shell active-sync" section below, and `sessions/2026-08-26.md`): Royce himself, via EQ Field's "Remove from roster" action. Not a bug.
+
+---
+
+## eq-shell: Staff page "Has expired" licence count — bad records can now be removed, built + merged + live, one live-found layout bug fixed same session (2026-08-26)
+*Royce: a licence uploaded with a garbage 2011 expiry date was skewing the "Has expired" metric, wanted "an option to hide it."*
+
+- [x] **Found the zero-migration fix before proposing anything**: `public.licences` (jvkn) already has a `deleted_at` column, already filtered (`.is('deleted_at', null)`) by every read path (`staff-canonical-licences.ts`, `worker-licences.ts`, `staff-licence-replace-photo.ts`) — no function had ever written to it. Memory: `licences-deleted-at-already-wired-soft-hide`.
+- [x] **Built**: new `staff-licence-remove.ts` (mirrors `staff-licence-replace-photo.ts`'s exact `admin.review_cards` + org_memberships tenant-scope pattern) sets `deleted_at`; a "Remove" control (two-step inline confirm) added next to the existing Replace photo/back buttons in `SplitPanel.tsx`'s `LicGroup`. No change needed to `licStatus()` or the slicers — a removed row just stops being returned. Soft-delete only, never a hard `DELETE`. [PR #1612](https://github.com/eq-solutions/eq-shell/pull/1612), `tsc -b --force` + eslint clean, squash-merged on Royce's "merge it into main," deploy-ancestry-confirmed live (`d0ec2b9c`) — caught a concurrent session's own deploy being `Skipped` mid-poll rather than assuming the first "ready" row was necessarily this one.
+- [x] **Royce click-tested it live within minutes and found a real bug**: the new third button pushed the action row past the detail panel's width, worst when Remove's confirm state expanded it further and clipped the Confirm button. Fixed with `flexWrap` on the row + shortened confirm-state copy ("Remove this licence?" → "Remove?"). [PR #1614](https://github.com/eq-solutions/eq-shell/pull/1614), same verification rigor, squash-merged on a second explicit "merge it into main," deploy-ancestry-confirmed live (`108d6d6`).
+- [x] **Write scope confirmed directly when Royce asked**: real write to jvkn's `public.licences.deleted_at`, not a client-only/tenant-UI-only hide — soft-delete, not a hard `DELETE`, nothing touched on ehow.
+
+**Deferred:**
+- [ ] **The #1614 overlap fix itself hasn't been visually re-confirmed live by a person** — verified via deploy-ancestry only. Worth a look: open a licence card with 3+ credentials, click Remove, confirm "Remove? / Confirm / Cancel" no longer clips past the panel edge. _(added 2026-08-26)_
+
+---
+
 ## eq-shell: staff/shell active-sync — reverse direction found + fixed, alert-only, PR #1608 merged + live (2026-08-26)
 
 - [ ] **Field-driven writes to `app_data.staff` have no reliable attribution in the audit trail** — root-caused while tracing who archived Mark Brame's staff record (turned out to be Royce himself, via EQ Field's "Remove from roster" action, not a bug): `app_data.fn_audit()` tags any write with no `x-eq-actor` header as `source: 'system'`, `actor_id: null`, and Field's PostgREST path never sets that header. Only attributable this time because `app_data.staff.updated_by` happened to carry the real user id — not a general fix. Background task `task_66de20f0` investigating a real fix, started independently by Royce, running in a separate session. _(added 2026-08-26)_

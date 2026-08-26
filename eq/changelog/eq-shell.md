@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-26 (PR #1612 + #1614 MERGED + LIVE — Staff page can now exclude a bad licence from the "Has expired" count)
+- A licence uploaded with a garbage 2011 expiry date was skewing the Staff page's "Has expired" metric with no way to dismiss it. `public.licences` (jvkn) already carried a `deleted_at` column, already filtered by every read path (`staff-canonical-licences.ts`, `worker-licences.ts`, `staff-licence-replace-photo.ts`) — no function had ever written to it, so this needed zero schema migration.
+- New `staff-licence-remove.ts` (mirrors `staff-licence-replace-photo.ts`'s exact auth/tenant-scope pattern) sets `deleted_at`; a "Remove" control (two-step inline confirm) sits next to the existing Replace photo/back buttons on each licence card. Soft-delete only — the row and its uploaded evidence stay recoverable, just excluded from every count. [PR #1612](https://github.com/eq-solutions/eq-shell/pull/1612), squash-merged (`d0ec2b9c`).
+- Royce click-tested it live within minutes and found the new third button overflowed the detail panel's width, worst when Remove's confirm state expanded the row further. Fixed with `flexWrap` + shortened confirm copy. [PR #1614](https://github.com/eq-solutions/eq-shell/pull/1614), squash-merged (`108d6d6`).
+- Both deploy-verified live via Netlify's `listSiteDeploys` (commit-ancestry match against the newest ready production deploy), not assumed from a green merge.
+
 ## 2026-08-26 (PR #1608 MERGED + LIVE — staff/shell active-sync now flags the reverse direction too)
 - PR #1550 (merged 2026-08-23) only ever synced `app_data.staff.active` going false onto the linked Shell login. The reverse — a Shell login deactivated via Admin > Users, which never touches `app_data.staff` — had no coverage at all; found live on a real SKS account, login dead for days while the staff record still showed active.
 - `check-shell-staff-active-drift.mjs` now also runs a second, independent, detect-only query (deactivated Shell logins → still-active linked staff, either tenant plane), surfaced through the existing 15-minute sweep's `[Security]` GitHub issue. Deliberately alert-only, not auto-remediated (Royce's call) — archiving a staff record has a bigger blast radius (rosters, dispatch, Field write-guard triggers, compliance/licence visibility) than logging someone out. No new write path.
