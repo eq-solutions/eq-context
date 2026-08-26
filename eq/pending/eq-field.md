@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Weekly Supervisor Digest → Email Templates + test-send auth fix — closed, one click-through remaining (2026-08-26)
+*Consolidated the digest's messy Supervision-page config (21-manager checklist + section toggles) into Manage → Email Templates, same governed surface the 3 leave emails already use, and added a "Send test to myself" safety net (PR #791, v3.5.573). Royce's first real click hit "unauthorized" — fixed the same session (PR #802, v3.5.578): two independent gaps, the edge function's new code was never actually deployed (Supabase edge functions ship separately from Netlify/git) and the Netlify function's credential didn't match what the edge function's auth check compares against. Full root-cause detail in `eq/changelog/eq-field.md`'s 2026-08-26 entries.*
+
+- [ ] **Real click-through by Royce still the closing verification step.** Both gaps verified fixed live (auth handshake succeeds, edge function redeployed and confirmed at v14), but nobody has actually clicked "Send test to myself" on Manage → Email Templates and confirmed an email lands in an inbox. Two minutes, whenever convenient. _(added 2026-08-26)_
+
+---
+
 ## eq-field: job-numbers Ops→Field status link verified + 7-week migration drift fixed (2026-08-26)
 *Royce asked whether Field's Job Numbers board reflects live status from EQ Ops. It does — but verifying it surfaced eq-field's own repo had been silently wrong about how its own backing function works for 7 weeks.*
 
