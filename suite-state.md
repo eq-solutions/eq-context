@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-26)
 
 **eq-field:**
+- #806 v3.5.581 — FIX: Preferred Name could be saved identical to Full Name
 - #805 v3.5.581 — Edit Roster: fix Ctrl+Enter not filling on the first press
 
 **eq-service:**
@@ -72,9 +73,9 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1626 fix(worker-invite): backfill workers.role so canonical sync stops defaulting new invites to Direct
+- #1628 feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invariants for jvkn
+- #1627 docs(security): paper-trail 0162/0163 + correct CONTROL-PLANE-LEDGER (3rd occurrence)
 - #1625 fix(security): stop staff-active drift sweep from logging out multi-tenant workers
-- #1624 fix(drift): CHECK 10 anon_columns was a Postgres array literal string, not JS array
 - #1620 DIAGNOSTIC ONLY — do not merge — entity-patch host/url echo
 
 ---
@@ -86,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ? in_progress |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
