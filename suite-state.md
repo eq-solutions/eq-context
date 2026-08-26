@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-26)
 
+**eq-field:**
+- #804 v3.5.579 — Leave/incident emails: fix Core links, close Approve/Reject scanner-prescan hole
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -70,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1618 fix(security): restore organisations anon bootstrap-read policy (3rd occurrence)
-- #1615 feat(auth): collapse deactivated & expired self-join links by default
 - #1609 fix(entity-patch): derive isProd from request Host, not process.env.CONTEXT
 
 ---
