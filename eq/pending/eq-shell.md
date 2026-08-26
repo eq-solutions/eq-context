@@ -13,6 +13,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: staff/shell active-sync — reverse direction found + fixed, alert-only, PR #1608 merged + live (2026-08-26)
+*Follow-up to the PR #1550 section further down (2026-08-23) — that fix only ever catches `staff.active` going false. Re-verifying it against live data (not trusting this repo's own memory of it, which still said "OPEN, not merged") surfaced a real SKS account whose Shell login had been deactivated via Admin > Users for days while the linked staff record stayed active the whole time, because that write path never touches `app_data.staff` at all.*
+
+- [x] **Root-caused: the existing drift script's detection query structurally excludes the reverse direction** (its `WHERE active = false` on the staff side filters the row out before the Shell side is ever read) — not just a remediation gap. Asked Royce directly rather than assuming (cascade the archive down automatically vs. alert-only vs. leave independent vs. not a priority) — he picked **alert only, don't auto-archive the staff record**: archiving has a much bigger blast radius (rosters, dispatch, Field's write-guard triggers, compliance-pack/licence visibility) than logging someone out.
+- [x] **Built**: a second, independent detect-only query in `check-shell-staff-active-drift.mjs` (control plane's deactivated logins → any still-active linked staff record, either tenant plane), surfaced through the existing 15-minute scheduled sweep's `[Security]` GitHub issue. No write path added anywhere — a human decides per case. [eq-shell PR #1608](https://github.com/eq-solutions/eq-shell/pull/1608), squash-merged, **deploy verified live** (commit `a5c9a1b2`, Netlify state `ready`, published, production context).
+- [x] **Live-verified working, not just merged**: dispatched the scheduled workflow by hand in dry-run mode straight after deploying — ran clean against real production data with zero errors, correctly found no drift (the one real case had already self-corrected hours earlier the same day) and correctly left the GitHub issue alone.
+- [ ] **Mark Brame's staff record (the case that surfaced this) flipped to inactive on its own hours before this was investigated** — not via this fix (confirmed: the drift script never writes `app_data.staff`) and not via the unrelated `staff-shell-login-timestamp-sync.yml` workflow (read it — that one only syncs `last_login_at`). The actual writer is still unidentified (tagged `source: 'system'` in the tenant audit log, a single-row write, not the ~93-row nightly batch that touches most staff rows). Both sides are consistent now, so nothing urgent — but worth a follow-up look at what that job actually is. _(added 2026-08-26)_
+
+---
+
 ## eq-shell: synthetic cards.eq.solutions placeholder email — stopped from rendering/emailing, merged + deployed live (2026-08-26)
 *Full detail (investigation across all 3 repos, PR #1125 scope-check, the fix plan) in `eq/pending/eq-cards.md` (2026-08-26) — eq-cards-side pointer here since that's where the root cause and full writeup live.*
 

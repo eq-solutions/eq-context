@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-26 (PR #1608 MERGED + LIVE — staff/shell active-sync now flags the reverse direction too)
+- PR #1550 (merged 2026-08-23) only ever synced `app_data.staff.active` going false onto the linked Shell login. The reverse — a Shell login deactivated via Admin > Users, which never touches `app_data.staff` — had no coverage at all; found live on a real SKS account, login dead for days while the staff record still showed active.
+- `check-shell-staff-active-drift.mjs` now also runs a second, independent, detect-only query (deactivated Shell logins → still-active linked staff, either tenant plane), surfaced through the existing 15-minute sweep's `[Security]` GitHub issue. Deliberately alert-only, not auto-remediated (Royce's call) — archiving a staff record has a bigger blast radius (rosters, dispatch, Field write-guard triggers, compliance/licence visibility) than logging someone out. No new write path.
+- Squash-merged (`a5c9a1b2`), confirmed live via Netlify deploy state, then live-verified by hand-dispatching the workflow in dry-run mode against production — ran clean, zero errors.
+
 ## 2026-08-26 (PR #1607 MERGED + LIVE — role changes now audit-logged, membership write failure fails loudly)
 - `edit-user.ts`'s `patch.role` handler was the only one of the file's four mutable-field handlers (role/active/phone/unlock_pin) with no `writeAuditLog` call, and the only one that swallowed its own write failure (`console.warn`-and-continue) while still returning `ok:true`.
 - `shell_control.user_tenant_memberships.role` — not the `users.role` mirror written just above it in the same request — is what `verify-shell-session`, `useCan`/the nav gate, and Access Control's "Preview a person" actually read, so a swallowed write failure meant an admin could see "saved" while the person kept their old permissions. Now returns `500 {ok:false, error:'server-error'}` on that failure, and writes a `user.role_changed` audit row (`previous_role`/`next_role`) on success, matching the `active`/`phone` handlers' existing shape.
