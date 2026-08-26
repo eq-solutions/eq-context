@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-26)
 
-**eq-field:**
-- #800 v3.5.577 — Contacts: off-roster people no longer default-visible
-
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -70,6 +67,12 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1612 fix(staff): let a manager remove a bad licence from the expired-metric count
+- #1611 fix(worker-invite): correct misleading email-field caption
+- #1610 fix(auth): stop offering Delete on self-join links that have been used
+- #1609 fix(entity-patch): derive isProd from request Host, not process.env.CONTEXT
 
 ---
 
