@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -519,6 +519,41 @@ output).*
 ---
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-25 — open items remain in pending.md)
+
+
+---
+
+## SKS roster editing was silently broken for 5 days — trigger dropped by migration 0249, fixed + dispatched, live (2026-08-23) (rotated 2026-08-26)
+*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "SKS roster editing found broken") for full detail. This entry is the SKS-side pointer.*
+
+---
+
+## Staff deactivation wasn't revoking Shell logins — 9 real SKS accounts found + fixed, live (2026-08-23) (rotated 2026-08-26)
+*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "staff deactivation wasn't revoking Shell logins") for full detail. This entry is the SKS-side pointer.*
+
+- [x] All 9 affected people were SKS staff (Luke Johnson + 8 others) — found with an archived staff record but a still-live, auto-refreshing Shell login; all backfilled and revoked live same day.
+
+---
+
+## Users admin list showed the wrong name for staff who are actually linked — fixed + backfilled, 2 gaps spawned off (2026-08-23) (rotated 2026-08-26 — open items remain in pending.md)
+
+- [x] **Fixed + shipped live.** eq-shell [PR #1537](https://github.com/eq-solutions/eq-shell/pull/1537), merged + confirmed live (commit `b998e8d1`). Fill-only sync (never overwrites a manager's deliberate "Display name" override) added at both write sites: `entity-patch.ts` (fires when a manager saves the Staff page) and `cards-approve-staff.ts` (both its approval branches — closed a real `ignoreDuplicates: true` gap that left a shell login blank forever once approved). One-time backfill applied live to jvkn for the 5 people already stuck blank: Fernando Alba, Dylan Lieu, Ali Alsalman, David Boyd, Todd Wilson.
+
+---
+
+## Contacts/Roster/Timesheets team-pill filter didn't account for supervisors — real report (Rhys Scott), general fix shipped (2026-08-23) (rotated 2026-08-26 — open items remain in pending.md)
+
+- [x] **Root cause confirmed live, not guessed**: Rhys Scott's own record satisfies every condition EQ Field's Contacts view filters on (active, approved) and clears the one relevant access-control policy — the actual cause is a team-pill filter in Contacts/Roster/Timesheets that only ever checked who's a *member* of a team, never who *supervises* one. Rhys runs no team and belongs to none, so any specific team pill hides him; a colleague who's a plain team member showed fine, which is what made it look inconsistent.
+- [x] **General fix shipped, not just Rhys's case**: any supervisor who runs a crew without also being added as a member of it was invisible the moment anyone filtered to that specific team, across all three screens. eq-field [PR #759](https://github.com/eq-solutions/eq-field/pull/759) (v3.5.546), merged, confirmed live.
+
+---
+
+## ehow RLS gap — 26 SKS tables were readable/writable cross-tenant, now closed (2026-08-23) (rotated 2026-08-26)
+*Fix landed on the eq-field side — see `ops/pending.md` (2026-08-23, "ehow (SKS canonical) hardcoded-org_id RLS sweep") for full detail. This entry is the SKS-side pointer.*
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-26 — open items remain in pending.md)
 
 
 ---

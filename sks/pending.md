@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -14,35 +14,17 @@ status: live
 - [ ] **Affects 45 of 81 active SKS staff** (everyone Cards-linked with no wizard-entered full date of birth) — fixed going forward, but nobody's birthday has actually been re-entered yet. No action needed unless Royce wants a nudge to re-save. Most should self-resolve as people go through Cards' own licence-scan step, which fills a real date of birth in automatically. _(added 2026-08-24)_
 - [ ] **Aiden's own birthday (18 Feb) was tested then reverted to blank** — unclear if that's his real date or just what was typed while reproducing the bug; needs a real re-save to confirm either way. Separately, his record still carries the *earlier* session's own trial data (job title, emergency contact, start date) that was meant to be trial-then-undo and never was — untouched by this session, still open. _(added 2026-08-24)_
 
-## SKS roster editing was silently broken for 5 days — trigger dropped by migration 0249, fixed + dispatched, live (2026-08-23)
-*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "SKS roster editing found broken") for full detail. This entry is the SKS-side pointer.*
-
-- [ ] **Edit and archive now click-tested live (2026-08-23, Royce's own manager session) — add, restore, and hard-delete still aren't.** Full detail in `eq/pending/eq-shell.md`. _(added 2026-08-23)_
-
-## Staff deactivation wasn't revoking Shell logins — 9 real SKS accounts found + fixed, live (2026-08-23)
-*Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-23, "staff deactivation wasn't revoking Shell logins") for full detail. This entry is the SKS-side pointer.*
-
-- [x] All 9 affected people were SKS staff (Luke Johnson + 8 others) — found with an archived staff record but a still-live, auto-refreshing Shell login; all backfilled and revoked live same day.
-
 ## Users admin list showed the wrong name for staff who are actually linked — fixed + backfilled, 2 gaps spawned off (2026-08-23)
 *Royce: "user name here reflects the same name as in their staff profile? Fernando (bigandsmall) should be consistent across? A users name should be one record, canonical" — the SKS Users list (`/sks/admin/users`) showed "bigandsmall2021" (an email fragment) for a person whose Staff profile already has the real name "Fernando Alba". Root-caused live: `app_data.staff.user_id` (ehow) already links straight to `shell_control.users.id` (jvkn) for 69/107 SKS staff, but nothing ever pushed the resolved staff name across once a login existed blank.*
 
-- [x] **Fixed + shipped live.** eq-shell [PR #1537](https://github.com/eq-solutions/eq-shell/pull/1537), merged + confirmed live (commit `b998e8d1`). Fill-only sync (never overwrites a manager's deliberate "Display name" override) added at both write sites: `entity-patch.ts` (fires when a manager saves the Staff page) and `cards-approve-staff.ts` (both its approval branches — closed a real `ignoreDuplicates: true` gap that left a shell login blank forever once approved). One-time backfill applied live to jvkn for the 5 people already stuck blank: Fernando Alba, Dylan Lieu, Ali Alsalman, David Boyd, Todd Wilson.
 - [ ] **A second, unidentified path also creates blank-name logins** — proven by timing, not guessed: Todd Wilson's and David Boyd's shell logins were created 7 weeks *after* their Cards approval, which rules out the path just patched as their cause. Spawned as background task `task_d904d388`, Royce started it in a separate session; running independently, not yet reported back as of this session's close. _(added 2026-08-23)_
 - [ ] **7 SKS logins where the shell name already differs from the staff record** (not just blank) — e.g. an untidied Cards name still showing vs. the cleaned-up staff version, a legal name vs. a workplace nickname, one plain typo pair. Needs Royce to pick a winner per case; one of the seven (Zemi Asri) overlaps the already-separately-tracked duplicate-identity fix in eq-cards PR #287, so needs care. Spawned as background task `task_e553cb55`, Royce started it in a separate session; running independently, not yet reported back as of this session's close. _(added 2026-08-23)_
 
 ## Contacts/Roster/Timesheets team-pill filter didn't account for supervisors — real report (Rhys Scott), general fix shipped (2026-08-23)
 *Royce: "why doesn't Rhys Scott appear in the contacts list" then, once the first answer (suggesting a hard refresh) didn't hold up — "doesn't make sense... drill into this." Right to push back: the real cause was a stuck filter, not something a refresh clears.*
 
-- [x] **Root cause confirmed live, not guessed**: Rhys Scott's own record satisfies every condition EQ Field's Contacts view filters on (active, approved) and clears the one relevant access-control policy — the actual cause is a team-pill filter in Contacts/Roster/Timesheets that only ever checked who's a *member* of a team, never who *supervises* one. Rhys runs no team and belongs to none, so any specific team pill hides him; a colleague who's a plain team member showed fine, which is what made it look inconsistent.
-- [x] **General fix shipped, not just Rhys's case**: any supervisor who runs a crew without also being added as a member of it was invisible the moment anyone filtered to that specific team, across all three screens. eq-field [PR #759](https://github.com/eq-solutions/eq-field/pull/759) (v3.5.546), merged, confirmed live.
 - [ ] **Doesn't change what shows for Rhys specifically today** — he supervises zero teams too, so he's only reachable via "All" or "Unassigned" in the team-pill filter until/unless he's actually assigned to a team. Worth Royce's call on whether he should be. _(added 2026-08-23)_
 - [ ] **Not verified live by a person** — the specific pill-click behavior needs a real Core+SKS session to exercise (Teams is SKS-only, gated behind Core auth, not reachable from a standalone deploy-preview session). Confirmed the fix mirrors an already-shipped, working code pattern (the crew-supervisor picker), not watched working fresh. _(added 2026-08-23)_
-
-## ehow RLS gap — 26 SKS tables were readable/writable cross-tenant, now closed (2026-08-23)
-*Fix landed on the eq-field side — see `ops/pending.md` (2026-08-23, "ehow (SKS canonical) hardcoded-org_id RLS sweep") for full detail. This entry is the SKS-side pointer.*
-
-- [ ] **Needs a real SKS login to confirm nothing broke** — apprentice competencies, supervisor/people notes, audit log, tenders, site audits, nominations, pending schedule. Same "not click-tested live by a person" gap as everything else in this queue. _(added 2026-08-23)_
 
 ## Staff page login-status build surfaced a real list: 24 unlinked, at least one (Thomas Cavanough) already known as "never invite again" (2026-08-20)
 *Fix landed on the eq-shell side — see `eq/pending/eq-shell.md` (2026-08-20) for full detail. This entry is the SKS-side pointer.*

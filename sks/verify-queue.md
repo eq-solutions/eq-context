@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-26
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from sks/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -37,5 +37,17 @@ a bug rather than just deleting the line.
 **From:** Roster-notification login popup removed (v3.10.110, PR #77, sks-nsw-labour)
 
 - [ ] **Royce to confirm live**: log in for real post-deploy and confirm no popup appears. Superseded by v3.10.111 (PR #78) landing cleanly on top with no reported regression, but that's not the same as an actual click-through. _(added 2026-08-04, recovered from an unpopped stash 2026-08-20 — never made it into this file at the time)_
+
+---
+
+**From:** SKS roster editing was silently broken for 5 days — trigger dropped by migration 0249, fixed + dispatched, live (2026-08-23)
+
+- [ ] **Edit and archive now click-tested live (2026-08-23, Royce's own manager session) — add, restore, and hard-delete still aren't.** Full detail in `eq/pending/eq-shell.md`. _(added 2026-08-23)_
+
+---
+
+**From:** ehow RLS gap — 26 SKS tables were readable/writable cross-tenant, now closed (2026-08-23)
+
+- [ ] **Needs a real SKS login to confirm nothing broke** — apprentice competencies, supervisor/people notes, audit log, tenders, site audits, nominations, pending schedule. Same "not click-tested live by a person" gap as everything else in this queue. _(added 2026-08-23)_
 
 ---
