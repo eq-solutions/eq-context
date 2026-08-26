@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-25 (nightly cron)_
+_Last verified: 2026-08-26 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-25)
+## Open PRs (as of 2026-08-26)
+
+**eq-cards:**
+- #322 fix: stop showing/saving eq-shell's synthetic placeholder email
+
+**eq-field:**
+- #795 fix: hide the synthetic cards.eq.solutions placeholder email
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -68,9 +74,12 @@ _If this file is >48h old, the cron is broken._
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
 
+**eq-shell:**
+- #1604 fix: stop rendering/emailing the synthetic placeholder email
+
 ---
 
-## System Health (as of 2026-08-25)
+## System Health (as of 2026-08-26)
 
 **CI on main:**
 
