@@ -13,9 +13,11 @@ Triggered by Royce asking to turn this incident's outstanding items into a sprin
 an explicit instruction to check what a concurrent session is already building first so
 nothing gets duplicated.
 
-**The short version: every item from this incident except one is now fixed and live.
-The last one — a cross-repo consumer check — is unscoped and unbuilt, and that's the
-only thing in here still actually worth calling "the sprint."**
+**The short version: everything originally scoped here is fixed and live, plus one
+more same-day hardening check (CHECK 14) beyond what this doc first planned. Three
+things remain: CHECK 11's design call, a minor hygiene-debt cleanup CHECK 14 turned
+up, and the cross-repo consumer check — that last one is the only real architecture
+decision left, and the only thing still actually worth calling "the sprint."**
 
 ---
 
@@ -31,6 +33,7 @@ only thing in here still actually worth calling "the sprint."**
 | Duplicate CHECK 10 fix sitting on branch `claude/check10-drift-printer-fix` | Resolved — branch no longer existed on origin |
 | `0162`/`0163`/`0164` mis-attributed to an unidentified out-of-band actor | Corrected in the ledger — they're eq-cards' own tracked migrations (PR eq-cards#323/#324), not drift. The paper-trail files this PR originally added to *this* repo were removed as redundant once that was found — two repos independently claiming the same migration would have been actively wrong. [PR #1627](https://github.com/eq-solutions/eq-shell/pull/1627), merged (`02a9b405`) |
 | `CHECK 12`/`13` — stacked-permissive-policy + RLS invariants ported to jvkn, directly motivated by this incident | Built and merged — [PR #1628](https://github.com/eq-solutions/eq-shell/pull/1628), merged (`ea3d649a`), stacked cleanly on #1627 once it landed (the migration files dropped out of #1628's own diff automatically — no rebase needed) |
+| `CHECK 14` — tenant/self/org isolation invariant for jvkn (analog of CHECK 5) | Built and merged, same-day follow-up — [PR #1633](https://github.com/eq-solutions/eq-shell/pull/1633), squash-merged (`ef075d5f`). Live investigation before writing code found a real reachability-definition bug (13 false positives from a "policy roles alone" test) — fixed, then dry-run + real CI both confirmed clean. Turned up 13 tables with inert RLS policies (grant missing) as a separate, unfixed finding — spawned as `task_7a07fe60` |
 
 `scripts/check-tenant-drift.mjs` is no longer being actively edited by anyone as of
 these merges — the earlier "don't touch it" coordination note is stood down.
@@ -98,8 +101,10 @@ cross-repo implications, not a mechanical fix.
 | 1 | 3rd regression, ledger, CHECK 10's 2 bugs, unrelated drift block, duplicate branch | **All fixed** | Nothing |
 | 2 | PR #1627 — ledger correction (0162/0163/0164 mis-attribution) | **Merged** (`02a9b405`) | Nothing |
 | 3 | PR #1628 — CHECK 12/13 | **Merged** (`ea3d649a`) | Nothing |
-| 4 | CHECK 11 — jvkn migration-identity | Scoped, not started | Needs the cutoff/strictness call #1628 already flagged — coordinate with its original author |
-| 5 | Cross-repo consumer-check gap | Unscoped, not started | **Royce's call** — 3 options above, none built |
+| 4 | PR #1633 — CHECK 14 (tenant/self/org isolation, added same day, not originally scoped in this doc) | **Merged** (`ef075d5f`) | Nothing — but see #6 below, a new finding it surfaced |
+| 5 | CHECK 11 — jvkn migration-identity | Scoped, not started | Needs the cutoff/strictness call #1628 already flagged — coordinate with its original author |
+| 6 | 13 tables with inert RLS policies (grant missing) — found by CHECK 14's own investigation | Not a security hole today; hygiene debt | Spawned as `task_7a07fe60`, not started |
+| 7 | Cross-repo consumer-check gap | Unscoped, not started | **Royce's call** — 3 options above, none built |
 
-**What's actually left after this pass: exactly #4 and #5.** Everything else this
-sprint originally scoped is closed.
+**What's actually left after this pass: #5, #6, #7.** Everything else this
+sprint originally scoped, plus the same-day CHECK 14 addition, is closed.
