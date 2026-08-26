@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,19 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: EQ Ops quote-open P0 (dangling table join) fixed + dispatched live; mobile Commercials layout overlap fixed (2026-08-26)
+*Royce: "all quotes i try to open give me this error" — screenshot showed `relation "app_data.quote_estimators" does not exist`, hitting Simon Bramall on every quote he opened in `/ops`.*
+
+- [x] **Root-caused live, not guessed**: migration `0282` (2026-08-25, PR #1587, "estimators auto-derived from quote history") dropped `app_data.quote_estimators`, reasoning its only callers were the three Setup > Estimators functions removed in the same PR. Missed a fourth caller: `eq_get_quote_detail` (from `0267`, the quotes-ownership-scoping migration in the section below) still `LEFT JOIN`s that same table to surface estimator contact fields on the quote detail panel. PL/pgSQL bodies aren't schema-checked at `CREATE` time, so this shipped silently and only threw at call time — reproduced directly against both zaap and ehow (`select * from eq_get_quote_detail(<any quote_id>)` → `42P01: relation "app_data.quote_estimators" does not exist`, unconditional, every call, every user).
+- [x] **Fixed**: migration `0284` drops the dead join, returns `NULL` for the three columns it fed (`estimator_title/phone/email`) — same `RETURNS TABLE` shape, no frontend change. Not a behaviour regression: the table held 0 rows for its entire life (per 0282's own header), so those columns were already always `NULL`, and `QuotesModule.tsx` confirmed to never read them. eq-shell [PR #1605](https://github.com/eq-solutions/eq-shell/pull/1605), squash-merged on Royce's "merge + dispatch now," `tenant-migrate.yml` dispatched fleet-wide (22s apply), confirmed live on both planes via `pg_get_functiondef` — no more dangling reference, no more `42P01`.
+- [x] **Separate, unrelated bug found in the same conversation**: Royce screenshotted the New Quote/Edit Quote form on mobile — the Commercials summary sidebar (fixed 280px, `position: sticky`) squeezed the form column into a sliver and visually overlapped it. The quote *detail* pane elsewhere in the same file already had an `isMobile` branch for this exact problem (full-screen overlay instead of a sticky sidebar); the create/edit form's own sidebar never got the same treatment. Fixed by giving the form's outer flex row and the Commercials block the same `isMobile` branch — sidebar drops sticky/fixed-width and stacks full-width below the form instead. eq-shell [PR #1606](https://github.com/eq-solutions/eq-shell/pull/1606), squash-merged on Royce's "merge it."
+- [x] Session Gate (`/brief eq-shell`) run before the first edit — flagged the root checkout (`C:\Projects\eq-shell`) sitting 140 commits behind `origin/main` on an unrelated branch with someone else's uncommitted work; not touched, worked from this session's own already-current worktree instead.
+
+**Deferred:**
+- [ ] **Mobile Commercials-layout fix not click-tested live** — verified via `tsc -b --force` only; no live session/credentials in this environment, and this repo's local dev tooling is broken under Node 24 (existing memory). Worth a real look next time someone's on `/ops` → New Quote on a phone. _(added 2026-08-26)_
 
 ---
 

@@ -1,13 +1,19 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-26 (PR #1605 + #1606 MERGED + LIVE — quote-open P0 fixed fleet-wide, mobile Commercials layout fixed)
+- Every quote in EQ Ops threw an error on open, for every user, on both tenant planes — Royce reported it live ("all quotes i try to open give me this error"), Simon Bramall hit it on every quote. Root cause: migration `0282` (previous day, PR #1587) dropped `app_data.quote_estimators`, but `eq_get_quote_detail` (migration `0267`) still `LEFT JOIN`ed it — a dangling reference invisible at `CREATE` time, thrown only when actually called. Reproduced live against zaap and ehow before writing the fix.
+- Fixed via migration `0284`: drops the dead join, returns `NULL` for the three columns it fed (never read by the frontend, and always `NULL` in practice since the table held 0 rows its whole life). [PR #1605](https://github.com/eq-solutions/eq-shell/pull/1605), squash-merged, `tenant-migrate.yml` dispatched fleet-wide on Royce's "merge + dispatch now," confirmed live on both planes.
+- Separately, Royce screenshotted the New Quote/Edit Quote form's Commercials summary card overlapping the form on mobile — its fixed-280px sticky sidebar had no responsive branch, unlike the quote detail pane elsewhere in the same file which already handles this. Gave it the same `isMobile` treatment (stacks full-width below the form instead of floating beside it). [PR #1606](https://github.com/eq-solutions/eq-shell/pull/1606), squash-merged on "merge it."
+- `tsc -b --force` clean on both. Not click-tested live (no credentials this session; local dev tooling broken under Node 24, existing memory) — the quote-open fix is verified directly against production Postgres instead (strongest available evidence); the mobile layout fix is typecheck-only and still needs a real phone.
 
 ## 2026-08-26 (PR #1599 + #1602 MERGED + LIVE — Preview-a-person's permission lists made plain English and grouped)
 - Royce, reviewing the live "Preview a person" tab: "not all of them are in plain english... not organised in a way that helps a user know what the story is." "Effective permissions" was a flat wall of raw dot-notation keys; "Field permissions" was already readable but one undifferentiated list of 66.
