@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Contacts showed off-roster people with no visual distinction (2026-08-26)
+*Royce, from a side-by-side screenshot: Shell already marks Mitchell Forsyth (Subcontractor) "Off roster", but Field's Contacts list showed him indistinguishable from an active person.*
+
+- [x] Contacts' "On Roster" filter checkbox now defaults to checked instead of unchecked — off-roster people drop out of the default view; uncheck it to see them, same opt-in shape as the existing "Show removed" toggle beside it. Weekly Roster / Edit Roster / Timesheets already excluded `on_roster=false` correctly (verified live against ehow) — this was Contacts-only. eq-field [PR #800](https://github.com/eq-solutions/eq-field/pull/800) (v3.5.577), squash-merged on explicit "merge it", confirmed live via `field.eq.solutions/sw.js` (`v3.5.577`).
+- [x] Found and fixed a latent bug in the same pass: the filter read `on_roster` as opt-IN (`=== true`) rather than opt-OUT (`!== false`) — the only place in the codebase inverted from `roster.js`/`dashboard.js`/`timesheets.js`'s established "NULL/undefined = on-roster" convention. Harmless while the checkbox defaulted off; would otherwise have hidden every SEED/demo-tenant person (no `on_roster` field at all) the instant it defaulted on. Verified live against ehow: 0 of 74 active SKS staff currently have `on_roster IS NULL` (12 false / 62 true), so today's live SKS data wasn't otherwise affected — the fix is a correctness/consistency match, not a response to a live gap.
+
+---
+
 ## eq-field: synthetic cards.eq.solutions placeholder email — hidden across worker/contact displays, merged + deployed live (2026-08-26)
 *Full detail (investigation across all 3 repos, PR #1125 scope-check, the fix plan) in `eq/pending/eq-cards.md` (2026-08-26) — eq-cards-side pointer here since that's where the root cause and full writeup live.*
 
