@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-26)
 
+**eq-cards:**
+- #325 feat(access): sync jvkn tenant access on tenant-side roster removal
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -67,6 +70,10 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1621 feat(identity): sync EQ Field roster removal/re-add to Shell tenant access
+- #1620 DIAGNOSTIC ONLY — do not merge — entity-patch host/url echo
 
 ---
 
