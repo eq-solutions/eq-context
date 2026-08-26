@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-26)
 
 **eq-field:**
-- #795 fix: hide the synthetic cards.eq.solutions placeholder email
+- #796 fix(field): reconcile field_job_numbers_src() with 7 weeks of live drift
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -72,7 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1604 fix: stop rendering/emailing the synthetic placeholder email
+- #1607 fix(security): audit-log role changes, fail loudly on membership write error
 
 ---
 
