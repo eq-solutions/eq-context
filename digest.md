@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-26 11:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-26 11:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-26 11:03 UTC → 2026-08-26 11:10 UTC)
+## Since last refresh (2026-08-26 11:10 UTC → 2026-08-26 11:26 UTC)
 
-- Merged: eq-shell [#1618](https://github.com/eq-solutions/eq-shell/pull/1618) fix(security): restore organisations anon bootstrap-read pol
-- Merged: eq-shell [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still s
-- Merged: eq-shell [#1601](https://github.com/eq-solutions/eq-shell/pull/1601) fix(auth): await last_login_at bump, add drift healer for th
-- Merged: eq-shell [#1598](https://github.com/eq-solutions/eq-shell/pull/1598) chore(drift): drop redundant eq_sweep_orphaned_licence_photo
-- Merged: eq-shell [#1595](https://github.com/eq-solutions/eq-shell/pull/1595) docs(security): close S2/S4/S5 from the access-control sweep
-- Merged: eq-shell [#1594](https://github.com/eq-solutions/eq-shell/pull/1594) chore(deps): bump @eq-solutions/roles to v2.7.5
-- Merged: eq-shell [#1593](https://github.com/eq-solutions/eq-shell/pull/1593) chore(drift): allowlist eq_cards_get_my_licence — sourced in
-- Merged: eq-shell [#1592](https://github.com/eq-solutions/eq-shell/pull/1592) feat(admin): govern is_platform_admin grants, with an audit 
+- Merged: eq-shell [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths
+- Merged: eq-shell [#1603](https://github.com/eq-solutions/eq-shell/pull/1603) fix(labour-hire): promote licence photos on the other 2 clai
+- Merged: eq-shell [#1600](https://github.com/eq-solutions/eq-shell/pull/1600) fix(auth): sign-in mobile placeholder clarity + /login sessi
+- Merged: eq-shell [#1599](https://github.com/eq-solutions/eq-shell/pull/1599) fix(access-control): group Preview-a-person's permission lis
+- Merged: eq-shell [#1596](https://github.com/eq-solutions/eq-shell/pull/1596) chore(drift): backfill eq_sweep_orphaned_licence_photos
+- Merged: eq-shell [#1591](https://github.com/eq-solutions/eq-shell/pull/1591) fix(access-control): reconcile app-tile drift, make Preview 
+- Merged: eq-shell [#1590](https://github.com/eq-solutions/eq-shell/pull/1590) fix(staff): Staff-page edit resent every field on every save
+- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
 
 ## ⚠ Needs you (8)
 
@@ -54,10 +54,10 @@ _…and 227 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 6d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 8d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -78,6 +78,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-26 | eq-shell | [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths |
 | 2026-08-26 | eq-shell | [#1618](https://github.com/eq-solutions/eq-shell/pull/1618) fix(security): restore organisations anon bootstrap-read policy ( |
 | 2026-08-26 | eq-shell | [#1609](https://github.com/eq-solutions/eq-shell/pull/1609) fix(entity-patch): derive isProd from request Host, not process.e |
 | 2026-08-26 | eq-shell | [#1615](https://github.com/eq-solutions/eq-shell/pull/1615) feat(auth): collapse deactivated & expired self-join links by def |
@@ -92,7 +93,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-26 | eq-shell | [#1608](https://github.com/eq-solutions/eq-shell/pull/1608) fix(security): detect reverse staff/shell active-sync drift, aler |
 | 2026-08-26 | eq-shell | [#1604](https://github.com/eq-solutions/eq-shell/pull/1604) fix: stop rendering/emailing the synthetic placeholder email |
 | 2026-08-26 | eq-shell | [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mobile |
-| 2026-08-26 | eq-shell | [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking every |
 _Showing 15 of 114 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 11:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 11:26 UTC._
