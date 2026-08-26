@@ -308,7 +308,7 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 **Deferred:**
 - [ ] **Not click-tested through a real signed-in session** — same sandbox limitation as other recent items in this file. The dry-run above proves the function executes correctly; it doesn't prove the rendered email looks right in an inbox. _(added 2026-08-18)_
-- [ ] **No `digest_sections` config has been set yet** — the live dry-run above ran against an empty/missing config, which correctly falls back to "everything on" (today's exact behaviour). The actual toggle-a-section-off behaviour hasn't been exercised against live data, only against the 16-case algorithm test. Worth a real click-through of the new panel next time you're on the Supervision page. _(added 2026-08-18)_
+- [ ] **No `digest_sections` config has been set yet** — the live dry-run above ran against an empty/missing config, which correctly falls back to "everything on" (today's exact behaviour). The actual toggle-a-section-off behaviour hasn't been exercised against live data, only against the 16-case algorithm test. Worth a real click-through next time you're there. _(added 2026-08-18, location corrected 2026-08-26 — this panel moved off the Supervision page into Manage → Email Templates, see eq-field.md changelog 2026-08-26)_
 
 ---
 
@@ -354,13 +354,6 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 **Deferred:**
 - [ ] **Not walked through live by a human.** Verified directly against the real site — as a signed-out visitor, as different roles, on both database checks — and the automated checks are all green, but worth your own two-minute look given how many pages this touches. _(added 2026-08-16)_
-
----
-
-## eq-field: weekly digest editing — on hold, not a bug (2026-08-16)
-*Royce asked about making the Friday supervisor-digest email editable, the same way the 3 leave-email templates already are. Checked first: those 3 templates shipped 2026-08-14 specifically scoped to exclude the digest, "holding until the pilot's actually been used once" — and a live check just now shows zero real edits to any of the 3 templates since they shipped. No usage signal yet to justify extending the pattern to the digest, which is a harder case anyway (it's built from live data — tables, a progress bar, links — not just wording).*
-
-- [ ] **On hold, Royce's explicit call.** Re-check `public.email_templates` on the SKS database for real edits before this comes up again — that's the actual trigger condition, not a date. _(added 2026-08-16)_
 
 ---
 
