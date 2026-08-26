@@ -1,8 +1,9 @@
 # Session Index
-_137 logs · reverse-chronological · auto-generated_
+_138 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-27 | [eq-field: leave/incident email fixes shipped (v3.5.580), eq-shell entity-patch CORS bug found](2026-08-27.md) |
 | 2026-08-26 | [Close-out of the 2026-08-25 eq-field/eq-shell session](2026-08-26.md) |
 | 2026-08-25 | [Canonical wiring map: jvkn/Shell/Field read-write capabilities, verified live end-to-end](2026-08-25.md) |
 | 2026-08-24 | [SEC-58 (control-plane ledger) and SEC-65 (AUDIT_SB_KEY label) closed](2026-08-24.md) |
