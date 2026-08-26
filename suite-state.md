@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-26)
 
 **eq-field:**
-- #806 v3.5.581 — FIX: Preferred Name could be saved identical to Full Name
 - #805 v3.5.581 — Edit Roster: fix Ctrl+Enter not filling on the first press
 
 **eq-service:**
