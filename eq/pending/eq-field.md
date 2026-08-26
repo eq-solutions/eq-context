@@ -20,6 +20,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: audit-attribution breadcrumb for JWT writes that drop x-eq-actor (2026-08-26)
+*Full investigation and root-cause detail in `eq/pending/eq-shell.md` (2026-08-26, "Field-driven writes to app_data.staff have no reliable attribution") — this is the eq-field-side pointer since that's where the shipped fix landed.*
+
+- [x] **Diagnostic breadcrumb shipped, not a root-cause fix.** `scripts/supabase.js`'s `sbFetch()` now reports via `EQ_OBS` (one-per-tab) when a JWT-routed write has no `x-eq-actor` actor id despite the tab having minted a real one earlier in the session — the exact shape of the still-unexplained Mark Brame gap. eq-field [PR #803](https://github.com/eq-solutions/eq-field/pull/803), squash-merged on explicit "merge it into main", live (merging `main` auto-deploys to field.eq.solutions). Needed a same-PR fix to a real cache-buster drift-guard failure first — `scripts/supabase.js` changed but its `?v=` tag in `index.html` hadn't moved; bumped `3.5.508` → `3.5.579`.
+- [ ] **Overlaps `task_66de20f0`** (Royce's independently-started background session investigating the same gap) — see eq-shell.md for what this session already ruled out before shipping the breadcrumb, so that task doesn't redo it.
+
+---
+
 ## eq-field: job-numbers Ops→Field status link verified + 7-week migration drift fixed (2026-08-26)
 *Royce asked whether Field's Job Numbers board reflects live status from EQ Ops. It does — but verifying it surfaced eq-field's own repo had been silently wrong about how its own backing function works for 7 weeks.*
 

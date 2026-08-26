@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-26 (PR #803 MERGED + LIVE, v3.5.579 — audit-attribution breadcrumb for JWT writes that drop x-eq-actor)
+- Diagnostic only, no behavior change to what a write sends: `scripts/supabase.js`'s `sbFetch()` already sets `x-eq-actor` on JWT-routed writes when it has a real actor id (since 2026-07-30); this adds a one-per-tab `EQ_OBS` report for the specific case where a tab previously had one but a later write doesn't — the shape of an unattributed staff archive traced back to eq-shell's `app_data.fn_audit()`/`app_data.audit_log`. Stays silent for the standalone PIN-gate path, which never has an actor id to begin with.
+- Same PR also fixed a real cache-buster drift-guard failure the change tripped: `scripts/supabase.js`'s `?v=3.5.508` tag in `index.html` hadn't moved, and `/scripts` is served immutable — bumped to `3.5.579`.
+- Full investigation (why the premise "Field never sets this header" was wrong, why a `fn_audit()` auth.uid() fallback was rejected, what's still unexplained about the original incident) in `eq/pending/eq-shell.md` and `sessions/2026-08-26.md`.
+
 ## 2026-08-26 (PR #795 MERGED + LIVE — synthetic cards.eq.solutions placeholder email hidden across worker/contact displays)
 - Companion to eq-cards' same-day fix (see `eq/changelog/eq-cards.md`). The two Supabase row-mappers feeding `STATE.people[]`/`STATE.managers[]` now normalize eq-shell's synthetic `${user.id}@cards.eq.solutions` placeholder the same way a genuinely-missing email already renders — covers a worker's own Profile tab, the peer "Person Profile" modal, the Contacts/Managers rosters + edit modals, CSV exports, and timesheet/leave notification toasts in one change.
 - Deploy verified live via direct Netlify commit-ancestry check (`8f61dd59`, ready/published/production).
