@@ -13,6 +13,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: sks-nsw-labour vs EQ Field account reconciliation — closed, one deliberate hold (2026-08-26)
+
+- [ ] **Mark Brame (NSW General Manager) — Royce will re-add him to EQ Field himself, once he trusts the security/permission groups.** No timeline given. Not a task to pick up proactively — check with Royce before restoring him even if a future audit re-flags him as missing. Background: full account reconciliation against sks-nsw-labour found only 3 people (Dean Francis, Mark Brame, Matthew Khreich) removed in EQ Field despite being active in sks-nsw-labour; Royce confirmed all 3 have left SKS and it's correct as-is — Mark is the one deliberate exception, not a gap. _(added 2026-08-26)_
+
+---
+
 ## eq-field: Contacts showed off-roster people with no visual distinction (2026-08-26)
 *Royce, from a side-by-side screenshot: Shell already marks Mitchell Forsyth (Subcontractor) "Off roster", but Field's Contacts list showed him indistinguishable from an active person.*
 
