@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-26 19:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-26 19:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-26 19:33 UTC → 2026-08-26 19:46 UTC)
+## Since last refresh (2026-08-26 19:46 UTC → 2026-08-26 19:52 UTC)
 
-- Merged: eq-shell [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module 
-- Merged: eq-shell [#1610](https://github.com/eq-solutions/eq-shell/pull/1610) fix(auth): stop offering Delete on self-join links that have
-- Merged: eq-shell [#1607](https://github.com/eq-solutions/eq-shell/pull/1607) fix(security): audit-log role changes, fail loudly on member
-- Merged: eq-shell [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mob
-- Merged: eq-shell [#1603](https://github.com/eq-solutions/eq-shell/pull/1603) fix(labour-hire): promote licence photos on the other 2 clai
-- Merged: eq-shell [#1600](https://github.com/eq-solutions/eq-shell/pull/1600) fix(auth): sign-in mobile placeholder clarity + /login sessi
-- Merged: eq-shell [#1599](https://github.com/eq-solutions/eq-shell/pull/1599) fix(access-control): group Preview-a-person's permission lis
-- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
+- Merged: eq-shell [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/016
+- Merged: eq-shell [#1612](https://github.com/eq-solutions/eq-shell/pull/1612) fix(staff): let a manager remove a bad licence from the expi
+- Merged: eq-shell [#1611](https://github.com/eq-solutions/eq-shell/pull/1611) fix(worker-invite): correct misleading email-field caption
+- Merged: eq-shell [#1608](https://github.com/eq-solutions/eq-shell/pull/1608) fix(security): detect reverse staff/shell active-sync drift,
+- Merged: eq-shell [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking 
+- Merged: eq-shell [#1604](https://github.com/eq-solutions/eq-shell/pull/1604) fix: stop rendering/emailing the synthetic placeholder email
+- Merged: eq-shell [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still s
+- Merged: eq-shell [#1601](https://github.com/eq-solutions/eq-shell/pull/1601) fix(auth): await last_login_at bump, add drift healer for th
 
 ## ⚠ Needs you (7)
 
@@ -31,10 +31,11 @@ _2026-08-26 19:46 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-25.md](sessions/2026-08-25.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (240)
+## 🙋 Waiting on you (241)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, live DB queries (jvkn/ehow), and production commit-ancestry, not a real signed-in session creating a fresh Labour Hire/Apprentice/Subcontractor invite end-to-end. Worth a real click-through next time someone invites a non-Employee worker: confirm the Staff record shows the correct employment_type immediately, before the invite is ever claimed. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b`, the access-control preview panel, production deploy-ancestry, and (as of this close) Sharon Maroni's own live `nav_scope` row confirmed correct by direct query (`["customer","site","contact","staff","licence","equipment","field","suppliers"]` — Royce confirmed keep Suppliers) — but nobody has actually signed in as a Simple-mode user and watched the sidebar itself narrow. Worth two minutes next time there's a way to see her session or a test account. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — no live Shell session/credentials in this environment. Worth a pass: on the join-links page, confirm a used deactivated link shows "Can't delete — already used" with no button, confirm the "Show deactivated & expired (N)" toggle expands/collapses correctly and the count matches. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, eslint, live Supabase tracing of the exact chain, and a production commit-ancestry check, not a real join-flow click-through as a brand-new user. _(added 2026-08-26)_
@@ -46,8 +47,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real click-through on the Staff list: turn Supervisor on for a test person via the pill, confirm the category popover appears, pick one, confirm it saves. _(added 2026-08-25)_
 - **eq-shell** · **None of this round's UI changes have a full click-through beyond what Royce's own screenshots already confirmed** (collapse chevrons, archive-days field existing/saving). The Estimator autocomplete specifically (now sourced from quote history) hasn't been exercised live yet. _(added 2026-08-25)_
 - **eq-shell** · **Not click-tested live** — no login credentials this session. Handed Royce the exact steps (Customers page → Convergint → Link site → search "Equinix SY3" → confirm badge/Unlink-only controls → confirm it appears in a Convergint quote's site picker). Not yet confirmed done. _(added 2026-08-25)_
-- **eq-shell** · **Cost/charge-rate fix not click-tested live** — verified via `tsc -b --force` and code-path tracing only; local Netlify/Vite dev tooling is documented broken under Node 24 in this repo, and the feature is auth-gated (EQ Ops). Worth a real click-through next time someone edits a quote line's Rate with a Cost already entered. _(added 2026-08-25)_
-_…and 228 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 229 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -77,6 +77,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-26 | eq-shell | [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/0164 are |
 | 2026-08-26 | eq-shell | [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module codes |
 | 2026-08-26 | eq-shell | [#1625](https://github.com/eq-solutions/eq-shell/pull/1625) fix(security): stop staff-active drift sweep from logging out mul |
 | 2026-08-26 | eq-shell | [#1629](https://github.com/eq-solutions/eq-shell/pull/1629) chore(drift): allowlist eq_cards_admin_sync_tenant_access — sourc |
@@ -91,12 +92,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-26 | eq-shell | [#1617](https://github.com/eq-solutions/eq-shell/pull/1617) feat(access-control): per-person sidebar visibility scope |
 | 2026-08-26 | eq-shell | [#1616](https://github.com/eq-solutions/eq-shell/pull/1616) fix(auth): thread an already-resolved Cards name into new workers |
 | 2026-08-26 | eq-shell | [#1614](https://github.com/eq-solutions/eq-shell/pull/1614) fix(staff): wrap the licence action row so Remove's confirm state |
-| 2026-08-26 | eq-shell | [#1613](https://github.com/eq-solutions/eq-shell/pull/1613) fix(cards-api): derive isProd from request Host, not process.env. |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (287 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (288 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (50 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (149 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (94 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -128,7 +128,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1924 | 204 / 88 | 266 | 47 |
+| [eq-shell](eq/pending/eq-shell.md) | 1938 | 206 / 89 | 269 | 47 |
 | [eq-cards](eq/pending/eq-cards.md) | 469 | 37 / 16 | 103 | 5 |
 | [eq-field](eq/pending/eq-field.md) | 1004 | 115 / 39 | 77 | 27 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
@@ -199,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 19:46 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 19:52 UTC._
