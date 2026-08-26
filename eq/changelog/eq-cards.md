@@ -9,6 +9,9 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-27 (PR #325 MERGED + LIVE — jvkn-side of the roster-removal access cascade)
+- New service-role RPC `eq_cards_admin_sync_tenant_access(user_id, tenant_id, active)` (migration `0165`) — bidirectional: revokes a worker's Shell tenant login + `org_memberships`/`org_access_requests` when a tenant removes them from their roster, restores all three if the tenant re-adds them. Modeled on the existing self-service `eq_cards_revoke_org_access`. Extended `org_access_requests`'s status CHECK to add `revoked` — it had no terminal-ended state before. Applied live to jvkn. Called from eq-shell's `field-identity-push.ts` (see eq-shell changelog, PR #1621).
+
 ## 2026-08-26 (PR #324 MERGED + LIVE — dropped orphaned anon organisations read, resolved admin/member policy overlap)
 - Investigated the `organisations_anon_bootstrap_read` policy (anon, unconditional `SELECT` on the whole `organisations` table) before touching it, since it looked like it could be a deliberate pre-login "find my company" feature. It wasn't: the two real find/browse-company paths — `eq_cards_find_invites_by_phone` (doesn't touch this table, reads `tenants` instead) and `eq_cards_list_discoverable_orgs` + siblings (documented in 0153, `SECURITY DEFINER`, granted to `authenticated` only) — neither depends on it. No migration file ever created this policy either. Dropped it (migration `0164`) — confirmed live: anon now sees zero rows on `organisations`, where it previously saw the whole table including each org's internal Supabase URL/anon key.
 - Split `org_credential_requirements`/`org_join_requirements`'s admin "manage" (`FOR ALL`) policies into insert/update/delete (migration `0163`), dropping the redundant `SELECT` branch already covered by each table's member-read policy — same permissions, one fewer policy evaluated per read.

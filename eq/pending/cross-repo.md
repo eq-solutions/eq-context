@@ -20,15 +20,9 @@ status: live
 
 ---
 
-## eq-field + eq-shell + eq-cards: "Remove from roster" doesn't cut a worker's Cards/Shell connection (2026-08-26)
-*Royce asked what happens to a labour-hire worker's Cards access and Shell/Core tenant membership when SKS removes them from EQ Field's roster — whether "Remove from roster" actually severs the link. Traced the architecture, then verified live against a real case rather than guessing.*
+## eq-field + eq-shell + eq-cards: "Remove from roster" doesn't cut a worker's Cards/Shell connection — built, shipped, live on SKS; one gap remains on EQ (2026-08-26)
 
-- [x] **Traced Cards' Connections screen to its real backing RPCs**: `eq-cards/lib/features/connections/data/connections_repository.dart` — reads/writes `org_access_requests` (the privacy-safe employer-connect pathway), not raw `org_memberships`.
-- [x] **Verified live against a real, recent case**: a worker pulled off SKS's EQ Field roster this morning (`app_data.staff.active` flipped `false` on ehow at `05:10:15`). None of the three records that actually govern what the worker/Shell see moved: `public.org_memberships.status` (jvkn, still `active`, unchanged since 2026-06-24), `public.org_access_requests.status` (jvkn, still `approved`, unchanged since 2026-08-20), `shell_control.user_tenant_memberships.active` (jvkn, still `true`, unchanged since membership creation 2026-05-29).
-- [x] **Reported as a finding, no code touched** — matches the standing "live app = draft-and-report" rule; a fix wasn't requested and wasn't built.
-
-**Deferred:**
-- [ ] **Whether "Remove from roster" should cascade to `org_memberships`/`org_access_requests`/`shell_control.user_tenant_memberships` is an open decision, not yet made.** If it should, the shape is either flipping those three directly from `eq-field/scripts/people.js`'s archive action, or a sync job keyed off `app_data.staff.active`. Needs Royce's call — this touches access revocation, not a silent fix. _(added 2026-08-26)_
+- [ ] **Silently inert on zaap (EQ tenant)**: the roster-access-sync trigger (eq-shell migration `0285`) is installed there too, but `field_identity_push_secret` was never provisioned in zaap's vault (confirmed empty via direct query) — it only ever existed for ehow. The trigger's own null-secret guard means it logs a warning and no-ops rather than erroring; no real impact today since zaap/EQ is the disposable test tenant with no real data. Needs the same secret value copied into zaap's vault — a vault write, Royce's call. Full build narrative (RPC + trigger + webhook, the cross-session CI collision with PR #1625, live verification) in `sessions/2026-08-26.md`. _(added 2026-08-26)_
 
 ---
 
