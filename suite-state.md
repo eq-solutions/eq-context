@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1612 fix(staff): let a manager remove a bad licence from the expired-metric count
 - #1609 fix(entity-patch): derive isProd from request Host, not process.env.CONTEXT
 
 ---
