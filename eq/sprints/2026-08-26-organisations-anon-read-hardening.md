@@ -1,7 +1,7 @@
 ---
 title: Sprint — hardening after the 3rd organisations_anon_bootstrap_read regression
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: What's left after the 3rd organisations anon-read regression (eq-shell) — sequences 2 in-flight PRs from a concurrent session against what's genuinely still unbuilt, so nothing gets duplicated. Every item live-verified (gh pr view, git ls-remote, ListAgents) immediately before writing, not restated from pending.md.
 read_priority: high
 status: live
