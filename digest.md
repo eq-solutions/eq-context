@@ -8,20 +8,21 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-26 19:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-26 22:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-26 19:46 UTC → 2026-08-26 19:52 UTC)
+## Since last refresh (2026-08-26 19:52 UTC → 2026-08-26 22:57 UTC)
 
-- Merged: eq-shell [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/016
-- Merged: eq-shell [#1612](https://github.com/eq-solutions/eq-shell/pull/1612) fix(staff): let a manager remove a bad licence from the expi
-- Merged: eq-shell [#1611](https://github.com/eq-solutions/eq-shell/pull/1611) fix(worker-invite): correct misleading email-field caption
-- Merged: eq-shell [#1608](https://github.com/eq-solutions/eq-shell/pull/1608) fix(security): detect reverse staff/shell active-sync drift,
-- Merged: eq-shell [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking 
-- Merged: eq-shell [#1604](https://github.com/eq-solutions/eq-shell/pull/1604) fix: stop rendering/emailing the synthetic placeholder email
-- Merged: eq-shell [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still s
-- Merged: eq-shell [#1601](https://github.com/eq-solutions/eq-shell/pull/1601) fix(auth): await last_login_at bump, add drift healer for th
+- Merged: eq-shell [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-
+- Merged: eq-shell [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invari
+- Merged: eq-shell [#1613](https://github.com/eq-solutions/eq-shell/pull/1613) fix(cards-api): derive isProd from request Host, not process
+- Merged: eq-shell [#1610](https://github.com/eq-solutions/eq-shell/pull/1610) fix(auth): stop offering Delete on self-join links that have
+- Merged: eq-shell [#1607](https://github.com/eq-solutions/eq-shell/pull/1607) fix(security): audit-log role changes, fail loudly on member
+- Merged: eq-shell [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mob
+- Merged: eq-shell [#1603](https://github.com/eq-solutions/eq-shell/pull/1603) fix(labour-hire): promote licence photos on the other 2 clai
+- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
+- ⚠ Needs you: 7 → 8 (new items)
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (8)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
@@ -30,8 +31,9 @@ _2026-08-26 19:52 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-25.md](sessions/2026-08-25.md) · [failures.md](system/failures.md)
+- 🟠 **Sentry new error** — `eq-cards` [NoSuchMethodError: Null check operator used on a null value](https://eq-solutions.sentry.io/issues/143082576/)
 
-## 🙋 Waiting on you (241)
+## 🙋 Waiting on you (240)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -47,13 +49,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real click-through on the Staff list: turn Supervisor on for a test person via the pill, confirm the category popover appears, pick one, confirm it saves. _(added 2026-08-25)_
 - **eq-shell** · **None of this round's UI changes have a full click-through beyond what Royce's own screenshots already confirmed** (collapse chevrons, archive-days field existing/saving). The Estimator autocomplete specifically (now sourced from quote history) hasn't been exercised live yet. _(added 2026-08-25)_
 - **eq-shell** · **Not click-tested live** — no login credentials this session. Handed Royce the exact steps (Customers page → Convergint → Link site → search "Equinix SY3" → confirm badge/Unlink-only controls → confirm it appears in a Convergint quote's site picker). Not yet confirmed done. _(added 2026-08-25)_
-_…and 229 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 228 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 1d ago | 6 | 6d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -64,19 +66,21 @@ _…and 229 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 37 | 2026-08-21 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 7 | 2026-08-26 |
-| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 7 | 2026-08-25 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 4 | 2026-08-26 |
-| eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 3 | 2026-08-25 |
-| eq-shell | [Error: Unclaimed worker invites past grace period: 0 still valid, 1 expired](https://eq-solutions.sentry.io/issues/142642035/) | 2 | 2026-08-25 |
+| eq-cards | [NoSuchMethodError: Null check operator used on a null value](https://eq-solutions.sentry.io/issues/143082576/) | 8 | 2026-08-26 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 8 | 2026-08-26 |
+| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 7 | 2026-08-26 |
+| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 5 | 2026-08-26 |
+| eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 4 | 2026-08-26 |
+| eq-shell | [Error: Unclaimed worker invites past grace period: 1 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 3 | 2026-08-26 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 2 | 2026-08-24 |
-| eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-26 | eq-shell | [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-verif |
+| 2026-08-26 | eq-shell | [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invariants  |
 | 2026-08-26 | eq-shell | [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/0164 are |
 | 2026-08-26 | eq-shell | [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module codes |
 | 2026-08-26 | eq-shell | [#1625](https://github.com/eq-solutions/eq-shell/pull/1625) fix(security): stop staff-active drift sweep from logging out mul |
@@ -90,8 +94,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-26 | eq-shell | [#1609](https://github.com/eq-solutions/eq-shell/pull/1609) fix(entity-patch): derive isProd from request Host, not process.e |
 | 2026-08-26 | eq-shell | [#1615](https://github.com/eq-solutions/eq-shell/pull/1615) feat(auth): collapse deactivated & expired self-join links by def |
 | 2026-08-26 | eq-shell | [#1617](https://github.com/eq-solutions/eq-shell/pull/1617) feat(access-control): per-person sidebar visibility scope |
-| 2026-08-26 | eq-shell | [#1616](https://github.com/eq-solutions/eq-shell/pull/1616) fix(auth): thread an already-resolved Cards name into new workers |
-| 2026-08-26 | eq-shell | [#1614](https://github.com/eq-solutions/eq-shell/pull/1614) fix(staff): wrap the licence action row so Remove's confirm state |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -105,7 +107,7 @@ _Showing 15 of 113 · full record in [sessions/](sessions/)_
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
 - **eq-context** (30 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
-- **cross-repo** (187 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **cross-repo** (186 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
@@ -128,7 +130,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1938 | 206 / 89 | 269 | 47 |
+| [eq-shell](eq/pending/eq-shell.md) | 1934 | 204 / 89 | 270 | 47 |
 | [eq-cards](eq/pending/eq-cards.md) | 469 | 37 / 16 | 103 | 5 |
 | [eq-field](eq/pending/eq-field.md) | 1004 | 115 / 39 | 77 | 27 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
@@ -137,7 +139,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 263 | 25 / 5 | 27 | 5 |
-| [cross-repo](eq/pending/cross-repo.md) | 998 | 144 / 43 | 33 | 53 |
+| [cross-repo](eq/pending/cross-repo.md) | 992 | 144 / 43 | 30 | 53 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 469 | 85 / 12 | 0 | 40 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
@@ -199,4 +201,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 19:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 22:57 UTC._
