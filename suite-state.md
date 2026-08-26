@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 218 | app_data.sites |
+| Sites | 211 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-26)
 
+**eq-field:**
+- #805 v3.5.581 — Edit Roster: fix Ctrl+Enter not filling on the first press
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -69,8 +72,9 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1622 docs(security): correct stale organisations_anon_bootstrap_read ledger claim (3rd occurrence)
-- #1621 feat(identity): sync EQ Field roster removal/re-add to Shell tenant access
+- #1626 fix(worker-invite): backfill workers.role so canonical sync stops defaulting new invites to Direct
+- #1625 fix(security): stop staff-active drift sweep from logging out multi-tenant workers
+- #1624 fix(drift): CHECK 10 anon_columns was a Postgres array literal string, not JS array
 - #1620 DIAGNOSTIC ONLY — do not merge — entity-patch host/url echo
 
 ---
@@ -82,7 +86,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ✓ success |
+| eq-shell | ? in_progress |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
