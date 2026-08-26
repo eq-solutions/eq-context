@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-26)
 
+**eq-field:**
+- #807 fix(field): stamp created_by/updated_by on schedule_entries writes
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -69,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1631 fix(documents): drop .msg/.eml from sign-off register's file picker
 - #1628 feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invariants for jvkn
 - #1627 docs(security): paper-trail 0162/0163 + correct CONTROL-PLANE-LEDGER (3rd occurrence)
 
