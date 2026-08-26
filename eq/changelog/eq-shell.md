@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-26 (PR #1607 MERGED + LIVE — role changes now audit-logged, membership write failure fails loudly)
+- `edit-user.ts`'s `patch.role` handler was the only one of the file's four mutable-field handlers (role/active/phone/unlock_pin) with no `writeAuditLog` call, and the only one that swallowed its own write failure (`console.warn`-and-continue) while still returning `ok:true`.
+- `shell_control.user_tenant_memberships.role` — not the `users.role` mirror written just above it in the same request — is what `verify-shell-session`, `useCan`/the nav gate, and Access Control's "Preview a person" actually read, so a swallowed write failure meant an admin could see "saved" while the person kept their old permissions. Now returns `500 {ok:false, error:'server-error'}` on that failure, and writes a `user.role_changed` audit row (`previous_role`/`next_role`) on success, matching the `active`/`phone` handlers' existing shape.
+- Squash-merged (`979aa9c7`) on Royce's "merge it." Confirmed live via the Netlify deploy record (not just a green merge) plus a live `verify-shell-session` smoke test.
+
 ## 2026-08-26 (PR #1604 MERGED + LIVE — synthetic cards.eq.solutions placeholder email stopped from rendering/emailing)
 - Companion to eq-cards' same-day fix (see `eq/changelog/eq-cards.md`) for the same synthetic `${user.id}@cards.eq.solutions` GoTrue placeholder. `verify-shell-session.ts`'s session response, the admin Users list (`AdminUserList.tsx`) and detail page (`AdminEditUser.tsx`) all now treat the placeholder as an absent email, same as the existing empty-state.
 - `cards-approve-staff.ts` and `reset-user-pin.ts` both previously fired a real `sendEmail()` at the fake address (a connection-approval email and a PIN-reset link respectively) while telling the admin it had sent — both now refuse instead.

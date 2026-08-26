@@ -21,6 +21,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Role-change audit trail + fail-loud on membership-role write failure — built, merged, live (2026-08-26)
+*Royce handed this one fully scoped: `edit-user.ts`'s `patch.role` handler was the only one of the file's four mutable-field handlers (role/active/phone/unlock_pin) that didn't write an audit-log row, and the only one that swallowed its own write failure — a failed `user_tenant_memberships.role` update just logged a warning and still returned `ok:true`.*
+
+- [x] **Root checkout avoided**: the default eq-shell checkout was 143 commits behind `origin/main` with another session's uncommitted work sitting in it (`entity-patch.ts`, `AdminDocumentUpload.tsx` + 2 untracked migrations) — left untouched; built from a fresh worktree off current `origin/main` instead. Checked a suspiciously-named local branch (`claude/user-role-change-check-cbae09`) for prior work before starting — empty, no collision.
+- [x] **Built**: `user_tenant_memberships.role` write failure now returns a real `500 {ok:false, error:'server-error'}` instead of `console.warn`-and-continue — that table, not the `users.role` mirror written just above it in the same request, is what `verify-shell-session`, `useCan`/the nav gate, and Access Control's "Preview a person" actually read. On a genuine role change, writes `writeAuditLog({event:'user.role_changed', detail:{previous_role, next_role}})`, mirroring the `active`/`phone` handlers' existing shape (precedent: PR #1349). Confirmed live against jvkn's `shell_control` schema before writing the fix. `tsc -b --force` clean, `eslint` 0 errors.
+- [x] **Merged and confirmed live**: [PR #1607](https://github.com/eq-solutions/eq-shell/pull/1607), squash-merged on Royce's "merge it" (`979aa9c7`). Not just a green merge — polled the actual Netlify deploy record to `state:"ready"` with a `published_at` timestamp (318s build) and live-smoke-tested `verify-shell-session` (401 as expected) before calling it live. Worktree and merged branch both cleaned up on request.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no live Shell session/credentials in this environment. Worth a real pass: change a test user's role, confirm a `user.role_changed` row lands in `audit_log`, and (harder to stage) confirm a simulated membership-write failure now returns a real error instead of a false "saved." _(added 2026-08-26)_
+
+---
+
 ## eq-shell: EQ Ops quote-open P0 (dangling table join) fixed + dispatched live; mobile Commercials layout overlap fixed (2026-08-26)
 *Royce: "all quotes i try to open give me this error" — screenshot showed `relation "app_data.quote_estimators" does not exist`, hitting Simon Bramall on every quote he opened in `/ops`.*
 
