@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,12 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-shell: control-plane drift gate unblocked — eq_cards_admin_sync_tenant_access allowlisted, fixed + merged + live (2026-08-27) (fully closed 2026-08-27)
+
+- [x] **Live-verified against jvkn via Supabase MCP**: `pg_get_functiondef` confirmed the live function body is byte-for-byte identical to eq-cards migration `0165_admin_sync_tenant_access_on_roster_removal.sql` (cosmetic `search_path` normalisation only); grants confirmed `postgres`+`service_role` EXECUTE only, no anon/authenticated; companion `org_access_requests_status_check` constraint change also confirmed live. Fixed via [PR #1629](https://github.com/eq-solutions/eq-shell/pull/1629), verification recorded via [PR #1632](https://github.com/eq-solutions/eq-shell/pull/1632). Closes `task_393ba31c`. Full chain in `sessions/2026-08-27.md` and `eq/changelog/eq-shell.md`.
 
 ---
 

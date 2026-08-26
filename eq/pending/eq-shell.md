@@ -33,10 +33,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: control-plane drift gate unblocked — eq_cards_admin_sync_tenant_access allowlisted, fixed + merged + live (2026-08-27)
-
-- [ ] **Not independently verified against a live `pg_get_functiondef` body/grant diff** — no Supabase Management API credentials were available this session; verification was the eq-cards source file's explicit grants plus the drift check's own live-existence query. Fixed and live via [PR #1629](https://github.com/eq-solutions/eq-shell/pull/1629) — full root-cause chain in `sessions/2026-08-27.md` and `eq/changelog/eq-shell.md`. A future session with Supabase MCP access should confirm the live definition matches eq-cards `0165_admin_sync_tenant_access_on_roster_removal.sql` byte-for-byte. Closes `task_393ba31c` (below), which was a workaround (admin-merge), not a fix. _(added 2026-08-27)_
-
 ---
 
 ## eq-shell: Worker invite role never reached workers.role — Labour Hire/Apprentice/Subcontractor invites landed as Direct — built, merged, live (2026-08-26)
