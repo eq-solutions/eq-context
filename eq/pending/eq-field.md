@@ -28,6 +28,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Week picker gains a "This week" marker, separate from the viewed-week highlight (2026-08-26)
+*Royce asked where the roster week-dropdown's existing bold highlight was built, from a screenshot showing "Week Starting 31st August 2026" bolded while browsing — then asked to add a marker for today's actual week too, since the existing highlight only ever marks whichever week you've navigated to (persisted across sessions), not the real calendar week.*
+
+- [x] **Built**: a new tag on the week-picker popover's matching row, independent of the existing bold "viewed week" highlight — the two now read distinctly when they differ, and combine on one row when the viewed week and today's real week are the same. Labelled "This week" (not "Today") to match the app's existing wording for this exact idea elsewhere (Safety, Timesheets, Tender Pipeline). eq-field [PR #801](https://github.com/eq-solutions/eq-field/pull/801) (v3.5.579), squash-merged on explicit "merge #801", confirmed live via `field.eq.solutions/sw.js`.
+- [x] **Caught before shipping, during the mandatory reflection pass**: an early draft's own explanatory comment overstated how "branded" the new tag is — it doesn't repaint with each tenant's colour scheme the way first written; only a minor text-colour shift applies, unrelated to the tenant-branding system. Corrected before it became a permanent, wrong claim in the shipped changelog.
+- [x] **Verified against the real, shipped files in an actual browser**, not just reasoned through — confirmed the new marker and the existing highlight land on the correct rows independently, and combine correctly when they coincide. A full sign-in with a live SKS/EQ session wasn't reachable from this environment (standing sandbox limitation, same as most entries in this file).
+- [x] **A same-day version clash was caught and resolved cleanly**: another change merged minutes earlier ([PR #802](https://github.com/eq-solutions/eq-field/pull/802), a digest test-send fix) had already claimed the same release number — re-numbered this one and re-ran every check before merging, rather than forcing past the conflict.
+
+---
+
 ## eq-field: job-numbers Ops→Field status link verified + 7-week migration drift fixed (2026-08-26)
 *Royce asked whether Field's Job Numbers board reflects live status from EQ Ops. It does — but verifying it surfaced eq-field's own repo had been silently wrong about how its own backing function works for 7 weeks.*
 
