@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-26 12:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-26 18:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-26 11:30 UTC → 2026-08-26 12:40 UTC)
+## Since last refresh (2026-08-26 12:40 UTC → 2026-08-26 18:50 UTC)
 
-- Merged: eq-shell [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drif
-- Merged: eq-shell [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_r
-- Merged: eq-shell [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mob
-- Merged: eq-shell [#1603](https://github.com/eq-solutions/eq-shell/pull/1603) fix(labour-hire): promote licence photos on the other 2 clai
-- Merged: eq-shell [#1600](https://github.com/eq-solutions/eq-shell/pull/1600) fix(auth): sign-in mobile placeholder clarity + /login sessi
-- Merged: eq-shell [#1599](https://github.com/eq-solutions/eq-shell/pull/1599) fix(access-control): group Preview-a-person's permission lis
-- Merged: eq-shell [#1596](https://github.com/eq-solutions/eq-shell/pull/1596) chore(drift): backfill eq_sweep_orphaned_licence_photos
-- Merged: eq-shell [#1590](https://github.com/eq-solutions/eq-shell/pull/1590) fix(staff): Staff-page edit resent every field on every save
-- ✅ Needs you: 8 → 7
+- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
+- Merged: eq-shell [#1608](https://github.com/eq-solutions/eq-shell/pull/1608) fix(security): detect reverse staff/shell active-sync drift,
+- Merged: eq-shell [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking 
+- Merged: eq-shell [#1604](https://github.com/eq-solutions/eq-shell/pull/1604) fix: stop rendering/emailing the synthetic placeholder email
+- Merged: eq-shell [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still s
+- Merged: eq-shell [#1601](https://github.com/eq-solutions/eq-shell/pull/1601) fix(auth): await last_login_at bump, add drift healer for th
+- Merged: eq-shell [#1598](https://github.com/eq-solutions/eq-shell/pull/1598) chore(drift): drop redundant eq_sweep_orphaned_licence_photo
+- Merged: eq-shell [#1593](https://github.com/eq-solutions/eq-shell/pull/1593) chore(drift): allowlist eq_cards_get_my_licence — sourced in
 
 ## ⚠ Needs you (7)
 
@@ -54,7 +53,7 @@ _…and 228 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 0d |
+| eq-shell | ✓ success | 0d ago | 4 | 0d |
 | eq-solves-service | ✓ success | 1d ago | 6 | 6d |
 | eq-field | ✓ success | 0d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -78,6 +77,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-26 | eq-shell | [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync stops |
 | 2026-08-26 | eq-shell | [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drift-che |
 | 2026-08-26 | eq-shell | [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_read l |
 | 2026-08-26 | eq-shell | [#1621](https://github.com/eq-solutions/eq-shell/pull/1621) feat(identity): sync EQ Field roster removal/re-add to Shell tena |
@@ -92,14 +92,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-26 | eq-shell | [#1612](https://github.com/eq-solutions/eq-shell/pull/1612) fix(staff): let a manager remove a bad licence from the expired-m |
 | 2026-08-26 | eq-shell | [#1610](https://github.com/eq-solutions/eq-shell/pull/1610) fix(auth): stop offering Delete on self-join links that have been |
 | 2026-08-26 | eq-shell | [#1611](https://github.com/eq-solutions/eq-shell/pull/1611) fix(worker-invite): correct misleading email-field caption |
-| 2026-08-26 | eq-shell | [#1607](https://github.com/eq-solutions/eq-shell/pull/1607) fix(security): audit-log role changes, fail loudly on membership  |
 _Showing 15 of 113 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (286 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (50 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (147 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (148 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (94 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -200,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 12:40 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 18:50 UTC._
