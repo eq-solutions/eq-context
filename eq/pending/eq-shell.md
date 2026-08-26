@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: blank-name worker records — 3rd distinct gap found + fixed live, admin-override merged (2026-08-26)
+
+- [ ] **The "Schema drift + anon-grant + policy-lint" required check is still red on `main`** — a live anon-grant regression on the jvkn control plane (an intentional anon-read table no longer actually anon-readable). Confirmed unrelated to this fix (touches zero SQL, same check was green on `main` 46 minutes before this PR's run) but it blocked GitHub's branch protection outright; merged via `gh pr merge --admin` on Royce's explicit go rather than investigated. Worth a look before the next eq-shell merge trips the same block — table not yet identified. _(added 2026-08-26)_
+- [ ] **2 other blank-name rows already sit in `app_data.field_people_removed` on ehow** (found earlier this session during the sks-nsw-labour reconciliation) — same shape as Don Milmlow's record below, not yet identified or backfilled. _(added 2026-08-26)_
+- [ ] **Not click-tested live by a person** — verified via `tsc -b --force`, eslint, live Supabase tracing of the exact chain, and a production commit-ancestry check, not a real join-flow click-through as a brand-new user. _(added 2026-08-26)_
+
+---
+
 ## eq-shell: Mark Brame role-change check — role change confirmed working, stale record archived (2026-08-26)
 *Royce: "I recently had Mark Brame in as a manager and then I changed his account to employee but I don't think it changed anything in the view... can you double check this? I have since deleted him." Root-caused entirely from live jvkn/ehow queries plus a codebase trace — no guessing. The two gaps this investigation found are their own sections elsewhere in this file (both already built, merged, live) — this section covers the original question and Mark's own record only.*
 
