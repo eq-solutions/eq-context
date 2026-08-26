@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-26 06:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-26 08:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-26 05:56 UTC → 2026-08-26 06:18 UTC)
+## Since last refresh (2026-08-26 06:18 UTC → 2026-08-26 08:35 UTC)
 
-- Merged: eq-shell [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mob
-- Merged: eq-shell [#1588](https://github.com/eq-solutions/eq-shell/pull/1588) fix(staff): quick-toggle Supervisor ON needs a category
-- Merged: eq-shell [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with c
-- Merged: eq-shell [#1580](https://github.com/eq-solutions/eq-shell/pull/1580) feat(sites): surface internal contacts on the field_sites vi
-- Merged: eq-shell [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-so
-- Merged: eq-shell [#1577](https://github.com/eq-solutions/eq-shell/pull/1577) feat(sites): add primary/secondary internal contact columns
-- Merged: eq-shell [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes
-- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
+- Merged: eq-shell [#1589](https://github.com/eq-solutions/eq-shell/pull/1589) fix(quotes): shorten archive-days label so Default Rates fie
+- Merged: eq-shell [#1587](https://github.com/eq-solutions/eq-shell/pull/1587) feat(quotes): auto-derive estimators from history, make arch
+- Merged: eq-shell [#1586](https://github.com/eq-solutions/eq-shell/pull/1586) feat(quotes): collapse rate library by category, remove brok
+- Merged: eq-shell [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_si
+- Merged: eq-shell [#1583](https://github.com/eq-solutions/eq-shell/pull/1583) fix(customers): clear 4 react-hooks/set-state-in-effect erro
+- Merged: eq-shell [#1582](https://github.com/eq-solutions/eq-shell/pull/1582) feat(sites): link an existing site to another customer
+- Merged: eq-shell [#1581](https://github.com/eq-solutions/eq-shell/pull/1581) feat(sites): self-serve internal contacts in Edit Site modal
+- Merged: eq-shell [#1579](https://github.com/eq-solutions/eq-shell/pull/1579) data(sites): SY5 primary/secondary internal contacts
 
 ## ⚠ Needs you (8)
 
@@ -27,15 +27,16 @@ _2026-08-26 06:18 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 5 consecutive scheduled run(s) failed, last success 2026-08-20 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
-- 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-08-25.md](sessions/2026-08-25.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-25.md](sessions/2026-08-25.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (234)
+## 🙋 Waiting on you (235)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Mobile Commercials-layout fix not click-tested live** — verified via `tsc -b --force` only; no live session/credentials in this environment, and this repo's local dev tooling is broken under Node 24 (existing memory). Worth a real look next time someone's on `/ops` → New Quote on a phone. _(added 2026-08-26)_
 - **eq-shell** · **S6 — not code.** Neither of the 2026-08-23 sweep's own live fixes (`staff_conversations` write gate, GM Reports direct-API bypass) has been click-tested by a person yet. Whenever convenient, on you or whoever's got a live session. **Click-test steps written and delivered to Royce in chat 2026-08-26** — Fix A (`staff_conversations`): sign in without `staff.manage_conversations`, confirm no write path via the UI *and* via a direct browser-console insert (RLS, not just a hidden button). Fix B (GM Reports): sign in as manager, confirm periods/jobs/invoice-run/forecast screens still load, confirm archive/delete on a report period still works. Still needs an actual person to run it. _(added 2026-08-25)_
 - **eq-shell** · **Not click-tested live by a person** — every fix this round verified via `pnpm run build` + `tsc -b --force` + production commit-ancestry, not a real signed-in session. Worth a few minutes each: open Access Control → Preview a person for a real Supervisor and confirm the new "what they actually see" block matches the sidebar, and that the grouped/plain-English permission sections and the Group grants/Role overrides line (both added 2026-08-26) read correctly; confirm a non-platform-admin can't see the new grant/revoke control at all; confirm the control actually works end-to-end against a disposable test user, not a real account. _(added 2026-08-25, extended 2026-08-26)_
 - **eq-shell** · **Not click-tested live** — no live SKS credentials in this environment. _(added 2026-08-25)_
@@ -47,8 +48,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Nelson Sareto's Resend click reproduced the identical duplicate-key error after the fix was confirmed live.** No fresh Postgres duplicate-key log entry appears after the deploy's publish time, and Nelson's `worker_invites` row is unchanged — pointing toward a stale/leftover error banner rather than a genuinely new failure, but **not confirmed**. Asked Royce to refresh and retry; no response yet. If it still fails post-refresh: leading unverified hypothesis is the new `unclaimed` SELECT's `error` being silently discarded, falling through to the old broken `INSERT` path — needs Netlify function-log evidence or a defensive fix (surface `unclaimedErr` explicitly). _(added 2026-08-24)_
 - **eq-shell** · **S2 (sprint doc) still open** — `entity-actions.ts`/`entity-patch.ts` gate asset writes on `entity.edit`/`entity.delete` (the CRM tier) rather than `equipment.edit`/`equipment.view`, aligned by coincidence today, not design. Needs Royce's call: re-point the keys, or document the CRM-tiering as deliberate. _(added 2026-08-23)_
 - **eq-shell** · **S6 (sprint doc), now larger** — not click-tested live: the original two fixes (`staff_conversations`, GM Reports) plus this round's three (`invite-users-batch.ts`'s guard, both Intake fixes). All verified via live grants/policy/function-body queries and full CI, not an actual signed-in session attempting the blocked action. _(added 2026-08-23)_
-- **eq-shell** · **Not click-tested live** — verified via the deploy's exact commit match, not by anyone actually opening `core.eq.solutions/sks/staff` and looking at Conor's/Nelson's rows. _(added 2026-08-23)_
-_…and 222 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 223 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -57,7 +57,7 @@ _…and 222 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 5d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 7d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -80,6 +80,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 |--------|------|----|
 | 2026-08-26 | eq-shell | [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mobile |
 | 2026-08-26 | eq-shell | [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking every |
+| 2026-08-26 | eq-cards | [#322](https://github.com/eq-solutions/eq-cards/pull/322) fix: stop showing/saving eq-shell's synthetic placeholder email |
 | 2026-08-25 | eq-shell | [#1603](https://github.com/eq-solutions/eq-shell/pull/1603) fix(labour-hire): promote licence photos on the other 2 claim doo |
 | 2026-08-25 | eq-shell | [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still showed |
 | 2026-08-25 | eq-shell | [#1600](https://github.com/eq-solutions/eq-shell/pull/1600) fix(auth): sign-in mobile placeholder clarity + /login session-ch |
@@ -92,12 +93,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-25 | eq-shell | [#1595](https://github.com/eq-solutions/eq-shell/pull/1595) docs(security): close S2/S4/S5 from the access-control sweep foll |
 | 2026-08-25 | eq-shell | [#1592](https://github.com/eq-solutions/eq-shell/pull/1592) feat(admin): govern is_platform_admin grants, with an audit trail |
 | 2026-08-25 | eq-shell | [#1591](https://github.com/eq-solutions/eq-shell/pull/1591) fix(access-control): reconcile app-tile drift, make Preview a per |
-| 2026-08-25 | eq-shell | [#1594](https://github.com/eq-solutions/eq-shell/pull/1594) chore(deps): bump @eq-solutions/roles to v2.7.5 |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (283 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (284 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (49 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (141 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (95 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -129,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1826 | 199 / 85 | 244 | 47 |
+| [eq-shell](eq/pending/eq-shell.md) | 1839 | 199 / 86 | 248 | 47 |
 | [eq-cards](eq/pending/eq-cards.md) | 446 | 39 / 15 | 90 | 5 |
 | [eq-field](eq/pending/eq-field.md) | 933 | 111 / 36 | 64 | 27 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 06:18 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 08:35 UTC._
