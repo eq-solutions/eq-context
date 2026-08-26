@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-26 08:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-26 08:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-26 08:35 UTC → 2026-08-26 08:38 UTC)
+## Since last refresh (2026-08-26 08:38 UTC → 2026-08-26 08:53 UTC)
 
-- Merged: eq-shell [#1594](https://github.com/eq-solutions/eq-shell/pull/1594) chore(deps): bump @eq-solutions/roles to v2.7.5
-- Merged: eq-shell [#1588](https://github.com/eq-solutions/eq-shell/pull/1588) fix(staff): quick-toggle Supervisor ON needs a category
-- Merged: eq-shell [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with c
-- Merged: eq-shell [#1580](https://github.com/eq-solutions/eq-shell/pull/1580) feat(sites): surface internal contacts on the field_sites vi
-- Merged: eq-shell [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-so
-- Merged: eq-shell [#1577](https://github.com/eq-solutions/eq-shell/pull/1577) feat(sites): add primary/secondary internal contact columns
-- Merged: eq-shell [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes
-- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
+- Merged: eq-shell [#1604](https://github.com/eq-solutions/eq-shell/pull/1604) fix: stop rendering/emailing the synthetic placeholder email
+- Merged: eq-shell [#1591](https://github.com/eq-solutions/eq-shell/pull/1591) fix(access-control): reconcile app-tile drift, make Preview 
+- Merged: eq-shell [#1589](https://github.com/eq-solutions/eq-shell/pull/1589) fix(quotes): shorten archive-days label so Default Rates fie
+- Merged: eq-shell [#1587](https://github.com/eq-solutions/eq-shell/pull/1587) feat(quotes): auto-derive estimators from history, make arch
+- Merged: eq-shell [#1586](https://github.com/eq-solutions/eq-shell/pull/1586) feat(quotes): collapse rate library by category, remove brok
+- Merged: eq-shell [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_si
+- Merged: eq-shell [#1583](https://github.com/eq-solutions/eq-shell/pull/1583) fix(customers): clear 4 react-hooks/set-state-in-effect erro
+- Merged: eq-shell [#1582](https://github.com/eq-solutions/eq-shell/pull/1582) feat(sites): link an existing site to another customer
 
 ## ⚠ Needs you (8)
 
@@ -56,9 +56,9 @@ _…and 223 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 5d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ✓ success | 7d ago | 0 | — |
+| eq-solves-intake | ✓ success | 8d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -78,8 +78,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-26 | eq-shell | [#1604](https://github.com/eq-solutions/eq-shell/pull/1604) fix: stop rendering/emailing the synthetic placeholder email |
 | 2026-08-26 | eq-shell | [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mobile |
 | 2026-08-26 | eq-shell | [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking every |
+| 2026-08-26 | eq-field | [#797](https://github.com/eq-solutions/eq-field/pull/797) v3.5.576 — Prestart: High-Risk Construction Work made visible, on |
 | 2026-08-26 | eq-field | [#795](https://github.com/eq-solutions/eq-field/pull/795) fix: hide the synthetic cards.eq.solutions placeholder email |
 | 2026-08-26 | eq-cards | [#322](https://github.com/eq-solutions/eq-cards/pull/322) fix: stop showing/saving eq-shell's synthetic placeholder email |
 | 2026-08-25 | eq-shell | [#1603](https://github.com/eq-solutions/eq-shell/pull/1603) fix(labour-hire): promote licence photos on the other 2 claim doo |
@@ -91,15 +93,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-25 | eq-shell | [#1596](https://github.com/eq-solutions/eq-shell/pull/1596) chore(drift): backfill eq_sweep_orphaned_licence_photos |
 | 2026-08-25 | eq-shell | [#1593](https://github.com/eq-solutions/eq-shell/pull/1593) chore(drift): allowlist eq_cards_get_my_licence — sourced in eq-c |
 | 2026-08-25 | eq-shell | [#1590](https://github.com/eq-solutions/eq-shell/pull/1590) fix(staff): Staff-page edit resent every field on every save, clo |
-| 2026-08-25 | eq-shell | [#1595](https://github.com/eq-solutions/eq-shell/pull/1595) docs(security): close S2/S4/S5 from the access-control sweep foll |
-| 2026-08-25 | eq-shell | [#1592](https://github.com/eq-solutions/eq-shell/pull/1592) feat(admin): govern is_platform_admin grants, with an audit trail |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (284 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (49 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (141 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (142 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (95 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -130,8 +130,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1839 | 199 / 86 | 248 | 47 |
-| [eq-cards](eq/pending/eq-cards.md) | 446 | 39 / 15 | 90 | 5 |
-| [eq-field](eq/pending/eq-field.md) | 933 | 111 / 36 | 64 | 27 |
+| [eq-cards](eq/pending/eq-cards.md) | 437 | 38 / 15 | 88 | 5 |
+| [eq-field](eq/pending/eq-field.md) | 940 | 112 / 36 | 64 | 27 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 08:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 08:53 UTC._
