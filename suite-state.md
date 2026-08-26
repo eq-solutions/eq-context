@@ -69,6 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1615 feat(auth): collapse deactivated & expired self-join links by default
 - #1609 fix(entity-patch): derive isProd from request Host, not process.env.CONTEXT
 
 ---
