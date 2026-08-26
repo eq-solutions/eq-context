@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-26)
 
 **eq-field:**
-- #802 v3.5.578 — FIX: digest "Send test to myself" always failed unauthorized
 - #801 v3.5.578 — Roster: mark today's actual week in the week picker
 
 **eq-service:**
@@ -73,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1617 feat(access-control): per-person sidebar visibility scope
 - #1615 feat(auth): collapse deactivated & expired self-join links by default
 - #1609 fix(entity-patch): derive isProd from request Host, not process.env.CONTEXT
 
