@@ -110,9 +110,11 @@ If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-s
 
 ## Active (do not touch)
 
-| Folder | Repo | Branch | Agent | Date | Status |
-|---|---|---|---|---|---|
-| C:\Projects\eq-field-job-number-overrides-wt | eq-field | claude/job-number-overrides-reconcile | Claude (field_job_number_overrides ledger-parity migration — new migration file documenting an already-live ehow table's schema/RLS/grants, no live DB change) | 2026-08-26 | **PR [#799](https://github.com/eq-solutions/eq-field/pull/799) OPEN** — not merged. Remove worktree + this row once merged. |
+## Recently pruned (2026-08-26 — duplicate work, PR closed not merged)
+
+| Folder | Repo | Branch | Outcome |
+|---|---|---|---|
+| ~~C:\Projects\eq-field-job-number-overrides-wt~~ REMOVED | eq-field | claude/job-number-overrides-reconcile (deleted, local+remote) | SUPERSEDED — PR [#799](https://github.com/eq-solutions/eq-field/pull/799) (field_job_number_overrides ledger-parity migration) closed, not merged. Another concurrent session's PR [#798](https://github.com/eq-solutions/eq-field/pull/798) merged independently first (2026-08-26 09:11 UTC) doing the identical task against the same table — both sessions pulled live ehow schema separately and landed on functionally equivalent DDL/RLS (a useful independent cross-check that the shape is right). Closed #799 with a comment pointing to #798 rather than reconcile two migration files that both create the same table. Worktree + local/remote branch removed. |
 
 ## Recently pruned (2026-08-25 — BUG-009 sweep, 4 PRs, all merged)
 
