@@ -20,6 +20,20 @@ For the current built state of each system, see [system/architecture.md](https:/
 
 ---
 
+## 2026-08-26 — Field/Core: one site record per address, module codes live one layer below
+
+**Status:** Proposed (Royce + EQ Field session, 2026-08-26 — advisory pattern, not yet built into Core).
+
+**Decision:** When one physical address hosts multiple concurrent projects/modules (e.g. SKS's Telstra SLDC site at 4A Herbert Street, St Leonards NSW, running modules like MOD10, MOD11...), Core's canonical Site record stays singular per address — one app_data.sites row, one address, one Field/Service entitlement pair, one contact pool. Module/project codes (MOD10) live one layer below as job/project references back to that one Site, never as duplicate Site rows. Existing homes for that reference today: EQ Ops job numbers (app_data.quote.job_number, the suite's per-site job-number source of truth) or EQ Field's own local Job Numbers/Projects tables (scripts/jobnumbers.js, scripts/projects.js), both of which already carry a text link back to a site name.
+
+**Why:** Verified live against core.eq.solutions/sks/customers (BGIS Pty Ltd → Telstra SLDC) — each Site row is the unit that carries the address, the Field/Service module-entitlement toggles, and the site-scoped contacts list. Forking a Site per module multiplies all three for no benefit: address retyped on every row, entitlement toggles to keep in sync across N rows, contacts fragmented by module instead of grouped by physical location.
+
+**Alternatives considered:** Duplicate the canonical Site per module ("Telstra SLDC · MOD10", "Telstra SLDC · MOD11", each with its own copy of the address) — rejected for the reasons above; illustrated as the explicit "not recommended" comparison in the session mockup.
+
+**Implications:** Core (eq-shell) has no native "nested project codes under one site" UI today — this is a pattern to apply *if* that gets built, not a shipped feature; building it is eq-shell scope (schema: a job/project reference per site; UI: nested rows under the Sites table), not eq-field. No code shipped this session.
+
+---
+
 ## 2026-07-20 — EQ Cards: 90/10 on SKS, Company-Scale Build Parked
 
 **Status:** Accepted (Royce, decision record "EQ Cards — Where It Sits, and Why", synthesis of own analysis triangulated against ChatGPT + Grok adversarial reviews, 2026-07-20).
