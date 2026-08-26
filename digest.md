@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-25 23:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-26 05:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-25 22:59 UTC → 2026-08-25 23:33 UTC)
+## Since last refresh (2026-08-25 23:33 UTC → 2026-08-26 05:56 UTC)
 
-- Merged: eq-shell [#1584](https://github.com/eq-solutions/eq-shell/pull/1584) fix(quotes): keep markup% in sync when rate is edited with c
-- Merged: eq-shell [#1580](https://github.com/eq-solutions/eq-shell/pull/1580) feat(sites): surface internal contacts on the field_sites vi
-- Merged: eq-shell [#1578](https://github.com/eq-solutions/eq-shell/pull/1578) fix(field-job-numbers): prefer site name over code in Ops-so
-- Merged: eq-shell [#1576](https://github.com/eq-solutions/eq-shell/pull/1576) record(sites): rename 7 live Equinix sites from bare codes
-- Merged: eq-shell [#1575](https://github.com/eq-solutions/eq-shell/pull/1575) record(access): backfill Field access for nine Cards-door cl
-- Merged: eq-shell [#1574](https://github.com/eq-solutions/eq-shell/pull/1574) feat(onboarding): chase unclaimed invites, and explain the l
-- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
-- Merged: eq-solves-service [#809](https://github.com/eq-solutions/eq-service/pull/809) fix(security): close anon access on get_assets_for_grouping 
+- Merged: eq-shell [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking 
+- Merged: eq-shell [#1587](https://github.com/eq-solutions/eq-shell/pull/1587) feat(quotes): auto-derive estimators from history, make arch
+- Merged: eq-shell [#1586](https://github.com/eq-solutions/eq-shell/pull/1586) feat(quotes): collapse rate library by category, remove brok
+- Merged: eq-shell [#1585](https://github.com/eq-solutions/eq-shell/pull/1585) fix(migrations): 0280 was about to clobber 0279's eq_list_si
+- Merged: eq-shell [#1583](https://github.com/eq-solutions/eq-shell/pull/1583) fix(customers): clear 4 react-hooks/set-state-in-effect erro
+- Merged: eq-shell [#1582](https://github.com/eq-solutions/eq-shell/pull/1582) feat(sites): link an existing site to another customer
+- Merged: eq-shell [#1581](https://github.com/eq-solutions/eq-shell/pull/1581) feat(sites): self-serve internal contacts in Edit Site modal
+- Merged: eq-shell [#1579](https://github.com/eq-solutions/eq-shell/pull/1579) data(sites): SY5 primary/secondary internal contacts
 
 ## ⚠ Needs you (8)
 
@@ -54,10 +54,10 @@ _…and 222 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 5d |
-| eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 7d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -66,18 +66,19 @@ _…and 222 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |---------|-------|--------|-----------|
 | eq-shell | [TypeError: Failed to fetch dynamically imported module: https://core.eq.solution](https://eq-solutions.sentry.io/issues/141714696/) | 37 | 2026-08-21 |
 | eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 7 | 2026-08-25 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 4 | 2026-08-20 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 6 | 2026-08-26 |
+| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 4 | 2026-08-26 |
 | eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 3 | 2026-08-25 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 0 still valid, 1 expired](https://eq-solutions.sentry.io/issues/142642035/) | 2 | 2026-08-25 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 2 | 2026-08-24 |
 | eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
-| eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-08-20 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-26 | eq-shell | [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking every |
 | 2026-08-25 | eq-shell | [#1603](https://github.com/eq-solutions/eq-shell/pull/1603) fix(labour-hire): promote licence photos on the other 2 claim doo |
 | 2026-08-25 | eq-shell | [#1602](https://github.com/eq-solutions/eq-shell/pull/1602) fix(access-control): Preview-a-person's summary line still showed |
 | 2026-08-25 | eq-shell | [#1600](https://github.com/eq-solutions/eq-shell/pull/1600) fix(auth): sign-in mobile placeholder clarity + /login session-ch |
@@ -92,7 +93,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-25 | eq-shell | [#1591](https://github.com/eq-solutions/eq-shell/pull/1591) fix(access-control): reconcile app-tile drift, make Preview a per |
 | 2026-08-25 | eq-shell | [#1594](https://github.com/eq-solutions/eq-shell/pull/1594) chore(deps): bump @eq-solutions/roles to v2.7.5 |
 | 2026-08-25 | eq-shell | [#1589](https://github.com/eq-solutions/eq-shell/pull/1589) fix(quotes): shorten archive-days label so Default Rates fields l |
-| 2026-08-25 | eq-shell | [#1588](https://github.com/eq-solutions/eq-shell/pull/1588) fix(staff): quick-toggle Supervisor ON needs a category |
 _Showing 15 of 115 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -129,18 +129,18 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1826 | 199 / 85 | 244 | 45 |
+| [eq-shell](eq/pending/eq-shell.md) | 1826 | 199 / 85 | 244 | 47 |
 | [eq-cards](eq/pending/eq-cards.md) | 446 | 39 / 15 | 90 | 5 |
-| [eq-field](eq/pending/eq-field.md) | 933 | 111 / 36 | 64 | 25 |
+| [eq-field](eq/pending/eq-field.md) | 933 | 111 / 36 | 64 | 27 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 263 | 25 / 5 | 27 | 5 |
-| [cross-repo](eq/pending/cross-repo.md) | 977 | 143 / 42 | 28 | 43 |
+| [cross-repo](eq/pending/cross-repo.md) | 977 | 143 / 42 | 28 | 53 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 487 | 85 / 14 | 4 | 26 |
+| [SKS](sks/pending.md) | 487 | 85 / 14 | 4 | 40 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 509 | 44 / 3 | 0 | 1 |
 
@@ -148,6 +148,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-11) · **Arm/build the queued fleet bugs** — #736 (invite-users-batch entitlements), #737 (zero-row 404) armed, not yet built. #734 (quote-job-consumer) + #735 (RLS `(select)` wrapping) filed UNARMED — Royce's call to arm. #705 (eq-intake xlsx) DONE this session — see below. _(added 2026-07-11)_
+- **eq-shell** (2026-07-11) · **zaap tender tables are now service_role-only** (no `authenticated` tenant policies — the create migration's `field_authed_all_*` never reached zaap). Fine if the EQ app reads them via service_role; add the authenticated tenant policy if Field ever needs authed access there. _(added 2026-07-11)_
 - **eq-shell** (2026-07-10) · eq-shell: fix focus-triggered refetch/hydration crash on Field iframe wrapper so spinner doesn't get stuck on tab return _(added 2026-07-10, in progress in separate eq-shell session — task_b2cf81ea)_
 - **eq-shell** (2026-07-08) · **EQ Service "session expired, please reconnect" stuck screen — root cause still genuinely unknown.** Two chased theories were investigated and explicitly REFUTED with hard evidence: React error #418 (hydration mismatch) is a dated, known, confirmed-non-blocking noise pattern (2026-07-05 team note, 705 events/14d, essentially every active user) — NOT the cause. A suspected hanging `token-exchange` call was also refuted — real Netlify function logs showed every invocation completing in under 4s with zero errors; the "pending forever" read came from a flaky automated browser tab (same tab independently threw an unrelated CDP "renderer frozen" error). Two chips built on these now-retracted theories (`task_2911c80d`, `task_abbb7fd0`) were already started by Royce before the retraction landed — worth redirecting or discarding. The actual cause of the stuck-reconnect screen is still open. _(added 2026-07-08)_
 - **eq-shell** (2026-07-08) · **EQ Service sidebar-header tenant logo clipped** (in `ShellSessionRecovery`'s fallback UI specifically, not the top bar — top bar renders fine live) — chip `task_14031bea` was already started by Royce before this correction landed; built on a stale "top-bar alignment" framing. _(added 2026-07-08)_
@@ -161,9 +163,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-04) · **Link the 19 field-enabled SKS sites with no `customer_id`** — Row 29 prestart prefill resolves the customer name only for the 11 (of 30) field-visible ehow sites that have a `customer_id`. The other 19 (Amazon SYD53, Woolworths, Microsoft SYD05/27, Western Sydney Airport, St Vincents, etc.) prefill blank. NOT auto-derivable — `sites.client_name`/`external_customer_id` are null/junk, zero name-matches to `customers.company_name`. Needs a manual ops pass (assign each site its customer in the Customers/Sites editor). Degrades gracefully (blank field) until done. _(added 2026-07-04, needs your call)_
 - **eq-shell** (2026-07-04) · **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
 - **eq-shell** (2026-07-03) · **Remove worktree `.claude/worktrees/ops-site-create-edit`** — now that #616 is merged, safe to `git -C C:\Projects\eq-shell worktree remove .claude/worktrees/ops-site-create-edit`. _(added 2026-07-03)_
-- **eq-shell** (2026-07-03) · **Commit eq-intake/CLAUDE.md** — left untracked (eq-intake tree dirty on `feat/armada-sprint-polish`); fold into whichever branch lands next. _(added 2026-07-03)_
-- **eq-shell** (2026-07-03) · **Coordinated `--reconcile-ledger`** — after go-live settles: renames/stamps the 16 bare 0103–0116/0141 rows, drops `057` + go-live hand rows. Run only WITH eq-intake (their numbering reads the live ledger). _(added 2026-07-03)_
-_…and 179 more — see each file's Queue health row above._
+_…and 207 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-25 23:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 05:56 UTC._
