@@ -1,13 +1,18 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-27 (PR #326 MERGED + LIVE — profile-page crash fixed, EQ-CARDS-1J/1K resolved)
+- `NoSuchMethodError: Null check operator used on a null value` on `/profile` (fatal, 8 events, 1 user) — `Licence.id` is null for an unsaved draft; the licence-list tile's `onTap` and the detail screen's prev/next nav both force-unwrapped it with `!` where a sibling `onRenew` button already guarded the same condition. Both now no-op/disable instead of crashing.
+- Same PR silenced Sentry noise from `AuthRetryableFetchException` (EQ-CARDS-1K) — a harmless, already-retried transient network failure from the backgrounded-tab session-refresh timer that was being reported as a fresh crash on every occurrence.
+- [PR #326](https://github.com/eq-solutions/eq-cards/pull/326), merged (`5ffb832e`). Deploy dispatched explicitly ([run 33052359683](https://github.com/eq-solutions/eq-cards/actions/runs/33052359683), both jobs green) alongside 4 other queued commits (#322–#325) — this was the trigger to ship all 5, not a dedicated deploy for this fix alone.
 
 ## 2026-08-27 (PR #325 MERGED + LIVE — jvkn-side of the roster-removal access cascade)
 - New service-role RPC `eq_cards_admin_sync_tenant_access(user_id, tenant_id, active)` (migration `0165`) — bidirectional: revokes a worker's Shell tenant login + `org_memberships`/`org_access_requests` when a tenant removes them from their roster, restores all three if the tenant re-adds them. Modeled on the existing self-service `eq_cards_revoke_org_access`. Extended `org_access_requests`'s status CHECK to add `revoked` — it had no terminal-ended state before. Applied live to jvkn. Called from eq-shell's `field-identity-push.ts` (see eq-shell changelog, PR #1621).

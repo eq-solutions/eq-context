@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,19 @@ status: live
 # EQ Cards — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-cards: EQ-CARDS-1J/1K crash — found already fixed, deployed live, Sentry closed (2026-08-27)
+*Asked what's next on the suite priority list; picked the open eq-cards Sentry crash (`NoSuchMethodError: Null check operator used on a null value`, `/profile`, fatal, 8 events, 1 user) off the digest's "Needs you" list.*
+
+- [x] **Already fixed by a concurrent session before investigation started** — checked for adjacent work first (`gh pr list --search "profile OR null"`), found [PR #326](https://github.com/eq-solutions/eq-cards/pull/326) merged minutes earlier (07:29:45 UTC). Root cause matched the crash's own signal (fatal, thrown mid-gesture, on `/profile`): `Licence.id` is null-by-design for an unsaved draft, and two spots force-unwrapped it with `!` — the licence-list tile's `onTap` and the detail screen's prev/next nav — while a sibling `onRenew` button a few lines away already guarded the same condition. Confirmed by reading the actual diff, not assumed from the PR title.
+- [x] **Same PR also fixed EQ-CARDS-1K** (`AuthRetryableFetchException`, 1 event) — the 7-minute proactive session-refresh timer was reporting every transient background-tab network failure to Sentry as if it were a fresh crash; only genuine auth errors report now.
+- [x] **Deploy gate checked, not assumed** — eq-cards needs an explicit `workflow_dispatch` (merging main doesn't ship it); last dispatch was 2026-08-26T00:00 UTC, before this fix, leaving 5 commits queued (#322–#326, including two RLS/security fixes). Flagged the full queued list to Royce before touching anything; Royce said dispatch now. Ran `Build & Deploy` ([run 33052359683](https://github.com/eq-solutions/eq-cards/actions/runs/33052359683)) — both jobs (Flutter web, edge functions) succeeded, shipping all 5.
+- [x] **EQ-CARDS-1J and EQ-CARDS-1K marked resolved in Sentry**, each with a comment citing the PR and the deploy run — only once the deploy was actually confirmed live, not at merge time.
+
+**Notes:**
+- Same general shape as the concurrent-session-gets-there-first pattern already well-documented elsewhere in this file's own history (see the PR #300/#312 notes further down) and in eq-shell.md — this instance cost nothing because the adjacent-work check ran *before* any investigation started, not after.
 
 ---
 
