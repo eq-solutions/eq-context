@@ -22,9 +22,9 @@ jvkn on Royce's explicit go. The issue-filer wiring gap turned out bigger than f
 scoped (7 checks, not 2) and is now built — PR #1639, open. The cross-repo
 consumer-check gap has a decision and two open PRs now — Royce picked option 2
 (reusable workflow), eq-shell PR #1638 + eq-cards PR #328, not yet merged, two manual
-secrets still needed. One thing is still fully open: CHECK 11 — re-scoped 2026-08-27,
-and it's a deeper architecture question than "pick a cutoff date" (see §2) — jvkn has
-no migration ledger at all for CHECK 11 to diff against, unlike every tenant plane.**
+secrets still needed. CHECK 11's blocker (jvkn had no governed migration ledger at
+all) is now fixed — [#1641](https://github.com/eq-solutions/eq-shell/pull/1641) built
+and bootstrapped a real one live — but CHECK 11 itself still isn't written (see §2).**
 
 ---
 
@@ -163,9 +163,34 @@ happened 4 times now (organisations_anon_bootstrap_read ×3, field_managers as o
 same day — see pending.md) without inventing a new maintenance burden or trusting a
 document already shown to drift. But this is a real architecture call given the
 tradeoffs above, not a mechanical one — flagging it with the same weight as the
-cross-repo gap got, not deciding it here. Re-verified live: still absent from
-`check-tenant-drift.mjs` (no "CHECK 11" text anywhere in the current file) — not
-quietly built by anyone since #1628.
+cross-repo gap got, not deciding it here.
+
+**Update, later the same day (a different session): the premise above was wrong in one
+important way, and the real fix is bigger than any of the 3 options here.** jvkn
+*does* have a native migration ledger — Supabase's own `supabase_migrations.schema_
+migrations` — this doc missed it entirely (checked `_eq_migrations`/`migration_
+baseline`, never checked for Supabase's own built-in table). But a live diff of
+eq-shell's 144 `supabase/migrations/*.sql` against it found 86-92 with no matching
+entry under any naming scheme tried — including migrations confirmed applied and live
+that same day. Not a data-entry gap: **jvkn had no governed apply path at all**, unlike
+the tenant planes (`tenant-migrate.yml`), so nothing was ever consistently writing to
+that table in the first place. Exactly the structural absence this doc reasoned about
+(§ above), just a different specific table than the one checked here.
+
+Royce's call, once this was found: build the apply-path runner first, hold CHECK 11
+itself. Shipped: [eq-shell#1641](https://github.com/eq-solutions/eq-shell/pull/1641)
+(`c3bf2c8f`) — `scripts/migrate-control-plane.mjs` + `control-plane-migrate.yml`,
+mirroring the proven `migrate-tenants.mjs` pattern, writing to a new dedicated ledger
+(`shell_control._eq_control_plane_migrations`). `--bootstrap` dispatched and verified
+live: 144 rows, all stamped in the run's own execution window. jvkn now has a
+trustworthy ledger for the first time.
+
+**CHECK 11 itself is still not built** — this doc's own 3-option framing above is now
+moot (it was reasoning about how to cope with *no* ledger; there's a real one now) and
+should be read as historical context for why the problem was hard, not as live
+options. The actual remaining work is much closer to a straight CHECK 3 port again,
+plus a cutover-date call (pre-bootstrap history has no reliable per-file record).
+Full detail: `eq/pending/eq-shell.md`'s own entry, `sessions/2026-08-27.md`.
 
 ### 3. The real gap: nothing stops another repo from re-breaking this — DECIDED 2026-08-27, PRs open
 
@@ -264,7 +289,7 @@ cross-repo implications, not a mechanical fix.
 | 4 | PR #1633 — CHECK 14 | **Merged** (`ef075d5f`) | Nothing |
 | 5 | PR #1634 — 13 inert `deny_all` policies → `service_role` | **Merged + applied live** (`fb7d9c9f`) | Nothing |
 | 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **Built, PR #1639 open** (`eq-shell-2a`, after an attribution mix-up — see §1) | Merge when ready |
-| 7 | CHECK 11 — jvkn migration-identity | **Re-scoped 2026-08-27** — jvkn has no ledger table to diff against at all, 3 real shapes in §2 | Architecture call, not a cutoff date — this doc leans option 3 (detection-only) |
+| 7 | CHECK 11 — jvkn migration-identity | **Blocker found + fixed** ([#1641](https://github.com/eq-solutions/eq-shell/pull/1641), merged + bootstrapped live) — jvkn now has a real ledger; CHECK 11 itself still not written | Now closer to a straight CHECK 3 port + a cutover-date call |
 | 8 | Cross-repo consumer-check gap | **Decided, 2 PRs open** (eq-shell#1638, eq-cards#328) | Merge #1638 first, mint `EQ_SHELL_CHECKOUT_TOKEN` + add `CONTROL_PROJECT_REF` on eq-cards, then merge #328 |
 
 **What's actually left: #6 (merge #1639), #7 (architecture call — 3 options, this doc
