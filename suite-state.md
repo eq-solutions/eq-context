@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #328 feat(ci): advisory jvkn control-plane check via eq-shell's reusable workflow
 
 **eq-field:**
-- #813 fix(field): restore supervisor directory visibility for plain workers
 - #811 v3.5.585 — Documents to Sign: render inline instead of opening a raw file
 
 **eq-service:**
