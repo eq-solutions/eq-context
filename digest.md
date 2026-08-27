@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-27 18:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-27 18:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-27 18:51 UTC → 2026-08-27 18:52 UTC)
+## Since last refresh (2026-08-27 18:52 UTC → 2026-08-27 18:59 UTC)
 
-- Merged: eq-shell [#1653](https://github.com/eq-solutions/eq-shell/pull/1653) feat(nav): unpin Users/Audit log/Security groups/Settings fr
-- Merged: eq-shell [#1631](https://github.com/eq-solutions/eq-shell/pull/1631) fix(documents): drop .msg/.eml from sign-off register's file
-- Merged: eq-shell [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invari
-- Merged: eq-shell [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/016
-- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
-- Merged: eq-shell [#1625](https://github.com/eq-solutions/eq-shell/pull/1625) fix(security): stop staff-active drift sweep from logging ou
-- Merged: eq-shell [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drif
-- Merged: eq-shell [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths
+- Merged: eq-shell [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation inva
+- Merged: eq-shell [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-
+- Merged: eq-shell [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module 
+- Merged: eq-shell [#1629](https://github.com/eq-solutions/eq-shell/pull/1629) chore(drift): allowlist eq_cards_admin_sync_tenant_access — 
+- Merged: eq-shell [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_r
+- Merged: eq-shell [#1621](https://github.com/eq-solutions/eq-shell/pull/1621) feat(identity): sync EQ Field roster removal/re-add to Shell
+- Merged: eq-field [#820](https://github.com/eq-solutions/eq-field/pull/820) v3.5.591 — Timesheets: day-cell clicks now fill the whole br
+- Merged: eq-field [#818](https://github.com/eq-solutions/eq-field/pull/818) v3.5.589 — FIX: digest "Send test to myself" — still failing
 
 ## ⚠ Needs you (8)
 
@@ -56,7 +56,7 @@ _…and 235 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 2d ago | 6 | 7d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 9d ago | 0 | — |
 
@@ -92,12 +92,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-27 | eq-shell | [#1634](https://github.com/eq-solutions/eq-shell/pull/1634) security(control-plane): scope 13 inert deny_all policies to serv |
 | 2026-08-27 | eq-shell | [#1637](https://github.com/eq-solutions/eq-shell/pull/1637) feat(customers): add/remove project codes on a site |
 | 2026-08-27 | eq-shell | [#1636](https://github.com/eq-solutions/eq-shell/pull/1636) fix(cards): mint-cards-otp returns is_new_user for the Cards sign |
-| 2026-08-27 | eq-field | [#819](https://github.com/eq-solutions/eq-field/pull/819) v3.5.590 — FIX: digest's two most useful sections have shown "not |
-_Showing 15 of 98 · full record in [sessions/](sessions/)_
+| 2026-08-27 | eq-field | [#820](https://github.com/eq-solutions/eq-field/pull/820) v3.5.591 — Timesheets: day-cell clicks now fill the whole broken- |
+_Showing 15 of 97 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (291 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (290 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (157 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (95 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -129,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1982 | 202 / 93 | 282 | 50 |
+| [eq-shell](eq/pending/eq-shell.md) | 1980 | 201 / 93 | 282 | 50 |
 | [eq-cards](eq/pending/eq-cards.md) | 491 | 39 / 17 | 109 | 5 |
 | [eq-field](eq/pending/eq-field.md) | 1048 | 121 / 41 | 83 | 31 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
@@ -197,4 +197,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 18:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 18:59 UTC._
