@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell now has per-site project/module codes — a home for Field job-number wiring, whenever it's prioritized (2026-08-27)
+
+*BGIS/Telstra SLDC runs multiple concurrent modules (MOD10, MOD11...) at one physical address. Decision (`eq-context/ops/decisions.md`, 2026-08-26): one `app_data.sites` row per physical address always; module/project codes live one layer below as a reference back to that site, never as duplicate Site rows. Built in eq-shell [PR #1630](https://github.com/eq-solutions/eq-shell/pull/1630) (schema + read-only display) and [PR #1637](https://github.com/eq-solutions/eq-shell/pull/1637) (create-UI). Not a Field change — this is a breadcrumb, not a request to build anything now.*
+
+- [ ] **`app_data.site_projects` exists on both tenant planes** (ehow, zaap) — service-role-only table, columns `id, site_id, code, name, status, tenant_id`, `UNIQUE (site_id, code)`. Zero rows on either plane as of 2026-08-27 (no real code entered yet). If Field dispatch/job-assignment ever needs to target a specific module at a multi-module site rather than the site as a whole, this table is where that code already lives — read via a service-role join (see eq-shell's `crm-customers.ts` `loadSiteProjects()`), not RLS-exposed. No Field-side work has started; this is only a pointer for whoever picks it up. _(added 2026-08-27)_
+
+---
+
 ## eq-field: schedule_entries never recorded who edited a roster row (2026-08-27)
 
 - [ ] **Not click-tested through the real Field UI.** The DB-trigger fix (created_by/updated_by now stamped via `app_data.eq__caller_actor_staff_id`, PR #807, merged + deploy-verified live) was confirmed via a direct write test simulating the same JWT claim PostgREST sets per request, not through the actual roster screen — no live SKS Shell session reachable this session. Worth a real Batch Fill edit next time someone's signed in via Core, then a direct query confirming the row's `created_by` matches. Full detail in `eq/changelog/eq-field.md` and `sessions/2026-08-27.md`. _(added 2026-08-27)_
