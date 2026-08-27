@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-27)
 
+**eq-cards:**
+- #328 feat(ci): advisory jvkn control-plane check via eq-shell's reusable workflow
+
 **eq-field:**
+- #813 fix(field): restore supervisor directory visibility for plain workers
 - #811 v3.5.585 — Documents to Sign: render inline instead of opening a raw file
 
 **eq-service:**
@@ -72,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1636 fix(cards): mint-cards-otp returns is_new_user for the Cards signup handoff
+- #1638 feat(ci): jvkn control-plane checks as a reusable workflow
 - #1635 feat(documents): convert uploads to PDF at commit time (migration 0287)
 
 ---
