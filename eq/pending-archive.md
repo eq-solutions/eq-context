@@ -16,6 +16,17 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: repo-wide CI blocker — `app_data.field_managers` view fails CHECK 7 — root-caused, fixed, merged, live (2026-08-27) (fully closed 2026-08-27)
+*Reported by a peer session (`documents-to-sign-feature-3035a3-38`) whose own PR (#1635) was blocked by it; independently verified live via `gh pr checks`/`gh run view` before recording here.*
+
+- [x] **Root cause: not drift, a deliberate reviewed cross-repo fix that trips CHECK 7's blanket rule.** eq-shell's own SEC-33 fix (migration 0256, [PR #1510](https://github.com/eq-solutions/eq-shell/pull/1510)) added a RESTRICTIVE policy on `app_data.staff` that broke Field's Supervision/Leave-approver picker for non-managers. eq-field's PR #813 (merged) fixed it by setting `app_data.field_managers` to `security_invoker=false`, re-implementing tenant isolation inline in the view's own `WHERE` clause. Verified live on both ehow and zaap: `tenant_id` correctly sourced from the caller's JWT, grant is authenticated-only (no anon), no sensitive columns exposed.
+- [x] **Fixed and merged**: Royce's go was a content-verified CHECK 7 exception (re-checks the live view definition every run, not a bare allowlist — a future real regression on this view still fails the gate), matching the pattern CHECK 9/12's allow-lists already use elsewhere in this file. [eq-shell#1642](https://github.com/eq-solutions/eq-shell/pull/1642) re-verifies the live `pg_get_viewdef` output contains the required tenant-filter fragment and the grantee list excludes `anon`, every run, for both `app_data.field_managers` and `app_data.field_people_directory` (eq-field #814, same reviewed pattern, confirmed live-reachable on both planes). **Merged** (`bd0127ed`, 09:49:01Z UTC), Royce's explicit go given in-session.
+- [x] **Duplicate collision, resolved same session:** a separate concurrent session (`eq-shell-e2`) got an independent "go" from Royce on the same problem without collision-checking first, built a weaker bare name-match exception (no content re-verification), and opened eq-shell#1643 ~14 min after #1642 already existed. Closed #1643 in favour of #1642 after diffing it directly and confirming the content-verified approach was genuinely more robust.
+- [x] **Unblock confirmed, not just assumed from the merge**: of the 3 PRs this was blocking, #1638 and #1639 turned out to already be merged directly by Royce (admin override past the still-red required check, before #1642 went green) — no rebase needed for either. Only #1635 (`documents-to-sign-feature-3035a3-38`'s own PR) genuinely needed it; updated its branch via the GitHub API's update-branch endpoint (a server-side merge, not a rebase — nothing local touched) after the connected GitHub-App MCP's own update-branch tool 404'd (token permission scope gap; `gh api` with the user's own auth worked cleanly). CI re-ran and confirmed the drift check passes; the owning session confirmed no local conflict.
+- [x] ~~Confirmed blocking every open eq-shell PR~~ — cleared for all 3 (#1635/#1638/#1639) by this entry's close.
+
+---
+
 ## eq-cards: EQ-CARDS-1J/1K crash — found already fixed, deployed live, Sentry closed (2026-08-27) (fully closed 2026-08-27)
 *Asked what's next on the suite priority list; picked the open eq-cards Sentry crash (`NoSuchMethodError: Null check operator used on a null value`, `/profile`, fatal, 8 events, 1 user) off the digest's "Needs you" list.*
 
