@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-26 23:22 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-27 07:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-26 23:13 UTC → 2026-08-26 23:22 UTC)
+## Since last refresh (2026-08-26 23:22 UTC → 2026-08-27 07:30 UTC)
 
-- Merged: eq-shell [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation inva
-- Merged: eq-shell [#1616](https://github.com/eq-solutions/eq-shell/pull/1616) fix(auth): thread an already-resolved Cards name into new wo
-- Merged: eq-shell [#1614](https://github.com/eq-solutions/eq-shell/pull/1614) fix(staff): wrap the licence action row so Remove's confirm 
-- Merged: eq-shell [#1612](https://github.com/eq-solutions/eq-shell/pull/1612) fix(staff): let a manager remove a bad licence from the expi
-- Merged: eq-shell [#1611](https://github.com/eq-solutions/eq-shell/pull/1611) fix(worker-invite): correct misleading email-field caption
-- Merged: eq-shell [#1608](https://github.com/eq-solutions/eq-shell/pull/1608) fix(security): detect reverse staff/shell active-sync drift,
-- Merged: eq-shell [#1605](https://github.com/eq-solutions/eq-shell/pull/1605) fix(quotes): remove dangling quote_estimators join breaking 
-- Merged: eq-shell [#1604](https://github.com/eq-solutions/eq-shell/pull/1604) fix: stop rendering/emailing the synthetic placeholder email
+- Merged: eq-shell [#1617](https://github.com/eq-solutions/eq-shell/pull/1617) feat(access-control): per-person sidebar visibility scope
+- Merged: eq-shell [#1615](https://github.com/eq-solutions/eq-shell/pull/1615) feat(auth): collapse deactivated & expired self-join links b
+- Merged: eq-shell [#1613](https://github.com/eq-solutions/eq-shell/pull/1613) fix(cards-api): derive isProd from request Host, not process
+- Merged: eq-shell [#1610](https://github.com/eq-solutions/eq-shell/pull/1610) fix(auth): stop offering Delete on self-join links that have
+- Merged: eq-shell [#1607](https://github.com/eq-solutions/eq-shell/pull/1607) fix(security): audit-log role changes, fail loudly on member
+- Merged: eq-shell [#1606](https://github.com/eq-solutions/eq-shell/pull/1606) fix(quotes): stack Commercials summary below the form on mob
+- Merged: eq-solves-service [#815](https://github.com/eq-solutions/eq-service/pull/815) chore(deps): bump @eq-solutions/roles to v2.7.5
+- Merged: eq-field [#810](https://github.com/eq-solutions/eq-field/pull/810) fix(observability): recognize DOMException/Error-like throwa
 
 ## ⚠ Needs you (8)
 
@@ -32,10 +32,11 @@ _2026-08-26 23:22 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-25.md](sessions/2026-08-25.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-cards` [NoSuchMethodError: Null check operator used on a null value](https://eq-solutions.sentry.io/issues/143082576/)
 
-## 🙋 Waiting on you (240)
+## 🙋 Waiting on you (242)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — no login credentials in this environment. Real test is Staff → Aiden Crowley → Add Licence with his actual ID + White Card `.heic` photos, confirming they preview/OCR/save correctly as JPEG. _(added 2026-08-27)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, live DB queries (jvkn/ehow), and production commit-ancestry, not a real signed-in session creating a fresh Labour Hire/Apprentice/Subcontractor invite end-to-end. Worth a real click-through next time someone invites a non-Employee worker: confirm the Staff record shows the correct employment_type immediately, before the invite is ever claimed. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b`, the access-control preview panel, production deploy-ancestry, and (as of this close) Sharon Maroni's own live `nav_scope` row confirmed correct by direct query (`["customer","site","contact","staff","licence","equipment","field","suppliers"]` — Royce confirmed keep Suppliers) — but nobody has actually signed in as a Simple-mode user and watched the sidebar itself narrow. Worth two minutes next time there's a way to see her session or a test account. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — no live Shell session/credentials in this environment. Worth a pass: on the join-links page, confirm a used deactivated link shows "Can't delete — already used" with no button, confirm the "Show deactivated & expired (N)" toggle expands/collapses correctly and the count matches. _(added 2026-08-26)_
@@ -47,8 +48,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no live SKS credentials in this environment. _(added 2026-08-25)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real click-through on the Staff list: turn Supervisor on for a test person via the pill, confirm the category popover appears, pick one, confirm it saves. _(added 2026-08-25)_
 - **eq-shell** · **None of this round's UI changes have a full click-through beyond what Royce's own screenshots already confirmed** (collapse chevrons, archive-days field existing/saving). The Estimator autocomplete specifically (now sourced from quote history) hasn't been exercised live yet. _(added 2026-08-25)_
-- **eq-shell** · **Not click-tested live** — no login credentials this session. Handed Royce the exact steps (Customers page → Convergint → Link site → search "Equinix SY3" → confirm badge/Unlink-only controls → confirm it appears in a Convergint quote's site picker). Not yet confirmed done. _(added 2026-08-25)_
-_…and 228 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 230 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -56,7 +56,7 @@ _…and 228 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 1d ago | 6 | 6d |
-| eq-field | ✓ success | -1d ago | 1 | 0d |
+| eq-field | ✓ success | -1d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 8d ago | 0 | — |
 
@@ -78,6 +78,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-27 | eq-field | [#810](https://github.com/eq-solutions/eq-field/pull/810) fix(observability): recognize DOMException/Error-like throwables  |
+| 2026-08-27 | eq-cards | [#326](https://github.com/eq-solutions/eq-cards/pull/326) fix(profile): guard nullable Licence.id in tap handlers, skip Sen |
 | 2026-08-26 | eq-shell | [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation invariant |
 | 2026-08-26 | eq-shell | [#1631](https://github.com/eq-solutions/eq-shell/pull/1631) fix(documents): drop .msg/.eml from sign-off register's file pick |
 | 2026-08-26 | eq-shell | [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-verif |
@@ -91,17 +93,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-26 | eq-shell | [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_read l |
 | 2026-08-26 | eq-shell | [#1621](https://github.com/eq-solutions/eq-shell/pull/1621) feat(identity): sync EQ Field roster removal/re-add to Shell tena |
 | 2026-08-26 | eq-shell | [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths |
-| 2026-08-26 | eq-shell | [#1618](https://github.com/eq-solutions/eq-shell/pull/1618) fix(security): restore organisations anon bootstrap-read policy ( |
-| 2026-08-26 | eq-shell | [#1609](https://github.com/eq-solutions/eq-shell/pull/1609) fix(entity-patch): derive isProd from request Host, not process.e |
-_Showing 15 of 113 · full record in [sessions/](sessions/)_
+_Showing 15 of 112 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (288 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (290 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (50 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (150 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (94 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
-- **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
+- **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
@@ -129,25 +129,28 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1934 | 204 / 89 | 270 | 47 |
+| [eq-shell](eq/pending/eq-shell.md) | 1948 | 205 / 90 | 274 | 50 |
 | [eq-cards](eq/pending/eq-cards.md) | 469 | 37 / 16 | 103 | 5 |
-| [eq-field](eq/pending/eq-field.md) | 1004 | 115 / 39 | 77 | 27 |
+| [eq-field](eq/pending/eq-field.md) | 1004 | 115 / 39 | 77 | 31 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 29 | 2 / 0 | 2 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
 | [eq-context](eq/pending/eq-context.md) | 263 | 25 / 5 | 27 | 5 |
-| [cross-repo](eq/pending/cross-repo.md) | 992 | 144 / 43 | 30 | 53 |
+| [cross-repo](eq/pending/cross-repo.md) | 992 | 144 / 43 | 30 | 54 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 469 | 85 / 12 | 0 | 40 |
+| [SKS](sks/pending.md) | 469 | 85 / 12 | 0 | 46 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 516 | 44 / 4 | 0 | 1 |
+| [OPS](ops/pending.md) | 516 | 44 / 4 | 0 | 8 |
 
 ## Aging open items (45d+, unconfirmed)
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-12) · **No sourcemaps uploaded for eq-shell** (`@sentry/vite-plugin`/`sentry-cli` absent from the build) — Sentry events are exactly as minified as the console, so it isn't a shortcut here. Optional follow-up if prod JS errors keep needing manual decode: wire up sourcemap upload in its own PR. _(added 2026-07-12)_
+- **eq-shell** (2026-07-12) · **Post-merge cleanup:** drop the `eq_set_workbench_job_no` wrapper once no caller remains — the last trace of the word. _(added 2026-07-12)_
+- **eq-shell** (2026-07-12) · **Optional (declined for now):** rename GM `job_code` → `job_number` across the 3 GM tables (+ unique constraints, parser, UI) for strict one-name-in-the-schema. _(added 2026-07-12)_
 - **eq-shell** (2026-07-11) · **Arm/build the queued fleet bugs** — #736 (invite-users-batch entitlements), #737 (zero-row 404) armed, not yet built. #734 (quote-job-consumer) + #735 (RLS `(select)` wrapping) filed UNARMED — Royce's call to arm. #705 (eq-intake xlsx) DONE this session — see below. _(added 2026-07-11)_
 - **eq-shell** (2026-07-11) · **zaap tender tables are now service_role-only** (no `authenticated` tenant policies — the create migration's `field_authed_all_*` never reached zaap). Fine if the EQ app reads them via service_role; add the authenticated tenant policy if Field ever needs authed access there. _(added 2026-07-11)_
 - **eq-shell** (2026-07-10) · eq-shell: fix focus-triggered refetch/hydration crash on Field iframe wrapper so spinner doesn't get stuck on tab return _(added 2026-07-10, in progress in separate eq-shell session — task_b2cf81ea)_
@@ -160,10 +163,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-04) · **Favour Perfect first-run config** — switch into it (after one workspace-switch or re-login), configure it, and invite its real customer admin from inside `/favour-perfect/admin/users`. _(added 2026-07-04, needs your call)_
 - **eq-shell** (2026-07-04) · **Optional: `reconcile_ledger` tidy for `favour-perfect`** — its `_eq_migrations` ledger has 204 rows incl. 39 null-checksum entries (cruft from a messy apply sequence: an 08:14 reconcile-path run stamped rows then failed; the 08:25 apply finished it). Schema is correct — purely cosmetic. A `reconcile_ledger=true` dispatch scoped to `favour-perfect` would tidy it. _(added 2026-07-04, needs your call)_
 - **eq-shell** (2026-07-04) · **Admin-create zero-member gap** — admin "Add tenant" builds member-less, UI-unreachable tenants (no way to add a first user without a hand-inserted membership). Fix (auto-add creator as manager, or an "Add me as admin" button) running as `task_4f5989fb`. _(added 2026-07-04)_
-- **eq-shell** (2026-07-04) · **Link the 19 field-enabled SKS sites with no `customer_id`** — Row 29 prestart prefill resolves the customer name only for the 11 (of 30) field-visible ehow sites that have a `customer_id`. The other 19 (Amazon SYD53, Woolworths, Microsoft SYD05/27, Western Sydney Airport, St Vincents, etc.) prefill blank. NOT auto-derivable — `sites.client_name`/`external_customer_id` are null/junk, zero name-matches to `customers.company_name`. Needs a manual ops pass (assign each site its customer in the Customers/Sites editor). Degrades gracefully (blank field) until done. _(added 2026-07-04, needs your call)_
-- **eq-shell** (2026-07-04) · **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
-- **eq-shell** (2026-07-03) · **Remove worktree `.claude/worktrees/ops-site-create-edit`** — now that #616 is merged, safe to `git -C C:\Projects\eq-shell worktree remove .claude/worktrees/ops-site-create-edit`. _(added 2026-07-03)_
-_…and 207 more — see each file's Queue health row above._
+_…and 228 more — see each file's Queue health row above._
 
 ## Possible duplicate pending items (unconfirmed)
 
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-26 23:22 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 07:30 UTC._
