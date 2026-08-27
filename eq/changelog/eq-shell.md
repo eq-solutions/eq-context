@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1636 MERGED + LIVE — mint-cards-otp returns is_new_user for the Cards signup handoff)
+- Companion to eq-cards PR #327 — same live diagnosis, full detail in that repo's changelog. This half: `ensureAuthUser` (in `mint-cards-otp.ts`) already knew, at the exact moment it decided whether to create a user's `auth.users` row, whether this was a genuinely first-ever signup — it just wasn't returning that fact. Cards had to reconstruct "is this new" later from `auth.users.created_at`, which breaks under retries (the row is created lazily on the FIRST handoff attempt, so `created_at` stays pinned there no matter how many retries follow).
+- `ensureAuthUser` now returns `boolean` (true only on the call that actually creates the row); `mint-cards-otp.ts`'s response and `CardsIframe.tsx`'s `SHELL_TOKEN_RESPONSE` postMessage both carry it as `is_new_user`. Purely additive — safe to deploy independently of the eq-cards side in either order.
+- [PR #1636](https://github.com/eq-solutions/eq-shell/pull/1636), merged (`7ac9baf7`). **Confirmed live** via Netlify commit-ancestry check (this repo auto-deploys on merge) — a concurrent merge from another session briefly published first and superseded the deploy queue; had to wait for this commit's own deploy to reach `ready` and re-verify rather than trust the first green deploy seen.
+
 ## 2026-08-27 (PR #1639 OPEN — CHECK 6/7/8/9/12/13/14 wired into the drift-check security-issue filer)
 - `tenant-drift.yml`'s issue-filing step only read 4 of 11 `check-tenant-drift.mjs` report groups into the auto-filed GitHub issue — the other 7 already failed CI correctly but never reached the issue on a schedule-only (cron, no PR) catch, the same blind spot PR #1623 closed for CHECK 10. Extended with the same `jq` pattern for `function_exec`/`view_invoker`/`column_grants`/`stacked_policy` (CHECK 6/7/8/9) and the three jvkn control-plane analogs (CHECK 12/13/14) — the latter three report a bare `.result.violations[]` (only one plane), not a `.projects[]`/`.planes[]` list, so no per-entry label.
 - All 11 filters (4 pre-existing + 7 new) validated against a synthetic fixture before committing — both a real-violation case and a clean/skipped case — plus a YAML re-parse check. Workflow-file-only change, no script edits.

@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-27 (PR #327 MERGED + LIVE — Shell handoff signup-blocker fix)
+- `/auth/handoff` (Shell's SSO/signup entry point, 99%+ of suite signup traffic) was silently losing 82% of pageviews before any outcome event fired, and converting successful verifications to `signup_completed` only 11% of the time — diagnosed via live code investigation, not guesswork. Root cause: `verifyOTP()` in `_handleShellHandoff()` was the one async call in the whole flow with no `.timeout()`; a stall left users on a bare spinner forever with zero error, zero fallback, zero analytics signal.
+- `.timeout(15s)` added on `verifyOTP`, a bounded fallback UI on the splash screen (retry / continue-with-email — previously none for any stall), `Sentry.capture*` on the failure paths (previously none at all here). Also consumes a new `is_new_user` signal from eq-shell's `mint-cards-otp.ts` (see that repo's changelog, PR #1636) to fire `signup_completed` correctly even when a user's first attempt stalled and they succeeded on a later retry — the prior 30-min recency-window heuristic silently missed exactly that case.
+- [PR #327](https://github.com/eq-solutions/eq-cards/pull/327), merged (`e2ce6ba1`). Deployed live via explicit `gh workflow run deploy.yml` ([run 33055529730](https://github.com/eq-solutions/eq-cards/actions/runs/33055529730)) — confirmed serving on `cards.eq.solutions` by Netlify deploy timestamp match.
+
 ## 2026-08-27 (PR #326 MERGED + LIVE — profile-page crash fixed, EQ-CARDS-1J/1K resolved)
 - `NoSuchMethodError: Null check operator used on a null value` on `/profile` (fatal, 8 events, 1 user) — `Licence.id` is null for an unsaved draft; the licence-list tile's `onTap` and the detail screen's prev/next nav both force-unwrapped it with `!` where a sibling `onRenew` button already guarded the same condition. Both now no-op/disable instead of crashing.
 - Same PR silenced Sentry noise from `AuthRetryableFetchException` (EQ-CARDS-1K) — a harmless, already-retried transient network failure from the backgrounded-tab session-refresh timer that was being reported as a fresh crash on every occurrence.
