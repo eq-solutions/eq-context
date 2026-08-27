@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1635 + #1644 MERGED + LIVE — Documents: PDF conversion pipeline, Register refresh fix)
+- PR #1635 — self-hosted Gotenberg Office→PDF conversion pipeline, wired into upload-commit (migration 0287 adds `document_versions.pdf_storage_path`/`pdf_status`). Caught before merge: the backfill function was missing Netlify's required `-background` filename suffix, which would have silently capped it at the 26s synchronous limit instead of the intended 15-minute background budget.
+- PR #1644 — Register tab (`AdminDocumentUpload.tsx`) now silently refetches after a successful upload or push. Root cause of Royce's "I uploaded it and lost it" report: the tab's fetch only ever ran on mount, so a real upload/push never appeared until a manual page reload.
+- Both shipped as companions to eq-field's Documents-to-Sign inline-viewer rebuild — see `eq/changelog/eq-field.md`, same date, for the full story including the real root-cause bug the viewer had.
+
 ## 2026-08-27 (PR #1645 MERGED + LIVE — multi-select document push; jvkn control-plane RLS gap closed)
 - Person picker in `AdminDocumentUpload.tsx` (fresh-upload push step + the Register tab's "Push to more people" modal) switched from single-select to checkboxes — pushes to N selected people in one action via parallel calls to the existing `push-document-audience` endpoint (no backend change; that endpoint already resolved a person-push one signer at a time), aggregating into one combined result and leaving only failed names checked on a partial failure.
 - Merge blocked by the required drift check on an unrelated, freshly-live finding: `shell_control._eq_control_plane_migrations` (jvkn's brand-new control-plane migration ledger, #1641) had RLS disabled — self-created with no RLS in its inline `CREATE TABLE`. Fixed via `2026_08_27b_control_plane_migrations_ledger_rls.sql` (RLS on, zero policies, service_role-only grants — not a `deny_all` policy, avoiding the exact `roles={public}` footgun #1634 fixed elsewhere on jvkn this same day), dispatched through `control-plane-migrate.yml` against the PR branch — first use of the established dispatch-against-PR-branch pattern against this new pipeline rather than the tenant-plane one it was written for.

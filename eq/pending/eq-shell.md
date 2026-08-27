@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-27
+last_updated: 2026-08-28
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,14 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: Documents — PDF conversion pipeline + Register refresh fix, both merged live (2026-08-27)
+*Two eq-shell PRs shipped as companions to eq-field's Documents-to-Sign inline-viewer rebuild — full narrative (including the real root-cause bug the two together exposed, and the audience-reach/unlinked-staff findings) lives in `eq/pending/eq-field.md`, 2026-08-27.*
+
+- [x] **PR #1635** — self-hosted Gotenberg Office→PDF conversion at upload-commit time (migration 0287); caught a missing Netlify `-background` suffix before merge. Merged, live.
+- [x] **PR #1644** — Register tab now refetches after a successful upload or push instead of showing stale/missing documents. Merged, live.
 
 ---
 

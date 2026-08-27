@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-27
+last_updated: 2026-08-28
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,17 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: Documents to Sign — inline PDF viewer shipped, root-caused a total-failure bug, audience-reach mapped out (2026-08-27)
+*Follow-on to the 2026-08-20 six-round saga further down this file — a full rebuild of View, not another patch to the old `window.open()`-a-raw-file approach. Plan: convert every upload to PDF at commit time (eq-shell, self-hosted Gotenberg), render it in an embedded PDF.js viewer (eq-field), gate Sign on actually having scrolled through it.*
+
+- [x] **eq-shell: Office→PDF conversion pipeline shipped.** Self-hosted Gotenberg, converts Office uploads to PDF at upload-commit time, writes `pdf_storage_path`/`pdf_status` onto `document_versions` (migration 0287). Caught and fixed a real bug before merge: the backfill function was missing Netlify's required `-background` filename suffix, which would have silently capped it at the site's 26s ceiling instead of the intended 15-minute background budget. eq-shell [PR #1635](https://github.com/eq-solutions/eq-shell/pull/1635), merged, live.
+- [x] **eq-field: inline PDF.js viewer shipped, in two passes.** First pass ([PR #811](https://github.com/eq-solutions/eq-field/pull/811), v3.5.586) replaced `window.open()`-the-raw-file with an embedded same-origin viewer plus a reached-the-last-page-and-held-it-open sign gate. It didn't actually work: the viewer's toolbar rendered but the document itself never loaded, for any file, regardless of size — first read as a large-file timing issue (a loading spinner shipped as a hedge). Royce's own DevTools Console screenshot carried the real error: PDF.js's own built-in `validateFileURL` guard was rejecting the viewer's `?file=<url>` parameter outright because the PDF's origin (Supabase Storage) doesn't match the viewer's own — a deliberate XSS/open-redirect protection in Mozilla's code, not a bug, that fires unconditionally and never even attempts a fetch. Fixed by dropping the `?file=` param entirely and driving the load via `PDFViewerApplication.open({url})` instead — PDF.js's own documented API for a host page supplying the URL, which bypasses that guard by design. Verified live by directly exercising the vendored viewer's own JS, not just reasoned through. eq-field [PR #816](https://github.com/eq-solutions/eq-field/pull/816) (v3.5.588), merged, confirmed live.
+- [x] **eq-shell: Register tab went stale after upload/push.** Royce uploaded a real document (Safety Handbook) and pushed it, then couldn't find it again on the Register tab; DB confirmed the data was never lost — the tab's fetch just never re-ran after either action. Fixed with a silent post-action refetch. eq-shell [PR #1644](https://github.com/eq-solutions/eq-shell/pull/1644), merged, live.
+- [ ] **Audience reach for "push to everyone" is real but indirect — 5 role-pushes, not 1.** Royce asked how to open Documents to Sign to all staff. The push picker (`push-document-audience.ts`) takes one role, one crew, or one person per push — no "all" option (confirmed still true even after the same-evening #1645 multi-select-person-picker ship, which speeds up naming individuals but adds no bulk/all control). Reaching everyone with a Shell login today means repeating the Push action once per role — 5 live roles as of this session: employee (26), supervisor (11), manager (11), apprentice (8), labour_hire (6). A UX gap in an existing, working mechanism, not something built or requested to be built this session. _(added 2026-08-27)_
+- [ ] **14 of 74 active SKS staff (~19%) have no linked Shell login and are structurally unreachable by any push.** Role, crew, and person pushes all resolve through `shell_control.user_tenant_memberships`/a real Shell login; an unlinked `app_data.staff` row silently never appears in any of them. Same root population as the long-running unlinked-staff backlog tracked in `eq/pending/eq-shell.md` (37 in mid-August, 24 on 2026-08-20) — now 14, continuing to close on its own as people complete Cards/Core signup. Full list (9 Direct, 4 Labour Hire, 1 Apprentice; 11 of the 14 from a single 2026-06-12/15 bulk-import batch that's never been chased since) given to Royce directly in-session, not reproduced here since it'll drift — re-query `app_data.staff` on ehow (`active=true and user_id is null`) for a fresh list. _(added 2026-08-27)_
 
 ---
 
