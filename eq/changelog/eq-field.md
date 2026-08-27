@@ -1,13 +1,22 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-27 (PR #808 MERGED + LIVE, v3.5.583 — Timesheets: Fill Week button, dedicated Approved column, narrower Name column)
+- Royce: Phoenix Khatri showed "OFF" on Timesheets with no leave request to be found — traced live to Luke Wheeler batch-filling his roster week directly (`audit_log`: "Filled Mon–Fri with OFF", 2026-08-20), not a Leave Requests bug. Timesheets reads the raw roster/schedule cell directly and never consults `leave_requests` — roster OFF and an approved leave request are two disconnected mechanisms that render identically. Nothing to fix there; Royce's follow-up confirmed the real cause was a workplace injury, logged as roster code INJURED instead, no leave request either way.
+- ADD — "Fill week" row button (desktop Timesheets grid, `scripts/timesheets-spans.js`): a normal click only covers one contiguous run of same-state days, so a locked leave/TAFE day mid-week forced two separate edits. Opens one editor spanning every currently-workable weekday, skipping locked days automatically, existing job/hours merged in per day. Weekend is opt-in via an in-modal checkbox, not included by default. Hidden on rows with nothing workable to fill.
+- ADD — dedicated "Approved" column on the same grid, replacing a faint 11px chip crammed next to the Grp badge (`scripts/timesheets.js`: new `_tsApprovalButton`, additive — `_tsApprovalChip` untouched, still used by the mobile renderer + the legacy desktop fallback table). Same `toggleTsApproval()` click.
+- Name column narrowed 110px → 88px (20%) on the same grid to give the new column room.
+- Hit a real merge conflict on landing (main had moved — PR #805 `v3.5.582` landed first). Rebased clean; post-rebase re-verification caught 3 stale `v3.5.582` comment references (fixed) and a real `max-lines` breach on `timesheets.js` (2,410 vs. a 2,400 grandfathered ceiling) — closed via comment compression + a documented 50-increment bump to 2,450 (`eslint.config.js`), same escape-valve convention as `leave.js`/`apprentices.js`/`tender-pipeline.js`.
+- Verified via an isolated harness loading the real edited files/dependencies, plus full local suite (lint 0 errors, build-bundles, cache-busters, 33/33 tests). GitHub's `mergeable` field stalled at `UNKNOWN` for over a minute post-push (confirmed via raw API, not a `gh` cache artifact) — merged directly rather than continuing to poll it; went through clean. Confirmed live via `field.eq.solutions/sw.js`.
+- Full detail (including the two still-open UX rough edges and the standing "OFF ≠ approved leave" display gap, not fixed) in `eq/pending/eq-field.md` and `sessions/2026-08-27.md`.
 
 ## 2026-08-26 (PR #803 MERGED + LIVE, v3.5.579 — audit-attribution breadcrumb for JWT writes that drop x-eq-actor)
 - Diagnostic only, no behavior change to what a write sends: `scripts/supabase.js`'s `sbFetch()` already sets `x-eq-actor` on JWT-routed writes when it has a real actor id (since 2026-07-30); this adds a one-per-tab `EQ_OBS` report for the specific case where a tab previously had one but a later write doesn't — the shape of an unattributed staff archive traced back to eq-shell's `app_data.fn_audit()`/`app_data.audit_log`. Stays silent for the standalone PIN-gate path, which never has an actor id to begin with.

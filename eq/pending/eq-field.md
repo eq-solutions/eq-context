@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Timesheets Fill Week + Approved column, plus the "OFF ≠ approved leave" display gap (2026-08-27)
+*Royce screenshotted Phoenix Khatri showing "OFF" on Timesheets with no leave approval findable, PDF export of all 43 leave requests attached (none his). Root-caused live: a roster batch-fill (Luke Wheeler, audit-logged), not a leave request — Timesheets renders straight from the roster/schedule cell and never checks `leave_requests` at all. From there, Royce asked for one-pass whole-timesheet fill when a locked leave/TAFE day splits the week. Shipped together as eq-field [PR #808](https://github.com/eq-solutions/eq-field/pull/808) (v3.5.583), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`.*
+
+- [x] **"Fill week" row button** (`scripts/timesheets-spans.js`) — one editor spanning every currently-workable weekday, skipping locked leave/TAFE days automatically, existing job/hours merged in; weekend opt-in via an in-modal checkbox.
+- [x] **Dedicated Approved column** (`scripts/timesheets.js`, new `_tsApprovalButton`) replacing the old faint chip; Name column narrowed 110px → 88px to make room.
+- [x] **`timesheets.js` max-lines ceiling bumped 2400 → 2450** (`eslint.config.js`) to absorb the above — documented escape-valve bump, not a silent ratchet loosen; see the PR/session log for why extraction was rejected (the new button is a deliberate sibling of the existing `_tsApprovalChip`, kept side by side for gating-rule comparison).
+- [ ] **Standing display gap, not fixed**: Timesheets still can't distinguish a supervisor-set roster OFF from a genuinely approved leave request — they render identically, which is exactly what made Phoenix's case confusing. Only worth fixing if it causes real confusion again; the fix would be surfacing which mechanism produced the OFF state, or requiring OFF/leave-type roster codes to link back to a real `leave_requests` row. _(added 2026-08-27)_
+- [ ] **A fully blank Timesheets row shows an empty Approved-column cell, no placeholder** — could read as "forgot to check" vs. "nothing to approve yet." Not fixed, judged scope creep past what was asked. _(added 2026-08-27)_
+- [ ] **In-modal weekend toggle only preserves typed Sat/Sun hours across one ON→OFF cycle**, not a second OFF→ON→OFF→ON — re-enabling re-seeds from the DB. Uncommon click pattern, no data-integrity risk (Save is separate/explicit). _(added 2026-08-27)_
+- [ ] **Not click-tested live by a real signed-in supervisor** — reached the actual deploy preview this time (further than the usual local-only limitation), but `?tenant=demo` resolves to the `eq` sandbox tenant with no people data, and the Browser pane's own known 0×0-viewport bug blocked clicks/accessibility-tree reads on top of that. Verified instead via an isolated harness against the real edited files. _(added 2026-08-27)_
+
+---
+
 ## eq-field: Weekly Supervisor Digest → Email Templates + test-send auth fix — closed, one click-through remaining (2026-08-26)
 *Consolidated the digest's messy Supervision-page config (21-manager checklist + section toggles) into Manage → Email Templates, same governed surface the 3 leave emails already use, and added a "Send test to myself" safety net (PR #791, v3.5.573). Royce's first real click hit "unauthorized" — fixed the same session (PR #802, v3.5.578): two independent gaps, the edge function's new code was never actually deployed (Supabase edge functions ship separately from Netlify/git) and the Netlify function's credential didn't match what the edge function's auth check compares against. Full root-cause detail in `eq/changelog/eq-field.md`'s 2026-08-26 entries.*
 
