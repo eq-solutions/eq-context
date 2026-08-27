@@ -218,6 +218,13 @@ NUL_SCAN_SKIP_EXT = {
     ".pdf", ".zip", ".gz", ".tar", ".7z",
     ".mp3", ".mp4", ".wav", ".mov",
     ".sqlite", ".db", ".bin", ".exe", ".dll", ".so", ".pyc",
+    # Added 2026-08-27, vendoring pdf.js's official generic build
+    # (eq-field, scripts/vendor/pdfjs/): .bcmap (compressed CMap data),
+    # .icc (binary colour profile), .pfb (binary Type1 font program),
+    # .wasm — all legitimately binary, byte-count-verified against the
+    # official release zip, same false-positive shape .woff/.ttf/.bin
+    # above already exist to prevent.
+    ".bcmap", ".icc", ".pfb", ".wasm",
 }
 
 
