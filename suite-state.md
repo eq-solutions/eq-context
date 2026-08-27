@@ -71,9 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
 
-**eq-shell:**
-- #1641 feat(ci): governed apply path for jvkn control-plane migrations
-
 ---
 
 ## System Health (as of 2026-08-27)
