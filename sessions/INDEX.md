@@ -1,8 +1,9 @@
 # Session Index
-_138 logs · reverse-chronological · auto-generated_
+_139 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-28 | [Documents to Sign: inline viewer's real bug found and fixed, then mapped audience reach](2026-08-28.md) |
 | 2026-08-27 | [eq-field: Phoenix Khatri "OFF" leave visibility diagnosed; Timesheets Fill Week + Approved column shipped (v3.5.583)](2026-08-27.md) |
 | 2026-08-26 | [Close-out of the 2026-08-25 eq-field/eq-shell session](2026-08-26.md) |
 | 2026-08-25 | [Canonical wiring map: jvkn/Shell/Field read-write capabilities, verified live end-to-end](2026-08-25.md) |
