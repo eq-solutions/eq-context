@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-28 (PR #1653 MERGED + LIVE — Admin sidebar decluttered)
+- Removed Users, Audit log, Security groups, and Settings from the permanently-pinned Admin sidebar list in `HubSidebar.tsx` — all four already have a matching tile on the Admin Overview page ("All admin tools"), so no access changed, just fewer permanent links. Remaining pinned: All admin tools, Add workers, Intake, Labour hire rates, Suppliers.
+- Kept `navScope.ts`'s per-user "Simple" item list and `AccessControlPage.tsx`'s nav-preview tool trimmed the same way, per this repo's documented 3-consumer sync invariant (`AdminEditUser.tsx` needed no edit — it imports the shared list).
+- [PR #1653](https://github.com/eq-solutions/eq-shell/pull/1653), squash-merged (`6c2b5dc2`), confirmed live via Netlify deploy state (exact `commit_ref` match, `published_at` set).
+
 ## 2026-08-27 (PR #1648 MERGED + LIVE — drift-check issue-filer: eq-field attribution for tenant-plane violations)
 - The structural follow-up to the field_managers/CHECK 7 incident (see the PR #1642 entry below): when the existing 3-hourly drift schedule auto-files a security issue for a tenant-plane violation, it now tries to attribute the flagged object to its source eq-field migration file and links it directly in the issue body — cutting "trace it by hand across repos" (what this exact incident needed) down to "read the issue." Two new scripts (`extract-tenant-violation-names.mjs`, `attribute-violations-to-eq-field.mjs`) wired into `tenant-drift.yml` as additive, `continue-on-error` steps; reuses the `FIELD_PERMS_DRIFT_PAT` credential already provisioned 2026-08-12 for an unrelated check, so it shipped with zero new credentials. Fails open at every stage — never turns a best-effort attribution miss into a failed run.
 - Chosen via a `/decide` pass over 3 options (pre-merge CI gate on eq-field; this schedule-side attribution; docs-only) — pre-merge CI was ruled out on a live feasibility check, not preference: eq-field's CI has no Supabase/migration step at all (`gh secret list` confirmed zero Supabase credentials), the same credential-provisioning bottleneck already stalling the sibling jvkn-side decision (`eq-cards#328`).

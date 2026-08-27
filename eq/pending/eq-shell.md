@@ -40,6 +40,26 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Admin sidebar decluttered — Users/Audit log/Security groups/Settings unpinned, live (2026-08-28)
+*Royce asked whether cleaning up the nav bar from his own (highest-access) account would filter down to everyone. It doesn't work that way: the sidebar is permission-gated per signed-in user (`useCan()`), never copied from any one session — a separate per-user "Simple" nav-scope toggle (2026-08-26, below) already existed for individual decluttering. What he actually wanted was a shared-code change: fewer permanently-pinned Admin links for everyone.*
+
+- [x] **Built**: removed Users, Audit log, Security groups, and Settings from the permanently-pinned Admin sidebar list in `HubSidebar.tsx` — all four already have a matching tile on the Admin Overview page ("All admin tools"), so nobody loses access, just one extra click for the less-frequent ones. Remaining pinned Admin items: All admin tools, Add workers, Intake, Labour hire rates, Suppliers. Doesn't reopen the 2026-07-06 call below to leave Import/Labour hire rates pinned — different items, same principle (access-safe, not "manager-only from now on").
+- [x] Kept `navScope.ts`'s Simple-mode item list and `AccessControlPage.tsx`'s nav-preview tool trimmed the same way, per this repo's own documented 3-consumer sync invariant — confirmed `AdminEditUser.tsx` needed no direct edit since it imports the shared list rather than duplicating it.
+- [x] eq-shell [PR #1653](https://github.com/eq-solutions/eq-shell/pull/1653), squash-merged (`6c2b5dc2`), confirmed live via Netlify deploy state (`ready`, `published_at` set, exact `commit_ref` match, ~7 min build-to-publish).
+
+**Decided:**
+- Royce: trim all four (Users, Audit log, Security groups, Settings) — not just the two he first named (Users, Audit log) — once shown all four share the identical tile-redundancy.
+- Royce: Admin section only for this pass — Records/Apps/Resourcing left alone.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment; verified instead via `tsc -b --force`, a full `pnpm run build`, and a direct trace confirming `AdminHub.tsx` already tiles all four removed items. Worth a real pass: sign in as a manager, confirm the Admin section shows only the 5 remaining items and all 4 removed ones are still reachable via All admin tools. _(added 2026-08-28)_
+
+**Notes:**
+- This worktree's `node_modules` was missing `heic2any` (declared in `package.json` since PR #1619, 2026-08-26) — a plain `pnpm install` fixed it. Unrelated to this task; flagging in case a fresh worktree hits the same gap.
+- Checked 5 old branches (`feat/nav-tile-drift-and-preview`, `claude/nav-cleanup-fixes`, `claude/access-control-polish-e8d7ca`, `claude/access-control-security-groups-287cf3`, `claude/field-perms-visibility`) for overlap before starting — all single-commit, superseded/abandoned (Aug 7–25), none conflicted with this change.
+
+---
+
 ## eq-shell: Multi-tenant Shell-login guard + roster-removal cascade — both closed, live (2026-08-27)
 *Investigation kicked off by a direct question: does the 15-minute staff-active drift cron correctly handle a worker on two tenants' rosters before revoking their Shell login, or does it fire on ANY single tenant going inactive? It fired on any.*
 
