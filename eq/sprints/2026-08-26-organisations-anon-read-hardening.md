@@ -19,9 +19,11 @@ nothing here is trusted from a prior read without re-checking.
 **The short version: everything originally scoped is fixed, merged, and (where
 applicable) applied live — including PR #1634, merged and its migration applied to
 jvkn on Royce's explicit go. The issue-filer wiring gap turned out bigger than first
-scoped (7 checks, not 2) and is now being built in a separate session. Two things are
-left: CHECK 11's design call and the cross-repo consumer check — still the only real
-architecture decision anywhere in this incident.**
+scoped (7 checks, not 2) and is now being built in a separate session. The cross-repo
+consumer-check gap has a decision and two open PRs now (2026-08-27, this session) —
+Royce picked option 2 (reusable workflow), eq-shell PR #1638 + eq-cards PR #328, not
+yet merged, two manual secrets still needed. One thing is still fully open: CHECK 11's
+design call.**
 
 ---
 
@@ -104,7 +106,52 @@ scratch — it's the same file, same author's already-stated open question. Re-v
 live: still absent from `check-tenant-drift.mjs` (no "CHECK 11" text anywhere in the
 current file) — not quietly built by anyone since.
 
-### 3. The real gap: nothing stops another repo from re-breaking this
+### 3. The real gap: nothing stops another repo from re-breaking this — DECIDED 2026-08-27, PRs open
+
+**Update 2026-08-27 (this session):** investigated the real cost of each option before
+asking Royce to pick — found eq-cards' CI already carries `SUPABASE_ACCESS_TOKEN` (same
+kind eq-shell's own drift-check job uses: a Supabase Management API PAT), already used
+against jvkn in its `deploy.yml` edge-function-deploy step. That undercut option 1's
+stated blocker ("credentials it may not currently have wired"), which pulled options 1
+and 2 close enough together to just build the reusable-workflow shape (option 2) rather
+than pick between them as if they were far apart in cost.
+
+Royce picked: **selected-repo access on eq-shell, advisory-first on eq-cards.** One
+correction mid-build: "selected-repo" isn't a real GitHub setting — the Actions
+`access_level` API is `none | user | organization` only, no per-repo allowlist (checked
+against GitHub's own docs before applying anything). Re-asked; Royce's call given the
+corrected options was org-wide `access_level: organization` over minting a second new
+PAT just to avoid it — applied live via `gh api`. Separately, and not something either of
+those two options avoided: the default `GITHUB_TOKEN` inside a called reusable workflow
+is scoped to the *caller* repo only, so a **third** credential is unavoidable either way
+— a new fine-grained PAT (`EQ_SHELL_CHECKOUT_TOKEN`, Contents: Read-only, scoped to
+eq-solutions/eq-shell alone) for the checkout step that fetches `check-tenant-drift.mjs`
+itself. That one can't be minted via API (GitHub has no create-fine-grained-PAT
+endpoint) — it's a manual step, flagged in both PRs.
+
+**Open PRs:**
+- [eq-shell#1638](https://github.com/eq-solutions/eq-shell/pull/1638) — new
+  `jvkn-control-plane-check.yml`, `workflow_call`, runs CHECK 2/6/7/8/10/12/13/14 by
+  omitting the tenant-plane secrets (no new CLI flag — verified live that every
+  tenant-plane check skips clean on its own missing-ref guard, and the file's one
+  `process.exit(1)` is unrelated). `access_level: organization` already applied, not
+  gated on this PR.
+- [eq-cards#328](https://github.com/eq-solutions/eq-cards/pull/328) — one new advisory
+  job calling it. Not in branch protection's required-checks list.
+
+**Still needed before either check actually runs (not done this session — needs
+Royce or repo-admin access this session didn't exercise on eq-cards' secrets):**
+1. Merge eq-shell#1638 to `main` first (eq-cards' `uses:` reference needs the file to
+   exist there).
+2. Mint `EQ_SHELL_CHECKOUT_TOKEN` (fine-grained PAT, Contents: Read-only,
+   eq-solutions/eq-shell only) and add it + `CONTROL_PROJECT_REF` as secrets on
+   eq-cards. `SUPABASE_ACCESS_TOKEN` already exists there.
+3. Merge eq-cards#328.
+4. After a burn-in period with no false positives, revisit promoting it into eq-cards'
+   required-checks list (deliberately not done on day one — Royce's advisory-first call).
+
+Original framing preserved below for the reasoning trail (three options, cost
+comparison) — superseded by the decision above, not rewritten.
 
 **This is the one item in this whole incident that isn't closed and isn't in flight.**
 `CHECK 10`/`12`/`13`/`14` all run inside eq-shell's own CI, against eq-shell's own
@@ -157,6 +204,6 @@ cross-repo implications, not a mechanical fix.
 | 5 | PR #1634 — 13 inert `deny_all` policies → `service_role` | **Merged + applied live** (`fb7d9c9f`) | Nothing |
 | 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **In progress** (separate session) | Check its outcome; restart only if stalled/failed |
 | 7 | CHECK 11 — jvkn migration-identity | Scoped, not started | Needs the cutoff/strictness call #1628 already flagged |
-| 8 | Cross-repo consumer-check gap | Unscoped, not started | **Royce's call** — 3 options above, none built |
+| 8 | Cross-repo consumer-check gap | **Decided, 2 PRs open** (eq-shell#1638, eq-cards#328) | Merge #1638 first, mint `EQ_SHELL_CHECKOUT_TOKEN` + add `CONTROL_PROJECT_REF` on eq-cards, then merge #328 |
 
-**What's actually left: #6 (confirm outcome), #7 (design call), #8 (Royce's call).**
+**What's actually left: #6 (confirm outcome), #7 (design call), #8 (merge + 2 manual secrets).**
