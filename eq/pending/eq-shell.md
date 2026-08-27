@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: HEIC licence-photo uploads — built, merged, live (2026-08-27)
+*Royce: uploading Aiden Crowley's ID + White Card from an iPhone `.heic` photo — both hit a hard rejection. Reframed mid-session from an assumed "profile photo" feature to the existing Photo ID/White Card licence types on the Staff page — no new feature needed, just the file format.*
+
+- [x] **Root cause**: neither Staff → Add Licence nor the existing-licence replace-photo control accepted HEIC — the format iPhone cameras save in by default. `AddLicenceModal.tsx` rejected it client-side before OCR/compression ever ran; the replace-photo path had no client-side gate, but its server function's own `ALLOWED_TYPES` would have rejected it anyway.
+- [x] **Built**: client-side HEIC→JPEG conversion ahead of both paths' existing type checks (`src/pages/staff/heicConvert.ts`) — native `createImageBitmap` decode first (free on Safari/iOS, no library download), `heic2any` (dynamically imported into its own lazy chunk) as the fallback for browsers that can't decode HEIC natively. Any failure returns the original file unchanged, degrading to the existing rejection message rather than a silent break. `/decide` run before building (client-side vs. server-side vs. manual-workaround) — client-side won: HEIC codec support is routinely stripped from serverless image libraries (licensing/binary size).
+- [x] eq-shell [PR #1619](https://github.com/eq-solutions/eq-shell/pull/1619), merged (squash `3307dec7`) — confirmed live on core.eq.solutions via commit-ancestry against the currently-serving production deploy.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no login credentials in this environment. Real test is Staff → Aiden Crowley → Add Licence with his actual ID + White Card `.heic` photos, confirming they preview/OCR/save correctly as JPEG. _(added 2026-08-27)_
+
+---
+
 ## eq-shell: entity-patch CORS silently broken in production — root-caused, fixed, verified live (2026-08-27)
 *Royce, with a screenshot: "Edit Supervision Category" modal failing "Failed to fetch" for David Boyd. This is eq-field's own `task_ecdfb245` (see `eq/pending/eq-field.md`'s 2026-08-26 leave/email session, now trimmed) reported back.*
 

@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1619 MERGED — HEIC licence-photo uploads accepted)
+- Staff → Add Licence and the existing-licence replace-photo control both now accept `.heic`/`.heif` photos (the default format iPhone cameras save in) — converted client-side to JPEG before either path's existing type check, native browser decode first, `heic2any` as a lazy-loaded fallback.
+- Prompted by uploading Aiden Crowley's ID + White Card licences from a phone photo.
+
 ## 2026-08-27 (PR #1633 MERGED — CHECK 14, tenant/self/org isolation invariant for jvkn)
 - Same-day follow-up to #1628 below: `check-tenant-drift.mjs`'s CHECK 5 (tenant-isolation policy lint) has an analog for jvkn now too. Every browser-reachable, RLS-on table in `public`+`shell_control` must have a policy referencing `tenant_id`, `org_id`, `user_id`, the table's own PK compared to `auth.uid()` (e.g. `profiles.id`), or `is_platform_admin`.
 - **Real design bug found and fixed before shipping**: a first draft defined "reachable" using only a policy's `roles` array. That produced 13 false positives — tables with a broad-role policy but no actual anon/authenticated table grant, so Postgres blocks the query before RLS ever evaluates the policy; it's inert, not exposed. Corrected to require both a real grant and an admitting policy, matching CHECK 5's own established pattern. Re-verified clean: exactly the 2 already-known `INTENTIONAL_ANON_READS` exceptions, reused directly from CHECK 10's list rather than duplicated.
