@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1648 MERGED + LIVE — drift-check issue-filer: eq-field attribution for tenant-plane violations)
+- The structural follow-up to the field_managers/CHECK 7 incident (see the PR #1642 entry below): when the existing 3-hourly drift schedule auto-files a security issue for a tenant-plane violation, it now tries to attribute the flagged object to its source eq-field migration file and links it directly in the issue body — cutting "trace it by hand across repos" (what this exact incident needed) down to "read the issue." Two new scripts (`extract-tenant-violation-names.mjs`, `attribute-violations-to-eq-field.mjs`) wired into `tenant-drift.yml` as additive, `continue-on-error` steps; reuses the `FIELD_PERMS_DRIFT_PAT` credential already provisioned 2026-08-12 for an unrelated check, so it shipped with zero new credentials. Fails open at every stage — never turns a best-effort attribution miss into a failed run.
+- Chosen via a `/decide` pass over 3 options (pre-merge CI gate on eq-field; this schedule-side attribution; docs-only) — pre-merge CI was ruled out on a live feasibility check, not preference: eq-field's CI has no Supabase/migration step at all (`gh secret list` confirmed zero Supabase credentials), the same credential-provisioning bottleneck already stalling the sibling jvkn-side decision (`eq-cards#328`).
+- Verified via a 10-case fixture test running both scripts as real child processes against data shaped like the actual field_managers/field_people_directory incident, not simulated. Full reasoning trail: `eq-context/eq/sprints/2026-08-27-tenant-plane-cross-repo-consumer-check.md`.
+- [PR #1648](https://github.com/eq-solutions/eq-shell/pull/1648), squash-merged (`3eff84c2`, 10:53:29Z).
+
 ## 2026-08-27 (PR #1635 + #1644 MERGED + LIVE — Documents: PDF conversion pipeline, Register refresh fix)
 - PR #1635 — self-hosted Gotenberg Office→PDF conversion pipeline, wired into upload-commit (migration 0287 adds `document_versions.pdf_storage_path`/`pdf_status`). Caught before merge: the backfill function was missing Netlify's required `-background` filename suffix, which would have silently capped it at the 26s synchronous limit instead of the intended 15-minute background budget.
 - PR #1644 — Register tab (`AdminDocumentUpload.tsx`) now silently refetches after a successful upload or push. Root cause of Royce's "I uploaded it and lost it" report: the tab's fetch only ever ran on mount, so a real upload/push never appeared until a manual page reload.

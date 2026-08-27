@@ -16,6 +16,14 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: tenant-plane cross-repo consumer-check gap — decided, built, merged live; CHECK 7 exception logic live-tested (2026-08-27) (fully closed 2026-08-27)
+*Follow-up to the field_managers/CHECK 7 incident directly below — Royce: "sprint this" against that close's own deferred items, then `/decide`, then "build option B", then "merge it".*
+
+- [x] **Cross-repo consumer-check gap, tenant-plane side (the sibling jvkn-side gap is #1638/#328, tracked separately under "organisations anon-read regression" in `eq/pending/eq-shell.md`).** eq-field is structurally different from eq-cards — its CI has no Supabase/migration step at all (hand-applies via MCP), so the jvkn-side `workflow_call` shape (#1638) has no hook point to attach to here. `/decide` chose strengthening the existing 3-hourly schedule + auto-filed issue over a pre-merge CI gate, once a live check (`gh secret list --repo eq-solutions/eq-field`) showed pre-merge CI would need new credential provisioning — the same bottleneck already stalling #328 — while the schedule-side option reused an already-provisioned PAT and needed nothing new. [eq-shell#1648](https://github.com/eq-solutions/eq-shell/pull/1648): two new scripts extract a violated object's name from a drift report and attribute it to its source eq-field migration file, folding the match into the auto-filed issue body. Additive, fails open, zero new credentials. Merged (`3eff84c2`, 10:53:29Z).
+- [x] **CHECK 7's reviewed-exception logic (#1642) live-tested against a real violation for the first time — not this thread's own work, a concurrent session's, on Royce's explicit go.** Disposable scratch view on zaap correctly failed CHECK 7 while both real exempted views passed as content-verified in the same run; incidentally also live-proved this entry's own issue-filer attribution path (opened real issue #1649, auto-closed clean). Recorded here since it closes out the sprint doc's other open item. Full account: `sessions/2026-08-27.md`, commit `6bee40f8`.
+
+---
+
 ## eq-shell: repo-wide CI blocker — `app_data.field_managers` view fails CHECK 7 — root-caused, fixed, merged, live (2026-08-27) (fully closed 2026-08-27)
 *Reported by a peer session (`documents-to-sign-feature-3035a3-38`) whose own PR (#1635) was blocked by it; independently verified live via `gh pr checks`/`gh run view` before recording here.*
 

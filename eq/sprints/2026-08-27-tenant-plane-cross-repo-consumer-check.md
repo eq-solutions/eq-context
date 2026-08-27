@@ -48,20 +48,22 @@ until eq-shell's own next PR happened to run the drift check — fixed same-day 
 
 ### 2. Validate CHECK 7's reviewed-exception logic against a real, live violation
 
-Pre-existing deferred item (`eq/pending/eq-shell.md`), not new this sprint, but worth
-scoping since it's small and mechanical — no design call needed, unlike item 1.
+**Done 2026-08-27** — not this doc's own session, a concurrent one, on Royce's explicit
+go ("run the check 7 live test on zaap"). Recorded here rather than left stale, since
+this doc is what scoped the item in the first place. Full account:
+`sessions/2026-08-27.md` ("live-tested CHECK 7's reviewed-exception logic on zaap,
+CHECK 11 correction"), commit `6bee40f8`.
 
-`VIEW_INVOKER_REVIEWED_DEFINER`'s hostile-mutation behavior (drop the tenant filter,
-widen the grant to anon) is currently verified only two ways: a standalone Node script
-simulating the row shapes, and by reasoning about the code. Neither is "a real object,
-in a real Postgres database, actually caught by a real CI run." A genuine end-to-end
-proof needs: create a disposable scratch view on a non-production project (or a
-throwaway table wrapped the same way) that intentionally violates one of the two
-guarded properties, run `check-tenant-drift.mjs --no-anon` (or the equivalent narrow
-flag) against it, confirm CHECK 7 fails with the expected reason string, then drop the
-scratch object. Needs a project it's safe to write throwaway objects to — not ehow or
-zaap. Worth 15 minutes whenever someone has Supabase credentials and a spare project;
-not blocking anything.
+Created a disposable scratch view (`public.zz_scratch_check7_livetest`) on zaap via
+Supabase MCP — deliberately not either real exempted view, which are live and
+load-bearing. Manually dispatched `tenant-drift.yml`: CHECK 7 correctly failed on the
+scratch view while both real exempted views (`field_managers`, `field_people_directory`)
+passed as content-verified in the same run — proves the logic discriminates a real
+violation from a legitimate exception, not just that CHECK 7 still fires. Incidentally
+also live-proved item 1's own issue-filer attribution path for CHECK 7 specifically:
+the run opened a real GitHub issue ([#1649](https://github.com/eq-solutions/eq-shell/issues/1649)),
+which auto-closed cleanly once the scratch view was dropped and a second run confirmed
+clean. No lasting trace on zaap or in the issue tracker.
 
 ---
 
@@ -72,4 +74,4 @@ not blocking anything.
 | — | field_managers/field_people_directory CHECK 7 incident | **Fully closed** | Nothing |
 | — | 3 PRs it was blocking | **Confirmed cleared** | Nothing |
 | 1 | Tenant-plane cross-repo consumer-check gap | **Decided, built, merged live** — option 2, [eq-shell#1648](https://github.com/eq-solutions/eq-shell/pull/1648) (`3eff84c2`) | Nothing |
-| 2 | CHECK 7 exception logic not yet exercised against a real live violation | **Scoped, not started** | Whenever convenient — needs a disposable Supabase project |
+| 2 | CHECK 7 exception logic not yet exercised against a real live violation | **Done** — live-tested on zaap (`6bee40f8`), proof above | Nothing |
