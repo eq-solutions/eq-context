@@ -2,7 +2,7 @@
 title: Sprint — hardening after the 3rd organisations_anon_bootstrap_read regression
 owner: Royce Milmlow
 last_updated: 2026-08-27
-scope: What's left after the 3rd organisations anon-read regression (eq-shell) — sequences in-flight PRs against what's genuinely still unbuilt, so nothing gets duplicated. Every item live-verified (gh pr view, gh api contents-at-ref against current origin/main, ListAgents) immediately before writing, not restated from pending.md.
+scope: What's left after the 3rd organisations anon-read regression (eq-shell) — sequences in-flight work against what's genuinely still unbuilt, so nothing gets duplicated. Every item live-verified (gh pr view, gh api contents-at-ref against current origin/main, ListAgents) immediately before writing, not restated from pending.md.
 read_priority: high
 status: live
 ---
@@ -10,18 +10,18 @@ status: live
 # Sprint — hardening after the 3rd organisations_anon_bootstrap_read regression
 
 Triggered by Royce asking to turn this incident's outstanding items into a sprint, then
-(this pass) asking to sprint whatever was still flagged as "next." Re-verified against
-live GitHub state and the current `check-tenant-drift.mjs`/`tenant-drift.yml` on
-`origin/main` before writing anything — the local eq-context clone was 134+ commits
-behind `origin/main` at the start of this pass, so nothing here was trusted from a
-prior read without re-checking.
+(a later pass) asking to sprint whatever was still flagged as "next." Re-verified
+against live GitHub state and the current `check-tenant-drift.mjs`/`tenant-drift.yml`
+on `origin/main` before writing anything each pass — the local eq-context clone has
+been 130-140+ commits behind `origin/main` at the start of every pass so far, so
+nothing here is trusted from a prior read without re-checking.
 
-**The short version: everything originally scoped is fixed and live. One follow-up PR
-(#1634) is open and CI-green but deliberately not applied to live jvkn yet. Live
-re-verification of the issue-filer wiring gap found it's bigger than first scoped — 7
-checks share it, not 2. Three things are left: that widened wiring gap (mechanical,
-ready to build whenever), CHECK 11's design call, and the cross-repo consumer check —
-still the only real architecture decision in this whole incident.**
+**The short version: everything originally scoped is fixed, merged, and (where
+applicable) applied live — including PR #1634, merged and its migration applied to
+jvkn on Royce's explicit go. The issue-filer wiring gap turned out bigger than first
+scoped (7 checks, not 2) and is now being built in a separate session. Two things are
+left: CHECK 11's design call and the cross-repo consumer check — still the only real
+architecture decision anywhere in this incident.**
 
 ---
 
@@ -38,44 +38,10 @@ still the only real architecture decision in this whole incident.**
 | `0162`/`0163`/`0164` mis-attributed to an unidentified out-of-band actor | Corrected in the ledger — they're eq-cards' own tracked migrations (PR eq-cards#323/#324), not drift. [PR #1627](https://github.com/eq-solutions/eq-shell/pull/1627), merged (`02a9b405`) |
 | `CHECK 12`/`13` — stacked-permissive-policy + RLS invariants ported to jvkn | Built and merged — [PR #1628](https://github.com/eq-solutions/eq-shell/pull/1628), merged (`ea3d649a`) |
 | `CHECK 14` — tenant/self/org isolation invariant for jvkn (analog of CHECK 5) | Built and merged — [PR #1633](https://github.com/eq-solutions/eq-shell/pull/1633), squash-merged (`ef075d5f`). Its own investigation found and fixed a reachability-definition bug (13 false positives from a "policy roles alone" test) before shipping, and separately surfaced the 13-table finding below |
+| 13 jvkn tables with an inert `deny_all` policy (`{public}` instead of `service_role`, no matching grant) — CHECK 14's own follow-up finding | Fixed: eq-shell [PR #1634](https://github.com/eq-solutions/eq-shell/pull/1634) squash-merged (`fb7d9c9f`) on Royce's explicit "merge it," migration **applied to live jvkn same session** after Royce gave the explicit go (a `/decide` pass recommended waiting given no urgency, but Royce authorized it anyway) |
 
 `scripts/check-tenant-drift.mjs` is no longer being actively edited by anyone as of
 these merges — the earlier "don't touch it" coordination note is stood down.
-
----
-
-## In flight — open, not yet applied
-
-### PR #1634 — scope 13 inert `deny_all` policies to `service_role`
-
-Follow-up to CHECK 14's own investigation (row above), which found 13 jvkn tables
-carrying a `deny_all` policy scoped to `{public}` instead of `service_role` — inert
-today (no matching grant on any of them, confirmed via `pg_policies` +
-`role_table_grants` + `get_advisors` + a full `src/` grep, all redone live before the
-fix was written), but a footgun if a future stray `GRANT` (e.g. fixing an unrelated
-permission error) ever lands on one without someone re-checking the policy text first.
-Migration narrows `roles` to `service_role` and re-asserts the already-absent `REVOKE`.
-Affected tables: `shell_control.tenant_routing`, `.platform_config`,
-`.security_groups`, `.provision_tokens`, `.rate_limit_buckets`, `.tenant_config`,
-`.tenant_role_overrides`, `.pin_reset_tokens`, `.cards_field_approvals`, `.audit_log`,
-`.security_group_perms`, `.user_security_groups`, `public.revoked_agent_tokens`.
-
-Live-verified via `gh pr view 1634` at the start of this pass: **OPEN,
-`mergeable: MERGEABLE`, `mergeStateStatus: CLEAN`, every check green** (typecheck/
-test/lint, gitleaks, migration-ledger hygiene, the drift-check workflow itself).
-Merging it is low-risk — it only adds a migration file and a ledger-adjacent doc note,
-no CI or script change, and CHECK 9/12/13/14 all already treat the post-fix state as
-correct by their own existing logic.
-
-**Merging ≠ applying.** jvkn control-plane migrations are hand-apply-only (no CI path
-— `supabase/CONTROL-PLANE-LEDGER.md`). The PR's own checklist leaves the live
-`apply_migration` step for Royce explicitly, per eq-shell CLAUDE.md non-negotiable #6
-(auth-adjacent changes need explicit approval before deployment) — this touches RLS on
-tables adjacent to credential reset (`pin_reset_tokens`) and tenant role overrides
-(`tenant_role_overrides`), so it stays gated even though the change itself is inert
-today. **Two separate decisions, not one**: merge the PR (safe, mechanical), and apply
-the migration live (Royce's call, whenever convenient — nothing is exposed today, so
-not urgent).
 
 ---
 
@@ -83,12 +49,12 @@ not urgent).
 
 ### 1. The issue-filer wiring gap is wider than first scoped — 7 checks, not 2
 
-`eq/pending/eq-shell.md`'s existing note (`task_f5c61eb9`) scoped this as CHECK 7
-(`view_invoker`) and CHECK 8 (`column_grants`) only. Re-verified live against the
-current `.github/workflows/tenant-drift.yml` and `scripts/check-tenant-drift.mjs` on
-`origin/main` for this pass, and the gap is bigger: the issue-filing step (workflow
-lines 236–261) only reads four of the report's eleven check groups into the `$ALL`
-string that becomes the auto-filed GitHub issue body:
+`eq/pending/eq-shell.md`'s original note (`task_f5c61eb9`) scoped this as CHECK 7
+(`view_invoker`) and CHECK 8 (`column_grants`) only. Re-verified live against
+`.github/workflows/tenant-drift.yml` and `scripts/check-tenant-drift.mjs` on
+`origin/main`, and the gap is bigger: the issue-filing step (workflow lines 236–261)
+only reads four of the report's eleven check groups into the `$ALL` string that
+becomes the auto-filed GitHub issue body:
 
 ```
 ANON=...          # anon_grants
@@ -113,12 +79,17 @@ Confirmed by reading the `_report` object's own key list (`check-tenant-drift.mj
 | `control_plane_rls` | CHECK 13 | RLS-on invariant, jvkn control plane |
 | `control_plane_isolation` | CHECK 14 | tenant/self/org isolation, jvkn control plane |
 
-**Fully scoped, no design call needed** — it's the identical 5-line `jq` pattern
-`INTENTIONAL` already uses in #1623, extended to these 7 more keys. Their shapes aren't
-all identical (`.projects[]` vs `.planes[]` vs a bare `.result`), so each needs its own
-short `jq` filter mirrored off the closest existing one rather than one copy-pasted
-across all seven. Not built this pass — the ask this round was to sprint what's
-flagged, not implement — spawned as a background task for whenever it's picked up.
+Fully scoped, no design call needed — it's the identical 5-line `jq` pattern
+`INTENTIONAL` already uses in #1623, extended to these 7 more keys (their shapes
+aren't all identical — `.projects[]` vs `.planes[]` vs a bare `.result` — so each needs
+its own short `jq` filter mirrored off the closest existing one).
+
+**Status: in progress, not this session's build.** Spawned as a background task
+(`task_e2eed444`). Two separate peer sessions independently proposed building it
+afterward and both stood down after a live collision check (`ListAgents` + `gh pr
+list`, no PR open yet either time) found it already running in
+`work-wiring-priorities-0150f3-c8`. Check that session's outcome before restarting
+this — only pick it back up if it stalled or failed, not as a fresh build.
 
 ### 2. CHECK 11 — jvkn migration-identity (deferred by #1628 itself, not forgotten)
 
@@ -130,8 +101,8 @@ yet — jvkn's migrations tree has its own grandfather-cutoff precedent (2026-07
 either reuse or deliberately diverge from. Whoever picks this up should read #1628's
 reasoning first and coordinate rather than re-deriving the cutoff question from
 scratch — it's the same file, same author's already-stated open question. Re-verified
-this pass: still absent from `check-tenant-drift.mjs` (no "CHECK 11" text anywhere in
-the current file) — not quietly built by anyone since.
+live: still absent from `check-tenant-drift.mjs` (no "CHECK 11" text anywhere in the
+current file) — not quietly built by anyone since.
 
 ### 3. The real gap: nothing stops another repo from re-breaking this
 
@@ -183,10 +154,9 @@ cross-repo implications, not a mechanical fix.
 | 2 | PR #1627 — ledger correction | **Merged** (`02a9b405`) | Nothing |
 | 3 | PR #1628 — CHECK 12/13 | **Merged** (`ea3d649a`) | Nothing |
 | 4 | PR #1633 — CHECK 14 | **Merged** (`ef075d5f`) | Nothing |
-| 5 | PR #1634 — 13 inert `deny_all` policies → `service_role` | **Open, CI green, mergeable** | Merge is mechanical; live apply is Royce's call, not urgent |
-| 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | Scoped, ready to build | Mechanical — same pattern as #1623, no design call needed |
+| 5 | PR #1634 — 13 inert `deny_all` policies → `service_role` | **Merged + applied live** (`fb7d9c9f`) | Nothing |
+| 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **In progress** (separate session) | Check its outcome; restart only if stalled/failed |
 | 7 | CHECK 11 — jvkn migration-identity | Scoped, not started | Needs the cutoff/strictness call #1628 already flagged |
 | 8 | Cross-repo consumer-check gap | Unscoped, not started | **Royce's call** — 3 options above, none built |
 
-**What's actually left: #5 (merge/apply decision), #6 (ready whenever), #7 (design
-call), #8 (Royce's call).**
+**What's actually left: #6 (confirm outcome), #7 (design call), #8 (Royce's call).**
