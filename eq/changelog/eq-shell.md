@@ -15,6 +15,11 @@ status: live
 - [PR #1630](https://github.com/eq-solutions/eq-shell/pull/1630), squash-merged (`522f0937`). Migration dispatched live to both ehow and zaap via the One Pipe (separate explicit approvals for each). Live-deploy confirmed via the production deploy's own `published_at`/`state: ready`, not assumed from the merge succeeding.
 - No create-UI yet — first cut is schema + read/expand only; codes need seeding via service_role until a later pass. Not click-tested live by a person (table has zero rows on both planes).
 
+## 2026-08-27 (PR #1631 MERGED — dropped dead .msg/.eml option from the Documents-to-Sign file picker)
+- The Documents-to-Sign register's upload picker listed `.msg`/`.eml` (Outlook email files), but the endpoint behind it never supported them — every pick 400'd. The sibling Quotes/Jobs/Sites attachment picker *does* support both (byte-verified, shipped 2026-08-06, PR #1262); this screen's picker string was a copy-paste of that one, not a deliberate choice.
+- Royce's call: this register is for formal sign-off documents (SMPs, drawings, procedures), not email threads — narrowed the picker rather than port email support. One-line client-only change, `StagedFileList.tsx`.
+- [PR #1631](https://github.com/eq-solutions/eq-shell/pull/1631), squash-merged (`16f65a7b`), live-verified via the site's actual published-deploy commit.
+
 ## 2026-08-27 (PR #1619 MERGED — HEIC licence-photo uploads accepted)
 - Staff → Add Licence and the existing-licence replace-photo control both now accept `.heic`/`.heif` photos (the default format iPhone cameras save in) — converted client-side to JPEG before either path's existing type check, native browser decode first, `heic2any` as a lazy-loaded fallback.
 - Prompted by uploading Aiden Crowley's ID + White Card licences from a phone photo.
