@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-26 (nightly cron)_
+_Last verified: 2026-08-27 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,11 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-26)
-
-**eq-field:**
-- #810 fix(observability): recognize DOMException/Error-like throwables before JSON.stringify fallback
-- #809 v3.5.583 — SKS canonical roster: fix inert realtime sync + register local writes
+## Open PRs (as of 2026-08-27)
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -74,7 +70,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-26)
+## System Health (as of 2026-08-27)
 
 **CI on main:**
 
