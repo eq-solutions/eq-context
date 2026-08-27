@@ -13,19 +13,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: EQ-CARDS-1J/1K crash — found already fixed, deployed live, Sentry closed (2026-08-27)
-*Asked what's next on the suite priority list; picked the open eq-cards Sentry crash (`NoSuchMethodError: Null check operator used on a null value`, `/profile`, fatal, 8 events, 1 user) off the digest's "Needs you" list.*
-
-- [x] **Already fixed by a concurrent session before investigation started** — checked for adjacent work first (`gh pr list --search "profile OR null"`), found [PR #326](https://github.com/eq-solutions/eq-cards/pull/326) merged minutes earlier (07:29:45 UTC). Root cause matched the crash's own signal (fatal, thrown mid-gesture, on `/profile`): `Licence.id` is null-by-design for an unsaved draft, and two spots force-unwrapped it with `!` — the licence-list tile's `onTap` and the detail screen's prev/next nav — while a sibling `onRenew` button a few lines away already guarded the same condition. Confirmed by reading the actual diff, not assumed from the PR title.
-- [x] **Same PR also fixed EQ-CARDS-1K** (`AuthRetryableFetchException`, 1 event) — the 7-minute proactive session-refresh timer was reporting every transient background-tab network failure to Sentry as if it were a fresh crash; only genuine auth errors report now.
-- [x] **Deploy gate checked, not assumed** — eq-cards needs an explicit `workflow_dispatch` (merging main doesn't ship it); last dispatch was 2026-08-26T00:00 UTC, before this fix, leaving 5 commits queued (#322–#326, including two RLS/security fixes). Flagged the full queued list to Royce before touching anything; Royce said dispatch now. Ran `Build & Deploy` ([run 33052359683](https://github.com/eq-solutions/eq-cards/actions/runs/33052359683)) — both jobs (Flutter web, edge functions) succeeded, shipping all 5.
-- [x] **EQ-CARDS-1J and EQ-CARDS-1K marked resolved in Sentry**, each with a comment citing the PR and the deploy run — only once the deploy was actually confirmed live, not at merge time.
-
-**Notes:**
-- Same general shape as the concurrent-session-gets-there-first pattern already well-documented elsewhere in this file's own history (see the PR #300/#312 notes further down) and in eq-shell.md — this instance cost nothing because the adjacent-work check ran *before* any investigation started, not after.
-
----
-
 ## eq-cards: RLS-initplan/FK-index hardening reapplied (0162), 0131 header correction reverted (2026-08-26)
 
 Reapplied the 2026-05-31 RLS-initplan/FK-index fix to 8 policies and 15 foreign keys created or recreated since then (including `workers.origin_org_id` from migration 0138) — confirmed live via `get_advisors`: all 8 public-schema `auth_rls_initplan` warnings and all 15 unindexed-FK warnings cleared. `eq_format_au_mobile`'s search_path hardened too. [PR #323](https://github.com/eq-solutions/eq-cards/pull/323), merged and applied to live jvkn.
