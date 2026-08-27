@@ -39,9 +39,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: multi-project-code sites (MOD10-style) — pattern decided, build scoped, not yet built (2026-08-27)
+## eq-shell: multi-project-code sites (MOD10-style) — built, merged, live; follow-ups open (2026-08-27)
 
-- [ ] **Build `app_data.site_projects`** so one canonical Site can carry multiple project/module codes (e.g. SKS's Telstra SLDC hosting MOD10, MOD11...) without duplicating the Site row. Schema + UI scoped this session (a child table modeled on `site_customer_links`/migration 0280's service-role-only RLS pattern, plus a nested-row expansion in `CustomersPage.tsx`'s Sites table) and handed off as a ready-to-paste build prompt — not yet started. Needs its own eq-shell worktree/session. Decision logged in `ops/decisions.md` (2026-08-26, Status: Proposed — confirm with Royce before merging, this is new surface area). _(added 2026-08-27)_
+- [ ] **No UI to create project codes yet** — first cut ([PR #1630](https://github.com/eq-solutions/eq-shell/pull/1630)) is schema + read/expand only; codes need seeding via service_role until a create-UI ships. _(added 2026-08-27)_
+- [ ] **Not click-tested live by a person** — `app_data.site_projects` exists on both ehow and zaap but has zero rows; needs a real code seeded on a real site (e.g. the Telstra SLDC/BGIS site that motivated this) to confirm the chevron renders/expands correctly. _(added 2026-08-27)_
+- [ ] **Not wired to EQ Ops job numbers or EQ Field's own Job Numbers/Projects tables** — explicitly out of scope for this pass; separate, later change in each of those repos. _(added 2026-08-27)_
 
 ---
 

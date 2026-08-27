@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1630 MERGED + LIVE — Sites can now carry multiple project/module codes)
+- New `app_data.site_projects` table (service-role-only, migration `0286`) lets one canonical Site row carry several concurrent project/module codes (e.g. SKS's Telstra SLDC site running MOD10, MOD11...) instead of forking the Site per module. `CustomersPage.tsx`'s Sites table gains a chevron that expands to show a site's codes.
+- Prompted by SKS's Telstra SLDC site (BGIS Pty Ltd) running multiple concurrent modules at one address; decision logged earlier the same day (`ops/decisions.md`, 2026-08-26).
+- [PR #1630](https://github.com/eq-solutions/eq-shell/pull/1630), squash-merged (`522f0937`). Migration dispatched live to both ehow and zaap via the One Pipe (separate explicit approvals for each). Live-deploy confirmed via the production deploy's own `published_at`/`state: ready`, not assumed from the merge succeeding.
+- No create-UI yet — first cut is schema + read/expand only; codes need seeding via service_role until a later pass. Not click-tested live by a person (table has zero rows on both planes).
+
 ## 2026-08-27 (PR #1619 MERGED — HEIC licence-photo uploads accepted)
 - Staff → Add Licence and the existing-licence replace-photo control both now accept `.heic`/`.heif` photos (the default format iPhone cameras save in) — converted client-side to JPEG before either path's existing type check, native browser decode first, `heic2any` as a lazy-loaded fallback.
 - Prompted by uploading Aiden Crowley's ID + White Card licences from a phone photo.
