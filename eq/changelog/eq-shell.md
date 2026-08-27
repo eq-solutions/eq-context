@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1639 OPEN — CHECK 6/7/8/9/12/13/14 wired into the drift-check security-issue filer)
+- `tenant-drift.yml`'s issue-filing step only read 4 of 11 `check-tenant-drift.mjs` report groups into the auto-filed GitHub issue — the other 7 already failed CI correctly but never reached the issue on a schedule-only (cron, no PR) catch, the same blind spot PR #1623 closed for CHECK 10. Extended with the same `jq` pattern for `function_exec`/`view_invoker`/`column_grants`/`stacked_policy` (CHECK 6/7/8/9) and the three jvkn control-plane analogs (CHECK 12/13/14) — the latter three report a bare `.result.violations[]` (only one plane), not a `.projects[]`/`.planes[]` list, so no per-entry label.
+- All 11 filters (4 pre-existing + 7 new) validated against a synthetic fixture before committing — both a real-violation case and a clean/skipped case — plus a YAML re-parse check. Workflow-file-only change, no script edits.
+- [PR #1639](https://github.com/eq-solutions/eq-shell/pull/1639), open, not yet merged.
+
 ## 2026-08-27 (PR #1634 MERGED + LIVE — 13 inert jvkn RBAC policies scoped to service_role)
 - Follow-up to PR #1633 (CHECK 14), whose own header comment flagged 13 tables in jvkn's `public`/`shell_control` schemas as hygiene debt: a deny-shaped RLS policy (`qual=false`) scoped to `roles={public}` instead of `service_role`, no anon/authenticated grant on any of them — inert today, but a footgun if a bare `GRANT` is ever added later without also re-scoping the policy. Independently re-verified live before fixing, not just taken from the check's own comment.
 - `2026_08_27_shell_control_deny_all_scope_service_role.sql` narrows each policy's `roles` to `service_role` + re-asserts the already-absent `REVOKE`. Applied to live jvkn (Royce's explicit go); first attempt failed cleanly on one table's differently-named policy (`public.revoked_agent_tokens` is `service_role_only`, not `deny_all` like the other 12), fixed and re-applied successfully — see `supabase/CONTROL-PLANE-LEDGER.md`'s 2026-08-27 entry for full detail.
