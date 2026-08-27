@@ -19,10 +19,9 @@ from a prior read without re-checking.
 
 **The short version, as of this pass: everything is fixed, merged, and live —
 including CHECK 11, which this doc spent a whole section on as an open architecture
-question two passes ago. Two small things remain, neither a design question anymore:
-one manual credential step to finish the eq-cards half of the cross-repo gap, and one
-~15-minute live test to prove CHECK 7's new exception logic actually catches a real
-violation (only simulated so far). Both scoped below.**
+question two passes ago, and the CHECK 7 live test (§ below), now actually run on
+Royce's go with a clean, fully-closed-loop result. One thing remains: a manual
+credential step to finish the eq-cards half of the cross-repo gap.**
 
 ---
 
@@ -46,30 +45,30 @@ that calls it — is still open, blocked on:
 4. After a burn-in period with no false positives, revisit promoting it into eq-cards'
    required-checks list — deliberately advisory-only on day one, Royce's call.
 
-### 2. Prove CHECK 7's reviewed-exception logic against a real live violation
+### ~~2. Prove CHECK 7's reviewed-exception logic against a real live violation~~ — DONE
 
-`VIEW_INVOKER_REVIEWED_DEFINER` (the content-verified exception PR #1642 added — full
-history in §B) has only ever been exercised two ways: a standalone Node simulation,
-and the two legitimate entries it was built for (`app_data.field_managers`,
-`app_data.field_people_directory`, both currently passing). It's never actually caught
-a real violation in live CI. Read the mechanism directly
-(`check-tenant-drift.mjs`, `VIEW_INVOKER_REVIEWED_DEFINER` + `checkViewInvoker`) to
-scope this precisely: an entry is keyed by exact view name and requires (a) the live
-`pg_get_viewdef` output to contain `requiredWhereFragment`, (b) none of
-`forbiddenGrantees` to hold a grant, checked fresh via `mgmtRows` on every run — not a
-one-time snapshot.
+Royce's explicit go to actually run the test this section had scoped. Created a
+disposable scratch view, `public.zz_scratch_check7_livetest` (`SELECT 1`, no
+`security_invoker`, granted to `authenticated`), on `zaap` via Supabase MCP
+`execute_sql` — not `field_managers`/`field_people_directory` themselves, which are
+live and load-bearing; a genuinely throwaway object instead. Manually dispatched
+`tenant-drift.yml` (it supports `workflow_dispatch`) rather than reasoning about it in
+the abstract:
 
-**Don't test this against the two real entries** — `field_managers`/`field_people_
-directory` are live, load-bearing views for Field's actual supervisor picker;
-temporarily breaking them to prove a CI check works is not a reasonable trade.
-Pending.md's own scoping is the right shape: create a disposable **scratch** view
-(not touching the real two) on a non-production project, give it `security_invoker=
-false` with no matching `VIEW_INVOKER_REVIEWED_DEFINER` entry, confirm CHECK 7 fails
-with the expected reason, drop it. `zaap` (EQ tenant) is the natural candidate — it's
-already documented elsewhere in this repo's own memory as disposable demo data, not
-live, unlike `ehow`/SKS. ~15 minutes. Not attempted this pass — creating even a scratch
-object on a live Supabase project is a real action, flagging it rather than doing it
-unprompted.
+- **Correctly failed**: `public.zz_scratch_check7_livetest reloptions=NONE` flagged on
+  the EQ tenant.
+- **Correctly discriminated**: the same run's SKS-tenant output shows both real
+  entries still passing — "2 reviewed exception(s), content-verified this run:
+  app_data.field_managers, app_data.field_people_directory." Proves the logic
+  distinguishes a real violation from a legitimate exception in the same live run, not
+  just that CHECK 7 still fires in general.
+- **Bonus, unplanned**: the issue-filer (§A/PR #1639) fired for real too, opening
+  [#1649](https://github.com/eq-solutions/eq-shell/issues/1649) — incidentally
+  exercises that fix's own still-open verification item for CHECK 7 specifically
+  (CHECK 6/8/9/12/13/14 remain unproven against a real violation, lower priority now).
+- **Cleanup verified, not assumed**: dropped the scratch view, re-dispatched, clean
+  pass, issue auto-closed itself ("Drift check passed — all violations resolved") with
+  no manual intervention. Nothing left behind on `zaap`, no lingering GitHub issue.
 
 ---
 
@@ -89,6 +88,7 @@ unprompted.
 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reached the auto-filed issue (§A) | Built and **merged** — [PR #1639](https://github.com/eq-solutions/eq-shell/pull/1639) (`70712a97`) |
 | `app_data.field_managers` tripped CHECK 7 repo-wide, `security_invoker=false` (§B) | Root-caused as a deliberate reviewed eq-field fix, not drift — see §B |
 | CHECK 7 had no allow-list mechanism for a legitimate reviewed exception | Fixed — [PR #1642](https://github.com/eq-solutions/eq-shell/pull/1642) (`bd0127ed`), content-verified not a bare name-match |
+| CHECK 7's exception logic never proven against a real live violation | Live-tested on `zaap`, clean pass + clean teardown — see "What's left" §2 |
 | Cross-repo consumer-check gap — architecture decided, jvkn-plane check built | Decided + built — [PR #1638](https://github.com/eq-solutions/eq-shell/pull/1638) (`7771026b`), merged. eq-cards half still open — see "What's left" #1 |
 | CHECK 11 — jvkn migration-identity, blocked on "jvkn has no ledger" (§C) | Blocker fixed ([PR #1641](https://github.com/eq-solutions/eq-shell/pull/1641)) then the check itself built — [PR #1646](https://github.com/eq-solutions/eq-shell/pull/1646) (`fbc7b85e`), merged |
 
