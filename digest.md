@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-27 09:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-27 09:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-27 09:27 UTC → 2026-08-27 09:30 UTC)
+## Since last refresh (2026-08-27 09:30 UTC → 2026-08-27 09:36 UTC)
 
-- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
-- Merged: eq-shell [#1625](https://github.com/eq-solutions/eq-shell/pull/1625) fix(security): stop staff-active drift sweep from logging ou
-- Merged: eq-shell [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drif
-- Merged: eq-shell [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths
-- Merged: eq-shell [#1617](https://github.com/eq-solutions/eq-shell/pull/1617) feat(access-control): per-person sidebar visibility scope
-- Merged: eq-shell [#1615](https://github.com/eq-solutions/eq-shell/pull/1615) feat(auth): collapse deactivated & expired self-join links b
-- Merged: eq-shell [#1613](https://github.com/eq-solutions/eq-shell/pull/1613) fix(cards-api): derive isProd from request Host, not process
-- Merged: eq-shell [#1610](https://github.com/eq-solutions/eq-shell/pull/1610) fix(auth): stop offering Delete on self-join links that have
+- Merged: eq-shell [#1639](https://github.com/eq-solutions/eq-shell/pull/1639) fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check se
+- Merged: eq-shell [#1638](https://github.com/eq-solutions/eq-shell/pull/1638) feat(ci): jvkn control-plane checks as a reusable workflow
+- Merged: eq-shell [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module 
+- Merged: eq-shell [#1629](https://github.com/eq-solutions/eq-shell/pull/1629) chore(drift): allowlist eq_cards_admin_sync_tenant_access — 
+- Merged: eq-shell [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_r
+- Merged: eq-shell [#1621](https://github.com/eq-solutions/eq-shell/pull/1621) feat(identity): sync EQ Field roster removal/re-add to Shell
+- Merged: eq-shell [#1618](https://github.com/eq-solutions/eq-shell/pull/1618) fix(security): restore organisations anon bootstrap-read pol
+- Merged: eq-shell [#1616](https://github.com/eq-solutions/eq-shell/pull/1616) fix(auth): thread an already-resolved Cards name into new wo
 
 ## ⚠ Needs you (7)
 
@@ -53,7 +53,7 @@ _…and 233 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 0d |
+| eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 1d ago | 6 | 6d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
@@ -77,6 +77,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-27 | eq-shell | [#1639](https://github.com/eq-solutions/eq-shell/pull/1639) fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check securit |
+| 2026-08-27 | eq-shell | [#1638](https://github.com/eq-solutions/eq-shell/pull/1638) feat(ci): jvkn control-plane checks as a reusable workflow |
 | 2026-08-27 | eq-shell | [#1634](https://github.com/eq-solutions/eq-shell/pull/1634) security(control-plane): scope 13 inert deny_all policies to serv |
 | 2026-08-27 | eq-shell | [#1637](https://github.com/eq-solutions/eq-shell/pull/1637) feat(customers): add/remove project codes on a site |
 | 2026-08-27 | eq-shell | [#1636](https://github.com/eq-solutions/eq-shell/pull/1636) fix(cards): mint-cards-otp returns is_new_user for the Cards sign |
@@ -90,13 +92,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-26 | eq-shell | [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation invariant |
 | 2026-08-26 | eq-shell | [#1631](https://github.com/eq-solutions/eq-shell/pull/1631) fix(documents): drop .msg/.eml from sign-off register's file pick |
 | 2026-08-26 | eq-shell | [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-verif |
-| 2026-08-26 | eq-shell | [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invariants  |
-| 2026-08-26 | eq-shell | [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/0164 are |
 _Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (293 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (292 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (154 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (94 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -196,4 +196,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 09:30 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 09:36 UTC._
