@@ -63,6 +63,10 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #328 feat(ci): advisory jvkn control-plane check via eq-shell's reusable workflow
 
+**eq-field:**
+- #820 v3.5.590 — Timesheets: day-cell clicks now fill the whole broken-up week
+- #819 v3.5.590 — FIX: digest's two most useful sections have shown "nothing" since v3.5.216
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -70,6 +74,10 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1653 feat(nav): unpin Users/Audit log/Security groups/Settings from the Admin sidebar
+- #1651 feat(customers): Field read adapter for site_projects (0288)
 
 ---
 
