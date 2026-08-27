@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1634 MERGED + LIVE — 13 inert jvkn RBAC policies scoped to service_role)
+- Follow-up to PR #1633 (CHECK 14), whose own header comment flagged 13 tables in jvkn's `public`/`shell_control` schemas as hygiene debt: a deny-shaped RLS policy (`qual=false`) scoped to `roles={public}` instead of `service_role`, no anon/authenticated grant on any of them — inert today, but a footgun if a bare `GRANT` is ever added later without also re-scoping the policy. Independently re-verified live before fixing, not just taken from the check's own comment.
+- `2026_08_27_shell_control_deny_all_scope_service_role.sql` narrows each policy's `roles` to `service_role` + re-asserts the already-absent `REVOKE`. Applied to live jvkn (Royce's explicit go); first attempt failed cleanly on one table's differently-named policy (`public.revoked_agent_tokens` is `service_role_only`, not `deny_all` like the other 12), fixed and re-applied successfully — see `supabase/CONTROL-PLANE-LEDGER.md`'s 2026-08-27 entry for full detail.
+- [PR #1634](https://github.com/eq-solutions/eq-shell/pull/1634), squash-merged (`fb7d9c9f`). No app code touched (migration + ledger doc only) — nothing observable to click-test on core.eq.solutions.
+
 ## 2026-08-27 (PR #1632 MERGED + LIVE — closed PR #1629's own open verification caveat)
 - `KNOWN_UNSOURCED` allowlist entry for `eq_cards_admin_sync_tenant_access` in `check-control-plane-drift.mjs` had shipped (PR #1629) with an explicit caveat: not independently re-verified against a live `pg_get_functiondef` body/grant diff, no Supabase MCP access at the time. Verified live against jvkn (body byte-for-byte identical to the eq-cards migration file bar cosmetic normalisation; grants exactly `postgres`+`service_role`, no anon/authenticated) and updated the comment accordingly.
 - [PR #1632](https://github.com/eq-solutions/eq-shell/pull/1632), squash-merged (`3514c264`) on explicit instruction, live-deploy confirmed via commit-ancestry against the newest production deploy.

@@ -12696,3 +12696,17 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 - [x] **Two real but unrelated gaps found in the SKS canonical roster write path along the way, deliberately not fixed here** — see `eq/pending/eq-field.md`'s 2026-08-26 entry for the two open follow-ups this spawned.
 
 ---
+
+## eq-shell: 13 inert jvkn RBAC policies tightened to service_role — found, fixed, applied live, merged (2026-08-27) (fully closed 2026-08-27)
+*Follow-up to eq-shell PR #1633 (CHECK 14), whose own shipped header comment named 13 jvkn tables as hygiene debt without fixing them ("flagged to Royce separately, out of scope for what this check tests").*
+
+- [x] **Finding, independently re-verified live before acting on the check's own comment**: 13 tables in `public`/`shell_control` on jvkn carried a deny-shaped RLS policy (`qual=false`, `with_check=false`) scoped to `roles={public}` instead of `service_role`, with no anon/authenticated grant on any of them — inert today (Postgres rejects the query on the missing grant before RLS runs), but a footgun: a future bare `GRANT` "fixing a permission error" wouldn't itself open anything, but the `roles={public}` framing invites widening the policy's *condition* too, once someone discovers the grant alone didn't work. Confirmed via `pg_policies`, `role_table_grants`, `get_advisors`, and a full `src/` grep (zero browser-side references) — three of the thirteen sit close to credential-reset/privilege-escalation logic (`pin_reset_tokens`, `tenant_role_overrides`, `security_group_perms`).
+- [x] **Fixed**: `2026_08_27_shell_control_deny_all_scope_service_role.sql` narrows each policy's `roles` to `service_role` + defensive re-`REVOKE` of the already-absent grant. eq-shell [PR #1634](https://github.com/eq-solutions/eq-shell/pull/1634).
+- [x] **Ran `/decide` on "apply live now vs. wait"** before touching production — recommended waiting (confirmed inert, no urgency, auth-adjacent tables need Royce's explicit call per non-negotiable #6). Royce gave the go same session.
+- [x] **First live apply attempt failed and rolled back cleanly, caught before any further action.** Assumed the deny-shaped policy was named `deny_all` on all 13 (true for 12) — `public.revoked_agent_tokens`'s equivalent policy is actually named `service_role_only`, a fact the very query used to build the table list had already shown correctly, just over-generalized when writing the migration. Postgres rejected the statement (`42704`) and rolled back the whole transaction; verified live immediately after that nothing had partially applied. Fixed the one policy name and re-applied successfully.
+- [x] **Applied live to jvkn** via Supabase MCP, post-apply verified: all 13 tables now `roles={service_role}`, grants unchanged (still only `postgres`/`service_role`). PR #1634 squash-merged (`fb7d9c9f`) same session — no app code touched (migration + ledger doc only), so the resulting auto-deploy had nothing observable to click-test.
+
+**Notes:**
+- The failed-apply incident is a good general caution, kept in the eq-shell `CONTROL-PLANE-LEDGER.md` changelog and this repo's own memory rather than duplicated as a standalone lesson here: when relying on a field's value across many rows of a live query result to write DDL, check every row, not a representative sample — one differently-named policy among a dozen identical ones is exactly what a pattern-matched generalization misses.
+
+---
