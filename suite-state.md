@@ -72,10 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1642 fix(drift-guard): CHECK 7 content-verified exception for app_data.field_managers
 - #1641 feat(ci): governed apply path for jvkn control-plane migrations
-- #1639 fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check security-issue filer
-- #1638 feat(ci): jvkn control-plane checks as a reusable workflow
 - #1635 feat(documents): convert uploads to PDF at commit time (migration 0287)
 
 ---
