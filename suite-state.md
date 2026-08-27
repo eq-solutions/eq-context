@@ -60,6 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-27)
 
+**eq-field:**
+- #822 v3.5.592 — feat: show Core's per-site project/module codes on Sites + My Schedule
+- #821 v3.5.592 — FIX: site contact info silently dead since v3.5.551
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -69,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1654 fix(data): resolve 4 more divergent staff/shell login names
 - #1651 feat(customers): Field read adapter for site_projects (0288)
 
 ---
