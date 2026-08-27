@@ -63,9 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #328 feat(ci): advisory jvkn control-plane check via eq-shell's reusable workflow
 
-**eq-field:**
-- #817 fix(field): widen field_people_directory to include phone+email
-
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -73,6 +70,10 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1646 feat(drift-guard): CHECK 11 — migration identity for jvkn control plane
+- #1645 feat(documents): multi-select checkboxes for the person push picker
 
 ---
 
