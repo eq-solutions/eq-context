@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Multi-tenant Shell-login guard + roster-removal cascade — both closed, live (2026-08-27)
+*Investigation kicked off by a direct question: does the 15-minute staff-active drift cron correctly handle a worker on two tenants' rosters before revoking their Shell login, or does it fire on ANY single tenant going inactive? It fired on any.*
+
+- [x] **Root cause confirmed live**: both `scripts/check-shell-staff-active-drift.mjs` (cron) and `entity-patch.ts`'s synchronous sync block deactivated the GLOBAL `shell_control.users.active` flag off a single tenant's `app_data.staff.active=false`, with no check for whether the same `user_id` was still active on another tenant. Verified via direct code read against `origin/main`, not inferred from docs.
+- [x] **Fixed**: cron reuses its own existing `activeStaffForUsersSql()` (already used by its reverse check) to verify "inactive on both planes" before remediating, failing closed on a guard-query error; `entity-patch.ts` gets a same-plane guard (cheap, reuses the connection already open), with cross-plane conflicts still caught by the existing reverse check within 15 minutes. `pnpm exec tsc -b` clean, `pnpm test` 453/455 pass (2 pre-existing skips). eq-shell [PR #1625](https://github.com/eq-solutions/eq-shell/pull/1625), merged by Royce, live (`9cf0aeec`, 2026-08-26 19:32 UTC).
+- [x] **`entity-patch.ts`'s edit was blocked twice by the Claude Code auto-mode safety classifier** (not this repo's own `eq-guard` hook) — including a no-op comment revert, no reason given beyond "blocked by classifier." Not routed around (no Write-instead-of-Edit, no smaller-chunk workaround); flagged to Royce, who said retry — the identical edit went through clean both times next turn.
+- [x] **Merge separately blocked by an unrelated pre-existing failure**: eq-shell's required "Schema drift + anon-grant + policy-lint" check was red on `main` itself — `public.eq_cards_admin_sync_tenant_access` (PR #1621's companion RPC, "shipping separately" per its own PR text) was live on jvkn with no committed migration file, failing every PR against main. Root-caused as eq-cards-owned, not eq-shell's — closed via allowlisting (`KNOWN_UNSOURCED`) rather than a duplicate migration. eq-shell [PR #1629](https://github.com/eq-solutions/eq-shell/pull/1629) + follow-up verification [PR #1632](https://github.com/eq-solutions/eq-shell/pull/1632).
+- [x] **Sibling gap also closed**: PR #1621's roster-removal→tenant-access sync trigger (migration 0285) was dispatched to ehow but the `field_identity_push_secret` vault secret it needs was missing on zaap, silently no-oping (fails closed, not an error) for EQ-tenant workers. Royce provisioned it directly (Supabase Vault's own reveal-on-ehow → copy-to-zaap, not via Netlify's write-only env var) — confirmed via a `vault.secrets` existence check on zaap (name/timestamp only; the value itself was never read by any Claude session).
+
+**Deferred:**
+- [ ] **Not click-tested live by a person** — every verification here was automated (`tsc -b`, `pnpm test`, direct DB queries) or code-level, never an actual live roster-removal on a real multi-tenant worker. Worth a real pass next time one exists: remove a multi-tenant worker from one tenant's roster, confirm their Shell login survives; separately confirm a zaap/EQ-tenant roster removal now actually reaches `org_memberships`/`org_access_requests` end-to-end (only the vault secret's *existence* was confirmed just now, not a live push). _(added 2026-08-27)_
+
+---
+
 ## eq-shell: HEIC licence-photo uploads — built, merged, live (2026-08-27)
 *Royce: uploading Aiden Crowley's ID + White Card from an iPhone `.heic` photo — both hit a hard rejection. Reframed mid-session from an assumed "profile photo" feature to the existing Photo ID/White Card licence types on the Staff page — no new feature needed, just the file format.*
 
