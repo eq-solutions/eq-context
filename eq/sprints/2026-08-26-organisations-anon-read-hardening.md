@@ -17,37 +17,41 @@ live GitHub state and the current `check-tenant-drift.mjs`/`tenant-drift.yml` on
 drew an unusually large number of concurrent sessions), so nothing here is trusted
 from a prior read without re-checking.
 
-**The short version, as of this pass (still 2026-08-28 — Royce came back the same day
-with an explicit go to actually execute what the previous pass had only scoped): the
-core incident is fully closed, and so is the live-testing item. Royce authorized "run
-all 5 now" — CHECK 6/9/12/13/14 all live-tested against real scratch violations the
-same way CHECK 7 was, all 5 correctly flagged, all 5 cleaned up and re-verified clean.
-Two tail items remain, neither blocking anything: the eq-cards credential step (needs
-Royce's own GitHub access, explained plainly in #1 below), and eq-cards' own jvkn
-migrations still having no governed apply path (3 shapes scoped, Royce's call, #4
-below).**
+**The short version, as of this pass (still 2026-08-28 — Royce came back twice more
+the same day, first with an explicit go to run the live tests, then to finish the
+credential step himself): the core incident is fully closed, the live-testing item is
+fully closed, and the cross-repo consumer-check gap is now fully closed end-to-end.
+Only one tail item remains, not blocking anything: eq-cards' own jvkn migrations still
+have no governed apply path (3 shapes scoped, Royce's call — §4 below).**
 
 ---
 
 ## What's left
 
-### 1. Mint `EQ_SHELL_CHECKOUT_TOKEN` + add 2 secrets to eq-cards, then merge eq-cards#328
+### ~~1. Mint `EQ_SHELL_CHECKOUT_TOKEN` + add 2 secrets to eq-cards, then merge eq-cards#328~~ — DONE
 
-The only remaining piece of the cross-repo consumer-check gap (full history in §A
-below). [eq-shell#1638](https://github.com/eq-solutions/eq-shell/pull/1638) — the
-reusable `jvkn-control-plane-check.yml` — is merged and live.
-[eq-cards#328](https://github.com/eq-solutions/eq-cards/pull/328) — the advisory job
-that calls it — is still open, blocked on:
+The last piece of the cross-repo consumer-check gap (full history in §A below).
+Royce minted the fine-grained PAT (`EQ_SHELL_CHECKOUT_TOKEN`, Contents: Read-only,
+scoped to `eq-solutions/eq-shell` only — GitHub has no API for this, had to be done
+by hand in the GitHub UI) and added it plus `CONTROL_PROJECT_REF` as secrets on
+eq-cards, confirmed live via `gh secret list` (both added 2026-08-27, ~18:42-43 UTC).
 
-1. A new fine-grained PAT (`EQ_SHELL_CHECKOUT_TOKEN`, Contents: Read-only, scoped to
-   `eq-solutions/eq-shell` only) for the checkout step that fetches
-   `check-tenant-drift.mjs` — GitHub has no create-fine-grained-PAT API endpoint, so
-   this is a manual step in the GitHub UI, not something a session can do.
-2. Adding that PAT + `CONTROL_PROJECT_REF` as secrets on eq-cards (`SUPABASE_ACCESS_
-   TOKEN` already exists there).
-3. Merging eq-cards#328 once both secrets exist.
-4. After a burn-in period with no false positives, revisit promoting it into eq-cards'
-   required-checks list — deliberately advisory-only on day one, Royce's call.
+The PR's own original CI run predated both secrets and came back a `startup_failure`
+that GitHub refuses to retry — pushed an empty commit to `feat/jvkn-control-plane-
+check-advisory` to force a fresh `pull_request` run instead. That run came back clean
+across all 4 jobs, including the new one:
+**`jvkn control-plane checks (advisory)` — success** — confirms the whole mechanism
+end-to-end, not just that the secrets exist: the PAT actually checked out eq-shell's
+private repo, ran the jvkn-scoped checks (2/6/7/8/10/12/13/14) against eq-cards' own
+footprint, found nothing (expected — the CHECK 6/9/12/13/14 scratch objects from §2
+were already cleaned up by this point), and reported success cleanly.
+
+Merged: [eq-cards#328](https://github.com/eq-solutions/eq-cards/pull/328)
+(`23abf7a3`), squash, branch deleted.
+
+**Not done, not urgent, Royce's call for later**: after a burn-in period with no
+false positives, promote this from advisory into eq-cards' required-checks list.
+Deliberately advisory-only on day one — no reason to revisit yet.
 
 ### ~~2. Prove the other 6 newly-wired checks against real live violations~~ — 5 of 6 DONE
 
@@ -185,7 +189,7 @@ security-relevant change, only that the record-keeping can't currently prove eit
 | CHECK 7 had no allow-list mechanism for a legitimate reviewed exception | Fixed — [PR #1642](https://github.com/eq-solutions/eq-shell/pull/1642) (`bd0127ed`), content-verified not a bare name-match |
 | CHECK 7's exception logic never proven against a real live violation | Live-tested on `zaap`, clean pass + clean teardown — see "What's left" §3 |
 | CHECK 6/9/12/13/14 never proven against a real live violation | Live-tested on `zaap` + jvkn, all 5 correctly flagged, clean pass + clean teardown — see "What's left" §2. CHECK 8 confirmed not safely testable this way (see same section) |
-| Cross-repo consumer-check gap — architecture decided, jvkn-plane check built | Decided + built — [PR #1638](https://github.com/eq-solutions/eq-shell/pull/1638) (`7771026b`), merged. eq-cards half still open — see "What's left" #1 |
+| Cross-repo consumer-check gap — architecture decided, jvkn-plane check built, eq-cards half wired up | Fully closed — [PR #1638](https://github.com/eq-solutions/eq-shell/pull/1638) (`7771026b`) + [eq-cards#328](https://github.com/eq-solutions/eq-cards/pull/328) (`23abf7a3`), both merged, live-confirmed end-to-end (not just secrets-present) — see "What's left" §1 |
 | CHECK 11 — jvkn migration-identity, blocked on "jvkn has no ledger" (§C) | Blocker fixed ([PR #1641](https://github.com/eq-solutions/eq-shell/pull/1641)) then the check itself built — [PR #1646](https://github.com/eq-solutions/eq-shell/pull/1646) (`fbc7b85e`), merged |
 
 `scripts/check-tenant-drift.mjs` is no longer being actively edited by anyone as of
