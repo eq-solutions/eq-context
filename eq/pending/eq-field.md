@@ -123,7 +123,8 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 ---
 
-## eq-field: Edit Roster speed — Feature Toggles, keyboard/paste Tiers 1+2, then a still-open Ctrl+Enter regression (2026-08-25)
+## eq-field: Edit Roster speed — Feature Toggles, keyboard/paste Tiers 1+2 (2026-08-25)
+*Header corrected 2026-08-27: used to end "...then a still-open Ctrl+Enter regression" — stale, never updated after the regression was fixed. Full write-up: `eq/changelog/eq-field.md` (PR #805, v3.5.582, 2026-08-26) and `sessions/2026-08-26.md`.*
 
 - [ ] **`/decide` pass: recommended making "Copy Last Week" (already built, empty-cells-only, non-destructive) the default first move every week**, ahead of any manual typing or further keyboard/paste tooling — a bigger lever than per-cell speed if week-to-week site assignment is genuinely stable, which real screenshot evidence suggests but wasn't directly confirmed (no two consecutive real weeks were diffed). Not yet confirmed or actioned by Royce. _(added 2026-08-25)_
 - [ ] **Dedicated "Fill week" button (Ctrl+Enter backup insurance) — proposed, held.** Raised as a keyboard-only fallback in case Ctrl+Enter broke again; Royce's call was to hold since Tab already fills a row without touching the mouse. Only worth building if Tab/paste turn out insufficient in real use. _(added 2026-08-26)_
@@ -1017,7 +1018,6 @@ Items when triggered:
 
 ## eq-field: SKS canonical roster write/sync gaps found during the Ctrl+Enter fix (2026-08-26)
 
-- [ ] **SKS roster saves never get a real database id back from reads**, so every save always does a full week rewrite instead of a targeted one-cell update — harmless today, but means the "someone else is editing this" conflict warning can never fire for SKS. `task_867a4c80`. Full write-up: `eq/changelog/eq-field.md` 2026-08-26 (eq-field PR #805). _(added 2026-08-26)_
-- [ ] **Live cross-supervisor sync is effectively broken for SKS's roster specifically** — two people editing the roster at once won't see each other's changes until the next 30-second refresh, not live. `task_10ff7138`. Same source as above. _(added 2026-08-26)_
+- [ ] **SKS roster saves never get a real database id back from reads**, so every save always does a full week rewrite instead of a targeted one-cell update — harmless today, but means the "someone else is editing this" conflict warning can never fire for SKS. `task_867a4c80`. The realtime half of this same investigation is fixed (PR #809, v3.5.584) but deliberately didn't touch the read path (`roster-adapter.js`'s `toWideList()`) this item needs — re-confirmed live against `origin/main` 2026-08-27, still true. Full write-up: `eq/changelog/eq-field.md` (eq-field PR #805/#809). _(added 2026-08-26)_
 
 ---
