@@ -17,13 +17,15 @@ live GitHub state and the current `check-tenant-drift.mjs`/`tenant-drift.yml` on
 drew an unusually large number of concurrent sessions), so nothing here is trusted
 from a prior read without re-checking.
 
-**The short version, as of this pass (new day — 2026-08-28, activity on this incident
-has settled overnight, nothing moved without this session): the core incident is fully
-closed. Three tail items remain, none blocking anything: the eq-cards credential step
-(unchanged), proving the other 6 wired checks the way CHECK 7 was proven (one of which
-turns out to not be safely testable the same way — see §3), and eq-cards' own jvkn
-migrations still having no governed apply path — now with real numbers behind it, not
-just the suspicion it might be the same shape as eq-shell's own gap.**
+**The short version, as of this pass (still 2026-08-28 — Royce came back the same day
+with an explicit go to actually execute what the previous pass had only scoped): the
+core incident is fully closed, and so is the live-testing item. Royce authorized "run
+all 5 now" — CHECK 6/9/12/13/14 all live-tested against real scratch violations the
+same way CHECK 7 was, all 5 correctly flagged, all 5 cleaned up and re-verified clean.
+Two tail items remain, neither blocking anything: the eq-cards credential step (needs
+Royce's own GitHub access, explained plainly in #1 below), and eq-cards' own jvkn
+migrations still having no governed apply path (3 shapes scoped, Royce's call, #4
+below).**
 
 ---
 
@@ -47,35 +49,48 @@ that calls it — is still open, blocked on:
 4. After a burn-in period with no false positives, revisit promoting it into eq-cards'
    required-checks list — deliberately advisory-only on day one, Royce's call.
 
-### 2. Prove the other 6 newly-wired checks against real live violations
+### ~~2. Prove the other 6 newly-wired checks against real live violations~~ — 5 of 6 DONE
 
-Same motivation as the CHECK 7 test below, extended to CHECK 6/8/9/12/13/14 — only
-simulated so far, per PR #1639's own still-open verification item. Read each check's
-actual live-query logic (`check-tenant-drift.mjs`, current `origin/main`) before
-scoping, rather than assume they're all the same shape as CHECK 7:
+Royce's explicit go ("run all 5 now") to actually execute what this section had only
+scoped. Read each check's exact live-query logic straight from `check-tenant-drift.mjs`
+on current `origin/main` first — not assumed to be the same shape as CHECK 7 — then
+built one scratch object per check, matched precisely to its SQL (e.g. CHECK 6 checks
+`has_function_privilege('anon', …)` specifically, so the grant had to be to `anon`, not
+just `authenticated`; CHECK 13 has no allow-list at all, so a bare table with RLS
+untouched was enough):
 
-| Check | Target | Scratch-test approach |
+| Check | Scratch object | Plane |
 |---|---|---|
-| CHECK 6 (`function_exec`) | anon-reachable SECURITY DEFINER functions | Create a scratch `SECURITY DEFINER` function, grant `EXECUTE` to `anon`/`authenticated`, confirm flagged |
-| CHECK 9 (`stacked_policy`) | 2 differently-worded PERMISSIVE policies on the same table+command | Scratch table, two policies with different `qual` text, both including `authenticated`, confirm flagged (not in `STACKED_POLICY_ALLOW`) |
-| CHECK 12 | same as CHECK 9, jvkn control plane | Same shape, on jvkn instead of a tenant plane |
-| CHECK 13 (`control_plane_rls`) | RLS-on invariant, jvkn, live-enumerated | Scratch table on jvkn, anon/authenticated-reachable, RLS left disabled, confirm flagged |
-| CHECK 14 (`control_plane_isolation`) | tenant/self/org isolation, analog of CHECK 5 | Scratch table with a broad policy missing a tenant/self/org qualifier, confirm flagged |
+| CHECK 6 (`function_exec`) | `zz_scratch_check6_livetest()` — `SECURITY DEFINER`, `EXECUTE` granted to `anon` | zaap |
+| CHECK 9 (`stacked_policy`) | `zz_scratch_check9_livetest` — 2 `SELECT` policies, different `qual` text, both `TO authenticated` | zaap |
+| CHECK 12 | same shape as CHECK 9 | jvkn |
+| CHECK 13 (`control_plane_rls`) | `zz_scratch_check13_livetest` — RLS left disabled | jvkn |
+| CHECK 14 (`control_plane_isolation`) | `zz_scratch_check14_livetest` — reachable (real `GRANT` + an admitting policy) but `USING (true)`, no tenant/self/org/PK-self/`is_platform_admin` key | jvkn |
 
-**CHECK 8 (`column_grants`) is a real exception, not just an unscoped one.** Read its
-source directly: it isn't a general column-grant scanner with an allow-list — it's
-hardcoded to exactly one target, `public.organisations`'s `supabase_url` /
-`supabase_anon_key` / `tenant_id` / `tier` columns on jvkn (the tenant-routing secrets
-stripped out of the anon-readable column set by `2026_07_12b_organisations_anon_
-column_scope.sql`). There's no scratch table to substitute — the check doesn't watch
-anything else. Proving it live would mean actually granting one of those 4 columns to
-`anon` on the real `organisations` table, even briefly — not a reasonable trade for a
-verification exercise. Leave this one simulation-only, or (if ever genuinely needed)
-test in a disposable Supabase project seeded with an identically-named/shaped table,
-not live jvkn.
+All 5 created together, one `workflow_dispatch` of `tenant-drift.yml` (dispatching once
+runs the whole suite — no reason to burn 5 separate CI runs for 5 independent checks
+that all report into the same run). **All 5 correctly flagged**, each under its own
+line with the right table/policy names,
+[issue #1650](https://github.com/eq-solutions/eq-shell/issues/1650) — including one
+bonus catch: CHECK 14's table also tripped the existing anon-grant check (CHECK 2)
+under a separate label for the same physical jvkn database. Expected, not a bug — a
+`USING (true)` policy is by definition an "open policy" to that check too, so two
+independent checks catching the same real gap from different angles is exactly the
+point of running more than one. All 5 objects dropped immediately after confirming,
+`tenant-drift.yml` re-dispatched, confirmed clean and the issue auto-closed itself —
+same clean teardown as CHECK 7's test, nothing left behind on either plane.
 
-Not attempted this pass — same reasoning as CHECK 7 was before Royce's go: live
-Supabase writes, even scratch ones, aren't done unprompted.
+**CHECK 8 (`column_grants`) is a real exception, not just an unscoped one — stays
+simulation-only.** Read its source directly: it isn't a general column-grant scanner
+with an allow-list — it's hardcoded to exactly one target, `public.organisations`'s
+`supabase_url` / `supabase_anon_key` / `tenant_id` / `tier` columns on jvkn (the
+tenant-routing secrets stripped out of the anon-readable column set by
+`2026_07_12b_organisations_anon_column_scope.sql`). There's no scratch table to
+substitute — the check doesn't watch anything else. Proving it live would mean actually
+granting one of those 4 columns to `anon` on the real `organisations` table, even
+briefly — not a reasonable trade for a verification exercise, then or now. Leave this
+one simulation-only, or (if ever genuinely needed) test in a disposable Supabase project
+seeded with an identically-named/shaped table, not live jvkn.
 
 ### ~~3. Prove CHECK 7's reviewed-exception logic against a real live violation~~ — DONE
 
@@ -169,6 +184,7 @@ security-relevant change, only that the record-keeping can't currently prove eit
 | `app_data.field_managers` tripped CHECK 7 repo-wide, `security_invoker=false` (§B) | Root-caused as a deliberate reviewed eq-field fix, not drift — see §B |
 | CHECK 7 had no allow-list mechanism for a legitimate reviewed exception | Fixed — [PR #1642](https://github.com/eq-solutions/eq-shell/pull/1642) (`bd0127ed`), content-verified not a bare name-match |
 | CHECK 7's exception logic never proven against a real live violation | Live-tested on `zaap`, clean pass + clean teardown — see "What's left" §3 |
+| CHECK 6/9/12/13/14 never proven against a real live violation | Live-tested on `zaap` + jvkn, all 5 correctly flagged, clean pass + clean teardown — see "What's left" §2. CHECK 8 confirmed not safely testable this way (see same section) |
 | Cross-repo consumer-check gap — architecture decided, jvkn-plane check built | Decided + built — [PR #1638](https://github.com/eq-solutions/eq-shell/pull/1638) (`7771026b`), merged. eq-cards half still open — see "What's left" #1 |
 | CHECK 11 — jvkn migration-identity, blocked on "jvkn has no ledger" (§C) | Blocker fixed ([PR #1641](https://github.com/eq-solutions/eq-shell/pull/1641)) then the check itself built — [PR #1646](https://github.com/eq-solutions/eq-shell/pull/1646) (`fbc7b85e`), merged |
 
