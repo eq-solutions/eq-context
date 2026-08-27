@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-27 08:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-27 09:27 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-27 08:50 UTC → 2026-08-27 08:53 UTC)
+## Since last refresh (2026-08-27 08:53 UTC → 2026-08-27 09:27 UTC)
 
-- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
-- Merged: eq-shell [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drif
-- Merged: eq-shell [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths
-- Merged: eq-shell [#1617](https://github.com/eq-solutions/eq-shell/pull/1617) feat(access-control): per-person sidebar visibility scope
-- Merged: eq-shell [#1615](https://github.com/eq-solutions/eq-shell/pull/1615) feat(auth): collapse deactivated & expired self-join links b
-- Merged: eq-shell [#1613](https://github.com/eq-solutions/eq-shell/pull/1613) fix(cards-api): derive isProd from request Host, not process
-- Merged: eq-shell [#1610](https://github.com/eq-solutions/eq-shell/pull/1610) fix(auth): stop offering Delete on self-join links that have
-- Merged: eq-shell [#1609](https://github.com/eq-solutions/eq-shell/pull/1609) fix(entity-patch): derive isProd from request Host, not proc
+- Merged: eq-shell [#1629](https://github.com/eq-solutions/eq-shell/pull/1629) chore(drift): allowlist eq_cards_admin_sync_tenant_access — 
+- Merged: eq-shell [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_r
+- Merged: eq-shell [#1621](https://github.com/eq-solutions/eq-shell/pull/1621) feat(identity): sync EQ Field roster removal/re-add to Shell
+- Merged: eq-shell [#1618](https://github.com/eq-solutions/eq-shell/pull/1618) fix(security): restore organisations anon bootstrap-read pol
+- Merged: eq-shell [#1616](https://github.com/eq-solutions/eq-shell/pull/1616) fix(auth): thread an already-resolved Cards name into new wo
+- Merged: eq-shell [#1614](https://github.com/eq-solutions/eq-shell/pull/1614) fix(staff): wrap the licence action row so Remove's confirm 
+- Merged: eq-shell [#1612](https://github.com/eq-solutions/eq-shell/pull/1612) fix(staff): let a manager remove a bad licence from the expi
+- Merged: eq-shell [#1611](https://github.com/eq-solutions/eq-shell/pull/1611) fix(worker-invite): correct misleading email-field caption
 
 ## ⚠ Needs you (7)
 
@@ -31,10 +31,11 @@ _2026-08-27 08:53 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-21.md](sessions/2026-08-21.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-25.md](sessions/2026-08-25.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (243)
+## 🙋 Waiting on you (245)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live by a person** — every verification here was automated (`tsc -b`, `pnpm test`, direct DB queries) or code-level, never an actual live roster-removal on a real multi-tenant worker. Worth a real pass next time one exists: remove a multi-tenant worker from one tenant's roster, confirm their Shell login survives; separately confirm a zaap/EQ-tenant roster removal now actually reaches `org_memberships`/`org_access_requests` end-to-end (only the vault secret's *existence* was confirmed just now, not a live push). _(added 2026-08-27)_
 - **eq-shell** · **Not click-tested live** — no login credentials in this environment. Real test is Staff → Aiden Crowley → Add Licence with his actual ID + White Card `.heic` photos, confirming they preview/OCR/save correctly as JPEG. _(added 2026-08-27)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, live DB queries (jvkn/ehow), and production commit-ancestry, not a real signed-in session creating a fresh Labour Hire/Apprentice/Subcontractor invite end-to-end. Worth a real click-through next time someone invites a non-Employee worker: confirm the Staff record shows the correct employment_type immediately, before the invite is ever claimed. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b`, the access-control preview panel, production deploy-ancestry, and (as of this close) Sharon Maroni's own live `nav_scope` row confirmed correct by direct query (`["customer","site","contact","staff","licence","equipment","field","suppliers"]` — Royce confirmed keep Suppliers) — but nobody has actually signed in as a Simple-mode user and watched the sidebar itself narrow. Worth two minutes next time there's a way to see her session or a test account. _(added 2026-08-26)_
@@ -46,32 +47,17 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live by a person** — every fix this round verified via `pnpm run build` + `tsc -b --force` + production commit-ancestry, not a real signed-in session. Worth a few minutes each: open Access Control → Preview a person for a real Supervisor and confirm the new "what they actually see" block matches the sidebar, and that the grouped/plain-English permission sections and the Group grants/Role overrides line (both added 2026-08-26) read correctly; confirm a non-platform-admin can't see the new grant/revoke control at all; confirm the control actually works end-to-end against a disposable test user, not a real account. _(added 2026-08-25, extended 2026-08-26)_
 - **eq-shell** · **Not click-tested live** — no live SKS credentials in this environment. _(added 2026-08-25)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real click-through on the Staff list: turn Supervisor on for a test person via the pill, confirm the category popover appears, pick one, confirm it saves. _(added 2026-08-25)_
-- **eq-shell** · **None of this round's UI changes have a full click-through beyond what Royce's own screenshots already confirmed** (collapse chevrons, archive-days field existing/saving). The Estimator autocomplete specifically (now sourced from quote history) hasn't been exercised live yet. _(added 2026-08-25)_
-_…and 231 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 233 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 4 | 0d |
 | eq-solves-service | ✓ success | 1d ago | 6 | 6d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 9d ago | 0 | — |
-
-## Live errors (Sentry)
-
-| Project | Error | Events | Last seen |
-|---------|-------|--------|-----------|
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 8 | 2026-08-26 |
-| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 7 | 2026-08-26 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 5 | 2026-08-26 |
-| eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 4 | 2026-08-26 |
-| eq-shell | [Error: Unclaimed worker invites past grace period: 1 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 3 | 2026-08-26 |
-| eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 2 | 2026-08-24 |
-| eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
-| eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-08-20 |
-_[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
@@ -80,6 +66,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-27 | eq-shell | [#1634](https://github.com/eq-solutions/eq-shell/pull/1634) security(control-plane): scope 13 inert deny_all policies to serv |
 | 2026-08-27 | eq-shell | [#1637](https://github.com/eq-solutions/eq-shell/pull/1637) feat(customers): add/remove project codes on a site |
 | 2026-08-27 | eq-shell | [#1636](https://github.com/eq-solutions/eq-shell/pull/1636) fix(cards): mint-cards-otp returns is_new_user for the Cards sign |
+| 2026-08-27 | eq-field | [#811](https://github.com/eq-solutions/eq-field/pull/811) v3.5.585 — Documents to Sign: render inline instead of opening a  |
 | 2026-08-27 | eq-field | [#813](https://github.com/eq-solutions/eq-field/pull/813) fix(field): restore supervisor directory visibility for plain wor |
 | 2026-08-27 | eq-field | [#812](https://github.com/eq-solutions/eq-field/pull/812) v3.5.585 — Roster Presence: re-enable "X is editing" live indicat |
 | 2026-08-27 | eq-field | [#810](https://github.com/eq-solutions/eq-field/pull/810) fix(observability): recognize DOMException/Error-like throwables  |
@@ -91,13 +78,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-26 | eq-shell | [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invariants  |
 | 2026-08-26 | eq-shell | [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/0164 are |
 | 2026-08-26 | eq-shell | [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module codes |
-| 2026-08-26 | eq-shell | [#1625](https://github.com/eq-solutions/eq-shell/pull/1625) fix(security): stop staff-active drift sweep from logging out mul |
-_Showing 15 of 112 · full record in [sessions/](sessions/)_
+_Showing 15 of 111 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (290 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (50 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-shell** (296 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (154 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (94 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -128,8 +114,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1947 | 204 / 91 | 271 | 50 |
-| [eq-cards](eq/pending/eq-cards.md) | 469 | 37 / 16 | 103 | 5 |
+| [eq-shell](eq/pending/eq-shell.md) | 1975 | 209 / 92 | 277 | 50 |
+| [eq-cards](eq/pending/eq-cards.md) | 491 | 39 / 17 | 109 | 5 |
 | [eq-field](eq/pending/eq-field.md) | 1031 | 118 / 41 | 80 | 31 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
@@ -196,4 +182,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 08:53 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 09:27 UTC._
