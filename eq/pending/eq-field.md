@@ -13,6 +13,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: schedule_entries never recorded who edited a roster row (2026-08-27)
+
+- [ ] **Not click-tested through the real Field UI.** The DB-trigger fix (created_by/updated_by now stamped via `app_data.eq__caller_actor_staff_id`, PR #807, merged + deploy-verified live) was confirmed via a direct write test simulating the same JWT claim PostgREST sets per request, not through the actual roster screen — no live SKS Shell session reachable this session. Worth a real Batch Fill edit next time someone's signed in via Core, then a direct query confirming the row's `created_by` matches. Full detail in `eq/changelog/eq-field.md` and `sessions/2026-08-27.md`. _(added 2026-08-27)_
+
+---
+
 ## eq-field: Timesheets Fill Week + Approved column, plus the "OFF ≠ approved leave" display gap (2026-08-27)
 *Royce screenshotted Phoenix Khatri showing "OFF" on Timesheets with no leave approval findable, PDF export of all 43 leave requests attached (none his). Root-caused live: a roster batch-fill (Luke Wheeler, audit-logged), not a leave request — Timesheets renders straight from the roster/schedule cell and never checks `leave_requests` at all. From there, Royce asked for one-pass whole-timesheet fill when a locked leave/TAFE day splits the week. Shipped together as eq-field [PR #808](https://github.com/eq-solutions/eq-field/pull/808) (v3.5.583), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`.*
 
