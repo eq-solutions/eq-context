@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1646 feat(drift-guard): CHECK 11 — migration identity for jvkn control plane
 - #1645 feat(documents): multi-select checkboxes for the person push picker
 
 ---
