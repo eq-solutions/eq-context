@@ -13,6 +13,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28)
+*Royce, live, comparing the Staff page to the Documents Register for the same person: "Why is Mohammed Hussain's name different? Even the capital letters? Should be the same record?" Also asked to speed up the Register's load time.*
+
+- [x] **Root cause confirmed live**: `shell_control.users.id` (jvkn) matched `app_data.staff.user_id` (ehow) exactly for this person — one record, not a duplicate identity. The Register was reading the raw, once-only name capture from invite-acceptance (`shell_control.users.name` = "Mohammed Nabeel HUSSAIN"); Staff reads the curated `app_data.staff` record ("Mohammed"/"Hussain"). Same bug class as [PR #1540](https://github.com/eq-solutions/eq-shell/pull/1540) (2026-08-23, "resolve the 7 divergent staff/shell login names") — this is an 8th case that audit's discovery query missed.
+- [x] **Data fix**: applied the same guarded-UPDATE pattern live to jvkn ("Mohammed Nabeel HUSSAIN" → "Mohammed Hussain"), Royce-confirmed via AskUserQuestion before running it. Audit-trail migration `supabase/migrations/2026_08_28_resolve_hussain_divergent_staff_shell_name.sql`.
+- [x] **Code fix**: `push-document-audience.ts`'s `handleRegister`/`handleCertificate` now resolve signer names STAFF-PREFERRED (`app_data.staff` wins when a matching row exists, `shell_control.users` is the fallback) via a new shared `resolveSignerNames()` helper, so the Register and its certificate PDF can't drift from each other — or from Staff — again, even before the underlying data is individually corrected. `handleOptions`'s push-picker gets the same `parseSurname` cleanup the Staff page already used.
+- [x] **Load-time fix**: `signature_image` (a full base64 PNG data URI, tens of KB) was being selected for EVERY already-signed row on EVERY Register/Templates load, used only if an admin opened that row's evidence modal. Moved to an on-demand `resource=signature-image` fetch, same pattern already established for `resource=document-file`.
+- [x] eq-shell [PR #1652](https://github.com/eq-solutions/eq-shell/pull/1652) — `tsc -b --force` + `eslint` clean on both changed files, merged (squash `224548d6`), confirmed live via Netlify deploy state (`ready`, published 2026-08-27 18:53 UTC) matching the merge commit exactly.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open the Register tab for a tenant with several signed documents, confirm names now match Staff, open one signer's evidence modal, confirm the signature image still loads (now on demand). _(added 2026-08-28)_
+- [x] **Full re-sweep, already run** — spawned as a background task, Royce started it in a separate session while this one was closing. It found 4 more divergent names on ehow (Moahmmed Elsayed, Eric Nguyen, Nelson Sareto — "staff wins", Royce-confirmed per-case same as every prior fix; Amir Farid — NULL fill) and confirmed all 8 prior fixes (#1540 + Hussain) still hold live — 12 confirmed total across 3 discovery passes now. Separately root-caused (not fixed, low urgency) a DIFFERENT bug on zaap: Royce Milmlow's own `app_data.staff.user_id` there points to a `user_id` that resolves to zero rows anywhere on jvkn — a bad-import artifact from the 2026-05-21 Cards bulk-seed, not the name-divergence shape. Full write-up in the `documents-register-signer-name-divergence` memory file.
+- [ ] **eq-shell PR #1654** ("resolve 4 more divergent staff/shell login names") — OPEN, not merged. The live data fixes for the 3 "staff wins" cases + 1 NULL-fill were applied directly (same precedent as this session's Hussain fix); the PR carries the audit-trail migration + doesn't need to block on data correctness, but still needs a merge decision. _(added 2026-08-28)_
+
+---
+
 ## eq-shell: Documents — PDF conversion pipeline + Register refresh fix, both merged live (2026-08-27)
 *Two eq-shell PRs shipped as companions to eq-field's Documents-to-Sign inline-viewer rebuild — full narrative (including the real root-cause bug the two together exposed, and the audience-reach/unlinked-staff findings) lives in `eq/pending/eq-field.md`, 2026-08-27.*
 
