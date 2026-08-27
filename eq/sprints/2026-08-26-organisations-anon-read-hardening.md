@@ -86,7 +86,10 @@ Fully scoped, no design call needed — it's the identical 5-line `jq` pattern
 aren't all identical — `.projects[]` vs `.planes[]` vs a bare `.result` — so each needs
 its own short `jq` filter mirrored off the closest existing one).
 
-**Status: in progress, being built by `eq-shell-2a` (not this session).** Spawned as a
+**Status: built and shipped by `eq-shell-2a`** — eq-shell
+[PR #1639](https://github.com/eq-solutions/eq-shell/pull/1639), same `jq` pattern #1623
+used, extended per-check; all 11 filters tested against a synthetic fixture before
+committing. Open, not yet merged. Spawned as a
 background task (`task_e2eed444`); its resolution turned out messier than the first
 write-up here suggested. `work-wiring-priorities-0150f3-c8` — the session two peer
 sessions independently stood down for, believing it was already building this — was a
@@ -208,7 +211,7 @@ cross-repo implications, not a mechanical fix.
 | 3 | PR #1628 — CHECK 12/13 | **Merged** (`ea3d649a`) | Nothing |
 | 4 | PR #1633 — CHECK 14 | **Merged** (`ef075d5f`) | Nothing |
 | 5 | PR #1634 — 13 inert `deny_all` policies → `service_role` | **Merged + applied live** (`fb7d9c9f`) | Nothing |
-| 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **In progress** (`eq-shell-2a`, after an attribution mix-up — see §1) | Check its outcome |
+| 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **Built, PR #1639 open** (`eq-shell-2a`, after an attribution mix-up — see §1) | Merge when ready |
 | 7 | CHECK 11 — jvkn migration-identity | Scoped, not started | Needs the cutoff/strictness call #1628 already flagged |
 | 8 | Cross-repo consumer-check gap | **Decided, 2 PRs open** (eq-shell#1638, eq-cards#328) | Merge #1638 first, mint `EQ_SHELL_CHECKOUT_TOKEN` + add `CONTROL_PROJECT_REF` on eq-cards, then merge #328 |
 
