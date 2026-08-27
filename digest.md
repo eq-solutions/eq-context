@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-27 10:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-27 10:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-27 10:39 UTC → 2026-08-27 10:44 UTC)
+## Since last refresh (2026-08-27 10:44 UTC → 2026-08-27 10:53 UTC)
 
-- Merged: eq-shell [#1631](https://github.com/eq-solutions/eq-shell/pull/1631) fix(documents): drop .msg/.eml from sign-off register's file
-- Merged: eq-shell [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invari
-- Merged: eq-shell [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/016
-- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
-- Merged: eq-shell [#1625](https://github.com/eq-solutions/eq-shell/pull/1625) fix(security): stop staff-active drift sweep from logging ou
-- Merged: eq-shell [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drif
-- Merged: eq-shell [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths
-- Merged: eq-shell [#1617](https://github.com/eq-solutions/eq-shell/pull/1617) feat(access-control): per-person sidebar visibility scope
+- Merged: eq-shell [#1648](https://github.com/eq-solutions/eq-shell/pull/1648) feat(ci): attribute tenant-plane drift violations to eq-fiel
+- Merged: eq-shell [#1646](https://github.com/eq-solutions/eq-shell/pull/1646) feat(drift-guard): CHECK 11 — migration identity for jvkn co
+- Merged: eq-shell [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation inva
+- Merged: eq-shell [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-
+- Merged: eq-shell [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module 
+- Merged: eq-shell [#1629](https://github.com/eq-solutions/eq-shell/pull/1629) chore(drift): allowlist eq_cards_admin_sync_tenant_access — 
+- Merged: eq-shell [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_r
+- Merged: eq-shell [#1621](https://github.com/eq-solutions/eq-shell/pull/1621) feat(identity): sync EQ Field roster removal/re-add to Shell
 
 ## ⚠ Needs you (7)
 
@@ -53,7 +53,7 @@ _…and 234 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 1d ago | 6 | 6d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
@@ -63,6 +63,8 @@ _…and 234 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-27 | eq-shell | [#1648](https://github.com/eq-solutions/eq-shell/pull/1648) feat(ci): attribute tenant-plane drift violations to eq-field, be |
+| 2026-08-27 | eq-shell | [#1646](https://github.com/eq-solutions/eq-shell/pull/1646) feat(drift-guard): CHECK 11 — migration identity for jvkn control |
 | 2026-08-27 | eq-shell | [#1641](https://github.com/eq-solutions/eq-shell/pull/1641) feat(ci): governed apply path for jvkn control-plane migrations |
 | 2026-08-27 | eq-shell | [#1644](https://github.com/eq-solutions/eq-shell/pull/1644) fix(documents): refresh the Register after a successful upload or |
 | 2026-08-27 | eq-shell | [#1635](https://github.com/eq-solutions/eq-shell/pull/1635) feat(documents): convert uploads to PDF at commit time (migration |
@@ -76,9 +78,7 @@ _…and 234 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | 2026-08-27 | eq-field | [#816](https://github.com/eq-solutions/eq-field/pull/816) v3.5.588 — Documents to Sign: fix the inline viewer never loading |
 | 2026-08-27 | eq-field | [#815](https://github.com/eq-solutions/eq-field/pull/815) v3.5.587 — restore coworker visibility for plain workers (part 2) |
 | 2026-08-27 | eq-field | [#814](https://github.com/eq-solutions/eq-field/pull/814) fix(field): add coworker-safe field_people_directory view (part 1 |
-| 2026-08-27 | eq-field | [#811](https://github.com/eq-solutions/eq-field/pull/811) v3.5.585 — Documents to Sign: render inline instead of opening a  |
-| 2026-08-27 | eq-field | [#813](https://github.com/eq-solutions/eq-field/pull/813) fix(field): restore supervisor directory visibility for plain wor |
-_Showing 15 of 106 · full record in [sessions/](sessions/)_
+_Showing 15 of 105 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -114,9 +114,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1969 | 205 / 93 | 280 | 50 |
+| [eq-shell](eq/pending/eq-shell.md) | 1969 | 206 / 92 | 280 | 50 |
 | [eq-cards](eq/pending/eq-cards.md) | 491 | 39 / 17 | 109 | 5 |
-| [eq-field](eq/pending/eq-field.md) | 1038 | 120 / 41 | 80 | 31 |
+| [eq-field](eq/pending/eq-field.md) | 1037 | 119 / 41 | 80 | 31 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 23 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 14 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -182,4 +182,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 10:44 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-27 10:53 UTC._
