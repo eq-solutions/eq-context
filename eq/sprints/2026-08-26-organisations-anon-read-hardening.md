@@ -19,11 +19,12 @@ nothing here is trusted from a prior read without re-checking.
 **The short version: everything originally scoped is fixed, merged, and (where
 applicable) applied live — including PR #1634, merged and its migration applied to
 jvkn on Royce's explicit go. The issue-filer wiring gap turned out bigger than first
-scoped (7 checks, not 2) and is now being built in a separate session. The cross-repo
-consumer-check gap has a decision and two open PRs now (2026-08-27, this session) —
-Royce picked option 2 (reusable workflow), eq-shell PR #1638 + eq-cards PR #328, not
-yet merged, two manual secrets still needed. One thing is still fully open: CHECK 11's
-design call.**
+scoped (7 checks, not 2) and is now built — PR #1639, open. The cross-repo
+consumer-check gap has a decision and two open PRs now — Royce picked option 2
+(reusable workflow), eq-shell PR #1638 + eq-cards PR #328, not yet merged, two manual
+secrets still needed. One thing is still fully open: CHECK 11 — re-scoped 2026-08-27,
+and it's a deeper architecture question than "pick a cutoff date" (see §2) — jvkn has
+no migration ledger at all for CHECK 11 to diff against, unlike every tenant plane.**
 
 ---
 
@@ -102,18 +103,69 @@ have `eq-shell-2a` build it instead. **Lesson for next time:** a session-name pa
 match plus a plausible timestamp is not a verified collision check — message the peer
 session directly before telling anyone else "already in progress."
 
-### 2. CHECK 11 — jvkn migration-identity (deferred by #1628 itself, not forgotten)
+### 2. CHECK 11 — jvkn migration-identity — re-scoped 2026-08-27, deeper than "pick a cutoff date"
 
-#1628's own PR body explicitly scopes this out: a `CHECK 11` mirroring `CHECK 3`
-(tenant-plane migration-identity, which derives its expected-object list from
-`tenant-migrations/*.sql`) needs a cutoff-date/strictness design call jvkn doesn't have
-yet — jvkn's migrations tree has its own grandfather-cutoff precedent (2026-07-03, per
-`check-tenant-drift.mjs`'s existing comments) that a jvkn-scoped version would need to
-either reuse or deliberately diverge from. Whoever picks this up should read #1628's
-reasoning first and coordinate rather than re-deriving the cutoff question from
-scratch — it's the same file, same author's already-stated open question. Re-verified
-live: still absent from `check-tenant-drift.mjs` (no "CHECK 11" text anywhere in the
-current file) — not quietly built by anyone since.
+#1628's own PR body scoped this as needing "a cutoff-date/strictness design call." Dug
+into it properly this pass (read CHECK 3's actual mechanism end to end, then checked
+live whether jvkn has the thing CHECK 3 depends on) rather than take that framing at
+face value, and the real blocker isn't a date — **jvkn has no equivalent of the thing
+CHECK 3 diffs against.**
+
+**How CHECK 3 actually works** (`check-tenant-drift.mjs` ~line 1027): for each tenant
+plane, it queries `app_data._eq_migrations` (name, checksum, applied_at) and diffs that
+against `supabase/tenant-migrations/*.sql`. Three outputs: `gaps` (repo files never
+applied), `outOfBand` (applied rows matching no repo file — the dangerous direction),
+and `handInserted` (NULL-checksum rows on/after 2026-07-03 — proof of a hand-INSERT,
+since "the runner is the single ledger writer and always stamps a checksum"). The
+2026-07-03 date isn't a strictness dial — it's the day the ledger-integrity sub-check
+was *introduced*; everything hand-inserted before that is grandfathered as known
+history, everything after fails outright.
+
+**Checked live whether jvkn has an equivalent table to diff against — it doesn't.**
+`mcp__supabase__list_tables` against jvkn (`public` + `shell_control`, 60 tables) has
+no `_eq_migrations`, no `migration_baseline`, nothing migration-shaped. This isn't a
+gap in the script — jvkn genuinely has no governed, runner-stamped ledger. The *only*
+place "was migration X applied to jvkn" is recorded at all is
+`supabase/CONTROL-PLANE-LEDGER.md` — a hand-maintained markdown file, not a queryable
+table. That's the same document this whole incident has repeatedly found stale or
+wrong (the 2026-08-23 "confirmed live" claim this sprint's own root PR corrected; the
+0162/0163/0164 mis-attribution PR #1627 corrected). Confirmed jvkn's own migration
+source directory too, while here: `supabase/migrations/*.sql` (not `tenant-migrations`,
+not a "control-plane" name — verified by listing it and finding #1634's and the
+2026-08-26 `organisations_anon_bootstrap_read` restore migration both there).
+
+**So CHECK 11 can't be "port CHECK 3, pick a date" — there's nothing to port it onto.**
+Three real shapes, genuinely different tradeoffs, not decided here:
+
+1. **Live-schema verification (CHECK 13's approach, extended).** Per migration file,
+   verify its expected end-state object(s) exist live in the expected shape — no ledger
+   table needed, matches how CHECK 13 already handles jvkn (RLS, live-enumerated).
+   Needs either fragile SQL-parsing per file, or a hand-maintained manifest mapping
+   file → expected object(s) — a new maintenance burden on every future jvkn migration,
+   the same kind of burden `CONTROL_PLANE_STACKED_POLICY_ALLOW`/CHECK 9's allow-list
+   already carries.
+2. **Ledger-file-as-source-of-truth.** Parse `CONTROL-PLANE-LEDGER.md`'s own ✅/❌
+   column, diff against `supabase/migrations/*.sql`. Directly automates the exact
+   cross-check this session has been doing by hand all day (does the ledger's claim
+   match the repo's file list) — which is appealing, but stakes an ABSOLUTE check's
+   correctness on a hand-maintained markdown doc that has proven unreliable multiple
+   times this same incident. Parsing markdown reliably is also its own fragility.
+3. **Detection-only, narrower scope.** Don't try to prove full parity (which needs a
+   baseline that doesn't exist) — instead, periodically enumerate jvkn's live schema
+   and flag any table/policy/function that doesn't correspond to *any* committed
+   migration file (the `outOfBand` direction only, since that's the direction that's
+   actually caused every incident so far — a missing *apply* is annoying, an
+   *unrecorded* live change is the security-relevant one). Weaker guarantee than a true
+   CHECK 3 port, but the part that's actually been recurring, and needs no manifest.
+
+**This doc's lean, if asked:** option 3. It targets the exact failure mode that's
+happened 4 times now (organisations_anon_bootstrap_read ×3, field_managers as of this
+same day — see pending.md) without inventing a new maintenance burden or trusting a
+document already shown to drift. But this is a real architecture call given the
+tradeoffs above, not a mechanical one — flagging it with the same weight as the
+cross-repo gap got, not deciding it here. Re-verified live: still absent from
+`check-tenant-drift.mjs` (no "CHECK 11" text anywhere in the current file) — not
+quietly built by anyone since #1628.
 
 ### 3. The real gap: nothing stops another repo from re-breaking this — DECIDED 2026-08-27, PRs open
 
@@ -212,7 +264,11 @@ cross-repo implications, not a mechanical fix.
 | 4 | PR #1633 — CHECK 14 | **Merged** (`ef075d5f`) | Nothing |
 | 5 | PR #1634 — 13 inert `deny_all` policies → `service_role` | **Merged + applied live** (`fb7d9c9f`) | Nothing |
 | 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **Built, PR #1639 open** (`eq-shell-2a`, after an attribution mix-up — see §1) | Merge when ready |
-| 7 | CHECK 11 — jvkn migration-identity | Scoped, not started | Needs the cutoff/strictness call #1628 already flagged |
+| 7 | CHECK 11 — jvkn migration-identity | **Re-scoped 2026-08-27** — jvkn has no ledger table to diff against at all, 3 real shapes in §2 | Architecture call, not a cutoff date — this doc leans option 3 (detection-only) |
 | 8 | Cross-repo consumer-check gap | **Decided, 2 PRs open** (eq-shell#1638, eq-cards#328) | Merge #1638 first, mint `EQ_SHELL_CHECKOUT_TOKEN` + add `CONTROL_PROJECT_REF` on eq-cards, then merge #328 |
 
-**What's actually left: #6 (confirm outcome), #7 (design call), #8 (merge + 2 manual secrets).**
+**What's actually left: #6 (merge #1639), #7 (architecture call — 3 options, this doc
+leans option 3), #8 (merge #1638, mint + add 2 secrets, merge #328). Plus, unrelated to
+this incident but found the same day: `app_data.field_managers` tripped CHECK 7
+repo-wide — root-caused (a deliberate reviewed cross-repo fix, not drift) and a
+content-verified exception is being built now — see `eq/pending/eq-shell.md`.**
