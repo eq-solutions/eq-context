@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #820 v3.5.590 — Timesheets: day-cell clicks now fill the whole broken-up week
-- #819 v3.5.590 — FIX: digest's two most useful sections have shown "nothing" since v3.5.216
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
