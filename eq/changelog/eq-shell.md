@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-27 (PR #1632 MERGED + LIVE — closed PR #1629's own open verification caveat)
+- `KNOWN_UNSOURCED` allowlist entry for `eq_cards_admin_sync_tenant_access` in `check-control-plane-drift.mjs` had shipped (PR #1629) with an explicit caveat: not independently re-verified against a live `pg_get_functiondef` body/grant diff, no Supabase MCP access at the time. Verified live against jvkn (body byte-for-byte identical to the eq-cards migration file bar cosmetic normalisation; grants exactly `postgres`+`service_role`, no anon/authenticated) and updated the comment accordingly.
+- [PR #1632](https://github.com/eq-solutions/eq-shell/pull/1632), squash-merged (`3514c264`) on explicit instruction, live-deploy confirmed via commit-ancestry against the newest production deploy.
+
 ## 2026-08-27 (PR #1630 MERGED + LIVE — Sites can now carry multiple project/module codes)
 - New `app_data.site_projects` table (service-role-only, migration `0286`) lets one canonical Site row carry several concurrent project/module codes (e.g. SKS's Telstra SLDC site running MOD10, MOD11...) instead of forking the Site per module. `CustomersPage.tsx`'s Sites table gains a chevron that expands to show a site's codes.
 - Prompted by SKS's Telstra SLDC site (BGIS Pty Ltd) running multiple concurrent modules at one address; decision logged earlier the same day (`ops/decisions.md`, 2026-08-26).
