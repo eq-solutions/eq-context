@@ -2519,3 +2519,8 @@ explicit Royce go-ahead.
 - eq-field [PR #815](https://github.com/eq-solutions/eq-field/pull/815) (v3.5.587), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`.
 - **Not fixed, flagged instead**: a plain worker still won't see a coworker's phone on the roster's tap-to-call or in Recognitions' profile card, and the dashboard's birthdays widget goes blank for them — both need Royce's call on whether those fields belong in the coworker-safe column list. Tracked in `eq/pending/eq-field.md`, additive-only if approved, not urgent.
 - **Not verified**: a live click-through as a real non-manager SKS worker — no live SKS credentials in this environment, and `?tenant=demo` runs fully in-memory so it can't exercise this code path either. Verified at the unit-test + full-audit level (33/33 local tests) instead.
+
+## 2026-08-27 (field_people_directory widened to phone+email)
+- Royce, after reviewing the two column-safety follow-ups above: "widen the column list to include phone and email." `field_people_directory` widened accordingly on both tenants — DOB/emergency-contact/pin/rating/TAFE fields still excluded, the birthdays-widget question is separate and still open.
+- Zero client-code changes needed — every consumer degraded by missing phone/email (roster tap-to-call, Recognitions profile card, batch-fill picker, CSV exports, etc.) already reads through this view per PR #815, so they self-healed the moment the column existed.
+- eq-field [PR #817](https://github.com/eq-solutions/eq-field/pull/817), squash-merged on explicit "merge". Verified via live JWT simulation: 74/74 rows carry phone, 69/74 carry email; `dob` still structurally absent.

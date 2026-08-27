@@ -13,10 +13,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: field_people SEC-33 visibility regression — both parts shipped, 2 column-safety follow-ups open (2026-08-27)
+## eq-field: field_people SEC-33 visibility regression — resolved; 1 optional follow-up open (2026-08-27)
 
-- [ ] **eq-shell's own "View security_invoker" drift/CI gate needed an allowlist update for both `field_managers` and `field_people_directory`** — not an eq-field action item, flagged to two separate concurrent eq-shell sessions same day (one already shipped it as eq-shell PR #1642, confirmed done). No eq-field follow-up needed unless the gate flags something new. _(added 2026-08-27)_
-- [ ] **Column-safety call needed on 2 fields, surfaced by part 2's 42-file consumer audit — read-only display gaps, nothing corrupts, not urgent.** `dashboard.js`'s upcoming-birthdays widget needs `dob_day`/`dob_month` to keep working for non-managers (currently goes blank for them); `roster.js`'s tap-to-call icon and `recognitions.js`'s Person Profile modal both show a coworker's `phone`/`email` (same borderline case the original proposal already flagged — precedent: `field_managers` exposes these to everyone — now with concrete broken UI attached instead of being theoretical). Additive-only if approved (widen `field_people_directory`'s column list), no RLS/security change either way. _(added 2026-08-27)_
+- [ ] **Column-safety call still open on 1 field: `dashboard.js`'s upcoming-birthdays widget needs `dob_day`/`dob_month` to keep working for non-managers** (currently goes blank for them) — read-only display gap, nothing corrupts, not urgent. The companion phone/email question was resolved (Royce: "widen the column list to include phone and email", eq-field PR #817) — this is the one remaining piece. Additive-only if approved (widen `field_people_directory`'s column list further), no RLS/security change either way. _(added 2026-08-27)_
 
 ---
 
