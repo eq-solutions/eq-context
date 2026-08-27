@@ -86,12 +86,18 @@ Fully scoped, no design call needed — it's the identical 5-line `jq` pattern
 aren't all identical — `.projects[]` vs `.planes[]` vs a bare `.result` — so each needs
 its own short `jq` filter mirrored off the closest existing one).
 
-**Status: in progress, not this session's build.** Spawned as a background task
-(`task_e2eed444`). Two separate peer sessions independently proposed building it
-afterward and both stood down after a live collision check (`ListAgents` + `gh pr
-list`, no PR open yet either time) found it already running in
-`work-wiring-priorities-0150f3-c8`. Check that session's outcome before restarting
-this — only pick it back up if it stalled or failed, not as a fresh build.
+**Status: in progress, being built by `eq-shell-2a` (not this session).** Spawned as a
+background task (`task_e2eed444`); its resolution turned out messier than the first
+write-up here suggested. `work-wiring-priorities-0150f3-c8` — the session two peer
+sessions independently stood down for, believing it was already building this — was a
+coincidental name match ("wiring" in both names) that was never actually verified by
+messaging it directly. It confirmed to `eq-shell-2a` it's an unrelated eq-field task.
+`task_e2eed444` genuinely was started by Royce at some point (a `dismiss_task` call
+returned "already started, can't be withdrawn" rather than withdrawing it), but left no
+GitHub trace and its real session couldn't be identified. Asked directly, Royce said to
+have `eq-shell-2a` build it instead. **Lesson for next time:** a session-name pattern
+match plus a plausible timestamp is not a verified collision check — message the peer
+session directly before telling anyone else "already in progress."
 
 ### 2. CHECK 11 — jvkn migration-identity (deferred by #1628 itself, not forgotten)
 
@@ -202,7 +208,7 @@ cross-repo implications, not a mechanical fix.
 | 3 | PR #1628 — CHECK 12/13 | **Merged** (`ea3d649a`) | Nothing |
 | 4 | PR #1633 — CHECK 14 | **Merged** (`ef075d5f`) | Nothing |
 | 5 | PR #1634 — 13 inert `deny_all` policies → `service_role` | **Merged + applied live** (`fb7d9c9f`) | Nothing |
-| 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **In progress** (separate session) | Check its outcome; restart only if stalled/failed |
+| 6 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reach the auto-filed issue | **In progress** (`eq-shell-2a`, after an attribution mix-up — see §1) | Check its outcome |
 | 7 | CHECK 11 — jvkn migration-identity | Scoped, not started | Needs the cutoff/strictness call #1628 already flagged |
 | 8 | Cross-repo consumer-check gap | **Decided, 2 PRs open** (eq-shell#1638, eq-cards#328) | Merge #1638 first, mint `EQ_SHELL_CHECKOUT_TOKEN` + add `CONTROL_PROJECT_REF` on eq-cards, then merge #328 |
 

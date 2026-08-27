@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: repo-wide CI blocker — `app_data.field_managers` view has no `security_invoker`, no migration file (2026-08-27)
+*Reported by a peer session (`documents-to-sign-feature-3035a3-38`) whose own PR (#1635) was blocked by it; independently verified live via `gh pr checks`/`gh run view` before recording here — not taken on the reporting session's word alone.*
+
+- [ ] **Confirmed live and currently blocking every open eq-shell PR.** The required "Schema drift + anon-grant + policy-lint" check fails CHECK 7 (view `security_invoker` invariant, ABSOLUTE, no allow-list) on **both** tenant planes: `app_data.field_managers` has `reloptions=security_invoker=false` on `eq-canonical-internal` (EQ/zaap) and `sks-canonical` (SKS/ehow) — a definer-rights view that bypasses RLS beyond whatever check it re-implements inline. Verified directly via `gh run view --log-failed` on PR #1635's failing run, not just the peer's report. Reported source (not independently verified by this session): migrations `roster_presence_sks` / `field_managers_supervisor_directory_definer`, hand-applied to both tenants at 08:43:57 today with no committed migration file on `origin/main` — if true, this is the same "hand-applied, no file, breaks a same-repo invariant" shape as the `organisations_anon_bootstrap_read` incident below, just CHECK 7 instead of CHECK 10, and a tenant plane instead of the control plane.
+- [ ] **Source not confirmed.** Not this session's work (no migrations, no Supabase MCP calls made this session). One unverified lead passed to the reporting session: peer `eq-field-2a` (live, naming fits EQ Field roster/supervisor territory) — explicitly flagged as an unconfirmed guess, not a verified match, after this session got burned minutes earlier trusting an unverified name-pattern match for an unrelated item (see the wiring-gap attribution correction in the section below).
+- [ ] **Fix is mechanical once the owner is found**: the check itself prints the exact remedy — `ALTER VIEW app_data.field_managers SET (security_invoker = true);` on both planes, plus re-asserting `WITH (security_invoker = true)` in any future `CREATE OR REPLACE VIEW` on it (CORV resets the whole option list, not just changed columns). Whoever owns `field_managers` should also commit the migration file that's apparently missing, per this repo's own One-Pipe governance rule.
+
+---
+
 ## eq-shell: Multi-tenant Shell-login guard + roster-removal cascade — both closed, live (2026-08-27)
 *Investigation kicked off by a direct question: does the 15-minute staff-active drift cron correctly handle a worker on two tenants' rosters before revoking their Shell login, or does it fire on ANY single tenant going inactive? It fired on any.*
 
