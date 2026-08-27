@@ -1,7 +1,7 @@
 ---
 title: Sprint — hardening after the 3rd organisations_anon_bootstrap_read regression
 owner: Royce Milmlow
-last_updated: 2026-08-27
+last_updated: 2026-08-28
 scope: What's left after the 3rd organisations anon-read regression (eq-shell) — sequences in-flight work against what's genuinely still unbuilt, so nothing gets duplicated. Every item live-verified (gh pr view, gh api contents-at-ref against current origin/main, ListAgents) immediately before writing, not restated from pending.md.
 read_priority: high
 status: live
@@ -17,11 +17,13 @@ live GitHub state and the current `check-tenant-drift.mjs`/`tenant-drift.yml` on
 drew an unusually large number of concurrent sessions), so nothing here is trusted
 from a prior read without re-checking.
 
-**The short version, as of this pass: everything is fixed, merged, and live —
-including CHECK 11, which this doc spent a whole section on as an open architecture
-question two passes ago, and the CHECK 7 live test (§ below), now actually run on
-Royce's go with a clean, fully-closed-loop result. One thing remains: a manual
-credential step to finish the eq-cards half of the cross-repo gap.**
+**The short version, as of this pass (new day — 2026-08-28, activity on this incident
+has settled overnight, nothing moved without this session): the core incident is fully
+closed. Three tail items remain, none blocking anything: the eq-cards credential step
+(unchanged), proving the other 6 wired checks the way CHECK 7 was proven (one of which
+turns out to not be safely testable the same way — see §3), and eq-cards' own jvkn
+migrations still having no governed apply path — now with real numbers behind it, not
+just the suspicion it might be the same shape as eq-shell's own gap.**
 
 ---
 
@@ -45,7 +47,37 @@ that calls it — is still open, blocked on:
 4. After a burn-in period with no false positives, revisit promoting it into eq-cards'
    required-checks list — deliberately advisory-only on day one, Royce's call.
 
-### ~~2. Prove CHECK 7's reviewed-exception logic against a real live violation~~ — DONE
+### 2. Prove the other 6 newly-wired checks against real live violations
+
+Same motivation as the CHECK 7 test below, extended to CHECK 6/8/9/12/13/14 — only
+simulated so far, per PR #1639's own still-open verification item. Read each check's
+actual live-query logic (`check-tenant-drift.mjs`, current `origin/main`) before
+scoping, rather than assume they're all the same shape as CHECK 7:
+
+| Check | Target | Scratch-test approach |
+|---|---|---|
+| CHECK 6 (`function_exec`) | anon-reachable SECURITY DEFINER functions | Create a scratch `SECURITY DEFINER` function, grant `EXECUTE` to `anon`/`authenticated`, confirm flagged |
+| CHECK 9 (`stacked_policy`) | 2 differently-worded PERMISSIVE policies on the same table+command | Scratch table, two policies with different `qual` text, both including `authenticated`, confirm flagged (not in `STACKED_POLICY_ALLOW`) |
+| CHECK 12 | same as CHECK 9, jvkn control plane | Same shape, on jvkn instead of a tenant plane |
+| CHECK 13 (`control_plane_rls`) | RLS-on invariant, jvkn, live-enumerated | Scratch table on jvkn, anon/authenticated-reachable, RLS left disabled, confirm flagged |
+| CHECK 14 (`control_plane_isolation`) | tenant/self/org isolation, analog of CHECK 5 | Scratch table with a broad policy missing a tenant/self/org qualifier, confirm flagged |
+
+**CHECK 8 (`column_grants`) is a real exception, not just an unscoped one.** Read its
+source directly: it isn't a general column-grant scanner with an allow-list — it's
+hardcoded to exactly one target, `public.organisations`'s `supabase_url` /
+`supabase_anon_key` / `tenant_id` / `tier` columns on jvkn (the tenant-routing secrets
+stripped out of the anon-readable column set by `2026_07_12b_organisations_anon_
+column_scope.sql`). There's no scratch table to substitute — the check doesn't watch
+anything else. Proving it live would mean actually granting one of those 4 columns to
+`anon` on the real `organisations` table, even briefly — not a reasonable trade for a
+verification exercise. Leave this one simulation-only, or (if ever genuinely needed)
+test in a disposable Supabase project seeded with an identically-named/shaped table,
+not live jvkn.
+
+Not attempted this pass — same reasoning as CHECK 7 was before Royce's go: live
+Supabase writes, even scratch ones, aren't done unprompted.
+
+### ~~3. Prove CHECK 7's reviewed-exception logic against a real live violation~~ — DONE
 
 Royce's explicit go to actually run the test this section had scoped. Created a
 disposable scratch view, `public.zz_scratch_check7_livetest` (`SELECT 1`, no
@@ -64,11 +96,59 @@ the abstract:
   just that CHECK 7 still fires in general.
 - **Bonus, unplanned**: the issue-filer (§A/PR #1639) fired for real too, opening
   [#1649](https://github.com/eq-solutions/eq-shell/issues/1649) — incidentally
-  exercises that fix's own still-open verification item for CHECK 7 specifically
-  (CHECK 6/8/9/12/13/14 remain unproven against a real violation, lower priority now).
+  exercises that fix's own still-open verification item for CHECK 7 specifically. The
+  other 6 wired checks remain unproven this way — scoped in "What's left" #2 above.
 - **Cleanup verified, not assumed**: dropped the scratch view, re-dispatched, clean
   pass, issue auto-closed itself ("Drift check passed — all violations resolved") with
   no manual intervention. Nothing left behind on `zaap`, no lingering GitHub issue.
+
+### 4. eq-cards' own jvkn migrations still have no governed apply path
+
+Noted in passing by another session yesterday; investigated properly this pass rather
+than left as an unquantified suspicion. eq-shell had the identical gap until #1641 —
+worth checking whether eq-cards' is actually the same shape, not just assumed to be.
+
+**eq-cards' own documented process** (`supabase/MIGRATIONS.md`, written 2026-07-02):
+migrations are applied to jvkn manually, one file at a time, via the Supabase MCP
+`apply_migration` — a careful, documented runbook (drift-check the live function body
+first, apply, verify, prefer a rolled-back transaction as a dry run first). `ci.yml`
+only checks migration-*numbering* hygiene (no duplicate `NNNN`); there is no CI step
+that applies anything, by the doc's own admission.
+
+**Checked live whether that manual process is actually keeping the ledger reliable.**
+eq-cards has 161 tracked `.sql` files in `supabase/migrations/`. jvkn's native ledger
+(`supabase_migrations.schema_migrations`) doesn't store the filename verbatim — it
+strips the `.sql` extension, and roughly a third of entries also drop the `NNNN_`
+number prefix (inferred from live samples, e.g. `0161_promote_labour_hire_photo_on_
+claim.sql` → ledger name `promote_labour_hire_photo_on_claim`). Comparing all 161
+files against both naming shapes: **132 matched, 29 did not**, under either
+convention. That's not proof those 29 are missing — a third naming variant used for
+some entries would produce the same false signal, the same caveat CHECK 11's own
+`--strict-identity` flag exists to soften for eq-shell's version of this — but it's a
+concrete, live number where "no governed path" was previously just a category
+statement, and it's the same shape of problem (silently-unreliable ledger) that #1641
+was built to fix for eq-shell.
+
+Three shapes, not decided here — **Royce's call**, same as the cross-repo gap in §D:
+
+1. **eq-cards gets its own runner**, mirroring `migrate-control-plane.mjs`, writing to
+   the SAME shared ledger eq-shell's now uses (`shell_control._eq_control_plane_
+   migrations`). Straightforward to build, but a second copy of near-identical
+   apply-and-stamp logic to keep in sync across two repos.
+2. **eq-cards' migrations route through eq-shell's existing runner** — e.g. eq-cards'
+   CI calls eq-shell's `control-plane-migrate.yml` as a reusable workflow, the same
+   architectural shape Royce already picked for the *check* side of this exact
+   incident (§D, PR #1638). One runner, one ledger, no duplicated logic — the option
+   this doc would lean toward if asked, for the same reason §D's option 2 was leaned
+   toward: the reasoning and the code travel together. Real cross-repo coupling to
+   build, same category of work as §D's still-open eq-cards half.
+3. **Leave the manual process as-is, re-verify periodically** — cheapest, but doesn't
+   change the underlying fact: the ledger this repo would build CHECK-11-for-eq-cards
+   against is exactly as unreliable today as eq-shell's was before #1641.
+
+Not urgent — eq-cards' migration volume against jvkn is low, and nothing found this
+pass indicates any of the 29 unmatched files represent an actual applied-but-unrecorded
+security-relevant change, only that the record-keeping can't currently prove either way.
 
 ---
 
@@ -88,7 +168,7 @@ the abstract:
 | Issue-filer wiring gap — CHECK 6/7/8/9/12/13/14 never reached the auto-filed issue (§A) | Built and **merged** — [PR #1639](https://github.com/eq-solutions/eq-shell/pull/1639) (`70712a97`) |
 | `app_data.field_managers` tripped CHECK 7 repo-wide, `security_invoker=false` (§B) | Root-caused as a deliberate reviewed eq-field fix, not drift — see §B |
 | CHECK 7 had no allow-list mechanism for a legitimate reviewed exception | Fixed — [PR #1642](https://github.com/eq-solutions/eq-shell/pull/1642) (`bd0127ed`), content-verified not a bare name-match |
-| CHECK 7's exception logic never proven against a real live violation | Live-tested on `zaap`, clean pass + clean teardown — see "What's left" §2 |
+| CHECK 7's exception logic never proven against a real live violation | Live-tested on `zaap`, clean pass + clean teardown — see "What's left" §3 |
 | Cross-repo consumer-check gap — architecture decided, jvkn-plane check built | Decided + built — [PR #1638](https://github.com/eq-solutions/eq-shell/pull/1638) (`7771026b`), merged. eq-cards half still open — see "What's left" #1 |
 | CHECK 11 — jvkn migration-identity, blocked on "jvkn has no ledger" (§C) | Blocker fixed ([PR #1641](https://github.com/eq-solutions/eq-shell/pull/1641)) then the check itself built — [PR #1646](https://github.com/eq-solutions/eq-shell/pull/1646) (`fbc7b85e`), merged |
 
