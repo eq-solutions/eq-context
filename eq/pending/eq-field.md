@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Timesheets — day-cell clicks now fill the whole broken-up week too, not just the Fill Week button (2026-08-28)
+*Follow-on to the 2026-08-27 Fill Week entry further down this file — Royce, from the same live screenshot pattern (Aiden Crowley, TAFE on Tuesday): clicking "+Add" on a day cell still only opened a "Mon · 1 day" editor, because Fill Week (v3.5.583) shipped as a separate row button rather than changing what the ordinary cell click itself does.*
+
+- [x] **`_spClickSeg` (`scripts/timesheets-spans.js`) now delegates to the same "every workable day" logic as the Fill Week button** — any day-cell click, not just the dedicated button, opens one popup covering every workable day in the week, skipping locked leave/TAFE days. Verified against the real shipped file via an isolated harness (loaded the actual file, called the exact function the click handler invokes), not just reasoned through: before the fix, clicking Monday next to a Tue-TAFE day returned only `['mon']`; after, `['mon','wed','thu','fri']` with subtitle "Mon, Wed–Fri · 4 days" — identical result whether Monday or the merged Wed–Fri segment is clicked.
+- [x] **Closed a latent bug found along the way**: Fill Week's day-set was hardcoded to Mon–Fri; it now reads the page's own toggle-aware day list, so Sat/Sun no longer silently drop out of the popup when "Show weekends" is on.
+- [x] **Two real snags handled mid-session, not just shipped straight through**: [PR #819](https://github.com/eq-solutions/eq-field/pull/819) (the digest fix below) merged first and had already claimed v3.5.590 — rebased and renumbered to v3.5.591 before merging, re-verifying tests/lint/both drift checks clean afterward. Also hit a transient Netlify/GitHub SSH checkout failure on the first deploy-preview attempt (isolated infra blip, unrelated to the diff — every other deploy that hour succeeded); resolved with a retry commit.
+- eq-field [PR #820](https://github.com/eq-solutions/eq-field/pull/820) (v3.5.591), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`.
+- [ ] **Not click-tested live by a real signed-in supervisor** — same standing sandbox limitation as most entries in this file; `?tenant=demo` resolves to the `eq` sandbox tenant (Core-only, standalone PIN gate confirmed a dead end live, matching this repo's own documented behaviour) and no SKS/Core credentials are reachable here. Verified instead via an isolated harness loading the real shipped file and calling the exact function the click handler invokes. Worth 2 minutes next time someone's signed in via Core with a person whose week is split by leave/TAFE. _(added 2026-08-28)_
+
+---
+
 ## eq-field: Documents to Sign — Schneider handbook "wouldn't load" traced to a silent-forever spinner (2026-08-28)
 *Royce relayed Luke Wheeler's report — he could sign one pushed document but the Schneider Contractor Safety Handbook wouldn't load ("pops open another window rather than preparing it for download"). Live-DB-first, not code-first: the document's own state on ehow was correct (`pdf_status='ready'`, converted PDF present in Storage at the right size) and 4 of Luke's 5 co-signers had already signed it fine — ruled out a data problem before touching code.*
 
