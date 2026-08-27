@@ -60,8 +60,8 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-27)
 
-**eq-cards:**
-- #327 fix(auth): bound Shell handoff verifyOTP, add fallback UI + is_new_user signup signal
+**eq-field:**
+- #811 v3.5.585 — Documents to Sign: render inline instead of opening a raw file
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1637 feat(customers): add/remove project codes on a site
 - #1636 fix(cards): mint-cards-otp returns is_new_user for the Cards signup handoff
 - #1635 feat(documents): convert uploads to PDF at commit time (migration 0287)
 
