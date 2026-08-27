@@ -34,6 +34,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: document sign-off reminder — user-facing control considered, deliberately deferred (2026-08-28)
+
+- [ ] **Not building yet — ran the decision protocol first.** Royce asked whether to give someone control (mute/opt-out/cadence) over the daily sign-off reminder cron (`netlify/functions/scheduled-document-signoff-reminders.ts` — today it has zero toggle, admin or recipient, anywhere). Call: hold off. No TODAY.md goal to weigh it against, and zero reminder cycles have fired yet (first eligible send is 7 days after a push) — nothing has happened yet that a control would actually be answering. Also flagged: a *recipient*-facing opt-out would cut against the feature's own point (a mandatory sign-off nag) — the people most likely to use it are the ones behind on something compliance-relevant. If a real case shows up (someone on long leave, a dispute, an actual complaint), the safe narrow build is an admin-only "stop reminding" toggle per document next to the reminder count already shown in the Register (`AdminDocumentUpload.tsx`'s `reminderSummary()`, migration 0253) — not a recipient-side opt-out. _(added 2026-08-28)_
+
+---
+
 ## eq-shell: Multi-tenant Shell-login guard + roster-removal cascade — both closed, live (2026-08-27)
 *Investigation kicked off by a direct question: does the 15-minute staff-active drift cron correctly handle a worker on two tenants' rosters before revoking their Shell login, or does it fire on ANY single tenant going inactive? It fired on any.*
 
