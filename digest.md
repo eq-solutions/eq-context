@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-28 04:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-28 05:24 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-28 01:12 UTC → 2026-08-28 04:20 UTC)
+## Since last refresh (2026-08-28 04:20 UTC → 2026-08-28 05:24 UTC)
 
-- Merged: eq-shell [#1636](https://github.com/eq-solutions/eq-shell/pull/1636) fix(cards): mint-cards-otp returns is_new_user for the Cards
-- Merged: eq-shell [#1631](https://github.com/eq-solutions/eq-shell/pull/1631) fix(documents): drop .msg/.eml from sign-off register's file
-- Merged: eq-shell [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invari
-- Merged: eq-shell [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/016
-- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
-- Merged: eq-shell [#1625](https://github.com/eq-solutions/eq-shell/pull/1625) fix(security): stop staff-active drift sweep from logging ou
-- Merged: eq-shell [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drif
-- Merged: eq-shell [#1619](https://github.com/eq-solutions/eq-shell/pull/1619) feat(staff): accept HEIC licence photos on both upload paths
+- Merged: eq-shell [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment
+- Merged: eq-shell [#1637](https://github.com/eq-solutions/eq-shell/pull/1637) feat(customers): add/remove project codes on a site
+- Merged: eq-shell [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation inva
+- Merged: eq-shell [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-
+- Merged: eq-shell [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module 
+- Merged: eq-shell [#1629](https://github.com/eq-solutions/eq-shell/pull/1629) chore(drift): allowlist eq_cards_admin_sync_tenant_access — 
+- Merged: eq-shell [#1622](https://github.com/eq-solutions/eq-shell/pull/1622) docs(security): correct stale organisations_anon_bootstrap_r
+- Merged: eq-shell [#1621](https://github.com/eq-solutions/eq-shell/pull/1621) feat(identity): sync EQ Field roster removal/re-add to Shell
 
 ## ⚠ Needs you (9)
 
@@ -33,7 +33,7 @@ _2026-08-28 04:20 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 7d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-26 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (250)
+## 🙋 Waiting on you (251)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -49,7 +49,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no live Shell session/credentials in this environment. Worth a real pass: change a test user's role, confirm a `user.role_changed` row lands in `audit_log`, and (harder to stage) confirm a simulated membership-write failure now returns a real error instead of a false "saved." _(added 2026-08-26)_
 - **eq-shell** · **Mobile Commercials-layout fix not click-tested live** — verified via `tsc -b --force` only; no live session/credentials in this environment, and this repo's local dev tooling is broken under Node 24 (existing memory). Worth a real look next time someone's on `/ops` → New Quote on a phone. _(added 2026-08-26)_
 - **eq-shell** · **S6 — not code.** Neither of the 2026-08-23 sweep's own live fixes (`staff_conversations` write gate, GM Reports direct-API bypass) has been click-tested by a person yet. Whenever convenient, on you or whoever's got a live session. **Click-test steps written and delivered to Royce in chat 2026-08-26** — Fix A (`staff_conversations`): sign in without `staff.manage_conversations`, confirm no write path via the UI *and* via a direct browser-console insert (RLS, not just a hidden button). Fix B (GM Reports): sign in as manager, confirm periods/jobs/invoice-run/forecast screens still load, confirm archive/delete on a report period still works. Still needs an actual person to run it. _(added 2026-08-25)_
-_…and 238 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 239 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -79,6 +79,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-28 | eq-shell | [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment |
 | 2026-08-28 | eq-field | [#821](https://github.com/eq-solutions/eq-field/pull/821) v3.5.592 — FIX: site contact info silently dead since v3.5.551 |
 | 2026-08-28 | eq-field | [#825](https://github.com/eq-solutions/eq-field/pull/825) v3.5.595 — Documents to Sign: report a failed PDF load to Sentry |
 | 2026-08-28 | eq-field | [#824](https://github.com/eq-solutions/eq-field/pull/824) v3.5.594 — Documents to Sign: raw-file fallback for a failed PDF  |
@@ -93,14 +94,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-27 | eq-shell | [#1642](https://github.com/eq-solutions/eq-shell/pull/1642) fix(drift-guard): CHECK 7 content-verified exception for app_data |
 | 2026-08-27 | eq-shell | [#1639](https://github.com/eq-solutions/eq-shell/pull/1639) fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check securit |
 | 2026-08-27 | eq-shell | [#1638](https://github.com/eq-solutions/eq-shell/pull/1638) feat(ci): jvkn control-plane checks as a reusable workflow |
-| 2026-08-27 | eq-shell | [#1634](https://github.com/eq-solutions/eq-shell/pull/1634) security(control-plane): scope 13 inert deny_all policies to serv |
 _Showing 15 of 90 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (294 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (159 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (160 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (98 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -132,7 +132,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 2022 | 203 / 95 | 291 | 55 |
 | [eq-cards](eq/pending/eq-cards.md) | 491 | 39 / 17 | 109 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1068 | 123 / 43 | 87 | 33 |
+| [eq-field](eq/pending/eq-field.md) | 1079 | 123 / 44 | 90 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 24 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 16 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-28 04:20 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-28 05:24 UTC._
