@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-28
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -109,6 +109,23 @@ If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-s
 ---
 
 ## Active (do not touch)
+
+## Recently pruned (2026-08-28 — 8 worktrees, Documents-to-Sign/PDF-viewer cluster, all merged)
+
+Royce asked to clean up 8 named eq-field worktrees for the Documents-to-Sign/PDF-viewer bug cluster, all reported merged days-to-weeks ago and never torn down. Re-verified live rather than trusted: `git worktree list --porcelain` confirmed all 8 paths/branches matched as given. Ancestry check (`merge-base --is-ancestor <branch> origin/main`) came back **NOT-MERGED for all 8** — same squash-merge false-negative this file already documents (line 65 et al.) — so verification used `gh pr list --head <branch> --state all` instead, cross-checked against `git log origin/main --grep "(#<PR>)"` to confirm the squash commit actually landed on `main`. All 8 confirmed MERGED, all 8 working trees clean (`git status --porcelain` empty, no uncommitted work):
+
+- `eq-field/.claude/worktrees/infallible-benz-f958af` — `claude/e-document-loading-issue-67d98a` — [PR #823](https://github.com/eq-solutions/eq-field/pull/823) MERGED, v3.5.593
+- `eq-field/.claude/worktrees/pdf-viewer-loading-state` — `claude/pdf-viewer-loading-state` — [PR #816](https://github.com/eq-solutions/eq-field/pull/816) MERGED, v3.5.588
+- `eq-field-sign-error-detail` — `claude/sign-error-detail-surface` — [PR #746](https://github.com/eq-solutions/eq-field/pull/746) MERGED, v3.5.537
+- `eq-field-drop-office-viewer` — `claude/sign-document-drop-office-viewer-2` — [PR #747](https://github.com/eq-solutions/eq-field/pull/747) MERGED, v3.5.538
+- `eq-field-sign-document-popup-block` — `claude/sign-document-view-popup-fix` — [PR #744](https://github.com/eq-solutions/eq-field/pull/744) MERGED, v3.5.535
+- `eq-field-sign-view-ios-fix` — `claude/sign-document-view-ios-fix` — [PR #745](https://github.com/eq-solutions/eq-field/pull/745) MERGED, v3.5.536
+- `eq-field-document-sign` — `claude/document-sign-token-race-fix` — [PR #740](https://github.com/eq-solutions/eq-field/pull/740) MERGED, v3.5.531
+- `eq-field-document-sign-boot-gate` — `claude/document-sign-boot-gate-fix` — [PR #741](https://github.com/eq-solutions/eq-field/pull/741) MERGED, v3.5.532
+
+7 of 8 worktrees removed cleanly via `git worktree remove`. The 8th (`infallible-benz-f958af`) failed with `Permission denied` deleting the final directory — git had already unregistered it from `worktree list` and cleared its contents (confirmed empty, 0 files), just couldn't rmdir the shell itself; retried twice more, "Device or resource busy" both times — same AV/indexer lock pattern this file already documents (round 3 above). Harmless empty husk, left in place; retry later or after a reboot. All 8 local branches force-deleted (`-D` — the same squash-merge ancestry false-negative above makes plain `-d` refuse these even though every one was independently confirmed merged first). Remote branches: 7 of 8 already gone (squash-merged via this repo's standard `--delete-branch` flow); `claude/document-sign-boot-gate-fix` still existed on origin and was deleted.
+
+**⚠ Bigger finding, not acted on:** live `git worktree list` on eq-field during this sweep showed **31 total registered worktrees**, not 8 — the Active table above was empty (0 rows) despite 23 others sitting live and undocumented, several days to weeks old by branch-naming convention, none logged here. Notable: one checked out directly on `main` (`eq-field-apprentice-scope-race-wt`), one detached HEAD (`documents-to-sign-feature-3035a3`), one outside eq-field's own naming convention entirely (`permission-enforcement-drift-wt`), a handful where the folder name doesn't match the branch name (`phoenix-leave-approval-visibility-14ae9e` → `claude/digest-status-enum-case-fix`; `supervisor-list-population-9e6715` → `claude/multi-project-site-display-1483e9`; `work-wiring-priorities-0150f3` → `claude/leave-app-missing-supervisors-544e7b`), and a detached-HEAD checkout in `C:\Users\EQ\AppData\Local\Temp\ci-repro` outside `C:\Projects` entirely. None of these were touched or verified this session — per this file's own rule (`C:\Projects\CLAUDE.md`: "never edit a worktree that isn't yours"), several are plausibly live concurrent-session work, not drift. Needs its own audit pass (merge status per branch, then confirm with Royce before removing anything) rather than folding into this cleanup.
 
 ## Recently pruned (2026-08-26 — duplicate work, PR closed not merged)
 
