@@ -13,6 +13,24 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: whole-suite backlog sweep + security-hardening sprint started — SEC-35 shipped, SEC-34/SEC-59 blocked on a guard.js bug (2026-08-28)
+*Royce: "create a sprint for all outstanding items" → scoped to the whole EQ suite via `AskUserQuestion`. Then "what should we do now" → "yes" → `/decide` scoped the actual next sprint down to security-hardening only.*
+
+- [x] **Whole-suite backlog swept**: 9 parallel agents read all 11 repos' `eq/pending/*.md` + `ops/security-register.md` + `system/failures.md`, deduplicated to 123 genuinely open items, organised by what's blocking each (your call / ready to build / already decided) since `TODAY.md` has no active goal to prioritise by. Written to `eq-context/sprint-2026-08-28-outstanding-items.md` + published as a filterable HTML board (title "EQ Suite Backlog").
+- [x] **SEC-35 fixed**: 7 `app_data.field_*` views on ehow carried a stray, inert anon SELECT grant; found the same shape on zaap's `field_people` too (register only checked ehow). eq-shell [PR #1657](https://github.com/eq-solutions/eq-shell/pull/1657), dry-run verified live on both planes (begin…rollback, self-verifying). **Open, not merged.**
+- [x] **Register-vs-reality drift confirmed 4 times this session** — worth a dedicated re-verification pass, not chased further now: `eq_archive_estimator` (SEC-43) no longer exists, deleted in migration 0282; `eq_remove_tenant_trade` (SEC-43) already gated in migration 0272; SEC-26's write-side already closed via PR #1371 (only a narrow read-side residual is still open); SEC-7's jvkn remnant (`eq_format_au_mobile`) already has `search_path` pinned, zero live advisory.
+- [x] **SEC-43 correctly NOT touched**: its 7 named RPCs (quote-status + tenant-config functions) were already adjudicated "leave open, all-hands by design" in `ops/authenticated-execute-sweep-2026-08-15.md` §(c) — filed 5 days before SEC-43 itself, which doesn't cross-reference it. Gating these now would reverse a decision that isn't mine to reverse. Flagged for Royce, not built.
+- [x] **SEC-49 correctly NOT touched**: `service.upsert_site_credential` is eq-solves-service's own pipeline, not eq-shell's, and is part of the suppliers/site-credentials feature already flagged elsewhere as broken across all 3 layers pending a design call.
+- [x] **`sprint-2026-08-28-security-hardening.md` created** (eq-context) — the scoped tracker for the security-only slice Royce picked, checkboxed against `sprint-2026-08-28-outstanding-items.md`.
+
+**Deferred:**
+- [ ] **SEC-34 + SEC-59 fully written and dry-run verified live on jvkn, but cannot land** — `guard.js`'s brief-gate is blocking every Write to this repo even though its own flag file check passes (`fs.existsSync` on the exact path the hook itself constructs, confirmed via `Test-Path` immediately before retry — not a stale flag, not a date-boundary issue, both ruled out live). No workaround available from inside the session (`EQ_SKIP_BRIEF=1` is a process env var, not settable from tool calls). The finished migration (SEC-34: scope `shell_control.user_invites` reads to `eq_role='manager'`, matching the existing `admin.invite_user` write-side gate; SEC-59: revoke TRUNCATE from `authenticated` on the 9 named `shell_control` tables) is sitting in this session's scratchpad, not the repo — **a future session needs to re-verify it's still accurate before landing it**, don't blind-copy. See `sessions/2026-08-28.md` Notes for the full guard.js evidence. _(added 2026-08-28)_
+- [ ] **SEC-36 not started** — needs a live read of the 4 zaap tables' actual row shape before a correct `authenticated` policy can be written; also worth checking whether `supabase/migrations/2026_07_11_tender_tables_anon_lockdown.sql` (same table family, filed under the jvkn path despite targeting zaap/ehow) is SEC-58's "one misfiled migration." _(added 2026-08-28)_
+- [ ] **Rest of the security-hardening sprint's ready-to-build queue not started**: SEC-26 residual, SEC-53 (eq-shell half), SEC-58, SEC-67 (eq-shell half), SEC-6 (ownership unconfirmed), SEC-62 (likely eq-context's runbook, not eq-shell's), the 46 remaining same-origin-check gaps, and an audit for more instances of the trigger/view-column bug class beyond customers/sites/assets. Full list: `sprint-2026-08-28-security-hardening.md`. _(added 2026-08-28)_
+- [ ] **Needs Royce's call, security-hardening scope**: SEC-57 (org-wide GitHub App review — still open from earlier this session), SEC-3, SEC-18, SEC-19, SEC-63, SEC-65, SEC-24. Full detail in the sprint doc, not re-listed here. _(added 2026-08-28)_
+
+---
+
 ## eq-shell: Documents — site-scoped pushes and sign-off certificates, built, merged, live (2026-08-28)
 *Royce asked for a push to carry a site (e.g. one EMP pushed separately per Sydney site), with the certificate and Register showing which site.*
 
