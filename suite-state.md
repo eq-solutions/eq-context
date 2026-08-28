@@ -69,6 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1657 fix(security): revoke stray anon SELECT on 7 field_* views (SEC-35)
 - #1654 fix(data): resolve 4 more divergent staff/shell login names
 
 ---
