@@ -234,6 +234,7 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 ## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24)
 
 - [ ] **Only Equinix SY5 has real contact data** (Matthew Miller / Scott Hotson). CA1, SY1, SY2, SY3, SY4, SY9 show nothing yet — needs real names + numbers from Royce, entered via eq-shell's Edit Site modal (`eq/pending/eq-shell.md`, PR #1581) — no migration needed any more. _(added 2026-08-25)_
+- [ ] **Even Equinix SY5's real data was never rendering — a separate code bug, not a data gap.** `index.html`'s boot-time `STATE.sites` mapping never carried the 4 contact fields through from `app_data.field_sites`, so the render function always saw `undefined`. Fixed: eq-field [PR #821](https://github.com/eq-solutions/eq-field/pull/821) (v3.5.596), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`. Not yet click-tested live — both tenants are Core-only for auth (no standalone PIN path), so real tenant data is only reachable through a live Core session, unavailable in this environment; worth a real look at Equinix SY5's card next time someone's signed in via Core. _(added 2026-08-28)_
 
 ---
 
