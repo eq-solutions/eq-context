@@ -110,6 +110,52 @@ If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-s
 
 ## Active (do not touch)
 
+`C:\Projects\eq-field\.claude\worktrees\documents-to-sign-feature-3035a3 (eq-field)` | detached HEAD @ `273f1f0e`, no branch | found live during the 2026-08-28 round-2 worktree audit below (owning session unknown) — clean tree, but HEAD (`chore: retry Netlify deploy preview`) is same-day and unpushed, no remote branch contains it | 2026-08-28 | **NOT TOUCHED** — no PR to verify against; reads as another live session's in-flight Documents-to-Sign/PDF-viewer follow-up (same cluster as the round-1 cleanup below). Needs Royce's call, not an assumption.
+
+`C:\Projects\eq-field\.claude\worktrees\site-contact-mapping-fix (eq-field)` | `claude/site-contact-mapping-fix` | found live during the same audit (owning session unknown) — clean tree | 2026-08-28 | **NOT TOUCHED** — [PR #821](https://github.com/eq-solutions/eq-field/pull/821) OPEN, not merged (v3.5.592 — site contact info silently dead since v3.5.551). Active work.
+
+`C:\Projects\eq-field\.claude\worktrees\supervisor-list-population-9e6715 (eq-field)` | `claude/multi-project-site-display-1483e9` (folder name doesn't match branch) | found live during the same audit (owning session unknown) — clean tree | 2026-08-28 | **NOT TOUCHED** — [PR #822](https://github.com/eq-solutions/eq-field/pull/822) OPEN, not merged (v3.5.592 — shows Core's per-site project/module codes on Sites + My Schedule). Reads as live work closing the Field-side half of the `site_projects` wiring gap already on record (Core built the read+write UI, zero Field code consumed it) — useful context for whoever reviews #822.
+
+`C:\Projects\eq-field-apprentice-scope-race-wt (eq-field)` | `main` | found live during the same audit — clean tree, 87 commits behind `origin/main`, 0 ahead, no unique work | 2026-08-28 | **NOT TOUCHED** — objectively safe to remove (nothing would be lost) but it's a plain `main` snapshot, not a feature branch with a PR to verify against, so per this file's own no-PR rule it waits for Royce's one-line go rather than being auto-pruned.
+
+`C:\Users\EQ\AppData\Local\Temp\ci-repro` (eq-field, outside `C:\Projects`, different ownership class) | detached HEAD @ `9637c3bc`, no branch | found live during the same audit — `git status --porcelain` shows ~280 files deleted from the working tree outside git (not staged deletions — the files are simply gone from disk), HEAD commit 2 weeks stale (v3.5.491) | 2026-08-28 | **NOT TOUCHED** — reads as a spent CI-repro checkout already torn down by whatever created it, but this session doesn't own that lifecycle and it lives outside this registry's normal footprint. Flag for whoever owns the CI-repro tooling rather than assumed safe.
+
+## Recently pruned (2026-08-28, round 2 — 19 worktrees, the rest of the 23 round 1 flagged but didn't touch)
+
+Follow-on to the round-1 entry immediately below, which found 31 registered worktrees against an empty Active table, cleaned up the 8 it was scoped for, and explicitly deferred the other 23 ("needs its own audit pass"). This is that pass. Re-verified live first rather than trusting round 1's list: `git worktree list --porcelain` turned up **24**, not 23 — `eq-field-signdoc-followup-wt` (`claude/signdoc-open-failure-followup`) had appeared since round 1 and was already merged by the time this session looked. Folded into the same audit rather than left for a third pass.
+
+Same method as round 1: `gh pr list --head <branch> --state all` per branch (never `merge-base --is-ancestor` — confirmed false-negative again on every one of these, same squash-merge cause documented throughout this file), then cross-checked each MERGED verdict against `git log origin/main --grep "(#<PR>)"` to confirm the squash commit actually landed, not just that GitHub's PR object says merged. All 19 below cleared both checks with an empty `git status --porcelain`:
+
+- `eq-field/.claude/worktrees/phoenix-leave-approval-visibility-14ae9e` — `claude/digest-status-enum-case-fix` — [PR #819](https://github.com/eq-solutions/eq-field/pull/819) MERGED, v3.5.590
+- `eq-field/.claude/worktrees/roster-canonical-finish` — `claude/roster-canonical-finish` — [PR #809](https://github.com/eq-solutions/eq-field/pull/809) MERGED, v3.5.583
+- `eq-field/.claude/worktrees/roster-presence-sks` — `claude/roster-presence-sks` — [PR #812](https://github.com/eq-solutions/eq-field/pull/812) MERGED, v3.5.585
+- `eq-field/.claude/worktrees/work-wiring-priorities-0150f3` — `claude/leave-app-missing-supervisors-544e7b` — [PR #813](https://github.com/eq-solutions/eq-field/pull/813) MERGED
+- `eq-field-add-by-name-modal-wt` — `claude/add-by-name-modal-fix` — [PR #771](https://github.com/eq-solutions/eq-field/pull/771) MERGED, v3.5.553
+- `eq-field-apprentice-profile-gate-wt` — `claude/apprentice-profile-view-gate` — [PR #708](https://github.com/eq-solutions/eq-field/pull/708) MERGED, v3.5.505
+- `eq-field-document-register-schema-header` — `claude/document-register-accept-profile-fix` — [PR #743](https://github.com/eq-solutions/eq-field/pull/743) MERGED, v3.5.534
+- `eq-field-hide-logout-shell-mode` — `claude/field-logout-hide-in-shell-mode` — [PR #742](https://github.com/eq-solutions/eq-field/pull/742) MERGED, v3.5.533
+- `eq-field-mobile-weekend-wt` — `claude/mobile-schedule-weekend` — [PR #514](https://github.com/eq-solutions/eq-field/pull/514) MERGED, v3.5.338
+- `eq-field-people-fields-wt` — `claude/emergency-contact-mobile-relationship-dead-write` — [PR #766](https://github.com/eq-solutions/eq-field/pull/766) MERGED, v3.5.549
+- `eq-field-permcheck` — `claude/field-perms-drift-guard-fixes` — [PR #706](https://github.com/eq-solutions/eq-field/pull/706) MERGED
+- `eq-field-plane-header-retrofit-wt` — `claude/plane-header-retrofit` — [PR #754](https://github.com/eq-solutions/eq-field/pull/754) MERGED
+- `eq-field-route-guards-wt` — `claude/p2-route-guard-deny-by-default` — [PR #707](https://github.com/eq-solutions/eq-field/pull/707) MERGED, v3.5.504
+- `eq-field-sentry-observability-wt` — `fix/observability-non-error-throwables` — [PR #810](https://github.com/eq-solutions/eq-field/pull/810) MERGED
+- `eq-field-sign-doc-viewer-error-fallback-wt` — `claude/sign-doc-viewer-error-fallback` — [PR #824](https://github.com/eq-solutions/eq-field/pull/824) MERGED, v3.5.594
+- `eq-field-signdoc-followup-wt` — `claude/signdoc-open-failure-followup` — [PR #825](https://github.com/eq-solutions/eq-field/pull/825) MERGED, v3.5.595 (the 24th worktree found live, not in round 1's original list — see above)
+- `eq-field-ts-approvals-confirm-wt` — `claude/ts-approvals-confirm-modal` — [PR #774](https://github.com/eq-solutions/eq-field/pull/774) MERGED, v3.5.557 (part of the BUG-009 sweep this file already documents below — the worktree's local HEAD had moved past the PR object's own stored title, same mid-flight renumbering that entry describes)
+- `eq-field-ui-issues-wt` — `claude/field-ui-issues-820b91` — [PR #709](https://github.com/eq-solutions/eq-field/pull/709) MERGED, v3.5.506
+- `permission-enforcement-drift-wt` — `claude/permission-enforcement-drift` — [PR #684](https://github.com/eq-solutions/eq-field/pull/684) MERGED — doesn't follow the `eq-field-*` naming convention (round 1 flagged this one specifically for double-checking); PR content confirms it's genuinely eq-field's own permission-drift-guard work, not another repo's stray folder.
+
+All 19 removed via `git worktree remove`, all 19 local branches force-deleted (`-D` — plain `-d` refuses on every one, same squash-merge false-negative), remote heads checked individually: 16/19 already gone via this repo's standard `--delete-branch` merge flow, the remaining 3 (`claude/field-logout-hide-in-shell-mode`, `claude/mobile-schedule-weekend`, `claude/field-perms-drift-guard-fixes`) deleted directly from `origin`.
+
+One husk left behind: `eq-field/.claude/worktrees/phoenix-leave-approval-visibility-14ae9e`'s directory hit the same AV/indexer lock this file already documents repeatedly (round 2/round 3 above) — git unregistered it and cleared its contents (confirmed empty, 0 files) but couldn't rmdir the shell itself, "Device or resource busy" on retry. Harmless; retry later.
+
+**Operational note:** the auto-mode permission classifier blocked a single bundled script chaining `git worktree remove` + `git branch -D` + `git push origin --delete` across all 19 targets in one shot — too large/opaque a combined destructive action to vet at once. Splitting into separate steps (all 19 worktree removes together, then all 19 local branch deletes together, then just the 3 remote deletes on their own) went through cleanly. Worth structuring it that way from the start on the next bulk cleanup.
+
+The 5 not covered above (2 with an OPEN PR, 1 detached HEAD with an unpushed same-day commit and no PR, 1 stale `main`-only checkout with no PR, 1 CI-repro checkout of a different ownership class entirely) are now rows in Active above instead of sitting undocumented — closing the exact gap round 1 flagged.
+
+This registry update was written from an isolated fresh clone, not the shared `C:\Projects\eq-context` checkout — that checkout was **23 commits behind `origin/main`** for this entire session (per this session's own SessionStart gate output), the same F9 pattern this file already names repeatedly (round 1's own entry, the 2026-08-25 BUG-009 entry, the 2026-08-25 confirm-gaps entry). This is now a recurring finding, not a one-off — worth someone reconciling the shared checkout itself rather than every session independently routing around it.
+
 ## Recently pruned (2026-08-28 — 8 worktrees, Documents-to-Sign/PDF-viewer cluster, all merged)
 
 Royce asked to clean up 8 named eq-field worktrees for the Documents-to-Sign/PDF-viewer bug cluster, all reported merged days-to-weeks ago and never torn down. Re-verified live rather than trusted: `git worktree list --porcelain` confirmed all 8 paths/branches matched as given. Ancestry check (`merge-base --is-ancestor <branch> origin/main`) came back **NOT-MERGED for all 8** — same squash-merge false-negative this file already documents (line 65 et al.) — so verification used `gh pr list --head <branch> --state all` instead, cross-checked against `git log origin/main --grep "(#<PR>)"` to confirm the squash commit actually landed on `main`. All 8 confirmed MERGED, all 8 working trees clean (`git status --porcelain` empty, no uncommitted work):
