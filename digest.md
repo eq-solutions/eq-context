@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-28 21:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-28 22:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-28 07:33 UTC → 2026-08-28 21:40 UTC)
+## Since last refresh (2026-08-28 21:40 UTC → 2026-08-28 22:48 UTC)
 
-- Merged: eq-shell [#1642](https://github.com/eq-solutions/eq-shell/pull/1642) fix(drift-guard): CHECK 7 content-verified exception for app
-- Merged: eq-shell [#1638](https://github.com/eq-solutions/eq-shell/pull/1638) feat(ci): jvkn control-plane checks as a reusable workflow
-- Merged: eq-shell [#1637](https://github.com/eq-solutions/eq-shell/pull/1637) feat(customers): add/remove project codes on a site
-- Merged: eq-shell [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation inva
-- Merged: eq-shell [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-
-- Merged: eq-shell [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module 
-- Merged: eq-shell [#1629](https://github.com/eq-solutions/eq-shell/pull/1629) chore(drift): allowlist eq_cards_admin_sync_tenant_access — 
-- Merged: eq-shell [#1623](https://github.com/eq-solutions/eq-shell/pull/1623) fix(ci): wire CHECK 10 (intentional-anon-read) into the drif
+- Merged: eq-shell [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every documen
+- Merged: eq-shell [#1639](https://github.com/eq-solutions/eq-shell/pull/1639) fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check se
+- Merged: eq-shell [#1636](https://github.com/eq-solutions/eq-shell/pull/1636) fix(cards): mint-cards-otp returns is_new_user for the Cards
+- Merged: eq-shell [#1634](https://github.com/eq-solutions/eq-shell/pull/1634) security(control-plane): scope 13 inert deny_all policies to
+- Merged: eq-shell [#1631](https://github.com/eq-solutions/eq-shell/pull/1631) fix(documents): drop .msg/.eml from sign-off register's file
+- Merged: eq-shell [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invari
+- Merged: eq-shell [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/016
+- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
 
 ## ⚠ Needs you (9)
 
@@ -67,8 +67,8 @@ _…and 241 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |---------|-------|--------|-----------|
 | eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 9 | 2026-08-28 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 8 | 2026-08-26 |
+| eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 6 | 2026-08-28 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 5 | 2026-08-28 |
-| eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 5 | 2026-08-27 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 5 | 2026-08-26 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 2 | 2026-08-24 |
 | eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
@@ -79,6 +79,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-28 | eq-shell | [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every document, no |
 | 2026-08-28 | eq-shell | [#1651](https://github.com/eq-solutions/eq-shell/pull/1651) feat(customers): Field read adapter for site_projects (0288) |
 | 2026-08-28 | eq-shell | [#1656](https://github.com/eq-solutions/eq-shell/pull/1656) feat(documents): site-scope document pushes and sign-off certific |
 | 2026-08-28 | eq-shell | [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment |
@@ -93,7 +94,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-27 | eq-shell | [#1646](https://github.com/eq-solutions/eq-shell/pull/1646) feat(drift-guard): CHECK 11 — migration identity for jvkn control |
 | 2026-08-27 | eq-shell | [#1641](https://github.com/eq-solutions/eq-shell/pull/1641) feat(ci): governed apply path for jvkn control-plane migrations |
 | 2026-08-27 | eq-shell | [#1644](https://github.com/eq-solutions/eq-shell/pull/1644) fix(documents): refresh the Register after a successful upload or |
-| 2026-08-27 | eq-shell | [#1635](https://github.com/eq-solutions/eq-shell/pull/1635) feat(documents): convert uploads to PDF at commit time (migration |
 _Showing 15 of 91 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-28 21:40 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-28 22:48 UTC._
