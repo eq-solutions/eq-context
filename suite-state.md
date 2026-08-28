@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-28)
 
-**eq-field:**
-- #822 v3.5.596 — feat: show Core's per-site project/module codes on Sites + My Schedule
-
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
