@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Leave approver dropdown empty for every plain worker — field_managers security_invoker exception (2026-08-27)
+*Brendan Drinkwater (SKS) reported the Leave request form showing no supervisors. Traced to eq-shell's SEC-33 fix (migration 0256, PR #1510, applied 2026-08-21 to both ehow and zaap) — correct on `app_data.staff` itself, but `app_data.field_managers` (a security_invoker=on view over the same table) silently inherited the restriction even though it exposes no PII, collapsing to 0 rows for every non-manager caller, tenant-wide, since 2026-08-21. Same root cause and the same fix shape as the `field_people` regression below — found independently, shortly before that investigation.*
+
+- [x] **`field_managers` flipped to `security_invoker=false` with an inline `tenant_id` filter** — documented as a deliberate, one-off exception to this repo's "always invoker=on" rule, safe specifically because this view carries no sensitive columns (unlike `field_people`). Applied live to both `ehowgjardagevnrluult` and `zaapmfdkgedqupfjtchl` via Supabase MCP ahead of the PR, on Royce's explicit "apply to both." eq-field [PR #813](https://github.com/eq-solutions/eq-field/pull/813), merged.
+- [x] **Verified via a JWT-simulated read as Brendan's real session** (his tenant/role/actor_id) rather than a live click-through: the supervisor list went from 0 to 20 rows; cross-tenant isolation reconfirmed intact on both planes.
+- [x] **Same fix incidentally restored Recognitions, Incidents notify, Sites lead display, Teams display, and CC-on-leave-emails for plain workers** — all read the same `STATE.managers`/`field_managers` data source, so nothing further was needed for those.
+- [ ] **Not yet click-tested live by Brendan himself.** Royce is meeting him in person to test on a real phone (planned for 2026-08-28) — no live SKS credentials in this environment. This is the one remaining verification gap on this fix, and since it's the same account, doubles as a live check of the related `field_people` coworker-visibility fix below.
+- **Follow-on, found in a separate later session (not this one):** the inline `tenant_id = auth.jwt()...` filter this fix introduced is unreachable from a `service_role` caller (no JWT claims in that context) — surfaced by the digest "Send test to myself" bug, fixed in eq-field [PR #818](https://github.com/eq-solutions/eq-field/pull/818). Worth remembering if another server-side (non-browser) caller ever needs to read `field_managers`.
+
+---
+
 ## eq-field: Timesheets — day-cell clicks now fill the whole broken-up week too, not just the Fill Week button (2026-08-28)
 *Follow-on to the 2026-08-27 Fill Week entry further down this file — Royce, from the same live screenshot pattern (Aiden Crowley, TAFE on Tuesday): clicking "+Add" on a day cell still only opened a "Mon · 1 day" editor, because Fill Week (v3.5.583) shipped as a separate row button rather than changing what the ordinary cell click itself does.*
 
