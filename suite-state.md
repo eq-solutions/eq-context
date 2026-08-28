@@ -73,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1654 fix(data): resolve 4 more divergent staff/shell login names
-- #1651 feat(customers): Field read adapter for site_projects (0288)
 
 ---
 
