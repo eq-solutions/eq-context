@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Documents — site-scoped pushes and sign-off certificates, built, merged, live (2026-08-28)
+*Royce asked for a push to carry a site (e.g. one EMP pushed separately per Sydney site), with the certificate and Register showing which site.*
+
+- [x] **Investigated before building**: confirmed `app_data.sites` already exists as a real, populated entity (Customers module, 200+ rows on ehow, incl. active SY1–SY9 codes) — Royce's own fallback proposal was a hardcoded 9-item list; used the live table instead, on his confirmed call.
+- [x] **Found the real architecture gap**: there's no "push" as its own row — a push is an insert into `document_audiences` (a write-only ledger, never joined into `document_register`) plus upserts into `document_signoffs`, uniquely constrained `(version_id, signer_user_id)` tenant/version-wide forever. Letting the same signer hold an independent signoff per site needed that constraint rebuilt, not just a new column — Royce's confirmed call was the full rework, not a metadata-only shortcut.
+- [x] **Built**: migration `0288` adds `document_signoffs.site_id` (FK → `app_data.sites`, not on `documents`/`document_versions`) plus a generated `site_key` column (same coalesce-to-sentinel trick `document_audiences.target_key` already uses) so untagged pushes keep today's exact single-global-signoff guarantee while site-tagged ones get independent rows. `document_register` view extended (new columns appended at the very end — this view has broken from a mid-list insert twice before, 0253/0287). Server: site validated tenant-scoped on push, threaded through the shared upsert helper; certificate endpoint takes a 3-state `site_id` (absent/`none`/real uuid) so an unscoped group's certificate can't accidentally pull in another site's signers. Client: Site dropdown on both push forms, Register now groups by (document, site) so the same document pushed twice reads as two independent cards each with its own certificate link, plus a site filter.
+- [x] **Left `document_audiences.target_kind='site'` alone** — an existing, currently-disabled, unrelated feature (resolving signers FROM a site roster via `staff.default_site_id`, which has no real data) that happens to share the word "site." Confirmed via the file's own header comment before assuming it was reusable.
+- [x] **Migration applied before merge, not after** — this PR's own code depends on the new columns existing (unlike the usual pure-schema-fix PRs this repo's merge-then-dispatch convention assumes), so merging first would have broken Documents in production until someone separately dispatched the apply. Dispatched `tenant-migrate.yml` against the PR branch first (Royce's explicit go), verified live on both ehow and zaap (including the real "Environmental Management Plan" pilot document still rendering `site_id: null` for its existing signers), then merged.
+- [x] eq-shell [PR #1656](https://github.com/eq-solutions/eq-shell/pull/1656), squash-merged (`b651bba8`), confirmed live via Netlify deploy state (`ready`, published 2026-08-28 06:04 UTC) matching the merge commit exactly. `tsc -b --force` + `eslint` clean; deploy preview loaded cleanly pre-merge.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push the same document to two different sites, confirm two independent Register entries and certificates (each showing only its own site's signers), confirm an existing unscoped push still renders unchanged. _(added 2026-08-28)_
+
+---
+
 ## eq-shell: Mobile TOTP enrollment — same-device lockout fixed, merged live (2026-08-28)
 *Royce: "people on mobile can't use 2FA - it's a negative loop as they can't scan the QR code on the phone so they get locked out. what can we do?"*
 

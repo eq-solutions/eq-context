@@ -1,13 +1,19 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-27
+last_updated: 2026-08-28
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-08-28 (PR #1656 MERGED + LIVE — Documents: site-scoped pushes and sign-off certificates)
+- A document push can now carry a site (`document_signoffs.site_id`, FK → the existing `app_data.sites` entity — not a new hardcoded list). Register groups by (document, site): the same document pushed to two sites reads as two independent entries, each with its own certificate covering only that site's signers. An untagged push renders unchanged.
+- Migration `0288`: nullable `site_id` + a generated `site_key` column (coalesce-to-sentinel, same trick `document_audiences.target_key` already uses) replacing the old tenant/version-wide signoff uniqueness, so a signer can hold one independent signoff per site while an untagged signoff keeps the pre-existing single-global-signoff guarantee. `document_register` view extended, columns appended at the end (this view's `CREATE OR REPLACE` has broken from a mid-list insert twice before — 0253, 0287).
+- Migration dispatched and verified live on both ehow and zaap *before* merge, not after — this PR's code depends on the new columns existing, unlike the usual pure-schema-fix PR this repo's merge-then-dispatch convention assumes.
+- [PR #1656](https://github.com/eq-solutions/eq-shell/pull/1656), squash-merged (`b651bba8`), confirmed live via Netlify deploy state (exact `commit_ref` match, published 06:04 UTC).
 
 ## 2026-08-28 (PR #1655 MERGED + LIVE — mobile TOTP enrollment same-device fix)
 - Royce: "people on mobile can't use 2FA - it's a negative loop as they can't scan the QR code on the phone so they get locked out." Root cause: the QR and the phone scanning it are the same device — the only fallback was hand-typing a 32-character secret with no copy button.
