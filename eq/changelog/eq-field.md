@@ -9,6 +9,15 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-28 (PR #824 MERGED + LIVE, v3.5.594 — Documents to Sign: raw-file fallback for a load failure that doesn't resolve on retry)
+- Follow-on to the same-day PR #823 (v3.5.593, below): that fix stopped the spinner hanging forever on a failed `PDFViewerApplication.open()`, but "go back and try again" just re-ran the identical failing inline-viewer path — no real recovery if the failure was persistent (an expired signed URL, a genuinely bad conversion output) rather than transient. Spawned as `task_445c878c` by that session; this session is that task, started by Royce.
+- `openSignDocumentViewer()`'s `opts` now carries `rawStoragePath` (the pre-conversion original file's Storage path), threaded through from `sign-documents.js`'s existing call site — the same value its old pre-v3.5.586 `window.open()`-a-raw-file button already used.
+- `_signdocShowLoadError()` now renders an "Open original file ↗" button instead of a dead-end message whenever a `rawStoragePath` is on record. New `_signdocOpenRawFallback()` resolves a signed URL via `sbCreateSignedUrl('attachments', path, 300)`, then opens it from a second, fully synchronous click handler — required because iOS Safari silently blocks `window.open()` if any `await` sits between the click and the call (established pattern in this file family, v3.5.535/536). Opening the raw file still calls `_signMarkViewed()` and unlocks the Sign button, matching pre-v3.5.585 gate behaviour exactly.
+- No fallback button (old plain message unchanged) when a document has no raw twin on record.
+- Verified via an isolated harness (Node `vm`, loads the real edited file, drives the real trigger path — `PDFViewerApplication.open()` rejecting, not calling the private error handler directly): 14/14 assertions across the success, no-rawStoragePath, and signed-URL-failure cases.
+- `check-cache-busters.mjs` caught real drift before commit: `app-state.js` is the one eagerly-loaded file among the changed set (the two sign-document files are lazy-loaded, auto-versioned) — its own static `<script>` tag in `index.html` needed a manual bump.
+- eq-field [PR #824](https://github.com/eq-solutions/eq-field/pull/824), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js` showing `v3.5.594`.
+
 ## 2026-08-28 (PR #820 MERGED + LIVE, v3.5.591 — Timesheets: day-cell clicks now fill the whole broken-up week)
 - Follow-on to the 2026-08-27 Fill Week entry below — Royce, from the same live screenshot (Aiden Crowley, TAFE on Tuesday): clicking "+Add" on a day cell still only opened a "Mon · 1 day" editor. Fill Week (v3.5.583) had already solved this, but only as its own separate row button — the natural click into a cell didn't share the fix.
 - `_spClickSeg` (`scripts/timesheets-spans.js`) now delegates straight to the same `_spOpenFillWeek` logic the button already used, so any day-cell click opens one popup covering every workable day in the week, skipping locked leave/TAFE days — not just the contiguous run that was clicked.
