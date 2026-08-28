@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-28 22:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-28 23:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-28 21:40 UTC → 2026-08-28 22:48 UTC)
+## Since last refresh (2026-08-28 22:48 UTC → 2026-08-28 23:04 UTC)
 
-- Merged: eq-shell [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every documen
-- Merged: eq-shell [#1639](https://github.com/eq-solutions/eq-shell/pull/1639) fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check se
-- Merged: eq-shell [#1636](https://github.com/eq-solutions/eq-shell/pull/1636) fix(cards): mint-cards-otp returns is_new_user for the Cards
-- Merged: eq-shell [#1634](https://github.com/eq-solutions/eq-shell/pull/1634) security(control-plane): scope 13 inert deny_all policies to
-- Merged: eq-shell [#1631](https://github.com/eq-solutions/eq-shell/pull/1631) fix(documents): drop .msg/.eml from sign-off register's file
-- Merged: eq-shell [#1628](https://github.com/eq-solutions/eq-shell/pull/1628) feat(drift-guard): CHECK 12/13 — stacked-policy + RLS invari
-- Merged: eq-shell [#1627](https://github.com/eq-solutions/eq-shell/pull/1627) docs(security): correct CONTROL-PLANE-LEDGER — 0162/0163/016
-- Merged: eq-shell [#1626](https://github.com/eq-solutions/eq-shell/pull/1626) fix(worker-invite): backfill workers.role so canonical sync 
+- Merged: eq-shell [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (
+- Merged: eq-shell [#1642](https://github.com/eq-solutions/eq-shell/pull/1642) fix(drift-guard): CHECK 7 content-verified exception for app
+- Merged: eq-shell [#1638](https://github.com/eq-solutions/eq-shell/pull/1638) feat(ci): jvkn control-plane checks as a reusable workflow
+- Merged: eq-shell [#1637](https://github.com/eq-solutions/eq-shell/pull/1637) feat(customers): add/remove project codes on a site
+- Merged: eq-shell [#1635](https://github.com/eq-solutions/eq-shell/pull/1635) feat(documents): convert uploads to PDF at commit time (migr
+- Merged: eq-shell [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation inva
+- Merged: eq-shell [#1632](https://github.com/eq-solutions/eq-shell/pull/1632) docs(drift): confirm eq_cards_admin_sync_tenant_access live-
+- Merged: eq-shell [#1630](https://github.com/eq-solutions/eq-shell/pull/1630) feat(customers): let one Site carry multiple project/module 
 
 ## ⚠ Needs you (9)
 
@@ -33,10 +33,11 @@ _2026-08-28 22:48 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-08-27.md](sessions/2026-08-27.md) · [failures.md](system/failures.md)
 - 🟠 **PR aging 8d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 
-## 🙋 Waiting on you (253)
+## 🙋 Waiting on you (254)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Needs Royce's call, security-hardening scope**: SEC-57 (org-wide GitHub App review — still open from earlier this session), SEC-3, SEC-18, SEC-19, SEC-63, SEC-65, SEC-24. Full detail in the sprint doc, not re-listed here. _(added 2026-08-28)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push the same document to two different sites, confirm two independent Register entries and certificates (each showing only its own site's signers), confirm an existing unscoped push still renders unchanged. _(added 2026-08-28)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass next time someone's mid-enrollment on a phone: confirm tapping "Open in authenticator app" actually hands off to an installed app on both iOS and Android, confirm the copy button copies the right secret. _(added 2026-08-28)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open the Register tab for a tenant with several signed documents, confirm names now match Staff, open one signer's evidence modal, confirm the signature image still loads (now on demand). _(added 2026-08-28)_
@@ -48,14 +49,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b`, the access-control preview panel, production deploy-ancestry, and (as of this close) Sharon Maroni's own live `nav_scope` row confirmed correct by direct query (`["customer","site","contact","staff","licence","equipment","field","suppliers"]` — Royce confirmed keep Suppliers) — but nobody has actually signed in as a Simple-mode user and watched the sidebar itself narrow. Worth two minutes next time there's a way to see her session or a test account. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — no live Shell session/credentials in this environment. Worth a pass: on the join-links page, confirm a used deactivated link shows "Can't delete — already used" with no button, confirm the "Show deactivated & expired (N)" toggle expands/collapses correctly and the count matches. _(added 2026-08-26)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, eslint, live Supabase tracing of the exact chain, and a production commit-ancestry check, not a real join-flow click-through as a brand-new user. _(added 2026-08-26)_
-- **eq-shell** · **Not click-tested live** — no live Shell session/credentials in this environment. Worth a real pass: change a test user's role, confirm a `user.role_changed` row lands in `audit_log`, and (harder to stage) confirm a simulated membership-write failure now returns a real error instead of a false "saved." _(added 2026-08-26)_
-_…and 241 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 242 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 1d |
+| eq-shell | ✓ success | 0d ago | 1 | 1d |
 | eq-solves-service | ✓ success | 3d ago | 6 | 8d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 1d ago | 0 | — |
@@ -79,6 +79,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-08-28 | eq-shell | [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (SEC-3 |
 | 2026-08-28 | eq-shell | [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every document, no |
 | 2026-08-28 | eq-shell | [#1651](https://github.com/eq-solutions/eq-shell/pull/1651) feat(customers): Field read adapter for site_projects (0288) |
 | 2026-08-28 | eq-shell | [#1656](https://github.com/eq-solutions/eq-shell/pull/1656) feat(documents): site-scope document pushes and sign-off certific |
@@ -93,12 +94,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-27 | eq-shell | [#1648](https://github.com/eq-solutions/eq-shell/pull/1648) feat(ci): attribute tenant-plane drift violations to eq-field, be |
 | 2026-08-27 | eq-shell | [#1646](https://github.com/eq-solutions/eq-shell/pull/1646) feat(drift-guard): CHECK 11 — migration identity for jvkn control |
 | 2026-08-27 | eq-shell | [#1641](https://github.com/eq-solutions/eq-shell/pull/1641) feat(ci): governed apply path for jvkn control-plane migrations |
-| 2026-08-27 | eq-shell | [#1644](https://github.com/eq-solutions/eq-shell/pull/1644) fix(documents): refresh the Register after a successful upload or |
-_Showing 15 of 91 · full record in [sessions/](sessions/)_
+_Showing 15 of 92 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (296 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (300 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (159 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (98 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -130,7 +130,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 2049 | 203 / 97 | 300 | 55 |
+| [eq-shell](eq/pending/eq-shell.md) | 2067 | 206 / 98 | 306 | 55 |
 | [eq-cards](eq/pending/eq-cards.md) | 491 | 39 / 17 | 109 | 6 |
 | [eq-field](eq/pending/eq-field.md) | 1077 | 122 / 45 | 89 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 24 |
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-28 22:48 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-28 23:04 UTC._
