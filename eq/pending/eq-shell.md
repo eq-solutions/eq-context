@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Mobile TOTP enrollment — same-device lockout fixed, merged live (2026-08-28)
+*Royce: "people on mobile can't use 2FA - it's a negative loop as they can't scan the QR code on the phone so they get locked out. what can we do?"*
+
+- [x] **Root cause**: the QR code and the phone trying to scan it are the same device — physically impossible to scan. The only existing fallback was hand-typing a 32-character secret with no copy button, which is what was actually causing the lockouts. Hits specifically because TOTP is forced onto managers/supervisors/platform-admins once their grace period expires (`App.tsx`'s `requires_totp_enrollment` gate) — no way around the screen.
+- [x] **Fix**: `EnrollTotp.tsx` — added a tappable `otpauth://` deep-link button next to the QR (every major authenticator app registers that URI scheme on iOS/Android, so tapping it hands off straight to "add account" pre-filled), and a copy-to-clipboard button on the manual secret, matching the existing backup-codes copy pattern. Client-only — no backend, schema, or auth-policy change; `enroll-totp`/`confirm-totp` untouched.
+- [x] eq-shell [PR #1655](https://github.com/eq-solutions/eq-shell/pull/1655) — `tsc -b --force` clean, independent merge-readiness audit confirmed single-file scope and no auth-logic touched (all 5 required checks passed, zero drift from main), merged (squash `18f6391d`), confirmed live via Netlify deploy state (`ready`, published 2026-08-28 05:28 UTC) matching the merge commit exactly.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass next time someone's mid-enrollment on a phone: confirm tapping "Open in authenticator app" actually hands off to an installed app on both iOS and Android, confirm the copy button copies the right secret. _(added 2026-08-28)_
+
+---
+
 ## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28)
 *Royce, live, comparing the Staff page to the Documents Register for the same person: "Why is Mohammed Hussain's name different? Even the capital letters? Should be the same record?" Also asked to speed up the Register's load time.*
 

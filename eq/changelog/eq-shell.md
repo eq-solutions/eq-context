@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-28 (PR #1655 MERGED + LIVE — mobile TOTP enrollment same-device fix)
+- Royce: "people on mobile can't use 2FA - it's a negative loop as they can't scan the QR code on the phone so they get locked out." Root cause: the QR and the phone scanning it are the same device — the only fallback was hand-typing a 32-character secret with no copy button.
+- `EnrollTotp.tsx`: added a tappable `otpauth://` deep-link button next to the QR (authenticator apps register that URI scheme on iOS/Android, so tapping it hands off straight to "add account" pre-filled), and a copy-to-clipboard button on the manual secret, matching the existing backup-codes copy pattern. Client-only — no backend, schema, or auth-policy touched.
+- [PR #1655](https://github.com/eq-solutions/eq-shell/pull/1655), squash-merged (`18f6391d`), confirmed live via Netlify deploy state (exact `commit_ref` match, published 05:28 UTC).
+
 ## 2026-08-28 (PR #1653 MERGED + LIVE — Admin sidebar decluttered)
 - Removed Users, Audit log, Security groups, and Settings from the permanently-pinned Admin sidebar list in `HubSidebar.tsx` — all four already have a matching tile on the Admin Overview page ("All admin tools"), so no access changed, just fewer permanent links. Remaining pinned: All admin tools, Add workers, Intake, Labour hire rates, Suppliers.
 - Kept `navScope.ts`'s per-user "Simple" item list and `AccessControlPage.tsx`'s nav-preview tool trimmed the same way, per this repo's documented 3-consumer sync invariant (`AdminEditUser.tsx` needed no edit — it imports the shared list).
