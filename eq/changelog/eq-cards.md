@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-30 (PR #329 MERGED + LIVE — dead join-QR card removed from Profile)
+- `_JoinQrCard` on the Profile screen advertised a QR for `cards.eq.solutions/join?tenant=<slug>` to managers/supervisors with zero backing route — [PR #248](https://github.com/eq-solutions/eq-cards/pull/248) (2026-08-15) had already audited and killed `/join`'s entire backend, replaced by Shell's role-tagged self-join QR, but never touched this file.
+- Removed the card and its `joinUrl`/`isQrEligible`/`tenantSlug` computation (68 lines, pure deletion); `qr_flutter` import removed from this file only, package stays live elsewhere (`admin_worker_detail_screen.dart`, `licence_detail_screen.dart`).
+- [PR #329](https://github.com/eq-solutions/eq-cards/pull/329), merged (`1ad66b7`), squash. Deployed via `gh workflow run deploy.yml` — confirmed live by fetching the served `main.dart.js` directly and verifying the removed strings are absent from the 5.67MB bundle.
+
 ## 2026-08-27 (PR #328 MERGED + LIVE — jvkn control-plane checks now run advisory on every PR)
 - New `jvkn-control-plane-check` job in `.github/workflows/ci.yml`, calling eq-shell's reusable `jvkn-control-plane-check.yml` workflow (advisory — `continue-on-error`, doesn't block merge) on every PR. Closes the last of 3 legs of the cross-repo consumer-check gap surfaced by the `organisations_anon_bootstrap_read` incident (see `eq-context/eq/sprints/2026-08-26-organisations-anon-read-hardening.md`) — the other two (jvkn-side, eq-shell#1638; tenant-plane-side, eq-shell#1648) were already live.
 - Needed a new fine-grained GitHub PAT (`EQ_SHELL_CHECKOUT_TOKEN`), since a reusable workflow's default `GITHUB_TOKEN` can't check out a *different* private repo (the hosting repo, eq-shell) — GitHub has no API to mint that kind of token, only a manual UI flow. Royce minted it and added it plus `CONTROL_PROJECT_REF` as the 2 new secrets this job needed.
