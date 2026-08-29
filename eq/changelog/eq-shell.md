@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-29 (PR #1654 MERGED + LIVE — 4 more divergent staff/shell login names resolved)
+- Second wave of the discovery audit from PR #1652's same-day follow-up sweep. Found 4 more `shell_control.users.name` (jvkn) vs `app_data.staff` name divergences on ehow (SKS): Moahmmed Elsayed, Amir Farid (was NULL, filled), Eric Nguyen, Nelson Sareto — each confirmed individually with Royce before applying, same discipline as the 2026-08-23 and #1652 fixes.
+- zaap (EQ) reconfirmed as still only 1 linked staff row, and that row's `user_id` no longer resolves to any `shell_control.users` row at all — a separate, unrelated break, flagged but not touched here.
+- Data applied live to jvkn via Supabase MCP; the migration file is the audit-trail copy, matching the established convention for this whole name-divergence series.
+- [PR #1654](https://github.com/eq-solutions/eq-shell/pull/1654), squash-merged (`46719f2a`), confirmed live via Netlify deploy state (exact `commit_ref` match).
+
 ## 2026-08-30 (PR #1657 MERGED + LIVE + DISPATCHED — SEC-35, stray anon SELECT on field_* views closed)
 - 7 `app_data.field_*` views on ehow (plus `field_people` on zaap, found live and folded in) carried an unused `anon` SELECT grant — inert (`security_invoker=on` + no anon grant on the underlying table) but incorrect. Migration `0289` revokes it fleet-wide.
 - Merged (`c6a19f08`), deployed (Netlify `commit_ref` match confirmed), and dispatched via `tenant-migrate.yml` — verified live afterward on both ehow and zaap: zero `anon` SELECT grants remain on any `field_*` view.
