@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-29 23:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-29 23:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-29 23:20 UTC → 2026-08-29 23:45 UTC)
+## Since last refresh (2026-08-29 23:45 UTC → 2026-08-29 23:53 UTC)
 
-- Merged: eq-shell [#1670](https://github.com/eq-solutions/eq-shell/pull/1670) feat(documents): ad-hoc multi-site document pushes and sign-
-- Merged: eq-shell [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every documen
-- Merged: eq-shell [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (
-- Merged: eq-shell [#1656](https://github.com/eq-solutions/eq-shell/pull/1656) feat(documents): site-scope document pushes and sign-off cer
-- Merged: eq-shell [#1653](https://github.com/eq-solutions/eq-shell/pull/1653) feat(nav): unpin Users/Audit log/Security groups/Settings fr
-- Merged: eq-shell [#1651](https://github.com/eq-solutions/eq-shell/pull/1651) feat(customers): Field read adapter for site_projects (0288)
-- Merged: eq-shell [#1648](https://github.com/eq-solutions/eq-shell/pull/1648) feat(ci): attribute tenant-plane drift violations to eq-fiel
-- Merged: eq-shell [#1645](https://github.com/eq-solutions/eq-shell/pull/1645) feat(documents): multi-select checkboxes for the person push
+- Merged: eq-shell [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment
+- Merged: eq-shell [#1652](https://github.com/eq-solutions/eq-shell/pull/1652) fix(documents): staff-preferred signer names + lazy signatur
+- Merged: eq-shell [#1646](https://github.com/eq-solutions/eq-shell/pull/1646) feat(drift-guard): CHECK 11 — migration identity for jvkn co
+- Merged: eq-shell [#1644](https://github.com/eq-solutions/eq-shell/pull/1644) fix(documents): refresh the Register after a successful uplo
+- Merged: eq-shell [#1642](https://github.com/eq-solutions/eq-shell/pull/1642) fix(drift-guard): CHECK 7 content-verified exception for app
+- Merged: eq-shell [#1641](https://github.com/eq-solutions/eq-shell/pull/1641) feat(ci): governed apply path for jvkn control-plane migrati
+- Merged: eq-shell [#1639](https://github.com/eq-solutions/eq-shell/pull/1639) fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check se
+- Merged: eq-shell [#1638](https://github.com/eq-solutions/eq-shell/pull/1638) feat(ci): jvkn control-plane checks as a reusable workflow
 
 ## ⚠ Needs you (9)
 
@@ -90,10 +90,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-29 | eq-shell | [#1661](https://github.com/eq-solutions/eq-shell/pull/1661) fix(schedule): correct 0290's view column order + scope to SKS on |
 | 2026-08-29 | eq-shell | [#1659](https://github.com/eq-solutions/eq-shell/pull/1659) feat(schedule): site_project_id on schedule_entries — write half  |
 | 2026-08-29 | eq-shell | [#1660](https://github.com/eq-solutions/eq-shell/pull/1660) feat(documents): push a document to a customer's whole site portf |
+| 2026-08-29 | eq-field | [#830](https://github.com/eq-solutions/eq-field/pull/830) v3.5.603 — Timesheets gets roster's staleness guard; roster cells |
 | 2026-08-29 | eq-field | [#829](https://github.com/eq-solutions/eq-field/pull/829) v3.5.601 — SKS canonical roster: staleness guard on the whole-wee |
 | 2026-08-29 | eq-field | [#828](https://github.com/eq-solutions/eq-field/pull/828) v3.5.599 — SECURITY: apprentice journal — private entries leaked  |
 | 2026-08-29 | eq-field | [#827](https://github.com/eq-solutions/eq-field/pull/827) v3.5.599 — HOTFIX: v3.5.598 write payload was breaking every cano |
-| 2026-08-29 | eq-field | [#826](https://github.com/eq-solutions/eq-field/pull/826) v3.5.598 — feat: Edit Roster — per-day project-code picker, write |
 _Showing 15 of 93 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-29 23:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-29 23:53 UTC._
