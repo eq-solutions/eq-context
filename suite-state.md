@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-28
+last_updated: 2026-08-29
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-28 (nightly cron)_
+_Last verified: 2026-08-29 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,10 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-28)
+## Open PRs (as of 2026-08-29)
+
+**eq-field:**
+- #828 v3.5.599 — SECURITY: apprentice journal — private entries leaked to every supervisor/manager
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -69,11 +72,12 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1661 fix(schedule): correct 0290's view column order + scope to SKS only
 - #1654 fix(data): resolve 4 more divergent staff/shell login names
 
 ---
 
-## System Health (as of 2026-08-28)
+## System Health (as of 2026-08-29)
 
 **CI on main:**
 
