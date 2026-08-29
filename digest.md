@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-29 21:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-29 22:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-29 16:05 UTC → 2026-08-29 21:41 UTC)
+## Since last refresh (2026-08-29 21:41 UTC → 2026-08-29 22:11 UTC)
 
-- Merged: eq-shell [#1654](https://github.com/eq-solutions/eq-shell/pull/1654) fix(data): resolve 4 more divergent staff/shell login names
-- Merged: eq-shell [#1652](https://github.com/eq-solutions/eq-shell/pull/1652) fix(documents): staff-preferred signer names + lazy signatur
-- Merged: eq-shell [#1646](https://github.com/eq-solutions/eq-shell/pull/1646) feat(drift-guard): CHECK 11 — migration identity for jvkn co
-- Merged: eq-shell [#1644](https://github.com/eq-solutions/eq-shell/pull/1644) fix(documents): refresh the Register after a successful uplo
-- Merged: eq-shell [#1639](https://github.com/eq-solutions/eq-shell/pull/1639) fix(ci): wire CHECK 6/7/8/9/12/13/14 into the drift-check se
-- Merged: eq-shell [#1636](https://github.com/eq-solutions/eq-shell/pull/1636) fix(cards): mint-cards-otp returns is_new_user for the Cards
-- Merged: eq-shell [#1634](https://github.com/eq-solutions/eq-shell/pull/1634) security(control-plane): scope 13 inert deny_all policies to
-- Merged: eq-shell [#1633](https://github.com/eq-solutions/eq-shell/pull/1633) feat(drift-guard): CHECK 14 — tenant/self/org isolation inva
+- Merged: eq-shell [#1653](https://github.com/eq-solutions/eq-shell/pull/1653) feat(nav): unpin Users/Audit log/Security groups/Settings fr
+- Merged: eq-shell [#1648](https://github.com/eq-solutions/eq-shell/pull/1648) feat(ci): attribute tenant-plane drift violations to eq-fiel
+- Merged: eq-shell [#1645](https://github.com/eq-solutions/eq-shell/pull/1645) feat(documents): multi-select checkboxes for the person push
+- Merged: eq-shell [#1642](https://github.com/eq-solutions/eq-shell/pull/1642) fix(drift-guard): CHECK 7 content-verified exception for app
+- Merged: eq-shell [#1641](https://github.com/eq-solutions/eq-shell/pull/1641) feat(ci): governed apply path for jvkn control-plane migrati
+- Merged: eq-shell [#1638](https://github.com/eq-solutions/eq-shell/pull/1638) feat(ci): jvkn control-plane checks as a reusable workflow
+- Merged: eq-shell [#1637](https://github.com/eq-solutions/eq-shell/pull/1637) feat(customers): add/remove project codes on a site
+- Merged: eq-shell [#1635](https://github.com/eq-solutions/eq-shell/pull/1635) feat(documents): convert uploads to PDF at commit time (migr
 
 ## ⚠ Needs you (9)
 
@@ -67,8 +67,8 @@ _…and 243 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |---------|-------|--------|-----------|
 | eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 4](https://eq-solutions.sentry.io/issues/138175643/) | 10 | 2026-08-29 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 8 | 2026-08-26 |
+| eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 7 | 2026-08-29 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 6 | 2026-08-29 |
-| eq-shell | [Error: Active org_memberships held by non-members: 15](https://eq-solutions.sentry.io/issues/142429897/) | 6 | 2026-08-28 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 5 | 2026-08-26 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 2 | 2026-08-24 |
 | eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
@@ -86,6 +86,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-29 | eq-field | [#828](https://github.com/eq-solutions/eq-field/pull/828) v3.5.599 — SECURITY: apprentice journal — private entries leaked  |
 | 2026-08-29 | eq-field | [#827](https://github.com/eq-solutions/eq-field/pull/827) v3.5.599 — HOTFIX: v3.5.598 write payload was breaking every cano |
 | 2026-08-29 | eq-field | [#826](https://github.com/eq-solutions/eq-field/pull/826) v3.5.598 — feat: Edit Roster — per-day project-code picker, write |
+| 2026-08-29 | eq-cards | [#329](https://github.com/eq-solutions/eq-cards/pull/329) fix(profile): remove join-QR card orphaned by the #248 door retir |
 | 2026-08-28 | eq-shell | [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (SEC-3 |
 | 2026-08-28 | eq-shell | [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every document, no |
 | 2026-08-28 | eq-shell | [#1651](https://github.com/eq-solutions/eq-shell/pull/1651) feat(customers): Field read adapter for site_projects (0288) |
@@ -93,14 +94,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-28 | eq-shell | [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment |
 | 2026-08-28 | eq-field | [#822](https://github.com/eq-solutions/eq-field/pull/822) v3.5.597 — feat: show Core's per-site project/module codes on Sit |
 | 2026-08-28 | eq-field | [#821](https://github.com/eq-solutions/eq-field/pull/821) v3.5.592 — FIX: site contact info silently dead since v3.5.551 |
-| 2026-08-28 | eq-field | [#825](https://github.com/eq-solutions/eq-field/pull/825) v3.5.595 — Documents to Sign: report a failed PDF load to Sentry |
 _Showing 15 of 93 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (299 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (53 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (159 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (160 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (99 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -132,7 +132,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 2058 | 206 / 98 | 300 | 59 |
 | [eq-cards](eq/pending/eq-cards.md) | 491 | 39 / 17 | 109 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1077 | 122 / 45 | 89 | 33 |
+| [eq-field](eq/pending/eq-field.md) | 1083 | 123 / 46 | 89 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 26 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-29 21:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-29 22:11 UTC._
