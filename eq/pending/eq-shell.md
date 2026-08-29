@@ -13,9 +13,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: security-hardening sprint — 6 items shipped + merged, 2 migrations awaiting dispatch (2026-08-30)
+## eq-shell: security-hardening sprint — 8 items shipped, merged, and live (2026-08-30)
 
-- [ ] **SEC-34/SEC-59 (PR #1662) and SEC-36 (PR #1667) are merged to `main` but not yet dispatched** — both land a migration file only; applying to jvkn (`control-plane-migrate.yml`) and zaap+ehow (`tenant-migrate.yml`) respectively is a separate, explicit step, same two-step pattern as SEC-35. Say the word and both go live. _(added 2026-08-30)_
+Every code + DB item in this sprint is now live: SEC-34/SEC-35/SEC-36/SEC-53/SEC-59/SEC-67 (code half) + the 15-endpoint same-origin-check gap. Dispatching #1662 (jvkn) also swept up 2 other already-merged, previously-undispatched migrations from earlier this session (Hussain + second-wave divergent-name fixes) — both self-guarded `UPDATE ... WHERE name = '<old value>'`, confirmed harmless no-ops since those rows were already on the new value. Full build detail: `sessions/2026-08-30.md`, `eq/changelog/eq-shell.md`.
+
 - [ ] **SEC-67's env-var half still needs Royce** — 4 confirmed-dead Netlify env vars (`FIELD_SUPABASE_URL`/`_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`/`_ANON_KEY`), zero code references, ready to delete — blocked by Claude Code's own classifier on unattended env-var writes. Commands in `sessions/2026-08-30.md`. _(added 2026-08-30)_
 - [ ] **The canonical-object trigger/view-column audit not started** — whether ~22 canonical objects beyond customers/sites/assets share the bug class the 2026-07-27 fix found. _(added 2026-08-30)_
 - [ ] **~30-file `requirePerm`-bypass write-endpoint backlog** (found via the SEC-26 investigation) — needs individual triage, explicitly scoped out of PR #1371 as its own follow-up. Named candidates: `edit-user`, `entity-patch`, `self-join-codes`, `set-phone-pin`, `staff-create`, the `provision-*` family, `user-preferences.ts`'s PATCH branch (low severity — self-scoped). _(added 2026-08-30)_
