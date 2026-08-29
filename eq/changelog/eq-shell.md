@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-30 (PR #1657 MERGED + LIVE + DISPATCHED — SEC-35, stray anon SELECT on field_* views closed)
+- 7 `app_data.field_*` views on ehow (plus `field_people` on zaap, found live and folded in) carried an unused `anon` SELECT grant — inert (`security_invoker=on` + no anon grant on the underlying table) but incorrect. Migration `0289` revokes it fleet-wide.
+- Merged (`c6a19f08`), deployed (Netlify `commit_ref` match confirmed), and dispatched via `tenant-migrate.yml` — verified live afterward on both ehow and zaap: zero `anon` SELECT grants remain on any `field_*` view.
+
 ## 2026-08-28 (PR #1656 MERGED + LIVE — Documents: site-scoped pushes and sign-off certificates)
 - A document push can now carry a site (`document_signoffs.site_id`, FK → the existing `app_data.sites` entity — not a new hardcoded list). Register groups by (document, site): the same document pushed to two sites reads as two independent entries, each with its own certificate covering only that site's signers. An untagged push renders unchanged.
 - Migration `0288`: nullable `site_id` + a generated `site_key` column (coalesce-to-sentinel, same trick `document_audiences.target_key` already uses) replacing the old tenant/version-wide signoff uniqueness, so a signer can hold one independent signoff per site while an untagged signoff keeps the pre-existing single-global-signoff guarantee. `document_register` view extended, columns appended at the end (this view's `CREATE OR REPLACE` has broken from a mid-list insert twice before — 0253, 0287).
