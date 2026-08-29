@@ -23,6 +23,7 @@ No goal is set in `TODAY.md` — this sprint doesn't claim strategic priority, j
 - [x] **SEC-26 residual** — investigated. Register already correctly says the gap is 92 *write* endpoints (not reads, as this sprint doc first assumed). Write chokepoint is fully shipped for everything going through `requirePerm`. The register's own SEC-26 row says the remaining gap is "OPEN AND DELIBERATELY ACCEPTED — not an oversight, a decision" — correctly left alone. Real remaining work reclassified below.
 - [x] **SEC-6** — confirmed not eq-shell's (`context_proposals` doesn't exist in this repo; register already correctly says `eq-substrate`). Nothing to do here.
 - [x] **SEC-58** — register corrected. Its "84/131" figures predated the ledger's own 2026-08-24 refresh; live gap is 12 recent files, not 47. Downgraded P2→P3.
+- [x] **SEC-36** — zaap's 4 tender-pipeline tables get real `authenticated` policies. ehow already had the fix but hardcoded to its one real org — copying it verbatim would've locked out zaap's other 2 real orgs, so this ships the generic per-request form instead, functionally proved live (`eq` org sees its 323 tenders, `melbourne` sees 0). [PR #1667](https://github.com/eq-solutions/eq-shell/pull/1667) — open, dry-run verified, awaiting merge.
 
 ## Still needs Royce
 
@@ -32,7 +33,6 @@ No goal is set in `TODAY.md` — this sprint doesn't claim strategic priority, j
 
 ## Queued — real remaining work, not started
 
-- [ ] **SEC-36** — 4 zaap tables need a live schema read before a correct `authenticated` policy can be written. Check `2026_07_11_tender_tables_anon_lockdown.sql` (jvkn-filed, zaap/ehow-targeted) as a possible SEC-58 misfiled-migration match while in this code.
 - [ ] **Canonical-object trigger/view-column audit** — whether ~22 objects beyond customers/sites/assets share the 2026-07-27 bug class.
 - [ ] **~30-file `requirePerm`-bypass write-endpoint backlog** (found via the SEC-26 investigation) — real, needs individual triage, explicitly scoped out of PR #1371 as its own follow-up. Named candidates: `edit-user`, `entity-patch`, `self-join-codes`, `set-phone-pin`, `staff-create`, the `provision-*` family, `user-preferences.ts`'s PATCH branch (low severity — self-scoped to the caller's own row).
 - [ ] **SEC-62** — the secret-remediation recipe re-leak. Likely eq-context's runbook, not this repo's action.
