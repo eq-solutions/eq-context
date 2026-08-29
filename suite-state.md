@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1661 fix(schedule): correct 0290's view column order + scope to SKS only
 - #1654 fix(data): resolve 4 more divergent staff/shell login names
 
 ---
