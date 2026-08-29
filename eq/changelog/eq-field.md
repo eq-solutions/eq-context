@@ -1,13 +1,23 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-28
+last_updated: 2026-08-29
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-29 (PR #828 MERGED + LIVE, v3.5.600 — SECURITY: apprentice journal — private entries leaked to every supervisor/manager)
+- Royce asked to investigate apprentices-tab security ("only my account and the apprentice should see it"). Read the full in-HTML changelog history first — 9 prior security fixes to this exact feature already shipped between v3.5.502 and v3.5.527 — then verified today's actual state against live code and live ehow rather than trusting that history as still-current.
+- Found `netlify/functions/apprentice-data.js`'s journal query used the same `byProfile()` filter as every other apprentice table, which resolves to no filter at all for manager/supervisor sessions — so it returned every apprentice's COMPLETE journal, private entries included, to any manager/supervisor account. `journal.js`'s own render function (line 106) already filters to `shared`-only for display, and its own header states the intended design plainly ("Private by default... managers only see shared entries") — the server-side fetch never enforced that, so the UI's filter was cosmetic against data that had already left the server.
+- Fix: the journal fetch now applies `shared=eq.true` whenever the caller is manager/supervisor `eq_role`. Self view is unchanged. No DB/migration change needed — live-queried `information_schema.role_table_grants` on ehow first and confirmed all 7 personal apprentice tables already have zero `authenticated`/`anon` grants, so the two Netlify functions really are the only path in; the bug was purely in this one file's application logic.
+- Added 2 targeted regression assertions to `tests/apprentice-data-scoping.test.js` (manager query IS filtered to `shared=eq.true`; self query is NOT) — the existing suite, written for the original 2026-08-18 fix, never actually checked the journal query's filter, which is how this shipped unnoticed for ~11 days.
+- Not touched, by design: the other 6 apprentice tables' manager-sees-all model (confirmed intentional, pre-existing product behaviour, and matches Royce's own original 2026-08-18 ask — see `eq/pending/eq-field.md`) and the `eq` sandbox tenant's separate unscoped fallback path (documented, accepted, disposable demo content).
+- eq-field [PR #828](https://github.com/eq-solutions/eq-field/pull/828), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js` (`v3.5.600`).
+- Version renumbered twice mid-flight: v3.5.598 → v3.5.599 (sibling PR #826 claimed .598 first, caught pre-push) → v3.5.600 (PR #827's hotfix for #826 claimed .599 in between, caught on the pre-*merge* freshness check — not just pre-push).
+- **Open follow-up, not resolved this session**: `apprentice-data.js` has no `audit_log` write, so there's no way to confirm whether any manager/supervisor account fetched another apprentice's private journal during the ~11-day exposure window. Tracked in `eq/pending/eq-field.md`.
 
 ## 2026-08-28 (PR #824 MERGED + LIVE, v3.5.594 — Documents to Sign: raw-file fallback for a load failure that doesn't resolve on retry)
 - Follow-on to the same-day PR #823 (v3.5.593, below): that fix stopped the spinner hanging forever on a failed `PDFViewerApplication.open()`, but "go back and try again" just re-ran the identical failing inline-viewer path — no real recovery if the failure was persistent (an expired signed URL, a genuinely bad conversion output) rather than transient. Spawned as `task_445c878c` by that session; this session is that task, started by Royce.
