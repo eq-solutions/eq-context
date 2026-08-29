@@ -19,12 +19,12 @@ No goal is set in `TODAY.md` — this doesn't claim strategic priority, just a b
 
 ---
 
-## Needs your call
+## Shipped
 
-- [ ] **`eq-field-apprentice-scope-race-wt`** — checked out on `main` itself, 87 commits behind `origin/main`, 0 ahead. Confirmed unchanged since the original audit. Objectively nothing would be lost removing it (no unique commits), but it isn't a feature branch with a PR to verify against, so it's a decision, not an assumption. **Recommended: remove it.**
-- [ ] **`C:\Users\EQ\AppData\Local\Temp\ci-repro`** — outside `C:\Projects` entirely, detached HEAD, 2-week-stale commit (v3.5.491), working tree already shows ~280 files deleted from disk (not staged — genuinely gone). Confirmed unchanged since the original audit. Reads as a spent CI-repro checkout, but this session doesn't own that lifecycle. **Recommended: remove it, unless it's wired into an active CI/repro workflow.**
+- [x] **`eq-field-apprentice-scope-race-wt`** — removed via `git worktree remove`. Royce's explicit go (asked directly in-session, no PR existed to verify merge status against — this was a stale `main`-only snapshot, 87 behind/0 ahead, nothing unique lost).
+- [x] **`C:\Users\EQ\AppData\Local\Temp\ci-repro`** — removed via `git worktree remove --force` (its working tree was already emptied out on disk, so git flagged it as "modified/untracked" rather than clean — the force was clearing a husk, not discarding real content). Royce's explicit go, same as above.
 
-Both asked directly in-session; this row updates to Shipped the moment either lands.
+Both closed in the same session that opened this sprint — see `system/worktree-registry.md` for the audit-trail entry.
 
 ---
 
