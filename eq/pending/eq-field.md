@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-29
+last_updated: 2026-08-30
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -65,11 +65,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell now has per-site project/module codes — a home for Field job-number wiring, whenever it's prioritized (2026-08-27)
+## eq-field/eq-shell: site_projects (multi-module sites) — read + write both live (2026-08-28→30)
 
-*BGIS/Telstra SLDC runs multiple concurrent modules (MOD10, MOD11...) at one physical address. Decision (`eq-context/ops/decisions.md`, 2026-08-26): one `app_data.sites` row per physical address always; module/project codes live one layer below as a reference back to that site, never as duplicate Site rows. Built in eq-shell [PR #1630](https://github.com/eq-solutions/eq-shell/pull/1630) (schema + read-only display) and [PR #1637](https://github.com/eq-solutions/eq-shell/pull/1637) (create-UI). Not a Field change — this is a breadcrumb, not a request to build anything now.*
-
-- [ ] **`app_data.site_projects` exists on both tenant planes** (ehow, zaap) — service-role-only table, columns `id, site_id, code, name, status, tenant_id`, `UNIQUE (site_id, code)`. Zero rows on either plane as of 2026-08-27 (no real code entered yet). If Field dispatch/job-assignment ever needs to target a specific module at a multi-module site rather than the site as a whole, this table is where that code already lives — read via a service-role join (see eq-shell's `crm-customers.ts` `loadSiteProjects()`), not RLS-exposed. No Field-side work has started; this is only a pointer for whoever picks it up. _(added 2026-08-27)_
+- [ ] **`roster_project_picker` toggle is still OFF** — flip it in Manage → Feature Toggles before any supervisor sees the explicit per-day project-code picker dropdown on Edit Roster. Typing a project code directly into the site cell (e.g. "MOD10") already resolves the real site regardless of this toggle — see `eq/changelog/eq-field.md` (2026-08-30) for the full build. _(added 2026-08-30)_
+- [ ] **`timesheets`'s canonical save path has the same blind-replace/no-compare-and-swap exposure that caused a real live incident on roster's equivalent path** (fixed 2026-08-30, see changelog) — not ported, not confirmed as a live problem there, flagged as a candidate follow-up only. _(added 2026-08-30)_
 
 ---
 

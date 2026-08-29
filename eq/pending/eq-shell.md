@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-28
+last_updated: 2026-08-30
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -161,8 +161,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-shell: multi-project-code sites (MOD10-style) — built, merged, live; follow-ups open (2026-08-27)
 
 - [x] **Create-UI shipped** — [PR #1637](https://github.com/eq-solutions/eq-shell/pull/1637) adds `add_site_project`/`delete_site_project` to `crm-write.ts` (same service-role pattern as `add_site`/`delete_site`) and an inline add-code input + remove-✕ on each chip in `CustomersPage.tsx`'s expand row, gated on `site.owned`. Not yet merged to `main` — open for review. _(added 2026-08-27)_
-- [ ] **Not click-tested live by a person** — `app_data.site_projects` exists on both ehow and zaap but has zero rows; needs a real code entered on a real site (e.g. the Telstra SLDC/BGIS site that motivated this) via the new PR #1637 UI, confirming add, duplicate-code 409, remove, and the read-only view on a linked (non-owned) site all behave. _(added 2026-08-27)_
-- [ ] **Not wired to EQ Ops job numbers or EQ Field's own Job Numbers/Projects tables** — explicitly out of scope for this pass; separate, later change in each of those repos. EQ Ops is local to this repo (`src/pages/EqOps.tsx`, routes `/ops*`) — its job/quote numbering could reference a site's `app_data.site_projects` codes for multi-module sites like BGIS/Telstra SLDC, whenever that's prioritized. Mirror note left in `eq-field.md` for the Field side (dispatch/job assignment against a specific module code at a multi-module site). _(added 2026-08-27)_
+- [ ] **Duplicate-code 409 and remove-chip specifically still not confirmed live.** Partially overtaken since 2026-08-27: MOD10 on Telstra SLDC is now a real, actively-used code — Field reads it (chips on Sites/My Schedule), writes against it (roster picker + a typed-code alias resolver), and it's been exercised heavily via direct queries this session — so "does a real code exist and get used for real" is answered. What's specifically NOT confirmed: the add-UI's duplicate-code 409 response and the remove-✕ button, neither exercised this session. _(added 2026-08-27, narrowed 2026-08-30)_
+- [ ] **Not wired to EQ Ops job numbers** — still true, still out of scope. Separately, "EQ Field's own Job Numbers/Projects tables" (this item's other half) turned out not to be the right integration point — Field instead built its own direct roster-side wiring (a per-day project-code picker + an alias resolver that lets a supervisor type the project code straight into the site cell), unrelated to the Job Numbers feature. See `eq/pending/eq-field.md` (2026-08-28→30) and `eq/changelog/eq-field.md` for the built version; the Ops-wiring half of this item is still open. _(added 2026-08-27, narrowed 2026-08-30)_
 
 ---
 

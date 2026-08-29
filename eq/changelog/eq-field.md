@@ -1,13 +1,26 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-29
+last_updated: 2026-08-30
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-30 (PR #829 MERGED + LIVE, v3.5.601 + v3.5.602 — SKS canonical roster staleness guard + typed-project-code alias resolution)
+- Root cause of a real live incident: `_sbRosterCanon`'s `_replaceWeek` always blind-deletes-and-reinserts a staff member's whole week from whatever's in the browser's memory, with no check against the live server state — a tab open across a server-side change silently clobbered it back the instant it next saved anything in that week. Happened for real, three times, to the same test rows (2026-08-29/30) while a data fix was being applied by hand.
+- Fix (v3.5.601): `roster-adapter.js` gains a per-day `_rev` field + `weekRevFingerprint()`/`isFingerprintAware()`; `_replaceWeek` refuses the blind overwrite when the live fingerprint has moved since load, refetches real state, warns via toast instead. `realtime.js` gains the matching `_project`/`_rev` carry-through on a live patch (closes a separate gap where project-code changes never live-synced since v3.5.598). New `tests/supabase-canon-write.test.js` — first coverage this save path has ever had. Reverted the v3.5.599 hotfix's `site_project_id` key-omission now that its blocking migration is confirmed live.
+- Feature (v3.5.602), prompted live by the same incident: typing a project code (e.g. "MOD10") directly into the roster's site cell now resolves both the real site and the project tag together — same never-guess collision rule the site-code resolver already uses. Royce: "Users will want to type MOD10 - how do we do that and make it reference SLDC site info for their schedule?"
+- Ran `/decide` against three staged fix options before building; shipped the compare-and-swap guard plus the one slice of realtime it depends on, not the full tab-focus-refresh tier (flagged as still open).
+
+## 2026-08-28/29 (PR #822/#826/#827 MERGED + LIVE, v3.5.597-599 — site_projects read + write, one live incident)
+- Wired Core's multi-project-per-site feature (one site, several short codes — e.g. MOD10/MOD11 at BGIS/Telstra SLDC) into Field end to end, read then write, across eq-shell + eq-field.
+- Read side (v3.5.597): Sites page + My Schedule show each site's project codes as chips, via a new `field_site_projects` adapter view (eq-shell PR #1651) — the base table stays service-role-only by design.
+- Write side (v3.5.598): a per-day project-code picker on Edit Roster, gated behind `roster_project_picker` (default OFF, mirrors the job-number picker's own precedent) — eq-field PR #826 + the backing `schedule_entries.site_project_id` column, eq-shell PR #1659 (later corrected as #1661, see below).
+- Live incident: the migration failed to apply on both tenant planes (`CREATE OR REPLACE VIEW` column-position bug + a migration wrongly targeting a tenant where the equivalent table isn't a view) — not caught until after the dependent v3.5.598 app code was already live and unconditionally sending the new (nonexistent) column in every canonical roster save. Hotfixed same-day (v3.5.599, PR #827 — omit the key rather than send `null`); migration corrected and re-dispatched separately (eq-shell PR #1661).
+- Telstra SLDC's own site record was found missing its `code` entirely (a separate, pre-existing data gap, not caused by this work) — set directly on confirmed test/trial data.
 
 ## 2026-08-29 (PR #828 MERGED + LIVE, v3.5.600 — SECURITY: apprentice journal — private entries leaked to every supervisor/manager)
 - Royce asked to investigate apprentices-tab security ("only my account and the apprentice should see it"). Read the full in-HTML changelog history first — 9 prior security fixes to this exact feature already shipped between v3.5.502 and v3.5.527 — then verified today's actual state against live code and live ehow rather than trusting that history as still-current.
