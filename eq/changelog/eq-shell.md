@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-30 (4 more security-hardening PRs merged — 2 code, 2 migration-only pending dispatch)
+- **PR #1663 MERGED + LIVE** — SEC-53 (dead `ktmjmdzqrogauaevbktn.supabase.co` + `quotes.eq.solutions` dropped from core.eq.solutions's CSP) and SEC-67's eq-shell code half (`field-supabase.ts`'s zero-caller `getFieldServiceClient()` deleted outright). Pure code, live via Netlify the moment merged.
+- **PR #1665 MERGED + LIVE** — 15 more cookie-authenticated endpoints gated with `checkShellOrigin()` (account-security, GM Reports, Intake, Labour Hire ×9, uploads ×3, job-creation). Enforcing immediately (`ENFORCE_IFRAME_ORIGIN=true` in prod already), not just logging.
+- **PR #1662 MERGED, migration NOT YET DISPATCHED** — SEC-34 (`shell_control.user_invites` reads scoped to managers) + SEC-59 (stray TRUNCATE revoked on 9 `shell_control` tables), jvkn. File is on `main`; applying it via `control-plane-migrate.yml` is a separate step.
+- **PR #1667 MERGED, migration NOT YET DISPATCHED** — SEC-36, zaap's 4 tender-pipeline tables get real `authenticated` policies (generic per-request form, not ehow's hardcoded-single-org version — see the PR body for why that distinction mattered). File is on `main`; applying it via `tenant-migrate.yml` is a separate step.
+
 ## 2026-08-29 (PR #1654 MERGED + LIVE — 4 more divergent staff/shell login names resolved)
 - Second wave of the discovery audit from PR #1652's same-day follow-up sweep. Found 4 more `shell_control.users.name` (jvkn) vs `app_data.staff` name divergences on ehow (SKS): Moahmmed Elsayed, Amir Farid (was NULL, filled), Eric Nguyen, Nelson Sareto — each confirmed individually with Royce before applying, same discipline as the 2026-08-23 and #1652 fixes.
 - zaap (EQ) reconfirmed as still only 1 linked staff row, and that row's `user_id` no longer resolves to any `shell_control.users` row at all — a separate, unrelated break, flagged but not touched here.
