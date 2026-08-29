@@ -69,9 +69,9 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1666 feat(documents): requires_signoff flag on document_categories (migration 0291)
+- #1668 feat(documents): category can override doc_type's signoff routing
+- #1667 fix(security): tender-pipeline zaap tables get real authenticated policies (SEC-36)
 - #1665 fix(security): add the same-origin check to 15 more cookie-authenticated mutators
-- #1664 fix(documents): lazy-load Register and Reference library tabs
 - #1663 fix(security): drop dead Supabase/Quotes refs from CSP + delete unused field-supabase client (SEC-53/SEC-67)
 - #1662 fix(security): scope user_invites reads to managers, revoke stray TRUNCATE (SEC-34/SEC-59)
 
