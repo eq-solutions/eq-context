@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-30 20:00 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-30 20:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-30 19:48 UTC → 2026-08-30 20:00 UTC)
+## Since last refresh (2026-08-30 20:00 UTC → 2026-08-30 20:23 UTC)
 
-- Merged: eq-shell [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called di
-- Merged: eq-shell [#1672](https://github.com/eq-solutions/eq-shell/pull/1672) fix(sites): field_sites.site_lead via contact_site_links (ro
-- Merged: eq-shell [#1670](https://github.com/eq-solutions/eq-shell/pull/1670) feat(documents): ad-hoc multi-site document pushes and sign-
-- Merged: eq-shell [#1668](https://github.com/eq-solutions/eq-shell/pull/1668) feat(documents): category can override doc_type's signoff ro
-- Merged: eq-shell [#1665](https://github.com/eq-solutions/eq-shell/pull/1665) fix(security): add the same-origin check to 15 more cookie-a
-- Merged: eq-shell [#1663](https://github.com/eq-solutions/eq-shell/pull/1663) fix(security): drop dead Supabase/Quotes refs from CSP + del
-- Merged: eq-shell [#1661](https://github.com/eq-solutions/eq-shell/pull/1661) fix(schedule): correct 0290's view column order + scope to S
-- Merged: eq-field [#850](https://github.com/eq-solutions/eq-field/pull/850) feat(ci): pass exclude through to the tenant-migrate reusabl
+- Merged: eq-shell [#1674](https://github.com/eq-solutions/eq-shell/pull/1674) feat(staff): start_date capture + Resourcing gap indicator
+- Merged: eq-shell [#1673](https://github.com/eq-solutions/eq-shell/pull/1673) feat(documents): edit requires_signoff + reach category mana
+- Merged: eq-shell [#1671](https://github.com/eq-solutions/eq-shell/pull/1671) feat(ci): let other repos apply their own jvkn migrations vi
+- Merged: eq-shell [#1669](https://github.com/eq-solutions/eq-shell/pull/1669) feat(sites): canonical contacts only for site "Ask for" / "B
+- Merged: eq-shell [#1667](https://github.com/eq-solutions/eq-shell/pull/1667) fix(security): tender-pipeline zaap tables get real authenti
+- Merged: eq-shell [#1666](https://github.com/eq-solutions/eq-shell/pull/1666) feat(documents): requires_signoff flag on document_categorie
+- Merged: eq-shell [#1664](https://github.com/eq-solutions/eq-shell/pull/1664) fix(documents): lazy-load Register and Reference library tab
+- Merged: eq-shell [#1662](https://github.com/eq-solutions/eq-shell/pull/1662) fix(security): scope user_invites reads to managers, revoke 
 
 ## ⚠ Needs you (8)
 
@@ -55,9 +55,9 @@ _…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 5d ago | 7 | 10d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 10d |
 | eq-field | ✓ success | 0d ago | 2 | 0d |
-| eq-cards | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 12d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -187,4 +187,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 20:00 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 20:23 UTC._
