@@ -21,6 +21,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: CSV import can no longer deliberately blank an existing field (2026-08-30)
+- [ ] **Open product question, not blocking — already flagged in the PR itself.** [PR #831](https://github.com/eq-solutions/eq-field/pull/831) (merged, v3.5.605) fixed CSV people-import silently nulling `start_date` + 6 other optional fields on any partial/hand-built CSV re-import — matched rows now only apply a field if the CSV actually supplied a non-blank value for it, mirroring the guard `savePersonToSB`'s single Add/Edit path already had. Side effect: CSV re-import can no longer *deliberately* clear a field on an existing person (e.g. bulk-clearing `agency` after someone leaves a labour-hire firm) — a blank cell now always means "no info supplied," never "clear this." Probably the safer default, but it's an inferred behavior change, not a confirmed one. If bulk-clear-via-CSV turns out to matter, needs the CSV parser (`import-export.js`) to distinguish "column absent" from "cell blank" before this can change. _(added 2026-08-30)_
+
+---
+
 ## eq-field: Apprentice journal privacy fix — two open questions (2026-08-29)
 - [ ] **Historical-exposure unknown.** `apprentice-data.js` writes nothing to `audit_log`, so there's no way to confirm whether any manager/supervisor account fetched another apprentice's private journal entries during the ~11 days this was live unfixed (endpoint shipped 2026-08-18, journal-specific gap closed 2026-08-29 — [PR #828](https://github.com/eq-solutions/eq-field/pull/828)). Needs Royce's call on whether that residual unknown is worth raising with anyone. _(added 2026-08-29)_
 - [ ] **"Only my account" vs. today's actual model.** Royce's framing this session ("only my account and the apprentice should see it") is narrower than what's enforced — the fix above closes the journal gap specifically; the other 6 apprentice tables still follow the existing manager/supervisor-sees-all model, which matches his own original ask on 2026-08-18 (see "apprentice data readable by any authenticated SKS session" further down this file: "I want me to be able to see all of them") but not his exact wording today. Not raised as a problem, just flagging the gap between the two asks in case it matters later. _(added 2026-08-29)_
