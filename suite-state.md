@@ -60,12 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-30)
 
-**eq-cards:**
-- #333 fix(cards): polish sprint round 2 — reliability, a11y, design system
-
-**eq-field:**
-- #846 feat(ci): governed apply path for tenant migrations to zaap + ehow
-
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -73,9 +67,6 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
-
-**eq-shell:**
-- #1685 fix(staff): readable conversation viewer + attach source documents
 
 ---
 
