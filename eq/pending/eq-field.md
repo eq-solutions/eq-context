@@ -13,6 +13,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: EQ-SHELL-14 duplicate-identity bug orphaned a worker's future roster onto a dead record (2026-08-31)
+
+- [ ] **Root cause still open** — Nelson Sareto's 15 orphaned schedule rows (24 Aug–11 Sep) were repointed to his real active staff record and verified live, but the upstream cause (duplicate canonical worker identity creating two `app_data.staff` rows for one person, same pattern as the earlier "Emma Curth" case) is untouched. Spawned as background task `task_c74f9351`: live-sweep ehow for other pairs with the same shape (matching email/phone/DOB, different `cards_worker_id`) before assuming Nelson was the only one. Full detail in `sessions/2026-08-31.md`. _(added 2026-08-31)_
+
+---
+
 ## eq-field: Feature Toggles page — descriptions get concrete examples + mini-previews (2026-08-31)
 *Royce, screenshot of Manage → Feature Toggles: "who can see this" + "can we improve the descriptions, show examples of what each feature does." Access question answered first (manager/supervisor only via `field.manage_feature_toggles`, enforced at the nav item, the route guard, and the page's own render check — all three verified live in code) before touching anything.*
 
