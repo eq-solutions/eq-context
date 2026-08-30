@@ -61,7 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-30)
 
 **eq-field:**
-- #834 v3.5.606 — Prestart Crew: surface recently-approved staff not yet on today's roster
+- #836 v3.5.607 — Dashboard + Trial Dashboard: an aliased project code now shows its real site name too
+- #835 v3.5.607 — FIX: My Schedule site lead/contacts/project badge missing on an aliased project-code day
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
