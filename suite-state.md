@@ -61,7 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-30)
 
 **eq-field:**
-- #843 v3.5.616 — Dashboard org-wide widgets manager/supervisor-only
+- #846 feat(ci): governed apply path for tenant migrations to zaap + ehow
+- #843 v3.5.617 — Dashboard org-wide widgets manager/supervisor-only
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -70,6 +71,9 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1684 feat(ci): let eq-field apply its own tenant migrations via this pipeline
 
 ---
 
