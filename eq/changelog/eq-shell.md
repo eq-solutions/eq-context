@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-30 (PR #1677 MERGED + LIVE — Resourcing Name search/filter matched nothing, for anyone)
+- The Resourcing page's Name column (`StaffResourcingPage.tsx`) had `filterable: 'text'` but no `filterValue` — `ResourcingPerson` has no `name` property, only `first_name`/`last_name`, so `@eq-solutions/ui`'s `Table` fell back to `row['name']` (undefined) for both the global search box and the column filter. Any non-empty search term returned "No results match your filters," regardless of what was typed. Fix: `filterValue: (row) => personName(row)`, matching the exact pattern already used one row below by the `teams` column for its own composite field.
+- Root-caused against `Table.tsx`'s actual source (not guessed) — both the global-search and per-column filter paths share the same `col.filterValue ? col.filterValue(row) : row[col.key]` fallback. Reproduced pre-fix and re-verified post-deploy live against production: Wheeler, Bramall, and Toohey all correctly found via both the search box and the column filter.
+- Same session also imported 27 historical performance reviews (2021–2026, 14 people) into `app_data.staff_conversations` as backdated conversation entries — a data backfill, not a code change, so not its own PR. See `eq-context/sessions/2026-08-30.md` for the full session record, including the 4 `start_date` corrections and one name fix (Ali → Alaa Alsalman) also applied this session.
+
 ## 2026-08-30 (PRs #1658/#1664/#1666/#1668/#1673 MERGED + LIVE — Documents to Sign: full redesign)
 - **Categories on every doc type** (#1658): category picker generalised beyond templates — server-side was already generic, the restriction was frontend-only.
 - **Day 1 — load time** (#1664): Register/Reference Library tabs fetch on first visit instead of unconditionally on mount. Cut a fresh page load from 4 parallel Netlify Function calls to 2.

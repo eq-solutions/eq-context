@@ -228,7 +228,6 @@ _Nothing pending — migrations 001–023 all applied._
 
 - [ ] Book monthly check-in cadence with Richo (Michael Richardson)
 - [ ] Tell Mark about catch-up conversations before starting (casual, no fanfare)
-- [ ] Confirm Scott Hotson start date + written offer
 - [ ] Schedule Simon Bramall catch-up — Equinix Account Lead conversation
 - [ ] Hold Ben Ritchie coffee — first/second week back
 - [ ] Schedule Simon + Matt three-way (Equinix rhythm + scope clarity)
@@ -239,6 +238,20 @@ _Nothing pending — migrations 001–023 all applied._
 - [ ] Leif → Senior Comms Advisor reframe — demand-driven framing
 - [ ] Wayne Rowe exit conversation — Mark to own
 - [ ] Charlotte White → Project Coordinator scope definition
+
+## HR folder audit — cross-referenced against live Shell data (2026-08-30)
+*Royce pointed at `OneDrive - eq-power.com.au\HR` (letters of offer, 29 performance reviews, resumes, role docs, org chart, contacts sheet) and asked for a full audit + a plan to bring it into EQ Shell. Findings written up as an HTML report and delivered as a file (Artifact publish was blocked by the platform's own safety classifier — real names + salary data). Phase 1 (4 start-date backfills + a name fix) and Phase 2 (27 historical reviews imported into Resourcing) both executed and verified live this session.*
+
+- [x] Scott Hotson, Charlie Eyiam-Rowe, Bruno Vita Pedrosa, Alaa Alsalman — `start_date` backfilled from their signed Letters of Offer. Also fixed his name in the live table: was "Ali Alsalman", his letter and the contacts sheet both say Alaa.
+- [x] 27 historical performance reviews (2021-2026, 14 people) imported into `app_data.staff_conversations` — see eq-shell.md's Resourcing section for the live-verification detail.
+- [ ] **`EQ_Contacts.csv`'s own start-date for Alaa Alsalman disagrees with his actual signed letter** — CSV says 1 Jul 2026, the letter says 3 Aug 2026 (used for the backfill). The CSV itself wasn't corrected — worth fixing at the source if anyone still edits that file by hand.
+- [ ] **6 of the 14 people with imported review history have no `job_title` on file**: Richard Brown, Terry Su, Jessica Robinson, John Angangan, Brian Griffin-Colls, Phillip Krikellis.
+- [ ] **Duplicate people-rows in `app_data.staff`**: Nelson Sareto and Conor Horgan each have two `staff_id` rows (one active, one inactive). Worth a dedupe pass before any further bulk import lands on top of them.
+- [ ] **Test/dummy records live in `app_data.staff`**: "Jordan A. Sample," "TEST VERIFICATION DO-NOT-CONTACT," "Alpha Tester" — all inactive so invisible today, but real rows.
+- [ ] **Brian Griffin-Colls' 2 Dec 2025 review date wasn't independently re-verified against the source PDF** — his filename says "251204" (4 Dec) but the reviewing sub-agent read the document itself as dated 2 Dec, the same day as a separate person's (Ben Ritchie) review. Plausible (batch review day), but not personally re-checked.
+- [ ] **Resourcing (Shell, all-staff conversation cadence) and Apprentices (Field, trade competency) are not duplicated systems — Royce's explicit call, "leave it as-is".** They already overlapped once, briefly: a "Staff Reviews" tab was piloted directly in eq-field 2026-08-11, reusing the apprentice tables via an added `person_id` column, then killed by Royce three days later ("this was moved to eq shell so no need to have it here") — the tab/page/script were removed, but the `person_id` columns on eq-field's `skills_ratings`/`feedback_entries`/`quarterly_reviews` are still there, unused. Harmless, just a fact worth knowing if anyone stumbles on those columns later.
+- [ ] **Licences/tickets already have a real, structured home in eq-shell** — Staff → person → "Licences & Training" (expiry dates, photo attachments, review stamps). Correcting an in-session claim: this was wrongly called a gap earlier in the same session before actually seeing that part of the Staff page live.
+- [ ] Org chart's reporting-line data isn't anywhere structured — the SKS interactive org chart tool has an Export/Import JSON function; a fresh export straight from Royce would be a cleaner seed for Shell's DRAFT org-chart feature than anything scraped from a saved HTML file.
 
 ## Tools built (2026-06-01) — reference
 
