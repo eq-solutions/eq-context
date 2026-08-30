@@ -1,8 +1,11 @@
 ---
 title: EQ Suite — outstanding items (whole-suite sweep)
 date: 2026-08-28
+last_updated: 2026-08-30
 owner: unassigned — TODAY.md has 0 active goals, so this is a full backlog, not a scoped sprint
 scope: all 11 repo pending logs + ops/security-register.md + system/failures.md, swept fresh against origin/main @ 06480b1e
+read_priority: reference
+status: live
 ---
 
 # EQ Suite — outstanding items (2026-08-28)

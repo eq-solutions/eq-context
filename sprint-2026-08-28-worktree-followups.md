@@ -1,8 +1,11 @@
 ---
 title: eq-field worktree cleanup — follow-up sprint
 date: 2026-08-28
+last_updated: 2026-08-30
 owner: Royce Milmlow
 scope: the 3 "needs you" items left after the 2026-08-28 eq-field worktree audit (19 of 24 worktrees cleaned up; full audit trail in eq-context/system/worktree-registry.md's "round 2" entry and its Active table)
+read_priority: standard
+status: live
 ---
 
 # eq-field worktree cleanup — follow-up sprint (2026-08-28)
