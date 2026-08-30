@@ -54,17 +54,49 @@ check("superset: 1 group deduped", r["groups_deduped"] == 1, r)
 check("superset: newest/fullest kept", "- [x] did B" in text and "(rotated 2026-08-06)" in text)
 check("superset: no conflict flagged", r["groups_conflicted"] == [])
 
-# 3 — genuine conflict (neither copy's done-lines are a superset of the
-# other's) is left untouched and reported, never guessed at.
+# 3 — non-superset copies (neither's done-lines contain the other's -- the
+# rotation bug's mixed-section shape: each failed-removal night appended a
+# different, non-overlapping extract of the same live section) union-merge
+# into ONE section holding every distinct done-block. Nothing dropped, no
+# copy silently preferred over another.
 body = (
-    "\n## conflict thing (2026-08-01) (rotated 2026-08-05)\n*intro*\n\n- [x] did A\n\n---\n\n"
-    "## conflict thing (2026-08-01) (rotated 2026-08-06)\n*intro*\n\n- [x] did C\n\n---\n\n"
+    "\n## union thing (2026-08-01) (rotated 2026-08-05)\n*first intro*\n\n- [x] did A\n\n---\n\n"
+    "## union thing (2026-08-01) (rotated 2026-08-06)\n*second intro*\n\n- [x] did C\n\n---\n\n"
 )
 text, r = run(body)
-check("conflict: nothing deduped", r["groups_deduped"] == 0, r)
-check("conflict: flagged", any("conflict thing (2026-08-01)" in k for k in r["groups_conflicted"]), r["groups_conflicted"])
-check("conflict: both copies still present", text.count("## conflict thing") == 2)
-check("conflict: both done lines survive", "- [x] did A" in text and "- [x] did C" in text)
+check("union: 1 group deduped (via union-merge)", r["groups_deduped"] == 1, r)
+check("union: flagged as union-merged, not left as conflict", any("union thing (2026-08-01)" in k for k in r["groups_union_merged"]) and r["groups_conflicted"] == [], r)
+check("union: exactly one copy of the header remains", text.count("## union thing") == 1)
+check("union: both done lines survive in the merged section", "- [x] did A" in text and "- [x] did C" in text)
+check("union: newest copy's own intro kept (not the older one)", "*second intro*" in text and "*first intro*" not in text)
+
+# 3b — the true backstop case: a "duplicate" group where NEITHER copy has
+# any done item at all (shouldn't happen in a real archive, which is
+# done-items-only by convention, but must never crash or guess). Left
+# completely untouched and reported -- there's nothing safe to union.
+body = (
+    "\n## no-done thing (2026-08-01) (rotated 2026-08-05)\n*intro A*\n\n---\n\n"
+    "## no-done thing (2026-08-01) (rotated 2026-08-06)\n*intro B*\n\n---\n\n"
+)
+text, r = run(body)
+check("backstop: nothing deduped", r["groups_deduped"] == 0, r)
+check("backstop: flagged as a genuine conflict, not union-merged", any("no-done thing" in k for k in r["groups_conflicted"]) and r["groups_union_merged"] == [], r)
+check("backstop: both copies still present untouched", text.count("## no-done thing") == 2)
+
+# 3c — same-day tie on rotation date: the richer intro wins, not file
+# order. Caught live on eq/pending-archive.md's own "SKS tenant LIVE...
+# Big correction" pair (both stamped the same date; file-order tiebreak
+# would have kept the near-empty intro over the one explaining the
+# correction). The union of done-items must hold regardless of which
+# intro wins.
+body = (
+    "\n## same-day tie (2026-08-01) (rotated 2026-08-05)\n\n- [x] short version item\n\n---\n\n"
+    "## same-day tie (2026-08-01) (rotated 2026-08-05)\n*Big correction vs the earlier draft: here is what was actually wrong.*\n\n- [x] fuller version item\n\n---\n\n"
+)
+text, r = run(body)
+check("tiebreak: richer intro wins on a same-date tie", "*Big correction vs the earlier draft" in text, r)
+check("tiebreak: both done items still survive the union", "- [x] short version item" in text and "- [x] fuller version item" in text)
+check("tiebreak: only one header remains", text.count("## same-day tie") == 1)
 
 # 4 — a section with no duplicates anywhere is left completely alone
 body = "\n## unique thing (2026-08-01)\n*intro*\n\n- [x] did A\n\n---\n\n"
