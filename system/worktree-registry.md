@@ -116,6 +116,10 @@ If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-s
 
 `C:\Projects\eq-field\.claude\worktrees\supervisor-list-population-9e6715 (eq-field)` | `claude/roster-project-code-picker` (was `claude/multi-project-site-display-1483e9` / PR #822 when first logged — branch has since moved on) | found live during the same audit (owning session unknown) — clean tree | 2026-08-28 | **NOT TOUCHED** — still reads as live work closing the Field-side half of the `site_projects` wiring gap already on record (Core built the read+write UI, zero Field code consumed it originally).
 
+`C:\Projects\eq-shell-jvkn-cards-apply (eq-shell)` | `claude/jvkn-control-plane-apply-cards` | [eq-shell#1671](https://github.com/eq-solutions/eq-shell/pull/1671) OPEN | 2026-08-30 | jvkn control-plane apply pipeline extended to other repos (mechanism only, no live jvkn write for eq-cards yet). Remove once merged.
+
+`C:\Projects\eq-cards-jvkn-apply (eq-cards)` | `claude/jvkn-control-plane-apply` | [eq-cards#330](https://github.com/eq-solutions/eq-cards/pull/330) OPEN | 2026-08-30 | Companion to the eq-shell row above — depends on that PR merging first. Remove once merged.
+
 ## Recently pruned (2026-08-28, round 3 — 2 worktrees, Royce's explicit go, no PR to verify)
 
 Follow-on to round 2 immediately below: Royce asked for a sprint doc tracking that round's 2 unresolved "needs you" items (`sprint-2026-08-28-worktree-followups.md`), then answered both directly in the same session rather than leaving them parked. Neither had a PR to check — the round-2 method (gh pr list + squash-commit grep) doesn't apply here; this is a plain "asked, got an explicit go" removal instead:
