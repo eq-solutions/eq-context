@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #836 v3.5.607 — Dashboard + Trial Dashboard: an aliased project code now shows its real site name too
-- #835 v3.5.607 — FIX: My Schedule site lead/contacts/project badge missing on an aliased project-code day
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
