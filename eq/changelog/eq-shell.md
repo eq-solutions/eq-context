@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-30 (PRs #1658/#1664/#1666/#1668/#1673 MERGED + LIVE — Documents to Sign: full redesign)
+- **Categories on every doc type** (#1658): category picker generalised beyond templates — server-side was already generic, the restriction was frontend-only.
+- **Day 1 — load time** (#1664): Register/Reference Library tabs fetch on first visit instead of unconditionally on mount. Cut a fresh page load from 4 parallel Netlify Function calls to 2.
+- **Day 2 — Category overrides Type's sign-off routing** (#1666 migration, #1668 app code): new `document_categories.requires_signoff` (migration 0291, data-driven backfill). Category wins when a document has one, falls back to `doc_type` otherwise — backward-compatible by construction, every pre-existing document was uncategorized. Extracted to a tested `src/lib/documentSignoff.ts`. Mirrored server-side in `handleTemplates` and the POST push handler's existing doc_type guard (protects the same incident class as the 2026-08-17 fix). App-code PR deliberately held until the migration was confirmed live on both planes.
+- **Day 3 — category editor everywhere** (#1673): `requires_signoff` now editable via category create/rename; inline "+ New category" + relocated entry point.
+- Migration 0291 applied via `tenant-migrate.yml` — Claude Code's auto-mode classifier blocked both the migration-file write and the dispatch itself; Royce ran the dispatch directly in GitHub's UI both times rather than the action being taken programmatically.
+- Diagnosed but explicitly NOT fixed this session: Gotenberg (the Office→PDF conversion service PR #1635 shipped code for) was never actually provisioned — `GOTENBERG_URL` unset, confirmed live, 0 of 18 pre-pipeline documents have ever converted. Royce's call: defer, only 1 of the 18 was a real blocker.
+
 ## 2026-08-30 (PR #1674 MERGED + LIVE — start_date capture at review points + Resourcing visibility nudge)
 - Optional `start_date` added to `cards-approve-staff.ts` (Cards application approval) and `staff-create.ts` (Shell manual roster-add) — the two points a manager reviews one specific new person before they join the roster. Fill-if-missing only, never overwrites an existing value. Matching date inputs added to `StaffPage.tsx` and `AddToRosterModal.tsx`.
 - `/decide` pass found the `cards-approve-staff.ts` capture point likely doesn't fire for SKS specifically — the tenant auto-approves Cards signups (`workers-canonical-sync`'s own accepts-applications config), so its review queue is very likely always empty. Added a tenant-config-independent fallback instead: a "missing a start date" count + filter tab on `StaffResourcingPage.tsx`, using data the page already fetches. `tenureLabel(null)` now reads "Not set" instead of a bare em dash.

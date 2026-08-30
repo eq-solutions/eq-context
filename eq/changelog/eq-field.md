@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-30 (PR #825 MERGED + LIVE, v3.5.595 — Documents to Sign: report a failed PDF load to Sentry)
+- Follow-on to v3.5.593 (infinite-spinner fix) — Luke retried and hit a different failure ("couldn't load document" shown under the empty viewer, not silent this time). Ruled out data/network/CORS definitively via live storage_logs querying: every byte-fetch that day returned 200 OK. The failure is client-side, inside pdf.js itself, correlated with Android + Samsung Internet in the request logs but not reproduced or explained.
+- `sign-documents-viewer.js`'s `open()` failure path now calls `EQ_OBS.captureException` with device UA + signoffId attached, so the next occurrence yields a real error instead of another log-correlation exercise. Diagnostic infrastructure, not a fix for the underlying cause — flagged as such, not oversold.
+- eq-field [PR #825](https://github.com/eq-solutions/eq-field/pull/825), squash-merged, confirmed live via commit-ancestry check against the newest ready production deploy.
+- **Open follow-up**: root cause still unknown as of this session's close — no real Sentry event has landed yet to diagnose from. Tracked in `eq/pending/eq-field.md`.
+
 ## 2026-08-30 (PR #831 MERGED + LIVE, v3.5.605 — FIX: CSV people import silently nulled existing fields on every re-import)
 - `importPeopleToSB()` (`scripts/supabase-entities.js`) matched a CSV row to an existing person by phone/email, then sent a full-row PATCH unconditionally — unlike `savePersonToSB` (the single Add/Edit Person path), which diffs against the pre-edit snapshot via `_diffRow` before patching. Any blank cell on a matched row nulled that field, across 7 optional columns (`phone, email, licence, agency, tafe_day, dob_day, dob_month, start_date`) — not just a missing column. The default CSV export always includes every column, so a strict export → edit → re-import round trip never showed this; any hand-built or partial CSV (HR export, email list) did.
 - Checked ehow's `app_data.audit_log` + `audit_log_archive` for every `staff.start_date` non-null→null flip, ever, before assuming damage: found exactly one (Aiden Crowley, 2026-08-24), but it fingerprints as the OLD pre-`84f7bc72` `savePersonToSB` bug (`job_title` + all 3 `emergency_contact_*` fields flipped in the same write — fields this import path never touches), already closed by that earlier fix. No confirmed instance of this specific bug causing real data loss.
