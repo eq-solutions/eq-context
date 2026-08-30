@@ -1569,36 +1569,14 @@ Overhauled the worker connection flow so a declined worker isn't left in the dar
 - [x] **Scheduler/route migration (4.4)** — `supervisor-digest` + `pre-visit-brief` schedulers **[CLOSED 2026-07-27 — PRE_VISIT_BRIEF_CRON_ENABLED confirmed live in suite-state.md's Crons table — routing decision made, operational]**
       depend on Next.js `/api/cron/*` routes still in eq-service; needs a route-hosting decision
       before moving to eq-shell.
-
----
-
-## ⏩ Sprint 7 — EQ Service cutover (urjh → ehow) — 2026-06-08 (rotated 2026-07-27 — open items remain in pending.md)
-
 - [x] **Smoke test (Royce)** — sign in via Shell OTP at service.eq.solutions, confirm checks/tests/defects visible, create a test check → lands in ehow tenant `7dee117c-…`. *(Shell SSO now fixed — 2026-06-09, 4 bugs fixed, deploy 6a27f277. Test in incognito.)* **[CLOSED 2026-07-27 — duplicate of the same Shell SSO smoke test closed elsewhere; Service confirmed running live/stable for weeks]**
-
----
 
 ## SKS Live — roles / security-groups track (2026-06-07) (rotated 2026-07-27 — open items remain in pending.md)
 
 - [x] **eq-shell** — converge `c2-shell-roles` + `sks-field-host` into one trunk (Prompt A; Royce picks trunk). **[CLOSED 2026-07-27 — sessions/2026-06-08.md: 'main IS trunk' — resolved]**
 - [x] **eq-shell Phase 2** — wire group perms into the session as `extra_perms` via `resolveEffectivePermissions` (Prompt B). **[CLOSED 2026-07-27 — shipped — verify-shell-session.ts -> getUserSecurityGroupPerms() -> extra_perms, corroborated by PR #1022]**
 - [x] **eq-shell Phase 3** — `AdminSecurityGroups` page; first write moves `user_security_groups` off 0 rows (Prompt C). **[CLOSED 2026-07-27 — shipped — AccessControlPage.tsx + security-groups.ts full CRUD, live]**
-
----
-
-## SKS Live — roles / security-groups track (2026-06-07) (rotated 2026-07-27 — open items remain in pending.md)
-
 - [x] **Phase 5 hardening** — `contact_customer_links` explicit `WITH CHECK` (`::uuid` cast) + CI policy-lint + eq-roles no-orphan-keys test (Prompt E). **[CLOSED 2026-07-27 — eq-shell PR #231 confirmed MERGED 2026-06-07 ("feat(phase5): tenant WITH CHECK + orphan-perms validator")]**
-
----
-
-## ⏩ Session close — 2026-06-06 — SKS tenant LIVE on EQ Field + JWT/RLS Track 2 staged + Teams uuid fix (rotated 2026-07-27 — open items remain in pending.md)
-
-- [x] Functional click-through smoke on `core.eq.solutions/sks/field` (supervisor): **person edit + site edit + team create + team delete** (confirm the dual-write/teams fixes) → pipeline / import / resources / roster / safety against SKS data. **[CLOSED 2026-07-27 — superseded by months of subsequent real production use (dozens of merged PRs against live roster/timesheet/team data since)]**
-- [x] Cutover **soak** 24–48h with the standalone (`sks-nsw-labour`, v3.10.59) kept warm → then **retire** the standalone. **[CLOSED 2026-07-27 — Royce-gated decision now tracked at ops/pending.md's SEC-1 checklist]**
-- [x] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired. Then move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out. **[CLOSED 2026-07-27 — blocked on the same standing decision, tracked once at ops/pending.md's SEC-1 checklist]**
-
----
 
 ## ⏩ Session close — 2026-06-06 — SKS tenant LIVE on EQ Field + JWT/RLS Track 2 staged + Teams uuid fix (rotated 2026-07-27)
 
@@ -1627,9 +1605,10 @@ Overhauled the worker connection flow so a declined worker isn't left in the dar
 - ❌ **Key rotation DECLINED** for now — `EQ_SECRET_SALT` (exposed shared master key) + `GOOGLE_DOC_AI_CREDENTIALS` rotation deferred at Royce's call; risk accepted. Runbook (`eq-secret-salt-rotation-runbook-2026-06-06.md`) stays on file.
 
 **Remaining for SKS go-live (Royce-gated):**
+- [x] Functional click-through smoke on `core.eq.solutions/sks/field` (supervisor): **person edit + site edit + team create + team delete** (confirm the dual-write/teams fixes) → pipeline / import / resources / roster / safety against SKS data. **[CLOSED 2026-07-27 — superseded by months of subsequent real production use (dozens of merged PRs against live roster/timesheet/team data since)]**
+- [x] Cutover **soak** 24–48h with the standalone (`sks-nsw-labour`, v3.10.59) kept warm → then **retire** the standalone. **[CLOSED 2026-07-27 — Royce-gated decision now tracked at ops/pending.md's SEC-1 checklist]**
+- [x] **Track 2 STEP 2 (anon lockdown)** — DEFERRED until the standalone is retired. Then move `AUDIT_SB_KEY` → service_role and drop the `audit_log` anon-insert carve-out. **[CLOSED 2026-07-27 — blocked on the same standing decision, tracked once at ops/pending.md's SEC-1 checklist]**
 - [x] **Onboarding** — invite-claim rollout (only 1 of 36 workers linked; 0/56 invites claimed). Upstream eq-shell #183/#175. **[CLOSED 2026-07-27 — live-checked jvkn's `worker_invites`: only 1 row total, already claimed — the formal invite-claim model was superseded by the 2026-07-26 self-heal login fix (SKS workers approved before completing Cards phone-OTP now get a Shell login provisioned automatically on next login attempt), not by this rollout finishing]**
-
----
 
 ## eq-intake: parse-maximo-pdf-wo edge function git sync — already done by a concurrent session; found a live-production bug fix sitting uncommitted (2026-07-28)
 *Asked to pull the live `parse-maximo-pdf-wo` Supabase Edge Function (v6, `ehowgjardagevnrluult`) and commit it to `claude/parse-maximo-pdf-wo-edge-fn` in eq-intake, since the branch's only commit was a stale v1. Turned out a concurrent session had already done exactly this (commit `4ccf08d`, pushed to origin) — verified byte-for-byte against the live function before touching anything. Caught the concurrent session live-editing the same file mid-investigation (3 different function bodies read in 90 seconds); waited for it to settle rather than overwrite.*
@@ -1656,15 +1635,8 @@ Overhauled the worker connection flow so a declined worker isn't left in the dar
 
 - [x] Finish **Service domain cutover** (DNS/TLS, `NEXT_PUBLIC_SITE_URL`, Supabase URL allowlist on `ehowgjardagevnrluult`). Service prod project resolved: migrated to ehow (sks-canonical) 2026-06-08; old `urjhmkhbgaxrofurpbgc` (-dev) deleted 2026-06-22. **[CLOSED 2026-07-27 — confirmed live and resolved elsewhere in this file (service.eq.solutions Netlify project)]**
 - [x] Optional: add `auth.uid() IS NULL` guard to `eq_cards_claim_invite` **[CLOSED 2026-07-27 — eq_cards_claim_invite was substantially rewritten via a unified resolver (migrations 0070-0073) — original ask no longer maps onto the current implementation]**
-
----
-
-## ⏩ Session close — 2026-06-05 (part b) — PostHog MCP + EQ Core go-live readiness (rotated 2026-07-27 — open items remain in pending.md)
-
 - [x] ~~Unify cross-app PostHog distinct_id~~ — **done, verified live 2026-07-27**: `scripts/analytics.js` `_identify()` uses the canonical email as the cross-app distinct_id (falls back to legacy `tenant:handle` only when the Shell handoff carries no email), with a one-time `posthog.alias()` bridge so historical `tenant:handle` events join the unified person. Never marked done in this file — closing now.
 - [x] ~~Fix EQ Field double `$pageview` capture~~ — **done since v3.5.76** (`scripts/analytics.js`): autocapture `$pageview` turned off, replaced with a single explicit capture per logical screen from `_events.pageViewed()`. Comment in the code cites the exact ~80% bare-`/` bug this item describes. Never marked done in this file — closing now.
-
----
 
 ## ⏩ Session close — 2026-06-04 (rotated 2026-07-27)
 
@@ -1892,12 +1864,6 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## ⏩ Session close — 2026-07-04 (frontmatter CI green + DR-arming prep) — PR #62 fixes the repo-wide frontmatter check; verified exact live-secret state ahead of arming (rotated 2026-07-28 — open items remain in pending.md)
-
-- [x] **Arm the Phase 1 + Phase 2 backups** / **Arm the ehow backup** — **both done, confirmed live 2026-07-28.** The `production-ops` GitHub Environment exists (created 2026-07-04, same day as this item) with all 10 secrets present (`SUPABASE_DB_URL`, `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, `EQ_CANONICAL_DB_URL`, `EQ_CANONICAL_INTERNAL_DB_URL`, `EQ_CANONICAL_SERVICE_ROLE_KEY`, `EQ_CANONICAL_INTERNAL_SERVICE_ROLE_KEY`). All 6 backup/verify workflows (`backup-ehow`, `backup-eq-canonical`, `backup-eq-canonical-internal` + their 3 `verify-*` counterparts) are active and their most recent runs all `completed success`, most within the last 24h. This was fully done back on 2026-07-04 — the pending items were just never closed. Closing now. _(added 2026-07-04, closed 2026-07-28 — verified live)_
-
----
-
 ## ⏩ Session close — 2026-07-04 (frontmatter CI green + DR-arming prep) — PR #62 fixes the repo-wide frontmatter check; verified exact live-secret state ahead of arming (rotated 2026-08-14)
 
 *Follow-on within the same day's platform-DR arc. Royce flagged `Frontmatter validation` had been red on `main` for days (masks real regressions) and asked for it fixed; separately walked through what "arming" the Phase 1+2 backups actually requires, then a concurrent console (different tool) surfaced its own arming checklist — verified live-secret state to reconcile the two and drafted a coordination handoff.*
@@ -1905,27 +1871,14 @@ contain the same values and were pushed before push-protection caught up.
 **Completed:**
 
 **Deferred:**
+- [x] **Arm the Phase 1 + Phase 2 backups** / **Arm the ehow backup** — **both done, confirmed live 2026-07-28.** The `production-ops` GitHub Environment exists (created 2026-07-04, same day as this item) with all 10 secrets present (`SUPABASE_DB_URL`, `R2_ACCESS_KEY_ID/SECRET/ENDPOINT/BUCKET_NAME`, `SENTRY_DSN`, `EQ_CANONICAL_DB_URL`, `EQ_CANONICAL_INTERNAL_DB_URL`, `EQ_CANONICAL_SERVICE_ROLE_KEY`, `EQ_CANONICAL_INTERNAL_SERVICE_ROLE_KEY`). All 6 backup/verify workflows (`backup-ehow`, `backup-eq-canonical`, `backup-eq-canonical-internal` + their 3 `verify-*` counterparts) are active and their most recent runs all `completed success`, most within the last 24h. This was fully done back on 2026-07-04 — the pending items were just never closed. Closing now. _(added 2026-07-04, closed 2026-07-28 — verified live)_
 - [x] **eq-context PR #62 investigated properly, 2026-08-13 — legitimately superseded, correctly closed.** PR #62 (opened 2026-07-04) was never merged or commented on, closed 2026-08-07 with no explanation. Root cause found: a *different* fix for the exact same problem — commit `f25847c` (2026-07-12, pushed directly to main, not via PR) — broadened the frontmatter-check's exemption list (`CHAT-PROMPT.md`, `*/README.md`, `*/changelog/*`) and fixed frontmatter on the genuinely-governed docs #62 also touched, 8 days after #62 was opened. #62 got closed because it was made redundant, not abandoned by mistake — no reconstruction needed.
   - **But the check was red again the same day this was checked** — confirmed live: `f25847c` fixed the violations that existed in July, but new drift since then broke it again. Ran the check's exact logic locally against current `main`: one violation, `eq/sprints/2026-08-12-field-mobile-centering.md` missing `last_updated`. Fixed and confirmed the next live CI run passed clean.
 
-**Notes:**
-- A concurrent console (different tool, screenshot shared mid-session) was independently working the exact same arming task with its own checklist. Drafted Royce a coordination prompt handing that console the just-verified live-secret facts and standing this session's Code instance down from touching any secrets/environments, so the two consoles don't race on creating the same GitHub Environment or setting conflicting values.
-- Steelmanned "should we arm this" on request — recommended yes (asymmetric cost: ~15 minutes of copy-paste vs. total/permanent loss of platform identity if eq-canonical is ever lost with no offsite copy); named real counterpoints (R2 becomes a second location holding auth-adjacent data, deserves real key hygiene; the `auth_data.sql` capture is guarded but unproven until a live run). **Not yet a decision** — Royce hasn't confirmed arming in words.
-- Rebased eq-context PR #61 (Phase 2) mid-session after discovering Phase 1 had landed on `main` under a different commit SHA than the one this branch was originally stacked on — dropped the resulting duplicate commit, re-pushed as Phase-2-only before it merged.
-
----
-
-## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever (rotated 2026-07-28 — open items remain in pending.md)
-
-- [x] **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — **confirmed deleted.** Re-checked live 2026-07-28: `list_projects` no longer shows it, and `get_project` on its ID returns "Resource has been removed." Someone (Royce or another session) already handled this. Closing. _(added 2026-07-04, closed 2026-07-28 — verified live)_
-
----
-
 ## ⏩ Session close — 2026-07-04 (15 July CEO presentation prep) — pre-pass bug sweep across Field/Shell/Cards; self-serve tenant provisioning fully hardened + verified live end-to-end for the first time ever (rotated 2026-08-15 — open items remain in pending.md)
 
+- [x] **Orphaned Supabase project `eq-tenant-favour-perfect` (`jzjzpgaablnppoimdnip`)** — **confirmed deleted.** Re-checked live 2026-07-28: `list_projects` no longer shows it, and `get_project` on its ID returns "Resource has been removed." Someone (Royce or another session) already handled this. Closing. _(added 2026-07-04, closed 2026-07-28 — verified live)_
 - [x] ~~**QR/join-code worker flow** — `JoinContextNotifier`'s keepalive fix (PR #120) was applied by exact code-pattern match to the provision-context bug, not independently reproduced/verified live. Worth a live pass before the 15th.~~ **Moot 2026-08-15** — the flow it guarded (`/join`) turned out to have been unreachable since 2026-06-10, and `JoinContextNotifier` was deleted with it in eq-cards PR #248. Never needed the live pass. _(added 2026-07-04, closed 2026-08-15)_
-
----
 
 ## ⏩ Session close — 2026-07-04 (platform DR / backups, issue #60) — ehow offsite backup moved into eq-context; three real defects fixed; Phase 2 + arming deferred (rotated 2026-07-28 — open items remain in pending.md)
 
@@ -2100,20 +2053,6 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27) (rotated 2026-07-30 — open items remain in pending.md)
-
-- [x] **Added column drag-style reordering to the shared table component** (`@eq-solutions/ui`) — move-up/move-down buttons in the Columns menu, remembered per person. Built as buttons rather than literal drag-and-drop for reliable keyboard and touch support. This lands in every app using the shared table, not just Staff. Released as `@eq-solutions/ui` v1.13.0.
-- [x] **Merged Supervisor + On-roster into one compact status cell, and Phone + Email into one Contact cell** on the Staff list — same information, fewer columns, search/filter/export all still work correctly against the underlying fields.
-- [x] Both fully built and tested (253/253 automated tests pass, clean build against the real released component). eq-ui [#34](https://github.com/eq-solutions/eq-ui/pull/34)/[#35](https://github.com/eq-solutions/eq-ui/pull/35) merged and released. eq-shell [PR #1051](https://github.com/eq-solutions/eq-shell/pull/1051) open, CI green, **not yet merged**.
-
----
-
-## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27) (rotated 2026-08-14 — open items remain in pending.md)
-
-- [x] **eq-shell PR #1051 — merged same day** (2026-07-27, shortly after this was written). Corrected 2026-08-13 — had sat marked "needs a merge decision" for 2+ weeks after it actually merged.
-
----
-
 ## eq-shell Staff table: reorderable columns + compact Status/Contact cells (2026-07-27) (rotated 2026-08-15)
 *Royce asked to simplify the Staff table, whether columns could be reordered, and for any smart ideas to make it "simple but powerful" — with the instruction that whatever's decided should land in the shared component library (eq-ui), not just Shell. Checked the real table first: show/hide columns and CSV export already existed, reorder didn't. Recommended against a natural-language "ask the table a question" AI feature — the existing filters already answer that need — in favour of two concrete, scoped wins Royce picked from a shortlist.*
 
@@ -2121,6 +2060,11 @@ contain the same values and were pushed before push-protection caught up.
 **Deferred:**
 
 ---
+
+- [x] **Added column drag-style reordering to the shared table component** (`@eq-solutions/ui`) — move-up/move-down buttons in the Columns menu, remembered per person. Built as buttons rather than literal drag-and-drop for reliable keyboard and touch support. This lands in every app using the shared table, not just Staff. Released as `@eq-solutions/ui` v1.13.0.
+- [x] **Merged Supervisor + On-roster into one compact status cell, and Phone + Email into one Contact cell** on the Staff list — same information, fewer columns, search/filter/export all still work correctly against the underlying fields.
+- [x] Both fully built and tested (253/253 automated tests pass, clean build against the real released component). eq-ui [#34](https://github.com/eq-solutions/eq-ui/pull/34)/[#35](https://github.com/eq-solutions/eq-ui/pull/35) merged and released. eq-shell [PR #1051](https://github.com/eq-solutions/eq-shell/pull/1051) open, CI green, **not yet merged**.
+- [x] **eq-shell PR #1051 — merged same day** (2026-07-27, shortly after this was written). Corrected 2026-08-13 — had sat marked "needs a merge decision" for 2+ weeks after it actually merged.
 
 ## eq-shell Suppliers: login/password visibility is now a real, assignable permission (2026-07-27) (rotated 2026-07-30)
 *Royce asked to "fix up" the login/password columns on the Suppliers page and make them controllable via Security Groups, rather than hardcoded to Manager/Supervisor. Found the database-side gate for this had already existed since 21 July — the only missing piece was a matching permission that could actually be granted. Added it properly through the shared role-permission library (used by every EQ app), not as a Shell-only hack.*
@@ -2292,15 +2236,7 @@ contain the same values and were pushed before push-protection caught up.
 - [x] **Compliance Report's cover page can now also be turned off from Report Settings** — required a small refactor first (the cover was hard-wired into the report body) rather than the two-line change the other reports got. eq-service [PR #646](https://github.com/eq-solutions/eq-service/pull/646), merged + live.
 - [x] Confirmed all three PRs actually deployed — Netlify's production deploy record for service.eq.solutions matches the last merge commit, not just "merged on GitHub."
 - [x] **Secondary Injection test results now show real data too.** Royce asked for this same-day follow-up. Turned out to be a bigger bug than just the SI section: the report's label-matching also silently failed on every visual-checklist row (the "Visual Check:" prefix the app actually stores wasn't being stripped), so the checklist relabel from #644 looked right but never actually showed pass/fail data. Both fixed — confirmed 12/12 against the live checklist data on ehow, and confirmed against a synthetic real-format test since no live check has reached the Secondary Injection step yet. eq-service [PR #647](https://github.com/eq-solutions/eq-service/pull/647), merged + live.
-
----
-
-## eq-solves-service: ACB/NSX Test Report shipped with real data; Report Settings toggles extended to 3 more reports (2026-07-29)
-
-**Deferred:**
 - [x] **No live check has reached the Secondary Injection/Electrical Testing step yet either** (ACB or NSX) — the #647 fix is verified against the real stored label *format* (traced from the save actions) plus a synthetic end-to-end docx generation, not an actual live reading. Worth a real spot-check the first time a technician gets that far. _(added 2026-07-29)_ — **Spot-checked 2026-08-17**: reviewed a live SKS check with real saved Secondary Injection data. The #647 report-side fix held up correctly, but the spot-check surfaced a separate, real bug — the app's own form was reading those same values back with the wrong label prefix and always showed them blank on reopen, tenant-wide, for every ACB and NSX test. Fixed in eq-service PR #745. See the 2026-08-17 session log. _(resolved 2026-08-17)_
-
----
 
 ## eq-solves-service: Contacts list now respects Shell's Service toggle + monthly PM sheet now imports directly (2026-07-29) (rotated 2026-08-01 — open items remain in pending.md)
 
@@ -2457,32 +2393,13 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## eq-context: shared-checkout git races — structural fix shipped as F9 (2026-08-04) (rotated 2026-08-05, fully closed, no open items remain)
-*Closes the "shared eq-context checkout" item below (2026-08-03) — recurred twice more this same day before the fix landed: a stale mid-rebase read (self-resolved), then a bare `git commit` swept up 3 files staged by a concurrent session (caught before push via `git show --stat HEAD`, no data lost, but real time spent reconciling via a fresh clone + cherry-pick).*
-
-- [x] **`hooks/pre_tool_use.py` gains two new checks (F9, rung 4)**, both scoped to the ONE shared checkout by exact path — never a private/fresh clone, which is the fix's own recommended escape valve: (1) blocks bare `git commit` with no `--` pathspec, since a bare commit records the WHOLE index, not just what was just `git add`ed — this is the exact mechanism that swept up a concurrent session's files today; (2) redirects `git rebase`/`merge`/`pull` to an isolated clone instead of the shared checkout (`--abort`/`--continue`/`--skip` stay allowed, so a session already stuck mid-operation can still get itself out). Not sandbox-gated — every occurrence so far has happened natively on the Beelink. Adversarial suite: 65/65 (15 new F9 cases, 0 regressions in the pre-existing 50).
-- [x] **`system/failures.md` gains F9** — this exact failure class had recurred 3+ times (2026-07-14, 2026-08-03, 2026-08-04) with no ledger entry at all, so the automated recurrence-detector (`failure_recurrence_signals()`) had nothing to scan for and `guard-ratchet.yml` never had a counter to trip past 2. Closed.
-- [x] **`hooks/README.md`** updated for the new checks; also fixed a stale pointer to the legacy `adversarial_test.sh` runner (missing F7 and F9 coverage) — the row now points at the CI-authoritative `adversarial_test.py`.
-
-**Considered and rejected:** a lock/coordination file (a hook-enforced lock needs reliable cleanup on abnormal session termination or it becomes a new stuck-forever failure class — this repo's history already has several of those from imperfect guards); blocking ALL git writes to the shared checkout (would break routine, currently-reliable automation — nightly cron commits, single-file pending.md ticks, session close — none of which have ever been the source of the actual damage).
-
-- [x] **`hooks/adversarial_test.sh`** (the legacy/manual test runner, distinct from the CI-authoritative `adversarial_test.py`) was missing F7 and F9 coverage entirely. Resolved 2026-08-05 by deletion, not sync — repo-wide grep found zero functional dependents (no CI workflow, Makefile, or pre-commit config referenced it), and porting F7/F9 into bash would have duplicated real complexity (env-scoped subprocess fixtures, Windows read-only-file retry, Bash/PowerShell tool-matching) already solved once in `adversarial_test.py`, whose own header states a deliberate no-bash/WSL design goal. A stale-but-present "legacy" suite is the same shadow-duplicate failure shape as F5. `hooks/README.md`'s Testing section updated to drop the dead pointer. _(added 2026-08-04, resolved 2026-08-05)_
-
-**Also this session (2026-08-05):** while closing this out, discovered the F9 guard being bypassed live — twice — by git verbs (a bare commit, then a rebase) run directly in this shared checkout by a concurrently-active session, despite the adversarial suite's own F9 cases passing 65/65 when invoked directly. Not a defect in F9's logic; more likely a wiring gap for whatever tool surface produced those commits, or those commits didn't go through the guarded path at all. Spawned as background task `task_1f1ce5cf`, already running independently — see `sessions/2026-08-05.md`.
-
----
-
----
-
 ## eq-context: shared-checkout git races — structural fix shipped as F9 (2026-08-04) (rotated 2026-08-07)
 *Closes the "shared eq-context checkout" item below (2026-08-03) — recurred twice more this same day before the fix landed: a stale mid-rebase read (self-resolved), then a bare `git commit` swept up 3 files staged by a concurrent session (caught before push via `git show --stat HEAD`, no data lost, but real time spent reconciling via a fresh clone + cherry-pick).*
 
 - [x] **`hooks/pre_tool_use.py` gains two new checks (F9, rung 4)**, both scoped to the ONE shared checkout by exact path — never a private/fresh clone, which is the fix's own recommended escape valve: (1) blocks bare `git commit` with no `--` pathspec, since a bare commit records the WHOLE index, not just what was just `git add`ed — this is the exact mechanism that swept up a concurrent session's files today; (2) redirects `git rebase`/`merge`/`pull` to an isolated clone instead of the shared checkout (`--abort`/`--continue`/`--skip` stay allowed, so a session already stuck mid-operation can still get itself out). Not sandbox-gated — every occurrence so far has happened natively on the Beelink. Adversarial suite: 65/65 (15 new F9 cases, 0 regressions in the pre-existing 50).
 - [x] **`system/failures.md` gains F9** — this exact failure class had recurred 3+ times (2026-07-14, 2026-08-03, 2026-08-04) with no ledger entry at all, so the automated recurrence-detector (`failure_recurrence_signals()`) had nothing to scan for and `guard-ratchet.yml` never had a counter to trip past 2. Closed.
 - [x] **`hooks/README.md`** updated for the new checks; also fixed a stale pointer to the legacy `adversarial_test.sh` runner (missing F7 and F9 coverage) — the row now points at the CI-authoritative `adversarial_test.py`.
-
-**Considered and rejected:** a lock/coordination file (a hook-enforced lock needs reliable cleanup on abnormal session termination or it becomes a new stuck-forever failure class — this repo's history already has several of those from imperfect guards); blocking ALL git writes to the shared checkout (would break routine, currently-reliable automation — nightly cron commits, single-file pending.md ticks, session close — none of which have ever been the source of the actual damage).
-
+- [x] **`hooks/adversarial_test.sh`** (the legacy/manual test runner, distinct from the CI-authoritative `adversarial_test.py`) was missing F7 and F9 coverage entirely. Resolved 2026-08-05 by deletion, not sync — repo-wide grep found zero functional dependents (no CI workflow, Makefile, or pre-commit config referenced it), and porting F7/F9 into bash would have duplicated real complexity (env-scoped subprocess fixtures, Windows read-only-file retry, Bash/PowerShell tool-matching) already solved once in `adversarial_test.py`, whose own header states a deliberate no-bash/WSL design goal. A stale-but-present "legacy" suite is the same shadow-duplicate failure shape as F5. `hooks/README.md`'s Testing section updated to drop the dead pointer. _(added 2026-08-04, resolved 2026-08-05)_
 - [x] **`hooks/adversarial_test.sh`** (the legacy/manual test runner, distinct from the CI-authoritative `adversarial_test.py`) was missing F7 and F9 coverage entirely. Two sessions reached opposite calls on it the same day: one deleted it (zero functional dependents — no CI workflow, Makefile, or pre-commit config referenced it — and porting F7/F9 into bash would duplicate real complexity already solved once in `adversarial_test.py`, whose header states a deliberate no-bash/WSL design goal; that reasoning is sound and still true). Royce then asked directly for it to be fixed rather than left gone, so it's restored and synced instead — F7 and F9 ported into bash-native fixtures, both suites green (32/32 bash, 65/65 python), `hooks/README.md` now documents both as required, not one dead pointer replacing the other. **A real bug turned up in the restore itself**: the new F9 "allowed" test cases (pathspec-scoped commit, `--amend`, `rebase --continue/--abort`) only passed because they happened to run with `in_sandbox()` naturally False on Windows — on Linux CI, where `in_sandbox()` is True by default, they'd have been wrongly blocked by the pre-existing, unrelated "any git verb blocks in the sandbox" rule and read as a false regression. Caught by deliberately simulating `EQ_FORCE_GUARD=1`; fixed by pinning `EQ_FORCE_GUARD=0` on every F9 test case in both suites, matching the pattern F7's own tests already used. Would have shipped broken on the very next CI run otherwise. _(added 2026-08-04, resolved 2026-08-05)_
 - [x] **The `adversarial_test.sh` deletion itself was accidental, not the considered decision above** — traced via `git show --stat`: a bare `git commit` from an unrelated session (eq-solves-intake tenant-scoping work) swept up a different session's already-staged deletion of the file, landing in a commit whose message never mentions it. Same sweep mechanism F9 exists to stop, but via a path F9 can't see — the commit's author was "via Cowork," meaning it ran outside Claude Code's own tool-call hook entirely (Cowork emits scripts for Royce to run rather than executing git itself, per the standing sandbox rule, so nothing here ever passed through `pre_tool_use.py`). **This is a real, currently-unclosed gap in F9's coverage** — it protects every Claude-Code-tool-mediated git operation (which is how every prior incident happened), not git run by a human or a Cowork-generated script. Not obviously fixable the same way: a git-level hook can't reliably distinguish "pathspec was used" from "the index just happened to hold the right files," which is the exact signal F9's fix depends on. Flagged as a follow-up investigation, not solved here. _(added 2026-08-05)_
   **Correction, 2026-08-05 (`task_94836df0`):** the specific claim above — that this commit ran "outside Claude Code's own tool-call hook entirely" — is wrong for this incident. `guard.log` has a matching entry down to the second (`gate-outbound` fired, `warn` mode, identical command, identical session): this was an ordinary Claude Code Bash call. The real mechanism was three compounding, fixable bugs in `pre_tool_use.py` itself, not an architectural blind spot: (1) **wiring** — it was registered in `PreToolUse` only at the `C:\Projects` umbrella-root `settings.json`, the identical "guard that isn't wired" shape `session_start.py` hit and fixed 2026-07-12 by moving to **user** scope, a fix this hook never got, so a session launched inside a repo/worktree (the common case, and what `2104668`'s session actually was) never invoked it at all; (2) **cwd tracking** — even when invoked, its F7/F9 checks read `data.cwd` directly, never an in-command `cd "<path>" &&` / `git -C <path>` — the identical blind spot `guard.js`'s own `reflection-gate` rule already fixed for itself 2026-07-26 — so a session nominally cwd'd in a real, separate worktree resolved to the worktree's own (harmless) toplevel even after its command `cd`'d into the shared checkout and committed there; (3) **verb matching**, found live while writing (2)'s regression test — `COMMIT_RE`/`REBASE_MERGE_PULL_RE` required "git" and the verb to be separated by whitespace only, so `git -C <path> commit ...` never matched as a commit at all, independent of cwd. All three fixed 2026-08-05: `pre_tool_use.py` wired at user scope, reads cwd via a new `effective_cwd()` helper, both regexes tolerate an optional `-C <path>` prefix. Regression cases added to both suites (70/70 python, 32/32 bash, from a clean `C:\Projects`-rooted clone). Counted as F9's 4th recurrence (`system/failures.md`); `ops/pending.md`'s parallel F7 "still open" question closed by the same finding. **This does not undercut item 4 below** — the git-level-hook investigation answers a genuinely separate question (can anything backstop git that really is outside Claude Code's tool calls — a true human terminal command, or a Cowork-emitted script run by a human) that remains real even though it wasn't what caused this specific commit.
@@ -2491,8 +2408,6 @@ contain the same values and were pushed before push-protection caught up.
   2. **The conclusion is still correct, for a sharper reason.** That signal detects whether scoping syntax was used, not whether the commit is safe. A bare commit where everything staged is genuinely one session's work is indistinguishable, on every signal a hook can see, from a bare commit that sweeps a stray — git's index has no field recording which session staged which file, by design (it's a flat snapshot of "what goes in the next commit," nothing more). A git-level "require a pathspec" hook would just relocate F9(a)'s rule and its blind spot (a lazy `-- .` defeats both equally), while adding a gap F9(a) doesn't have: `core.hooksPath` activation is per-clone and manual (`scripts/install-hooks.ps1`), and it had **silently drifted on this exact machine** — found live mid-investigation: a **worktree-scoped** `core.hooksPath` override (`.git/hooks`) was shadowing the correct `.githooks` value set at local scope, meaning F8's own secret+style guard had not actually been running here despite F8 being marked closed. Fixed as a side effect (`git config --worktree core.hooksPath .githooks`); nothing currently re-checks it, so it can drift back the same way, silently, again — a real, separate follow-up (not filed as its own ledger item here; whoever picks this up should check `git config --worktree --get core.hooksPath` on every clone, not just `--local`). Also tested and confirmed unavailable on this Windows/Git-Bash target: `/proc/$PPID/cmdline` and `ps -o args=` — no direct argv inspection either.
   3. **A weaker, warn-only heuristic is real, but it lives in `commit-msg`, not `pre-commit`.** Confirmed empirically that `pre-commit` cannot see the commit message at all, even with `-m` — `.git/COMMIT_EDITMSG` holds the *previous* commit's leftover content at pre-commit time, since git only writes the real message after pre-commit succeeds. At `commit-msg` time the message IS available alongside the same staged-file view. A check there — warn when a staged file's directory/name shares no keyword with the commit message — would have caught this incident's actual shape: commit `2104668` touched `eq/pending.md` (a 2-line tick, matching its "eq-solves-intake tenant-scoping" message) and `hooks/adversarial_test.sh` (a full 56-line deletion, mentioned nowhere in that message). Checked against noise before trusting it: a cruder "spans 2+ top-level directories" version would NOT work — this repo's last 40 commits show `eq/` + `sessions/` together constantly (routine session-close), so a directory-count rule would warn on roughly half the log within days and train itself to be ignored. `hooks/` appearing beside something the message never mentions, by contrast, shows up exactly twice in that same window: this sweep and its own cleanup commit. Not built — it's standing, tunable infrastructure that would run on every future commit, worth Royce's call rather than shipping silently; sketch is above if wanted. `--no-verify` bypasses it exactly as it already bypasses F8's existing hook, same as today.
   4. **Actual recommendation: tighten the existing Cowork convention, don't add detection.** CLAUDE.md already requires Cowork to emit a script for Royce to run rather than executing git itself in this checkout. The real gap isn't missing detection — it's that nothing yet requires those emitted scripts to pathspec-scope their `git commit` the same way F9(a) already requires of Claude Code. That's a one-line addition to an existing convention, not new infrastructure with its own false-positive rate to manage. _(investigated 2026-08-05)_
-
----
 
 ## eq-context: shared-checkout git races — F9 investigation, part 2 (2026-08-05, rotated same day, fully closed)
 *Continues the part 1 entry above (rotated 2026-08-04 by a separate session) — that entry still accurately describes the original F9 build; this one covers everything that happened to the same topic in eq/pending.md AFTER that first rotation: the adversarial_test.sh delete/restore saga, the guard.log-based correction of the "outside Claude Code's hooks" theory (task_94836df0), and the separate git-level-hook investigation. All items below are closed.*
@@ -2516,38 +2431,13 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02) (rotated 2026-08-05 — open items remain in pending.md)
+## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02) (rotated 2026-08-29 — open items remain in eq-cards.md)
 
 - [x] **Workers can now fill in their trade, employment type, and who they work through** on their own Cards profile — three new fields, worker-declared only (no admin can fill these in for someone else, by design). eq-cards [PR #194](https://github.com/eq-solutions/eq-cards/pull/194), merged and deployed live to cards.eq.solutions.
 - [x] **Confirmed this data stays Cards-only for now, on purpose.** Shell already has its own separate "trade"/"employment type" fields admins edit on the Staff page — different data, same names, not connected. Bridging the two risks one silently overwriting the other with no rule for which wins — the same class of bug that's already bitten twice on a similar sync. Left as two independent systems until there's a real reason to connect them.
 - [x] **Built Royce a real "platform console" screen** inside Cards (Settings → Platform, visible only to him) — replaces the hand-written SQL he'd been running all session to check network health. Shows how many workers are actually signed up vs. still unclaimed, a per-company breakdown, wallet/licence counts, how many workers have filled in the new trade field, whether the nightly sync to Field is healthy, and data-quality drift (duplicate accounts, orphaned records). eq-cards [PR #195](https://github.com/eq-solutions/eq-cards/pull/195), merged and deployed.
 - [x] **First version buried the most important number on the screen** — Royce called it out directly ("is the UI befitting of such an important role!"). Redesigned so the single worst issue leads the page in a banner, with four at-a-glance numbers up top instead of six identical panels you had to read in full. eq-cards [PR #196](https://github.com/eq-solutions/eq-cards/pull/196), merged and deployed. (Caught a near-miss mid-build: a commit briefly landed on the live branch directly instead of a review branch — caught before it was pushed anywhere, fixed immediately, no harm done.)
-
----
-
-## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02) (rotated 2026-08-26 — open items remain in eq-cards.md)
-
 - [x] **A bug in the database tool used to apply changes to this app locally** — RESOLVED: same root cause (Supabase CLI 2.95.4 mis-resolving `config.toml` paths) as the CLI deploy bug tracked elsewhere in this file; the 2.109 upgrade that fixed that one is already the pinned CLI version in CI today.
-
----
-
-## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02) (rotated 2026-08-27 — open items remain in eq-cards.md)
-
-- [x] **A bug in the database tool used to apply changes to this app locally** — RESOLVED: same root cause (Supabase CLI 2.95.4 mis-resolving `config.toml` paths) as the CLI deploy bug tracked elsewhere in this file; the 2.109 upgrade that fixed that one is already the pinned CLI version in CI today.
-
----
-
-## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02) (rotated 2026-08-28 — open items remain in eq-cards.md)
-
-- [x] **A bug in the database tool used to apply changes to this app locally** — RESOLVED: same root cause (Supabase CLI 2.95.4 mis-resolving `config.toml` paths) as the CLI deploy bug tracked elsewhere in this file; the 2.109 upgrade that fixed that one is already the pinned CLI version in CI today.
-
----
-
-## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02) (rotated 2026-08-29 — open items remain in eq-cards.md)
-
-- [x] **A bug in the database tool used to apply changes to this app locally** — RESOLVED: same root cause (Supabase CLI 2.95.4 mis-resolving `config.toml` paths) as the CLI deploy bug tracked elsewhere in this file; the 2.109 upgrade that fixed that one is already the pinned CLI version in CI today.
-
----
 
 ## eq-shell: a second function broken by the same July 30 migration, found by checking the sibling of yesterday's fix (2026-08-02) (rotated 2026-08-05)
 *Yesterday's fix (`eq_site_merge_execute` missing its permission) came from one migration editing two functions. Checked whether the other one had the same problem — it did.*
@@ -3218,19 +3108,12 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## eq-cards + eq-field + eq-intake + eq-ui + eq-receipts + eq-roles + eq-design-tokens + eq-context + eq-shell + eq-service: suite-wide stale-branch + orphaned-worktree cleanup (2026-08-08) (rotated 2026-08-11 — open items remain in pending.md)
+## eq-cards + eq-field + eq-intake + eq-ui + eq-receipts + eq-roles + eq-design-tokens + eq-context + eq-shell + eq-service: suite-wide stale-branch + orphaned-worktree cleanup (2026-08-08) (rotated 2026-08-13 — open items remain in pending.md)
 
 - [x] **470 stale branches deleted** across 10 repos, every one individually verified (not just diffed) as already-shipped, superseded, or abandoned — never a bare "unmerged, therefore delete." Breakdown: eq-cards 45, eq-field 90, eq-shell 139, eq-service 131, eq-context 27, eq-intake 19, eq-ui 11, eq-receipts/eq-roles/eq-design-tokens 8.
 - [x] **58 orphaned worktree folders removed** from `C:\Projects\` — leftover `node_modules`/vendored-copy husks from worktrees torn down outside `git worktree remove`, no `.git`, nothing of value. ~7 currently-registered worktrees (incl. `eq-field-mobile-weekend-wt`, `eq-context-reflection-protocol-wt`) confirmed untouched.
 - [x] **9 branches deliberately kept** — real unshipped work surfaced by the review, not stale: `claude/shift-events-canonical` (eq-field, defect-overdue event enrichment + cron), `claude/audit-team-access-events` (eq-shell, unshipped duplicate-staff-stub fix — see the recurring bug in `staff-duplicate-stubs-onboarding.md`), `claude/data-parsing-cleaning-polish-4d29aa` (eq-intake, already merged as #111 by the time of writing), `claude/sidebar-nav-icon-contrast` (eq-ui, a still-flagged-bad contrast value), 2 eq-context branches holding the only copy of specific session logs, `fix/type-bypass-column-audit` + `canonical/overdue-events` + `claude/frosty-franklin-d28812` (eq-service, see below + a missing doc line).
-
----
-
-## eq-cards + eq-field + eq-intake + eq-ui + eq-receipts + eq-roles + eq-design-tokens + eq-context + eq-shell + eq-service: suite-wide stale-branch + orphaned-worktree cleanup (2026-08-08) (rotated 2026-08-13 — open items remain in pending.md)
-
 - [x] **The other item is resolved**: `worktree-wf_79f7a4de-c56-4` (eq-intake)'s "quality-guardian engine is live but no admin UI ever surfaced its output" question — yes, still wanted. New `/admin/quality` page built, eq-service [PR #721](https://github.com/eq-solutions/eq-service/pull/721), merged. See the 2026-08-13 entry below for detail. _(resolved 2026-08-13)_
-
----
 
 ## eq-shell: commercial-write RLS restriction landed + dispatched live on both planes (2026-08-08) (rotated 2026-08-11)
 *A written-but-never-shipped fix surfaced by the branch cleanup above (`claude/eq-roles-enterprise-eval-177343`, drafted 2026-07-16). Re-verified live before touching anything — the gap it fixes was still real.*
@@ -3280,100 +3163,11 @@ contain the same values and were pushed before push-protection caught up.
 
 ---
 
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-11 — open items remain in pending.md)
-
-- [x] **Apprentices cluster — corrected, fully closed** (was stale since 2026-06-30 — tables/grants/org RLS were actually shipped the same day this was logged, PR #371 v3.5.210, the bullet just never got updated; found + fixed 2026-08-11). Live feature: 2,501-line `apprentices.js` on field.eq.solutions, zero security-advisor issues on all 8 tables. The two real remaining pieces both resolved same day: Royce declined the `field_*` canonical-twin build (nothing's broken, was fleet-consistency-only elsewhere, not a fix here), and the 2 orphan test rows in `apprentice_profiles` were verified dangling (matched no real person) and deleted live on ehow. Full corrected scope: `eq/apprentices-cluster-scoping-2026-08-11.md`. _(added 2026-06-30, corrected + closed 2026-08-11)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-17 — open items remain in pending.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-18 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-19 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-20 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-21 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-22 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-23 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-24 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-25 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-26 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-27 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
-## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-28 — open items remain in eq-field.md)
-
-- [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
-- [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
-
 ## ⏩ Session close — 2026-06-30 (EQ Field) — Overnight security audit + canonical-wiring execution (rotated 2026-08-29 — open items remain in eq-field.md)
 
+- [x] **Apprentices cluster — corrected, fully closed** (was stale since 2026-06-30 — tables/grants/org RLS were actually shipped the same day this was logged, PR #371 v3.5.210, the bullet just never got updated; found + fixed 2026-08-11). Live feature: 2,501-line `apprentices.js` on field.eq.solutions, zero security-advisor issues on all 8 tables. The two real remaining pieces both resolved same day: Royce declined the `field_*` canonical-twin build (nothing's broken, was fleet-consistency-only elsewhere, not a fix here), and the 2 orphan test rows in `apprentice_profiles` were verified dangling (matched no real person) and deleted live on ehow. Full corrected scope: `eq/apprentices-cluster-scoping-2026-08-11.md`. _(added 2026-06-30, corrected + closed 2026-08-11)_
 - [x] **Realtime publication — DONE.** Live-checked `pg_publication_tables`: both `app_data.schedule_entries` and `app_data.leave_requests` are in `supabase_realtime`. No longer open. _(added 2026-06-30, closed 2026-08-17)_
 - [x] **app_config anon leak — the "third-hand claim" this note doubted was real, and the `has_table_privilege` check above ran AFTER the fix, not before.** Sequence, reconstructed from both sessions' own timestamps: this session found `app_config_select` granted `public` SELECT with `qual: true`, and — critically, checked directly via `information_schema.column_privileges`, not inferred from the RLS policy alone — `anon` held an actual TABLE-LEVEL SELECT grant covering every column, including `value`. Live with the project's own anon key: `GET ?select=key,value` returned 200 with the real plaintext `staff_code`/`supervisor_code` PINs and a `tafe_fn_token`. Fixed same session: `REVOKE SELECT ON app_config FROM anon` + re-`GRANT SELECT (id, key, org_id)` back (a plain column-level REVOKE alone is a no-op against a table-level grant — hit that live, re-did it properly). Re-tested live post-fix: `?select=key&limit=1` still 200 (nothing else broke), `?select=key,value` now 403, no data. The other session's `has_table_privilege('anon', ..., 'SELECT')` check returning `false` is *consistent with the fix having already landed*, not evidence against the original finding — that function checks whole-table privilege and doesn't see anon's residual column-level grant, so it reads `false` both when a table was never anon-readable and when (as here) it was and got narrowed to specific columns. Migration: eq-field [PR #732](https://github.com/eq-solutions/eq-field/pull/732) (`20260819_app_config_revoke_anon_value_column.sql`), applied live to ehow via Supabase MCP (Royce's explicit go). Genuinely closed now, not a re-opened false alarm. _(added 2026-06-30, corrected 2026-08-19, resolved 2026-08-19)_
-
----
 
 ## eq-shell: unreachable upload-size limits fixed across 8 upload paths, live (2026-08-12) (fully closed, no open items remain)
 *Royce hit a real "network error" attaching a file to a quote. Investigation found Netlify's hard 6 MB function payload ceiling made several `MAX_BYTES` constants unreachable in practice (10–20 MB claimed, ~4.5 MB actually reachable after multipart/base64 inflation) — any file in that gap failed at the network layer with a misleading "check your connection" message instead of an honest size error.*

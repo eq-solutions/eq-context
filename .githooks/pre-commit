@@ -156,6 +156,44 @@ fi
 rm -f /tmp/_pre_status_$$
 
 # ----------------------------------------------------------------------
+# 17.6 — Markdown link re-prefixed with this repo's own name — BLOCK
+#
+# Recurred twice in one day (2026-08-30, eq/changelog/eq-shell.md, both
+# times a link written as (eq-context/eq/sprints/...) instead of the
+# correct repo-relative (../sprints/...). Every internal link in this repo
+# is written relative to the linking file or repo root -- a link that
+# re-prefixes with "eq-context/" is never correct here (that prefix only
+# makes sense linking INTO this repo from somewhere else), and it silently
+# breaks link_check.py's own resolution the same way each time. Confirmed
+# zero legitimate uses of this pattern anywhere in the live repo before
+# adding this as a hard block. Catches it before push instead of at CI,
+# with a message that explains the fix instead of just "broken link".
+# ----------------------------------------------------------------------
+echo "$staged_files" | grep -iE '\.md$' > /tmp/_pre_selflink_$$ || true
+if [ -s /tmp/_pre_selflink_$$ ]; then
+    selflink_bad=0
+    while read -r mdfile; do
+        [ -f "$mdfile" ] || continue
+        matches=$(git diff --cached "$mdfile" | grep -E '^\+[^+]' | grep -E '\]\(eq-context/' || true)
+        if [ -n "$matches" ]; then
+            if [ "$selflink_bad" = "0" ]; then
+                echo "${RED}BLOCK: markdown link re-prefixed with this repo's own name (eq-context/...):${NC}"
+            fi
+            echo "  - $mdfile"
+            echo "$matches" | sed 's/^/      /'
+            selflink_bad=$((selflink_bad+1))
+        fi
+    done < /tmp/_pre_selflink_$$
+    if [ "$selflink_bad" -gt 0 ]; then
+        echo "  Fix: this repo's own links are always relative (../sprints/foo.md or"
+        echo "       /full/repo-root/path.md), never re-prefixed with eq-context/ --"
+        echo "       that prefix only makes sense linking INTO this repo from outside it."
+        violations=$((violations+1))
+    fi
+fi
+rm -f /tmp/_pre_selflink_$$
+
+# ----------------------------------------------------------------------
 # Duplicate-content check across staged + tracked sessions
 # Compares sha1 of session files; flags any duplicates.
 # ----------------------------------------------------------------------

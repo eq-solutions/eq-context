@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-30
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -320,22 +320,15 @@ change to `eq-context`, so no PR here either — same pattern as the
 
 ---
 
-## The "eq-shell isn't live yet" myth can no longer be written down (2026-08-15) (rotated 2026-08-18 — open items remain in pending.md)
-
-- [x] Two sessions independently built protection the same day. One added a check that scans the notes for the false claim; this session added a block that stops it being written in the first place. Kept as one shared definition rather than two — two copies would drift apart, which is the same problem all over again.
-- [x] Also catches the claim when it's split across two lines of one bullet point, which the scan alone reads straight past. Swept every note file: none currently on disk.
-- [x] Guard recorded as fully closed in the failure ledger — the highest level, prevention rather than after-the-fact detection.
-
----
-
 ## The "eq-shell isn't live yet" myth can no longer be written down (2026-08-15) (rotated 2026-08-20)
 
 *Merging a change to eq-shell puts it on core.eq.solutions within seconds, unattended. A note claiming otherwise had been circulating, and I repeated it to Royce this session about a live sign-in change — telling him it was still waiting on him hours after it had gone out. That was the second time, so the written warning was clearly not enough and had to become something enforced.*
 
 
+- [x] Two sessions independently built protection the same day. One added a check that scans the notes for the false claim; this session added a block that stops it being written in the first place. Kept as one shared definition rather than two — two copies would drift apart, which is the same problem all over again.
+- [x] Also catches the claim when it's split across two lines of one bullet point, which the scan alone reads straight past. Swept every note file: none currently on disk.
+- [x] Guard recorded as fully closed in the failure ledger — the highest level, prevention rather than after-the-fact detection.
 - [x] ~~The shared eq-context folder needs someone to reconcile it~~ — **checked live 2026-08-20: fully reconciled, 0 commits behind/ahead of `origin/main`, clean working tree.** Whatever needed sending up has since gone up — dozens of sessions have pushed through the shared checkout today alone. _(added 2026-08-15, resolved — substrate correction 2026-08-20)_
-
----
 
 ## core.hooksPath worktree-scope shadow regressed F8 for ~1 day — root-caused, drift-check proposed (2026-08-05) (rotated 2026-08-20)
 

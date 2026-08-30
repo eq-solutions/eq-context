@@ -101,13 +101,97 @@ def done_lines(section):
     return frozenset(l for l in section if DONE_RE.match(l))
 
 
+def bullet_blocks(section):
+    """Yield (start, end_exclusive, kind) for '- [x]' blocks in a section --
+    the checkbox line plus any indented continuation lines. Only 'done' is
+    distinguished; dedupe_pending_archive only ever acts on archived
+    (all-done) content."""
+    i = 0
+    while i < len(section):
+        line = section[i]
+        if not DONE_RE.match(line):
+            i += 1
+            continue
+        j = i + 1
+        while j < len(section) and CONT_RE.match(section[j]):
+            j += 1
+        yield i, j, "done"
+        i = j
+
+
+CONT_RE = re.compile(r"^\s+\S")
+
+
+def _intro_lines(section):
+    """Lines between the header and the first done-block -- the section's
+    own prose/context, if it has any."""
+    first_bullet_start = None
+    for s, e, _ in bullet_blocks(section):
+        first_bullet_start = s
+        break
+    return section[1:first_bullet_start] if first_bullet_start is not None else section[1:]
+
+
+def union_merge(copies):
+    """Merge N non-identical, non-superset copies of the same section into
+    one: the union of every distinct done-item block across all copies
+    (order of first appearance, exact-text duplicates within the group
+    collapsed), under one copy's own header and intro prose.
+
+    Always safe with respect to the conservation invariant -- every unique
+    done-line from every copy survives in the output, nothing is dropped or
+    silently preferred over a "contradicting" other copy. The cost is a
+    merged section that may read as slightly redundant (e.g. a short
+    summary bullet sitting next to a fuller corrected account of the same
+    event) -- acceptable in a pure historical record where nothing here is
+    actionable, and strictly better than N confusing near-duplicate
+    section headers for the same event.
+
+    Which copy's header/intro to keep: newest rotation date first: ties are
+    real and common (a mixed section rotated more than once on the same
+    day). Break a tie by non-blank intro line count, not file order --
+    caught live on eq/pending-archive.md's own "SKS tenant LIVE... Big
+    correction" pair: same-day tie, file-order tiebreak would have kept the
+    terser copy's near-empty intro over the other copy's own "Big
+    correction vs the earlier draft" context explaining exactly why the
+    terser framing was wrong. The done-item union is unaffected either way
+    -- this only picks which prose framing survives.
+    """
+    seen_texts = set()
+    union_blocks = []
+    for c in copies:
+        for s, e, _ in bullet_blocks(c):
+            block = c[s:e]
+            text = "\n".join(block)
+            if text not in seen_texts:
+                seen_texts.add(text)
+                union_blocks.append(block)
+
+    def richness(c):
+        intro = _intro_lines(c)
+        return (rotated_date(c), sum(1 for l in intro if l.strip()))
+
+    best = max(copies, key=richness)
+    intro_lines = _intro_lines(best)
+
+    merged = [best[0]] + intro_lines
+    for block in union_blocks:
+        merged.extend(block)
+    if not merged[-1].strip() == "":
+        merged.append("")
+    return merged
+
+
 def dedupe_text(text):
     """Pure dedup of one archive file's text.
 
     Returns (new_text, report) where report has:
       groups_total, groups_deduped, copies_removed, lines_removed,
-      groups_conflicted (list of dedup_key strings left untouched because
-      a superset relationship didn't hold -- needs a human look).
+      groups_union_merged (list of dedup_key strings resolved via
+      union_merge -- safe, but worth a glance since the merged section may
+      read as slightly redundant), groups_conflicted (should be empty in
+      practice -- union_merge handles every non-superset case; kept as a
+      backstop, never silently guessed at if it's ever hit).
     """
     lines = text.split("\n")
     frontmatter, body = split_frontmatter(lines)
@@ -129,6 +213,7 @@ def dedupe_text(text):
     copies_removed = 0
     lines_removed = 0
     groups_conflicted = []
+    groups_union_merged = []
 
     for key in order:
         copies = groups[key]
@@ -146,14 +231,20 @@ def dedupe_text(text):
             lines_removed += sum(len(c) for c in copies) - len(best)
             continue
 
-        # not identical -- only collapse if one copy's done-lines are a
-        # strict superset of every other copy's done-lines
+        # not identical -- collapse if one copy's done-lines are a strict
+        # superset of every other copy's done-lines. Guard against the
+        # degenerate case first: an empty set is trivially a "superset" of
+        # another empty set, which would otherwise let this branch silently
+        # pick copy 0 and discard copy 1's own (non-done) content whenever
+        # neither copy has any done item at all -- caught by the backstop
+        # test below, not hypothetical.
         done_sets = [done_lines(c) for c in copies]
         superset_idx = None
-        for i, ds in enumerate(done_sets):
-            if all(ds >= other for other in done_sets):
-                superset_idx = i
-                break
+        if any(done_sets):
+            for i, ds in enumerate(done_sets):
+                if all(ds >= other for other in done_sets):
+                    superset_idx = i
+                    break
         if superset_idx is not None:
             best = copies[superset_idx]
             kept_sections.append(best)
@@ -162,10 +253,28 @@ def dedupe_text(text):
             lines_removed += sum(len(c) for c in copies) - len(best)
             continue
 
-        # genuine conflict -- leave every copy untouched, flag it
-        groups_conflicted.append(key)
-        for c in copies:
-            kept_sections.append(c)
+        # No single copy dominates -- each holds distinct facts (the
+        # rotation bug's mixed-section shape: every failed-removal night
+        # appended a slightly bigger, non-superset extract of the same
+        # live section). union_merge collapses them into one section
+        # holding every distinct done-block, never dropping or picking a
+        # "winner" among the facts themselves.
+        any_done = any(done_lines(c) for c in copies)
+        if not any_done:
+            # No done items at all in any copy (shouldn't happen for an
+            # archive, which is done-items-only by convention) -- nothing
+            # safe to merge on. Leave alone, flag for a human.
+            groups_conflicted.append(key)
+            for c in copies:
+                kept_sections.append(c)
+            continue
+
+        merged = union_merge(copies)
+        kept_sections.append(merged)
+        groups_union_merged.append(key)
+        groups_deduped += 1
+        copies_removed += len(copies) - 1
+        lines_removed += sum(len(c) for c in copies) - len(merged)
 
     new_body = list(preamble)
     for sec in kept_sections:
@@ -182,6 +291,7 @@ def dedupe_text(text):
         "groups_deduped": groups_deduped,
         "copies_removed": copies_removed,
         "lines_removed": lines_removed,
+        "groups_union_merged": groups_union_merged,
         "groups_conflicted": groups_conflicted,
         "done_before": done_before,
         "done_after": done_after,
@@ -223,6 +333,10 @@ def main(argv=None):
     print(f"  {report['copies_removed']} redundant copies removed")
     print(f"  {report['lines_removed']} lines removed")
     print(f"  done-item lines: {report['done_before']} -> {report['done_after']}")
+    if report["groups_union_merged"]:
+        print(f"\n  {len(report['groups_union_merged'])} group(s) union-merged (distinct facts combined into one section, nothing dropped):")
+        for k in report["groups_union_merged"]:
+            print(f"    - {k}")
     if report["groups_conflicted"]:
         print(f"\n  {len(report['groups_conflicted'])} group(s) left untouched (no clean superset, needs a human look):")
         for k in report["groups_conflicted"]:
