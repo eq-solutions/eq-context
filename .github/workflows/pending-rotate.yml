@@ -66,7 +66,27 @@ jobs:
           # that happens, silently killing every rotation after it (found
           # 2026-08-05: broke 2026-08-01, 4 nightly runs failed in a row,
           # ~330 done items piled up unrotated in eq/pending.md alone).
-          for f in eq/pending.md eq/pending-archive.md eq/verify-queue.md \
+          #
+          # 2026-08-30: this list still named the single flat `eq/pending.md`
+          # from before the 2026-08-17 split into `eq/pending/<repo>.md` (11
+          # files — rotate_pending.py's own EQ_LIVE_FILES was updated for the
+          # split, this list never was). Every night since: the script
+          # correctly computed and WROTE each repo file's rotation to disk,
+          # correctly appended to eq/pending-archive.md, but this step only
+          # ever staged the now-mostly-static index file — so the archive
+          # append committed while the corresponding removal from the real
+          # live file never did. Next night's run started from a checkout
+          # that still had the "already done" section, rotated it again,
+          # appended ANOTHER copy to the archive, forever. Confirmed live:
+          # several eq-cards.md/eq-shell.md sections carry 9-25 duplicate
+          # "(rotated YYYY-MM-DD)" copies in the archive despite never once
+          # actually leaving their live file. Fixed by listing all 11 real
+          # files instead of the retired flat path.
+          for f in eq/pending/eq-shell.md eq/pending/eq-cards.md eq/pending/eq-field.md \
+                   eq/pending/eq-solves-service.md eq/pending/eq-solves-intake.md \
+                   eq/pending/eq-design-tokens.md eq/pending/eq-ui.md eq/pending/eq-receipts.md \
+                   eq/pending/eq-context.md eq/pending/cross-repo.md eq/pending/sks.md \
+                   eq/pending-archive.md eq/verify-queue.md \
                    sks/pending.md sks/pending-archive.md sks/verify-queue.md \
                    ops/pending.md ops/pending-archive.md ops/verify-queue.md; do
             [ -f "$f" ] && git add "$f"
