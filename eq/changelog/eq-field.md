@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-30 (PR #840 MERGED + LIVE, v3.5.612 — FIX: Map tiles blank after v3.5.608 — CSP img-src never got the new OpenStreetMap domain)
+- v3.5.608 swapped the Map / Roster Overview tile provider from CARTO to OpenStreetMap (CARTO started requiring an API key), but never updated CSP's `img-src` to allow the new domain — an oversight in that fix, not a second provider-side failure. Every tile request had been silently blocked by the browser since that release: site marker pins rendered correctly, the map background stayed completely blank, no visible error anywhere.
+- Caught live: Royce's follow-up screenshot showed the CARTO watermark gone (confirming v3.5.608 itself deployed correctly, and the OpenStreetMap attribution was visibly rendering) but the tiles themselves blank. Checked the live CSP directly and confirmed `img-src` still only listed `*.basemaps.cartocdn.com`.
+- FIX — `netlify.toml` and `_headers`' `img-src` directive: swapped `https://*.basemaps.cartocdn.com` for `https://*.tile.openstreetmap.org` in both files, per this repo's own standing rule that CSP must be updated in both places.
+- eq-field [PR #840](https://github.com/eq-solutions/eq-field/pull/840), squash-merged on explicit "merge", confirmed live two ways: `field.eq.solutions/sw.js` AND a direct `curl -I` of the production response, showing `img-src` now carries `tile.openstreetmap.org` with zero remaining `cartocdn` reference — a config-only fix like this is more directly verifiable via the real served header than any click-through.
+
 ## 2026-08-30 (PR #836 MERGED + LIVE, v3.5.611 — Dashboard + Trial Dashboard: an aliased project code now shows its real site name too)
 - Follow-up to PR #833 (v3.5.606): that PR fixed `roster.js`'s own site-name/address/job-number lookups via a new `_resolveSiteAbbr()` helper, but deliberately left `dashboard.js`/`core-bundle-b1.js` and `trial-dashboard.js` alone — each keeps its own separate, underscore-prefixed site-name fallback, used only while `roster.js` hasn't lazy-loaded yet.
 - Confirmed this isn't a narrow race before fixing it: `dashboard.js` ships eagerly inside `core-bundle-b1.js` on every boot, but `roster.js` is lazy per-tab and isn't a declared dependency of the `'dashboard'` or `'trial'` lazy-loader tab entries — a session that never opens Roster sits on the unresolved fallback the whole time.
