@@ -17545,3 +17545,104 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 - `task_1007afb5` (the 6th-call-site fix above, #835) was independently built from scratch by a separate concurrent session too — opened as its own PR (#837) — without knowing Royce had already opened #835 about 8 minutes earlier; both forked from the same pre-#834 `main`. That session diffed the two before doing anything further: #835 was a strict superset (same fix plus the day-specific project-badge bug), authored by Royce directly with live-screenshot evidence the other build didn't have. #837 was closed on explicit confirmation once the diff was checked, branch/worktree removed, nothing merged from that side.
 
 ---
+
+## eq-shell: document sign-off reminder — user-facing control considered, deliberately deferred (2026-08-28) (fully closed 2026-08-30)
+
+- [x] **Not building yet — ran the decision protocol first.** Royce asked whether to give someone control (mute/opt-out/cadence) over the daily sign-off reminder cron (`netlify/functions/scheduled-document-signoff-reminders.ts` — today it has zero toggle, admin or recipient, anywhere). Call: hold off. No TODAY.md goal to weigh it against, and zero reminder cycles have fired yet (first eligible send is 7 days after a push) — nothing has happened yet that a control would actually be answering. Also flagged: a *recipient*-facing opt-out would cut against the feature's own point (a mandatory sign-off nag) — the people most likely to use it are the ones behind on something compliance-relevant. If a real case shows up (someone on long leave, a dispute, an actual complaint), the safe narrow build is an admin-only "stop reminding" toggle per document next to the reminder count already shown in the Register (`AdminDocumentUpload.tsx`'s `reminderSummary()`, migration 0253) — not a recipient-side opt-out. _(added 2026-08-28)_
+
+---
+
+## eq-shell: staff deactivation wasn't revoking Shell logins — 9 real accounts found + fixed, PR #1550 merged + live (2026-08-23) (fully closed 2026-08-30)
+
+- [x] **Reactivating staff does NOT restore Shell access** — deliberate, one-directional by design, same "revoke, not ban" reasoning as deactivation itself. _(added 2026-08-23)_
+
+---
+
+## eq-shell / ops: SEC-13 gate-coverage fix + REVOKE closed live (2026-08-21) (fully closed 2026-08-30)
+
+- [x] **`field_people_removed_iud` tenant-tautology bug** — fail-open on both ehow and zaap, unaffected by the SEC-13 REVOKE (a trigger fires through its attachment regardless of EXECUTE grants). Flagged in `ops/security-register.md` SEC-13 addendum for Royce's read, not actioned. _(added 2026-08-21)_
+
+---
+
+## eq-shell: checked whether a worker-protection feature exists on both company databases or just one — confirmed it's a deliberate difference, not something missed (2026-08-16) (fully closed 2026-08-30)
+*Flagged as a possible security gap: SKS's database blocks people from editing certain protected worker fields and from approving their own timesheet/leave; EQ's own internal sandbox database doesn't have the same blocks. No live database access was available at the start of the session, so this was checked against dated, independent project records instead of assumed either way — turned out EQ's side is intentionally simpler (it's disposable test data, not a real customer, and the way it saves changes is built differently there), not a gap that got missed.*
+
+- [x] Confirmed the difference is deliberate and documented it directly in eq-shell's own project notes, so a future check doesn't re-raise it as a surprise. eq-shell [PR #1384](https://github.com/eq-solutions/eq-shell/pull/1384), merged.
+- [x] While trying to merge that PR, hit the same "3 unknown database functions" block noted further down this file — this session had database access and traced/fixed it directly. eq-shell [PR #1389](https://github.com/eq-solutions/eq-shell/pull/1389), merged; see that entry below for detail.
+- [x] Found afterward: 3 other sessions had independently built the exact same fix for the same block, all opened within minutes of each other. Closed all 3 as duplicates once the real one was confirmed merged — eq-shell #1390, #1391, #1392.
+
+**Deferred:**
+- [x] **One narrow follow-up, not urgent:** EQ's sandbox database still allows editing a couple of specific worker fields (licence status, agency, hire company) that SKS's side specifically blocks — nobody's checked whether that matters in practice. Low priority since it's sandbox data with no real customer on it, but worth a look if that database is ever used for anything real. _(added 2026-08-16)_
+
+---
+
+## eq-shell: load speed — Suppliers and Staff were slow; database wasn't the cause (2026-08-15) (fully closed 2026-08-30)
+*Royce: "load speed is very slow inside shell - suppliers list and staff records in particular." Investigation ruled out the database first (queries run 6-9ms) and found three real causes instead: an oversized PDF library loading on every page for a rarely-used feature, most of the app's pages loading eagerly instead of on demand, and the Staff page making eight separate slow round-trips instead of one.*
+
+- [x] **A PDF-reading library (~0.5MB) was loading on every single page load, including the login screen** — used only when a labour-hire candidate's uploaded document happens to be a PDF, on the Staff page. Now only loads when actually needed.
+- [x] **Most of the app's pages (43 of 53) were loading eagerly** rather than only when visited — meaning the login page was downloading nearly the whole admin section before it could even show the login form. The ~26 admin/rarely-visited pages now load on demand instead; the everyday pages (Home, Staff, Customers, sign-in) stay instant.
+- [x] **The render-blocking Google Fonts request removed** — was costing about half a second before the page could start drawing anything, on every page. The font now loads from our own server instead.
+- [x] **The Staff page was making eight separate slow requests on every visit, now makes one.** Each of those requests has its own ~3-second "cold start" delay the first time it's hit — the database work itself was always fast, the delay was infrastructure spin-up, repeated eight times in parallel. Consolidated into one request that does the same eight checks, keeping every existing permission check exactly as strict as before.
+- [x] Both Staff and Suppliers now remember what they loaded for about 30 seconds — revisiting the page within that window is instant instead of re-fetching everything; any edit still forces an immediate fresh read, never a stale one.
+- [x] All shipped and confirmed live: entry download size cut from 2.28MB to 1.52MB (a third smaller), the eight-request page now makes one.
+- [x] **Further squeezing is possible but lower value** — a smaller vendor library could be deferred too (~80KB), the Staff page's functions could be kept artificially warm to dodge the cold-start delay entirely (ongoing cost, not a one-off fix), and one more internal database lookup could be cached. None built — diminishing returns after the fixes above, and each has its own trade-off worth weighing on its own. _(added 2026-08-15)_
+
+---
+
+## eq-shell: quote_attachment table dropped, suite-wide file-storage map built, 19 dangling attachment rows cleaned up + reconciliation check shipped (2026-08-13) (fully closed 2026-08-30)
+*Continuation of the attachment-upload thread below. Royce: "explain how all files are stored using a workflow diagram throughout eq suite" → investigated live (3 parallel agents across eq-field/eq-cards/eq-solves-service, plus eq-shell's own code + live Supabase queries). Found `app_data.attachments` + the `attachments` Storage bucket are genuinely shared between eq-shell and eq-solves-service, told apart only by `entity_type` — and that sharing had already produced 19 dangling rows on the SKS (ehow) database, eq-solves-service demo/seed data with no matching file. Royce: "clean up the... dangling seed rows" → done, confirmed count first (19, not 2, as originally guessed) before deleting. Then "check the eq-solves-service seed script so this doesn't recur" → investigated, current script is safe, root cause is historical/unrecoverable. Then "build the reconciliation check" → shipped. Then asked to pick a vendor for A5 and critique the direction → Cloudmersive picked, then parked at Royce's request ("remind me next week"). Then a broad pending.md staleness sweep across all 3 tiers found + fixed 10 more stale items (see the recovery note below — this whole section, plus those 10 fixes, were lost once to a concurrent session's bad merge and rebuilt from this session's own record).
+
+- [x] **A5 (malware scanning) — parked, revisit no earlier than 2026-08-20 ("remind me next week").** Scoped, vendor picked (Cloudmersive — VirusTotal ruled out, its free tier may share submitted files with its researcher ecosystem, a real problem for client documents; self-hosted ClamAV would mean the one piece of persistent infra in an otherwise fully serverless stack, for near-zero volume). Design settled: pilot on quote attachments only, fail-open with a Sentry alert on skip. Not built — blocked on Royce signing up for a Cloudmersive account and handing over an API key; account creation isn't something Claude does. Full critique of the direction (what it does/doesn't protect against) in the sprint doc.
+
+---
+
+## eq-shell: two small fixes found, not built — logged so they don't evaporate (2026-08-11) (fully closed 2026-08-30)
+*Surfaced while scoping "manuals in EQ" and "compliance docs — SKS-site linking" from the 2026-08-08 brain dump. Royce: neither now.*
+
+- [x] **O&M manual upload is mislabeled, not missing.** `AdminDocumentUpload.tsx`'s doc-type dropdown already has an "O&M manual" option (`value: 'om'`) — but only `doc_type === 'template'` gets the no-signoff/reusable-library treatment (skips audience-push, shows in Templates tab, gets a category). Selecting "O&M manual" today forces it through the normal sign-off/push flow, which makes no sense for a reference manual nobody needs to sign. Fix is a small conditional change (give `'om'` the same treatment as `'template'`), no schema change. Separately: there's no asset/equipment association anywhere in the data model (`documents`/`document_categories` have no `asset_id`) — fine if browse-by-category is enough, genuinely new work if "show me the manual for this switchboard" is wanted.
+- [x] **Compliance-doc SKS-website linking is independent of the pilot-gated signing feature — confirmed, safe to build separately.** The pilot gate (`PILOT_SIGN_ALLOWLIST`, eq-field) only restricts Field's "Sign Documents" page; the Shell-side Templates/Register admin surface has no permission gate at all today. ~~A link field would live on the ungated side~~ **Correction 2026-08-16: this surface is no longer ungated** — `documents.view`/`.manage`/`.assign` now gate it end to end (PR #1385, merged + live). A link field would still be uncontroversial to add (view-only data, same key), just not "the ungated side" anymore. Add a URL column/reuse `reference` on `app_data.documents`, render as a link in the Register/Templates table (`AdminDocumentUpload.tsx:2006` currently renders `reference` as plain text). The *signing* half of that same original brain-dump line ("finalise how people sign these including environmental and SWMS") is not independent — that's the existing pilot-gated feature, blocked on the same T5 rollout-past-pilot decision already tracked in `eq/documents/internal-signoff-register-sprint-2026-08-04.md`.
+
+---
+
+## eq-shell Quotes: retired 4 dead status values, added Close as Lost/Cancelled, added a file-count indicator (2026-07-27) (fully closed 2026-08-30)
+
+**Deferred:**
+- [x] **"Select files to send with an email" was floated but not chosen** — Royce picked the file-count badge only. Worth revisiting if the need comes up again. _(added 2026-07-27)_
+
+---
+
+## tenant_role_overrides cleanup: audited SKS's 10 one-off permission tweaks, resolved the one undecided case, cleaned out the rest (2026-07-26) (fully closed 2026-08-30)
+
+**Deferred:**
+- [x] **The remaining 4 SKS-specific permission tweaks are intentional, not a to-do list** — flagged here only so a future session doesn't mistake "still has one-off tweaks" for "cleanup incomplete." No action needed unless the underlying product decision changes.
+
+---
+
+## eq-shell: UI/UX audit — grounded polish batch shipped, two items need Royce's call (2026-08-01) (fully closed 2026-08-30)
+
+- [x] **`CoreHome.tsx` is a fully-built, unrouted home-page prototype** ("EQ Intelligence" decision-queue, canonical-graph visualization) sitting dead in the tree, running on hardcoded fake data. Never imported anywhere. Needs Royce's call: revive as the real home page, or delete — not something to guess at. **Clickable mockup built 2026-08-01** (faithful reproduction of the real component + CSS, published as a Claude artifact) so Royce can evaluate it without reading code — rated 8/10 as a design concept (leads with the decision, not the mechanism — graph is opt-in via "Trace it"), but 3/10 as a build-ready feature: every decision is hardcoded, no backend detection engine exists to actually find these cross-app joins live, and it would be a *third* home-page paradigm alongside `TenantHome`/`WorkerHome` with no resolution on whether it replaces or augments either _(added 2026-08-01)_ **Resolved — deleted.** `CoreHome.tsx` removed outright ("chore: delete unrouted CoreHome.tsx (EQ Intelligence mock home page)", eq-shell PR #1332, commit `95080ec5`). Confirmed gone from `src/` 2026-08-30.
+
+---
+
+## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11) (fully closed 2026-08-30)
+*Started from an incidental finding while verifying CI on an unrelated PR — the scheduled "Tenant drift" check had been red on `main` since 2026-08-07. Fixing it surfaced a real, actively-recurring problem: eq-context's own local checkout had forked from `origin/main` from concurrent sessions committing without syncing — not a one-off, closes the standing "worktree-isolation vs accept-and-rebase" question flagged 2026-08-04/05 (see the eq-field section below).*
+
+- [x] **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
+
+---
+
+## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11) (fully closed 2026-08-30)
+*Started from an incidental finding while verifying CI on an unrelated PR — the scheduled "Tenant drift" check had been red on `main` since 2026-08-07. Fixing it surfaced a real, actively-recurring problem: eq-context's own local checkout had forked from `origin/main` from concurrent sessions committing without syncing — not a one-off, closes the standing "worktree-isolation vs accept-and-rebase" question flagged 2026-08-04/05 (see the eq-field section below).*
+
+- [x] **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
+
+---
+
+## eq-shell + eq-field: golden worker journey investigation — identity/tenant-isolation gaps found, four PRs shipped, one caught by a security review (2026-07-20/21) (fully closed 2026-08-30)
+*Asked to prove and harden the full worker journey (Shell → Cards → company connection → Field) as one system rather than polishing apps in isolation. Investigation before any code: traced the real flow across all three repos against live Supabase data, not docs. Verdict at that checkpoint: not yet proven — a real tenant-isolation gap, unmitigated duplicate identities, and 45 active workers who'd never been invited to join at all.*
+
+- [x] **The `shell_control.persons`/`person_xref` "golden record" spine — investigated further, recommendation reversed.** Asked to do a full 3-repo build; investigation disproved the premise it was based on. Only eq-cards actually matches identities (phone/email against `public.workers`) — eq-shell only reads the output, and eq-field has no matching of its own (its one identity lookup is `user_id`-keyed, already-established, SKS-only). Also found eq-field has its own separate, deliberately parked initiative for a related but different problem (`ADR-PERSON-IDENTITY.md` — same-name disambiguation within eq-field's own tables, not cross-tenant identity; Phases 1–2 shipped, Phases 3–4 explicitly gated by Royce on "not until SKS is stable in live", set 2026-06-08) — and that ADR's own canonical-link plan points at `public.workers`, not `shell_control.persons`/`person_xref`. Recommendation: don't build the spine — it looks like a second, unused design for a job `public.workers` already does. **Royce confirmed: "don't build the spine, leave it parked."** Closed — no further action unless a real second consumer shows up (most likely trigger: EQ tenant's Field plane going live). Open question for later, not urgent: whether to formally retire the empty `persons`/`person_xref` tables rather than leave them as dead schema two different plans could collide on. _(added 2026-07-21, corrected 2026-07-21, confirmed parked 2026-07-21)_
+- [x] **EQ-tenant worker→staff sync doesn't exist** — `workers-canonical-sync` is hardcoded to SKS only. Deprioritized rather than built, since the EQ tenant's Field plane has no real usage yet — revisit if that changes. _(added 2026-07-21)_
+- [x] **45 never-invited workers are now visible (via #918's alert) but nobody's actually invited them.** Sending real invites to real workers is a deliberate action for an operator, not something to automate. Royce's explicit call this session: not now, "too many moving parts." Fits under the existing `/admin/invite-bulk` 50-cap if actioned. Still open as of 2026-08-02 — count now 44 (one resolved naturally), still surfacing via the same alert, now also showing as a live Sentry issue (EQ-SHELL-X) rather than only the original ad-hoc check. Same call stands: not actioned yet. _(added 2026-07-21, reconfirmed 2026-07-21, still open 2026-08-02)_
+
+---

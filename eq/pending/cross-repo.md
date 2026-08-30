@@ -51,18 +51,8 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 ---
 
 ## eq-roles + eq-shell + eq-solves-service: PM Calendar digest switched from a hardcoded group ID to a real, grantable permission — built, released, live (2026-08-18)
-*Started from a specific ask: replace `CALENDAR_DIGEST_GROUP_ID` (a hardcoded Access Control group ID in an env var) with Royce's actual model — a real permission key, grantable by role or by Custom Group, same grid as everything else. Verified live architecture first rather than assuming: EQ Service already enforces several canonical `service.*`/`entity.*` keys via `can()`, but only for role defaults — the Shell→Service JWT contract scopes `extra_perms` as Field-only, so group grants never reach it. That ruled out a session/JWT fix in favour of a roster-level one: Shell resolves effective permissions once, hands Service a plain string list.*
 
-- [x] **New canonical permission**: `service.receive_calendar_digest`, added to `@eq-solutions/roles` (v2.7.4). Hit a real, hard architectural invariant while building it — the package's own test suite requires manager to hold every real permission, no exceptions — so a "granted to nobody by default" version was never shippable. The Claude Code permission classifier correctly blocked writing the forced `manager` default without Royce's explicit confirmation on that exact line, twice in a row.
-- [x] **Resolved by shipping the consuming code first, entirely inert**: `list-members.ts` (eq-shell) computes and returns each roster member's effective permissions — [PR #1440](https://github.com/eq-solutions/eq-shell/pull/1440). EQ Service's digest gate (`canonical-members.ts`) checks the permission key instead of `CALENDAR_DIGEST_GROUP_ID` (deleted) — [eq-service PR #753](https://github.com/eq-solutions/eq-service/pull/753). Both merged and live, and completely inert at merge time — the key didn't exist in any released package yet, so nothing could match anyone.
-- [x] **Default decided and shipped, by a separate thread mid-session**: `service.receive_calendar_digest` granted to `manager` only (the minimum the invariant allows) — eq-roles v2.7.4, eq-shell's pin bumped in [PR #1441](https://github.com/eq-solutions/eq-shell/pull/1441). Permission granted to the "Calendar Digest Recipients" custom group directly in the live database, on top of the manager default, so the group keeps doing its real job (a hand-curated top-up) rather than becoming a no-op.
-- [x] **EQ Service's own `@eq-solutions/roles` pin bumped too** — [PR #755](https://github.com/eq-solutions/eq-service/pull/755), v2.5.8 → v2.7.4. Not functionally required (the digest gate reads a plain string, no typed import), but keeps the pin from drifting further behind.
-- [x] **A deliberate pause switch was added the same day, independent of this thread**: `SUPERVISOR_DIGEST_PAUSED` — [eq-service PR #754](https://github.com/eq-solutions/eq-service/pull/754) — specifically so finishing this permission plumbing wouldn't silently restart real sends. Confirmed live: it's ON. Nothing has sent.
-- [x] **Recipient count corrected** — re-checked directly against live data rather than trusted from the figure two threads ago (15 managers + 18 group members, stated without confirming overlap). Real distinct tenant-wide manager count is **14**, not 15; **3 of those 14 were never added to the "Calendar Digest Recipients" group at all** and would receive the digest purely through the role default the moment it's unpaused — including Royce himself (royce.milmlow@sks.com.au) and `dev@eq.solutions`, which reads like a system/test account. True total once unpaused: **20 distinct people** (17 of the group's 18 have an email on file; +3 managers outside the group), not 18 and not "15 + 18" (that language never accounted for the overlap between the two sets).
-
-**Deferred:**
 - [ ] **Not clicked through live by a person** — the corrected recipient count (20, see above) is verified directly against the live database, not by watching a real digest email send; sending stays paused until Royce reviews the list and flips `SUPERVISOR_DIGEST_PAUSED` off (tracked in [eq/pending/eq-solves-service.md](eq-solves-service.md), the actionable Netlify-settings item lives there). _(added 2026-08-18)_
-- [ ] **Whether `dev@eq.solutions` should hold the manager role at all** is a separate, smaller question surfaced while correcting the recipient count above — not decided here. _(added 2026-08-18)_
 
 ---
 
@@ -160,20 +150,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 
 ---
 
-## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11)
-*Started from an incidental finding while verifying CI on an unrelated PR — the scheduled "Tenant drift" check had been red on `main` since 2026-08-07. Fixing it surfaced a real, actively-recurring problem: eq-context's own local checkout had forked from `origin/main` from concurrent sessions committing without syncing — not a one-off, closes the standing "worktree-isolation vs accept-and-rebase" question flagged 2026-08-04/05 (see the eq-field section below).*
-
-- [ ] **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
-
----
-
-## eq-shell + eq-context: control-plane drift check fixed, then a suite-wide git-staleness sweep (2026-08-11)
-*Started from an incidental finding while verifying CI on an unrelated PR — the scheduled "Tenant drift" check had been red on `main` since 2026-08-07. Fixing it surfaced a real, actively-recurring problem: eq-context's own local checkout had forked from `origin/main` from concurrent sessions committing without syncing — not a one-off, closes the standing "worktree-isolation vs accept-and-rebase" question flagged 2026-08-04/05 (see the eq-field section below).*
-
-- [ ] **`eq-solves-assets`'s `origin` remote points at `https://github.com/Milmlow/eq-solves-service.git`** — a personal fork of a different project, not an asset-capture-app repo. Local history (`main` + 7 feature branches) looks like real, non-stale work. Not touched — Royce confirmed the repo is parked for now, don't re-flag without being asked. _(added 2026-08-11)_
-
----
-
 ## eq-cards + eq-shell: labour-hire licence intake pipeline — built, consolidated with existing admin invite tool, 2 Sentry issues resolved (2026-08-11)
 
 - [ ] **Real end-to-end click-through never run** — upload → OCR → candidate → tenant approves → worker claims. Test tenant: EQ Solutions (`eq`, `is_seed_demo: true`) — not SKS Technologies (live pilot, real workers). The tool is now actually reachable and functional (was silently broken until this session — see below), so this is unblocked. _(added 2026-08-11)_
@@ -222,7 +198,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 ## eq-shell + eq-field: Internal Document Sign-off Register — register view shipped, then a real signature pad + evidence view after Royce used the pilot (2026-08-03)
 
 - [ ] **Roll out past the one-person pilot — overtaken by events, still genuinely open.** This didn't happen by deliberate rollout; an onboarding-trigger bug pushed 12 real documents to a second person (Brian Griffin-Colls) by accident on 2026-08-17, forcing the pilot allowlist open early. See this file's own 2026-08-20 section above — his rows are gone from the table now with no confirmed second signature anywhere, so "a real second person actually signed something on their phone" is still unconfirmed, just via a different path than originally planned. _(updated 2026-08-20)_
-- [ ] **eq-field's `sw.js` `CACHE_FIRST_PATHS` only lists `/icons/` (SKS) and `/manifest.json`, not `/icons-eq/` or the new `/manifest-eq.json`** — a pre-existing asymmetry noticed while fixing the item above (SKS assets get faster but staler cache-first serving; EQ assets are always network-first/fresh). Left alone deliberately — fixing it means deciding a caching tradeoff, not just correcting a stale value. _(added 2026-08-04)_
 
 ---
 
@@ -232,13 +207,11 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 - [ ] **OCR / smart intake on document upload** (auto-fill title/date/reference from the file, like eq-cards' licence OCR) — named in the critique, real north-star item, not started. _(added 2026-08-04)_
 - [ ] **Document type list is a hardcoded array in the frontend**, no admin config surface — named in the critique (`rules/admin-feature-baseline.md` item 4), not started. _(added 2026-08-04)_
 - [ ] **Certificate export can't be scoped to a subset of signers** — always the whole document, every signer, one PDF. Named in the critique, not started. _(added 2026-08-04)_
-- [ ] **EQ Field / SKS Labour adoption has no tracked parity list** — surfaced via a `/gap` this session (Royce: "need to get EQ Field adopted first"), then Royce pivoted back to the sign-off register before deciding next steps here. SKS Labour is genuinely NOT feature-frozen (confirmed live, corrected a stale memory that had over-claimed a full freeze) — both apps get real ongoing work in parallel, with no dated retirement and no tracked list of what EQ Field still lacks. Real open question, nothing started. _(added 2026-08-04)_
 
 ---
 
 ## eq-context + eq-shell/eq-field: CI health sweep, PAT diagnosis, and a shared-checkout git incident (2026-08-03)
 
-- [ ] **`eq-solves-assets` folder points at the wrong GitHub repo** (a personal fork of the Service app, not the real assets repo) — Royce: "on the back burner, can be ignored." Deprioritized, not investigated further. _(added 2026-08-03, updated 2026-08-03)_
 - [ ] **eq-shell's `smoke.yml` check is chronically noisy** (roughly 1 in 3 runs fails on a timing timeout, always self-resolves) — not a real bug, but worth a longer timeout if the false alarms bother anyone watching it. _(added 2026-08-03)_
 
 ---
@@ -407,14 +380,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 
 ---
 
-## eq-shell + eq-field: golden worker journey investigation — identity/tenant-isolation gaps found, four PRs shipped, one caught by a security review (2026-07-20/21)
-*Asked to prove and harden the full worker journey (Shell → Cards → company connection → Field) as one system rather than polishing apps in isolation. Investigation before any code: traced the real flow across all three repos against live Supabase data, not docs. Verdict at that checkpoint: not yet proven — a real tenant-isolation gap, unmitigated duplicate identities, and 45 active workers who'd never been invited to join at all.*
-- [ ] **The `shell_control.persons`/`person_xref` "golden record" spine — investigated further, recommendation reversed.** Asked to do a full 3-repo build; investigation disproved the premise it was based on. Only eq-cards actually matches identities (phone/email against `public.workers`) — eq-shell only reads the output, and eq-field has no matching of its own (its one identity lookup is `user_id`-keyed, already-established, SKS-only). Also found eq-field has its own separate, deliberately parked initiative for a related but different problem (`ADR-PERSON-IDENTITY.md` — same-name disambiguation within eq-field's own tables, not cross-tenant identity; Phases 1–2 shipped, Phases 3–4 explicitly gated by Royce on "not until SKS is stable in live", set 2026-06-08) — and that ADR's own canonical-link plan points at `public.workers`, not `shell_control.persons`/`person_xref`. Recommendation: don't build the spine — it looks like a second, unused design for a job `public.workers` already does. **Royce confirmed: "don't build the spine, leave it parked."** Closed — no further action unless a real second consumer shows up (most likely trigger: EQ tenant's Field plane going live). Open question for later, not urgent: whether to formally retire the empty `persons`/`person_xref` tables rather than leave them as dead schema two different plans could collide on. _(added 2026-07-21, corrected 2026-07-21, confirmed parked 2026-07-21)_
-- [ ] **EQ-tenant worker→staff sync doesn't exist** — `workers-canonical-sync` is hardcoded to SKS only. Deprioritized rather than built, since the EQ tenant's Field plane has no real usage yet — revisit if that changes. _(added 2026-07-21)_
-- [ ] **45 never-invited workers are now visible (via #918's alert) but nobody's actually invited them.** Sending real invites to real workers is a deliberate action for an operator, not something to automate. Royce's explicit call this session: not now, "too many moving parts." Fits under the existing `/admin/invite-bulk` 50-cap if actioned. Still open as of 2026-08-02 — count now 44 (one resolved naturally), still surfacing via the same alert, now also showing as a live Sentry issue (EQ-SHELL-X) rather than only the original ad-hoc check. Same call stands: not actioned yet. _(added 2026-07-21, reconfirmed 2026-07-21, still open 2026-08-02)_
-
----
-
 ## eq-field: mobile My Schedule + home tile now show Saturday/Sunday when rostered (2026-07-21)
 *Royce flagged that the mobile schedule view only showed Monday-Friday, even for people rostered to work a weekend. Fixed here and in the sibling SKS Labour app.*
 - [ ] **Worth a quick look once deployed:** confirm a weekend-rostered person's mobile schedule and "Next shift" home tile show Saturday/Sunday correctly. _(added 2026-07-21)_
@@ -464,8 +429,7 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 ---
 
 ## EQ one-login / access simplification — exploration + P0 policy LOCKED (2026-07-13)
-*Royce: simplify how workers access Field at scale ("tech should be invisible; reduce the logins/surface a worker touches"). Live audit (Field/Cards/Shell/canonical) → the mobile-OTP worker identity ALREADY EXISTS and is in daily use on canonical (47 phone-confirmed, 52 signed in); **Core (not Field) is the auth broker**; Field is the only surface not yet on it. "One login" = consolidate onto Core, not build new auth. Chosen path: **A-Core** + **B-grace** (grace-then-soft-lock) + **C-tile** (Cards as a tile in the Core home). See memory `project_worker_identity_mobile_login`.*
-- [ ] **One-login P4b (grace-then-soft-lock enforcement) — deliberately not built.** Warn-only (P4) ships instead; blocking a worker's access on a missing credential is a policy call, not a default. Build only on Royce's explicit go. _(added 2026-07-22)_
+
 - [ ] **One-login P5 — migrate the 44 SKS workers still on the standalone app, retire it.** The cutover already happened for the other 48 SKS staff (2026-06-06); eq-field is a full superset, so this is a rollout + a date, not a technical gap. _(added 2026-07-22)_
 - [ ] **Confirm `ENABLE_PHONE_OTP` is `true` on eq-shell's Netlify env.** Gates `shell-join-tenant.ts` — Cards' self-serve join-by-mobile door (`/join?tenant=`). Confirmed intentional/by-design (Royce, 2026-07-22) — not a security question, purely operational: if the flag's off, the feature is silently dead even though it's meant to work. Blocked from checking it directly this session (Netlify env read + a live test POST both denied by the permission classifier even after approval) — needs Royce checking the dashboard, or a standing permission grant. _(added 2026-07-22)_
 - [ ] **Correct the stale "63 SKS invites" figure** wherever referenced — live = 20 shell user_invites + 2 worker_invites; SKS org_memberships 34; workers 89 (87 unique phones, 39 auth-linked). _(added 2026-07-13)_
@@ -561,19 +525,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 
 ## ⏩ Session close — 2026-07-10 (eq-cards + eq-shell) — duplicate-staff class killed at BOTH writers; Kurt onboarded by hand (licences + photos); admin photo-upload primitive built
 
-*Continuation of the 07-08 eq-cards session. Royce hit a run of duplicate "staff" rows in Shell (Brett Kilpatrick, Kurt Sticker, Sam Powell) plus a "can we enter a worker's licences for them / attach the photos they emailed" ask. Root-caused the duplicates to TWO independent writers, fixed both, cleaned the existing backlog to zero, and built the missing admin photo-upload path — all live and verified.*
-
-**Duplicate root causes — both fixed + live:**
-
-**Existing backlog cleared (app_data.staff dup scan → 0 active dups):**
-
-**Kurt Sticker onboarded manually + admin photo path built:**
-
-
-**Design call (Royce) — did NOT build:**
-- [ ] **Duplicate prevention beyond the two writer fixes: leave it.** Steelmanned a unique normalized-phone index and a detection cron; concluded (with Royce) that for ~85 staff a hard constraint on phone is the wrong tool (phone recycles — see eq-cards 0076 — and gets shared; converts silent dups into blocking 500s). The 80/20 that leading teams do — one identity key + normalize-and-match at write + a merge tool for stragglers — is now in place via #719 + #724. Revisit a merge-UI or constraint ONLY if dups recur after these. _(added 2026-07-10)_
-
-**Follow-ups flagged, not built:**
 - [ ] **Timesheets/other paths that write `app_data.staff`** — audit that every remaining writer routes phone through the shared normalizer (not just the two fixed). Low priority now the two main writers are fixed. _(added 2026-07-10)_
 
 ---
@@ -614,29 +565,9 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 
 ## ⏩ Session close — 2026-07-08 (eq-shell/eq-field/eq-roles) — employment_type + Supervision fixes shipped live; access-model foundation designed + Phase 0 built
 
-*Continuation of the 2026-07-06/07 audit session. Closed both deferred items from that session (Supervision fix, employment_type unification), then Royce asked to complete the shared roles rulebook for consistency — which surfaced a bigger, real gotcha (5 separate access-grant paths + Cards represented 4 ways). Ran a Fable-tier adversarial design review, locked a 4-decision/4-phase foundation plan fenced around the 13 Jul SKS cutover, and built Phase 0.*
-
-**Shipped:**
-
-**Decided (Royce):**
-- Manager stays the top tenant role — do not rename to Executive. Owner/Executive is a proven one-file add-later (scaffold-tested), not built today.
-- Override-promotion criterion = "what scales best" (right defaults), not "fewest overrides." `service.create`/`quotes.approve` stay tenant-local — confirmed cross-app overloaded, unsafe to broaden blind.
-- Canonical security groups only going forward — no free-form per-tenant groups. SKS's "Project Managers" promoted to canonical; "Test - Royce" group flagged for deletion.
-- Cards un-smeared: the app is worker-facing (entitlement-gated), not a per-user employer permission. `cards.*` matrix perms deprecated, not deleted yet (existing tenant overrides still depend on them).
-- `subcontractor` explicitly stays a roster `employment_type` — never a Field login role.
-- Foundations (permission-gating, one admin concept, Cards un-smearing) are worth doing NOW, in infancy, while migration is 1-tenant cheap — not deferred to "when it scales." Auth-touching pieces (Phase 2) still fenced to post-13-July.
-
-**Deferred:**
 - [ ] **Mitchell Forsyrh + Taya Moody** have Cards + roster identity but no Shell login (no PIN set) — need to sign up via the invite run, not fixable from the backend. _(added 2026-07-08)_
 - [ ] **Calum + Mohamed Zemi Asri** — login-only, no Cards org-link. Calum's email is an external domain (`@ssw.com.au`) and never logged in — needs identity verification before any fix, not auto-resolved. _(added 2026-07-08)_
-- [ ] **Access-model Phase 2 — one admin concept** — retire `org_memberships.role='admin'` as a gate; migrate its 3 known readers (Cards admin UI, jvkn licence-photo RLS, connection-request email lookup). **POST-CUTOVER ONLY** — auth-touching. _(added 2026-07-08)_
-- [ ] **Access-model Phase 3 — guardrails** — Field/Cards convert to the canonical model properly; split the overloaded `service.create`/`service.close` PermKey by app; fix `check-perm-sync.mjs`'s blind spot (it can't catch a local module *under*-granting vs canonical, only over-granting — found this session); delete "Test - Royce" group; build `why_can()`. _(added 2026-07-08)_
 - [ ] **`supervisor_category` vocab-lock** — the next drift candidate after `employment_type`, still free text. _(added 2026-07-08)_
-
-**Notes:**
-- **Repeated collision this session**: substrate writes to this same non-worktree `eq-context` checkout got clobbered twice by concurrent sibling sessions' own `/close` git activity (rebase-based syncs discarding another session's un-pushed local commits). Content was recovered both times (verified via hash match against the original), but this is a real, repeated operational risk from many parallel sessions sharing one checkout with no worktree isolation — worth Royce's attention if it keeps happening. Lesson applied: commit substrate writes immediately, in their own step, never batched with later work.
-- `git checkout main` failed twice this session with "already used by worktree" (a concurrent session had it checked out) — worked around cleanly both times by branching directly off `origin/main` instead.
-- The enforcement-site inventory corrected two of this session's own earlier plan assumptions before they shipped: apprentice's `intake.view` grant is deliberately broad by design (Shell's own code says so) — left alone, not removed as originally planned; and the EQ Ops/quotes module turned out to be real and live, not unbuilt as an earlier session's notes assumed.
 
 ---
 
@@ -750,7 +681,7 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 **Crumbs needing Royce (surfaced so they're not forgotten):**
 - [ ] **Send Huon** the connection-email reply + before/after graphic. _(added 2026-07-02)_
 - [ ] **Resolve the pending "432470463 · No licences yet" connection request** on core.eq.solutions/sks/staff — nameless self-signup from before the name-gate; approve/decline + nudge to add details. _(added 2026-07-02)_
-- [ ] **Define the required-credential policy** (what SKS actually requires) + decide whether to add a worker **trade field** — the two blockers before the gaps engine can ship. _(added 2026-07-02)_
+- [x] **Define the required-credential policy** (what SKS actually requires) + decide whether to add a worker **trade field** — the two blockers before the gaps engine can ship. _(added 2026-07-02)_
 ---
 
 ## ⏩ Session close — 2026-06-30 (part I) — EQ Cards Sentry + dead code + iOS spinner fix
