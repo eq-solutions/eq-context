@@ -23,6 +23,62 @@ Full bucket-by-bucket detail (all 367 items, not just the 60 below) is preserved
 
 **Staleness caveat**: this is pulled from `pending.md`, and this whole session has shown extremely high concurrent-session write volume (multiple sessions committing to the same substrate within minutes of each other, all week). One item below (PR #1654) was already resolved by the time this doc was written — corrected inline. Treat every item here as "true as of the last pending.md update," not "true right now" — worth a quick live re-check before sinking real effort into any single one, especially before assuming it's still blocking.
 
+**Update 2026-08-30**: 2 items below have since shipped — the eq-cards migration-pipeline decision (Security gaps → "Field writes to the SKS database through its own door") got a direction, got built, and is merged+live ([eq-shell#1671](https://github.com/eq-solutions/eq-shell/pull/1671) + [eq-cards#330](https://github.com/eq-solutions/eq-cards/pull/330)); the pending.md archive cleanup recommended above is done (41 of 43 settled items closed, 13 sections archived — see `sessions/2026-08-30.md`). Both struck through in place below. Royce then asked to prioritize the rest into an actual execution order — that's the new section right after this one.
+
+---
+
+## Execution order
+
+Value-vs-effort, not alphabetical. "Effort" is wall-clock for a focused session, not calendar time — several waves can run in parallel with each other since they don't share files or touch the same systems.
+
+### Wave 1 — ship now (0 new work, 3 decisions)
+Already built, just sitting on a merge call. Same shape as #1654/#1671 above — review, or just "merge" if you trust the description.
+1. [PR #1637](https://github.com/eq-solutions/eq-shell/pull/1637) — multi-project-code sites. Zero live rows depend on it either way — lowest-stakes of the three.
+2. [PR #1381](https://github.com/eq-solutions/eq-shell/pull/1381) — 4 PII/contact-detail leaks fixed. Highest-value of the three (real data exposure, already 6 weeks held for exactly this go-ahead).
+3. [PR #1310](https://github.com/eq-solutions/eq-shell/pull/1310) — quote-attachment direct-to-storage. Needs your specific error message before it can move, not just a merge click.
+
+### Wave 2 — quick wins (~1 hour total, high value)
+Small, independent, mostly security hygiene. Good candidates to just knock out in one sitting.
+1. **Cloudflare 2FA** — 2-minute dashboard click, closes a single-point-of-failure on DNS for the whole suite.
+2. **Confirm SEC-63's dev secret is actually deleted** — you said you'd do it via the Netlify dashboard; never confirmed back.
+3. **Confirm `ENABLE_PHONE_OTP` is still `true`** — gates a live signup door, blocked from checking via the classifier, needs your dashboard read.
+4. **Re-confirm the 3 already-tracked P0 findings' current status** in `ops/security-register.md` — 5-minute read, closes the loop on whether national-scale plans are building on solid ground.
+
+### Wave 3 — this week (bounded, single-session fixes)
+Real work, but each one is scoped and self-contained — good for a focused block, not a multi-day slog.
+1. **2 blank-name worker records** — same shape as an already-fixed case, should be quick once found.
+2. **`eq_revoke_session`'s access-group blind spot** — small, already diagnosed, just needs the fix applied.
+3. **2 orphaned auth users on jvkn** — investigate and resolve (probably a quick identity-link fix, same pattern as prior orphan cleanups this session).
+4. **"Rollback" button** — quick decision (build for real vs. remove), then a small build either way.
+5. **Mobile Home's 10-minute cache mismatch** — quick decision (shrink TTL vs. staleness stamp), then a small fix.
+6. **6 Equinix sites' contact data** — blocked on you supplying real names/numbers, not a build task.
+
+### Wave 4 — needs a dedicated session (real scope, still single-repo)
+Not quick wins — each of these is a proper piece of engineering work on its own.
+1. **33 endpoints missing the shared permission-check helper** — audit + fix, one by one (some are misclassified reads, filter those out first).
+2. **`quotes.view` server-side check + quote status/notes RPC verification** — natural pair, same module, same session.
+3. **`EQ_SECRET_SALT` rotation rehearsal** — the single top production-readiness risk flagged this whole sprint; worth being the first "dedicated session" item picked up.
+4. **Function-grant safety net's `app_data` blind spot** — extend the existing `public`-schema check to cover the schema the actual risk lives in.
+5. **Resend/nudge action for 24 unlinked SKS staff** — needs your human pass over the list first, then the build.
+6. **Field's own migrations onto a governed pipeline** — same shape as the eq-cards work just shipped; Field is the other repo writing to a shared database with no governed apply path.
+
+### Wave 5 — needs your decision before anything builds
+No code should move until you've picked a direction on these.
+1. **S2**: re-point the asset-write permission keys, or document the current CRM-tiering as deliberate?
+2. **`ai.use` key**: enforce it, or retire it? Re-flagged across 4+ sessions with no owner.
+3. **Security-groups Phase 4**: still wanted, or superseded by the `field.manage_*` work?
+4. **No self-service email correction**: worth building, or leave as admin-only?
+5. **Nothing alerts on sign-in lockouts**: where should an alert land?
+
+### Wave 6 — bigger initiatives (needs its own scoping pass first, not a slot in this sprint)
+Real, but too big to just "pick up" — each of these deserves its own brief before any work starts.
+1. Repo-wide lint debt (990+ errors, doubling every few weeks).
+2. 24 untriaged security-audit findings (4 P0s among them) — sitting in a Claude.ai artifact, no repo-doc home.
+3. 206 Supabase security advisories on ehow.
+4. National-scale access-revoke design (instant deactivation, not next-login).
+5. Off-platform backup for ehow.
+6. Self-serve provisioning's mandatory dry run before it's used on a real prospect.
+
 ---
 
 ## Ready for your call — PRs sitting on a merge decision
@@ -45,7 +101,7 @@ Full bucket-by-bucket detail (all 367 items, not just the 60 below) is preserved
 - **Quote status/notes write functions never verified for role checks** this session. 2026-08-23.
 - **Database function-grant safety net only covers the `public` schema** — the actual function it exists to catch a mistake in lives in `app_data`, outside its coverage. 2026-08-23.
 - **Cloudflare account has no 2FA** — `royce@eq.solutions` is the sole Super Administrator over DNS for the entire 4-app suite. 2-minute fix, flagged after last month's DNS outage. 2026-07-22.
-- **Field writes to the SKS database through its own door**, outside eq-shell's governed migration pipeline — two known fixes went in by hand because Field has no equivalent approval pipeline. Same underlying shape as the eq-cards decision made earlier today (route through eq-shell's pipeline). 2026-07-21.
+- **Field writes to the SKS database through its own door**, outside eq-shell's governed migration pipeline — two known fixes went in by hand because Field has no equivalent approval pipeline. eq-cards had the identical gap; that one's now built and merged ([eq-shell#1671](https://github.com/eq-solutions/eq-shell/pull/1671) + [eq-cards#330](https://github.com/eq-solutions/eq-cards/pull/330), 2026-08-30) — Field's own version of the same fix is now Wave 4 below, same mechanism ready to reuse. 2026-07-21.
 - **Several company repos found sitting fully public** (EQ Context, EQ UI, EQ Quotes, EQ Contracts, the old SKS labour app, smaller internal libraries) — given SKS's contractual private-repo requirement, worth a deliberate check whether this is still true. 2026-07-20.
 - **No live access-revoke** — role/entitlement changes only take effect on next login. SKS's stated national-rollout requirement is instant. Needs a real design (per-request active-check instead of trusting the session cookie). 2026-07-23.
 - **🟠 MFA-bypass posture** — PIN-only Shell→Service auth is single-factor. Flagged, unresolved. 2026-06-05.
