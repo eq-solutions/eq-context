@@ -13,6 +13,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Cameron Tregoning's two mobile bug reports — Prestart create unreachable + roster warning leak, both fixed (2026-08-30)
+*Royce forwarded two mobile screenshots from Cameron Tregoning: couldn't create a prestart, and a roster screen showed a raw internal warning banner. Root-caused both live before writing any fix.*
+
+- [x] **Prestart/Toolbox create was invisible to every non-manager, on any device** (not actually mobile-specific) — "+ New prestart", "Copy last", and "+ New toolbox talk" still carried the manager-only `edit-only` CSS class from before a 2026-08-24 permission-matrix change opened `reports.prestart.create`/`reports.toolbox.create` to every Field role. Cameron had the permission but the button never rendered. Class removed; the existing `EQ_PERMS.can()` check inside each handler remains the real gate. `scripts/site-reports.js`, `scripts/toolbox.js`.
+- [x] **Roster/leave/timesheets warning toast leaked a raw internal UUID to every user** — the default warning sink for an orphaned `staff_id` called `showToast` unconditionally, though the code's own comment said the intent was "so a supervisor sees it." Now gated on `field.manage_roster`/`leave.approve`/`ts.approve` respectively; `console.warn` still fires for everyone. `scripts/roster-adapter.js`, `scripts/leave-adapter.js`, `scripts/timesheets-adapter.js`.
+- [x] Root-caused the reported `staff_id` live against ehow first: resolves to Anthony Hartley, an active/`field_approved` supervisor — data is correct now, so this was UI noise, not live data corruption.
+- [x] eq-field [PR #839](https://github.com/eq-solutions/eq-field/pull/839) (v3.5.610), squash-merged, live.
+- [ ] **Not click-tested live with Cameron's real account** — verified via the full test suite, CI, and a byte-level fetch of the deployed preview confirming the fixed code shipped, but no live SKS session with a real non-supervisor account clicked through end-to-end. _(added 2026-08-30)_
+- [ ] **Why Anthony Hartley's staff_id briefly failed to resolve is unconfirmed** — leading theory is a client-side load-order race, not proven. Low priority since the user-facing symptom is fixed regardless. _(added 2026-08-30)_
+- [ ] **`eq-context/suite-state.md`'s "Prestart/Toolbox is supervisor-only" framing (2026-08-12 entry) is stale** — contradicted by live code since 2026-08-24, and plausibly *why* this bug shipped unnoticed for 6 days. Needs a substrate correction pass. _(added 2026-08-30)_
+
+**Notes:**
+- Rebased 3x mid-session chasing a moving `origin/main` (v3.5.607/608/609 all claimed by other concurrent PRs while this one was open) — checked each for file overlap before rebasing (none), renumbered to v3.5.610.
+- The user's "two screenshots" didn't actually attach on the first message (checked session storage — genuinely empty). Investigated both bugs from live Sentry/DB evidence first, then asked once with pre-populated options; user pasted the images directly on the next turn.
+
+---
+
 ## eq-field: Prestart Crew step now surfaces recently-approved workers not yet on today's roster (2026-08-30)
 *Part of a broader EQ Cards → EQ Shell → EQ Field onboarding-gap sprint (steelmanned, then planned) — this is the one item actually shipped; a second candidate (Field realtime push for the people list) was costed and explicitly deferred, not built. Full context in `eq/pending/eq-cards.md` (2026-08-30 entry) — this is where it landed.*
 
