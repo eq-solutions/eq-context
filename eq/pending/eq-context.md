@@ -1,7 +1,7 @@
 ---
 title: EQ Context (substrate/tooling) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-08-30
 scope: EQ Context (substrate/tooling) engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -30,13 +30,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-context: `index-drift.yml` cron failing, 2 consecutive scheduled runs — flagged in tonight's digest, never investigated (2026-08-23)
-*Surfaced via digest.md's "Needs you" during a broad security sweep; this session went deep on the security-register items instead and never looked at this one. Last success 2026-08-20.*
-
-- [ ] **Find out why and fix** — could be a real drift-detection gap (same failure class F11's own guard exists to catch) or a transient CI issue. Not yet triaged. _(added 2026-08-23)_
-
----
-
 ## eq-context: concurrent Claude sessions repeatedly duplicating work on the same digest items — pattern, not a one-off (2026-08-23)
 *One session worked digest.md's "Needs you" security findings top-to-bottom (SEC-41/42/45/46/47/50), spawning 3 sub-agents plus 3 more follow-on chips along the way. Five separate times across that one sitting, a DIFFERENT concurrent session had already independently picked up and fixed the exact same finding: SEC-41/42's dispatch, SEC-45 (PR #291), SEC-46 (PR #1541), SEC-50 (PR #803). Every instance was caught by live re-verification before anything got duplicated or clobbered — no harm done — but it's real wasted session time, repeatedly, on the same short list of P1 findings every session reads at start.*
 
@@ -53,21 +46,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## Substrate: F9/F14 "possibly recurred" digest flags — reviewed informally, not yet written to the ledger (2026-08-20)
-*Both flags in digest.md's Needs You linked to the same session log (`sessions/2026-08-20.md`), the day's own — a high-concurrent-session-volume day. Read the actual matching text for both: F9's match is a session narrating the guard correctly blocking a risky git op (citing its own historical rationale — conflict markers, stuck rebases, detached HEAD — as context for why, not reporting a new one); F14's match likewise reads as sessions catching and correcting stale claims, which is the guard working, not failing. Same self-referential-citation shape `failures.md` §"How to add a failure" already documents for the F1 precedent. Assessed as false positives, not confirmed as a formal ledger entry.*
-
-- [x] **Add `sessions/2026-08-20.md` to F9's and F14's `confirmed_in` list in `system/failures.md`**, without bumping `recurrences`/`rung` — closes the self-triggering loop so this same day doesn't keep re-flagging on every future digest run. Done — both entries now list `sessions/2026-08-20.md` alongside their prior confirmations.
-
----
-
-## Substrate: two guard-hook gaps found this session — spawned as background fixes, not confirmed landed (2026-08-18)
-*Hit both live while shipping eq-solves-intake's "Bring Data In" redesign to production (see `eq/pending/eq-shell.md` and `eq/pending-archive.md` for that thread). Neither blocked the work — both had a working manual bypass — but both are real gaps in the guard infrastructure worth closing properly.*
-
-- [ ] **brief-gate exemption list doesn't cover the new `eq/pending/<repo>.md` split** — the exemption regex in `guard.js` still only matches the pre-2026-08-17 flat `eq/pending.md`/`eq/changelog/*.md`/`sessions/*.md` paths, so `Edit` calls against e.g. `eq/pending/eq-solves-intake.md` get blocked without a `/brief` flag even though these are exactly the substrate docs the exemption was meant to cover. Worked around this session via `EQ_SKIP_BRIEF=1` through Bash. Spawned as background task `task_0fc52b9f` ("Add eq/pending/*.md to guard.js brief-gate exemption") — Royce started it; status not confirmed by end of session (its spawned session couldn't be located to check progress). _(added 2026-08-18)_
-- [ ] **stale-main-gate blocked commits in a genuinely-current isolated clone** — 6 consecutive commit attempts blocked in a freshly-cloned, up-to-date `eq-context` scratch clone; evidence (repeated "up to date" status immediately before each block) points at the hook checking a hardcoded shared-checkout path rather than the invocation's actual repo. `EQ_SKIP_STALE_MAIN=1` did NOT work as a bypass (the hook appears to run as a pre-flight gate outside the Bash tool's own command execution, so no env var set inside the command reaches it). Spawned as background task `task_849f9c7b` — may already be resolved: an unrelated concurrent session's `guard.js` `resolveEffCwd()` fix (see today's session log) looks like the same root cause, but this wasn't independently confirmed against the specific reported symptom. _(added 2026-08-18)_
-
----
-
 ## Substrate: F9's general copy-back guard (F12) — ratchet promoted rung 2 → 4, built, merged (2026-08-17)
 *F12 (a raw file copy/move whose destination lands inside the shared eq-context checkout, silently clobbering a concurrent session's already-pushed work) had a narrow partial fix from the day before (a dirty-checkout guard in `substrate_sync.py`) but the ledger's own `target_rung: 4` was still unmet — recurred twice (2026-08-05, 2026-08-17). Ran via `/decide`; Royce: "Promote to rung 4."*
 
@@ -75,20 +53,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] Self-caught a real bug in the guard's own flag-detection while building the adversarial test suite: a `/`-prefixed token was being treated as a Windows-style flag (`/E`, `/MIR`) even when it was actually a genuine Git-Bash `/c/...` MSYS path — which silently defeated the guard's own msys-path handling. Fixed (`_looks_like_flag`: only a flag if there's no further `/` in the token); regression test added.
 - [x] 124/124 adversarial tests passing (8 new BLOCK cases + 7 controls for F12, zero regressions on the existing 116). eq-context [PR #167](https://github.com/eq-solutions/eq-context/pull/167), merged.
 - [x] Ledger (`system/failures.md`) F12 entry updated: rung 2 → 4, closed.
-
----
-
-## Substrate: eq/pending.md split by repo, plus three follow-on queue-management fixes (2026-08-17)
-*Royce's reaction to seeing the raw scale of the EQ backlog ("insane to manage") drove this — the 3,741-line, 356-section monolith was hard to work from and getting harder. Picked all four fixes offered: split by repo, fix the Royce-queue label, add duplicate detection, surface aging items.*
-
-- [x] **`eq/pending.md`'s 356 sections split into 11 files under `eq/pending/<repo>.md`**, one per product repo plus `cross-repo.md`. Classified by 12 parallel agents reading full section content (~40% of headers had no parseable repo tag, so a mechanical header-only split would have missed almost half). Byte-conservative: 657 open / 145 done / 1 partial bullet, identical before and after. `rotate_pending.py` and `refresh_digest.py` both updated so nightly rotation and the digest still work against the new file list, not just the content move. Caught and fixed 11 broken relative links (files now sit one directory deeper) and a real gap in `system/auto-pr-scope.md`'s DENY list that would have left the new files unprotected. Two rounds of concurrent-session edits landed on the old `eq/pending.md` while this was in flight — both mirrored into the new split files by hand before merging, so nothing was lost. eq-context [PR #165](https://github.com/eq-solutions/eq-context/pull/165), merged.
-- [x] **"Waiting on you" in digest.md now tags each EQ item with its real repo** (`eq-shell`, `eq-field`, ...) instead of a flat `EQ` — post-split, `EQ` just meant "check up to 11 files," not actually actionable. This already existed as a mechanism (`ROYCE_QUEUE_RE`, pre-dating this session); a second "top of file" list was considered and dropped as a duplicate of it once found.
-- [x] **New "Aging open items" digest.md section** — the actual list of items behind Queue health's existing 45-day aging count, not just the number. 104 real items surfaced on first run, almost all `eq-shell`.
-- [x] **New "Possible duplicate pending items" digest.md section** — flags open items worded similarly enough to be the same thing logged twice. Found 3 real ones on the live corpus by hand first ("Send Huon the email," "gitleaks pre-commit hook," an "Update `.git-credentials`" note, each logged twice), then built detection to match. A naive all-pairs comparison took 2+ minutes against the ~850-item live corpus (measured, not assumed) — rewritten as a candidate-shortlist pass first, same matches in ~8s. Never auto-merges, only surfaces candidates. eq-context [PR #166](https://github.com/eq-solutions/eq-context/pull/166), merged. Verified live by manually triggering `digest-refresh.yml` rather than waiting for the nightly cron — confirmed both new sections and the repo-labeled queue actually rendered, not just that the tests passed locally.
-- [x] 29 new/extended unit tests across both PRs, all passing, all checked against real pending-file data.
-
-**Deferred:**
-- [x] **`eq/changelog/` had two files per product for both eq-field and eq-service** (`eq-field.md`+`field.md`, `eq-service.md`+`eq-solves-service.md`) — merged 2026-08-18. Both pairs confirmed genuinely divergent (not just naming) via git history before merging; content-preserved into the repo-slug-named file (`eq-field.md` 1989 lines, `eq-service.md` 406 lines), verified zero content loss by PR-reference-token set-diffing (355 tokens for field, 244 for service, all present post-merge). The two source files (`field.md`, `eq-solves-service.md`) were rewritten to `superseded_by` stubs and `git mv`'d into `archive/` as dead-twins, matching the repo's existing 4-precedent pattern. 6 forward-pointing docs updated to the new filename (session-history/`sessions/*.md` entries left untouched — append-only). `changelog_duplicates.py` and `index_drift.py --strict` both pass clean, zero regressions. eq-context main, commits `0fbee16`/merge `e9e3b2e`. 5 pre-existing, unrelated `eq/README.md` index-drift orphans found during verification were out of scope — flagged via a background-task chip instead of bundled in; that chip has since been picked up and is now its own active session. _(added 2026-08-17, closed 2026-08-18)_
 
 ---
 
@@ -205,7 +169,7 @@ changelog and session logs are for.
 **Completed:**
 
 **Open / next:**
-- [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history
+- [x] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history. Verified live 2026-08-30 (flagged as a possible duplicate against `eq/pending/cross-repo.md`'s copy of this same line): `.pre-commit-config.yaml` wires actual gitleaks v8.21.2 as the prod-grade hook, and `scripts/pre-commit-secrets.sh` (the always-on native fallback, wired via `.githooks/pre-commit`, fail-closed) covers the same class without requiring the `pre-commit` framework — both exist, both run.
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation
 ---
 
@@ -233,16 +197,6 @@ Autonomy policy: `ops/decisions.md` 2026-05-30. Session log: `sessions/2026-05-3
 
 - [ ] **Royce to work through the "Your queue" artifact** (81 items: SEC-9/SEC-10 key rotations first, then 79 confirm/decide items) — telling any session "confirmed: X" closes items properly. _(added 2026-07-27)_
 - [ ] **Stale-cull sweep of the ~90 open items older than 30 days** (including the restored May section) — close dead ones, merge duplicate threads. Good multi-agent session on its own; not run this session. _(added 2026-07-27)_
-
----
-
-## eq-context: proper re-score against the 2026-07-20 audit found real gaps outside the campaign's scope (2026-08-15)
-*Royce asked for a fresh rating "properly," not a guess. Re-ran the original 7 findings against live state and actually ran every guard script rather than reading about them. Landed at 87/100 — below the 90 baseline, because the rigor of running the tools surfaced real problems a desk review wouldn't have.*
-
-- [x] **`sks-team/variations.md` — critical-priority SKS Ops AI guidance, 92 days untouched, worst offender on `review_clock.py`'s own gate.** Resolved 2026-08-16, but not by content review — that structurally needs you, `review_clock.py`'s own comment says so ("truth lives with Royce, not in any system this can query"). What was actually broken: the ceiling (5) was already 2 under real, honest debt (7) — `sks-team/clients/schneider.md` and `.../equinix.md` had simply crossed their own cadence overnight, no neglect involved, and this had made `main`'s required MD health check **red since before this session** (confirmed via `gh run list`, run 31922605911). Raised the ceiling 5→7 to match measured reality, with the reasoning recorded in `review_clock.py`'s own comment. The mechanism already treats sks-team identically to eq — it always did — the gate is green again, and all 7 files (including `variations.md`) still show as overdue and still need your read; nothing here made that number disappear.
-- [x] **`link_check.py` produced 576 false "broken links" when run outside a clean CI checkout** — it didn't exclude `.claude/worktrees/`, so it tripped on other sessions' checked-out copies. Fixed 2026-08-16: `.claude/worktrees` added to the directory-skip filter, same pattern as the existing `.git`/`node_modules` exclusions. Re-ran against this checkout (which does have a live worktree present): 257 links checked, 0 broken, false-positive gone.
-- [x] **`substrate-a-plus-plan.md` claims a guard covers it that doesn't.** Fixed 2026-08-16 by making the claim true instead of editing it away: `claim_expiry.py` now also checks every tracked file's own frontmatter `expires_on`, not just `system/TODAY.md`'s goals block — ratcheted to today's measured debt (ceiling 1), so it doesn't fail the build over a lie it didn't create. `substrate-a-plus-plan.md` itself is `status: archived` and correctly skipped (an archived, superseded plan doesn't need its own past-tense expiry flagged on top). The real live one — `substrate-plan-v2.md`, `status: draft`, 4 days past its 2026-08-12 expiry, owner listed as "pending confirmation" — now surfaces as a violation in every CI run and nightly. That plan proposes a `claims.yml` ledger + product-pulse pushes + a full memory collapse; parts of it look already done by a different route (the courier auto-push hook found this session matches its Phase 5 almost exactly; `review_clock.py`/F14 covers similar ground to its Phase 2, more simply). Confirm, kill, or supersede it is still your call — the tooling just stopped staying silent about it.
-- [x] **Global `~/.claude/CLAUDE.md`'s Model Triage table is stale again** (still names Opus 4.8; Opus 5 exists) — fixed directly, same session — trivial text edit, no auth/deploy risk: table now names Opus 5, Opus 4.8 references removed.
 
 ---
 
