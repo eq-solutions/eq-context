@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-30 08:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-30 08:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-30 08:33 UTC → 2026-08-30 08:35 UTC)
+## Since last refresh (2026-08-30 08:35 UTC → 2026-08-30 08:47 UTC)
 
-- Merged: eq-shell [#1681](https://github.com/eq-solutions/eq-shell/pull/1681) fix(security): quotes RPCs had no server-side permission che
-- Merged: eq-shell [#1669](https://github.com/eq-solutions/eq-shell/pull/1669) feat(sites): canonical contacts only for site "Ask for" / "B
-- Merged: eq-shell [#1667](https://github.com/eq-solutions/eq-shell/pull/1667) fix(security): tender-pipeline zaap tables get real authenti
-- Merged: eq-shell [#1666](https://github.com/eq-solutions/eq-shell/pull/1666) feat(documents): requires_signoff flag on document_categorie
-- Merged: eq-shell [#1664](https://github.com/eq-solutions/eq-shell/pull/1664) fix(documents): lazy-load Register and Reference library tab
-- Merged: eq-shell [#1662](https://github.com/eq-solutions/eq-shell/pull/1662) fix(security): scope user_invites reads to managers, revoke 
-- Merged: eq-shell [#1659](https://github.com/eq-solutions/eq-shell/pull/1659) feat(schedule): site_project_id on schedule_entries — write 
-- Merged: eq-shell [#1656](https://github.com/eq-solutions/eq-shell/pull/1656) feat(documents): site-scope document pushes and sign-off cer
+- Merged: eq-shell [#1670](https://github.com/eq-solutions/eq-shell/pull/1670) feat(documents): ad-hoc multi-site document pushes and sign-
+- Merged: eq-shell [#1665](https://github.com/eq-solutions/eq-shell/pull/1665) fix(security): add the same-origin check to 15 more cookie-a
+- Merged: eq-shell [#1663](https://github.com/eq-solutions/eq-shell/pull/1663) fix(security): drop dead Supabase/Quotes refs from CSP + del
+- Merged: eq-shell [#1661](https://github.com/eq-solutions/eq-shell/pull/1661) fix(schedule): correct 0290's view column order + scope to S
+- Merged: eq-shell [#1660](https://github.com/eq-solutions/eq-shell/pull/1660) feat(documents): push a document to a customer's whole site 
+- Merged: eq-shell [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every documen
+- Merged: eq-shell [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (
+- Merged: eq-shell [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment
 
 ## ⚠ Needs you (8)
 
@@ -58,7 +58,7 @@ _…and 250 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-solves-service | ✓ success | 4d ago | 6 | 9d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ✓ success | 11d ago | 0 | — |
+| eq-solves-intake | ✓ success | 12d ago | 0 | — |
 
 ## Live errors (Sentry)
 
@@ -90,14 +90,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-30 | eq-shell | [#1672](https://github.com/eq-solutions/eq-shell/pull/1672) fix(sites): field_sites.site_lead via contact_site_links (role=si |
 | 2026-08-30 | eq-shell | [#1668](https://github.com/eq-solutions/eq-shell/pull/1668) feat(documents): category can override doc_type's signoff routing |
 | 2026-08-30 | eq-shell | [#1671](https://github.com/eq-solutions/eq-shell/pull/1671) feat(ci): let other repos apply their own jvkn migrations via thi |
+| 2026-08-30 | eq-field | [#842](https://github.com/eq-solutions/eq-field/pull/842) v3.5.614 — FIX: Manage → Feature Toggles unreachable for everyone |
 | 2026-08-30 | eq-field | [#841](https://github.com/eq-solutions/eq-field/pull/841) v3.5.613 — Prestart/Toolbox create+submit no longer permission-ga |
 | 2026-08-30 | eq-field | [#840](https://github.com/eq-solutions/eq-field/pull/840) v3.5.612 — FIX: Map tiles blank after v3.5.608 — CSP img-src neve |
-| 2026-08-30 | eq-field | [#836](https://github.com/eq-solutions/eq-field/pull/836) v3.5.611 — Dashboard + Trial Dashboard: an aliased project code n |
 _Showing 15 of 90 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (277 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (274 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (54 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (172 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (99 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -129,7 +129,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1960 | 184 / 100 | 281 | 57 |
+| [eq-shell](eq/pending/eq-shell.md) | 1943 | 181 / 100 | 276 | 56 |
 | [eq-cards](eq/pending/eq-cards.md) | 390 | 40 / 17 | 73 | 6 |
 | [eq-field](eq/pending/eq-field.md) | 1149 | 133 / 50 | 102 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 27 |
@@ -163,7 +163,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-11) · **zaap tender tables are now service_role-only** (no `authenticated` tenant policies — the create migration's `field_authed_all_*` never reached zaap). Fine if the EQ app reads them via service_role; add the authenticated tenant policy if Field ever needs authed access there. _(added 2026-07-11)_
 - **eq-shell** (2026-07-10) · eq-shell: fix focus-triggered refetch/hydration crash on Field iframe wrapper so spinner doesn't get stuck on tab return _(added 2026-07-10, in progress in separate eq-shell session — task_b2cf81ea)_
 - **eq-shell** (2026-07-08) · **EQ Service "session expired, please reconnect" stuck screen — root cause still genuinely unknown.** Two chased theories were investigated and explicitly REFUTED with hard evidence: React error #418 (hydration mismatch) is a dated, known, confirmed-non-blocking noise pattern (2026-07-05 team note, 705 events/14d, essentially every active user) — NOT the cause. A suspected hanging `token-exchange` call was also refuted — real Netlify function logs showed every invocation completing in under 4s with zero errors; the "pending forever" read came from a flaky automated browser tab (same tab independently threw an unrelated CDP "renderer frozen" error). Two chips built on these now-retracted theories (`task_2911c80d`, `task_abbb7fd0`) were already started by Royce before the retraction landed — worth redirecting or discarding. The actual cause of the stuck-reconnect screen is still open. _(added 2026-07-08)_
-_…and 255 more — see each file's Queue health row above._
+_…and 254 more — see each file's Queue health row above._
 
 ## Possible recurring failures (unconfirmed)
 
@@ -187,4 +187,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 08:35 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 08:47 UTC._
