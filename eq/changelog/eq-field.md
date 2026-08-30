@@ -2685,3 +2685,17 @@ explicit Royce go-ahead.
 - Reopening an already-submitted record for correction (`reopenPrestart()`/`reopenToolbox()`) deliberately stays supervisor-gated — a separate, more sensitive action.
 - `tests/permission-enforcement-baseline.json` updated per the drift-ratchet test's own required process (2 keys added with a dated, reasoned comment).
 - eq-field [PR #841](https://github.com/eq-solutions/eq-field/pull/841) (v3.5.613), squash-merged, live.
+
+## 2026-08-30 (Manage → Feature Toggles unreachable for everyone since it shipped)
+- Royce noticed the nav item existed but every click showed "Not available."
+- Root cause: `PAGE_ACCESS` (the deny-by-default route guard, v3.5.504) never got a `'feature-toggles'` entry when the page itself shipped 5 days later (v3.5.561) — every other manager-gated page has one, this one was simply missed. `showPage()` refused unconditionally, for every role, before `canManageFeatureToggles()` ever ran.
+- Nav item, lazy-loader entry, and `renderFeatureTogglesPage()` were all already correct. Added the one missing entry, mirrors the working `email-templates` entry exactly.
+- Verified via console-level checks against the real loaded deploy preview (no live login reachable in this environment) — confirmed a real render (title, description, all 3 toggles, correct off-states) and confirmed the negative path shows the correct "Supervision access required" instead of the old blanket message.
+- eq-field [PR #842](https://github.com/eq-solutions/eq-field/pull/842) (v3.5.614), squash-merged on explicit "merge", confirmed live.
+
+## 2026-08-30 (Leave requests from non-manager accounts could silently save with no approver linked)
+- Royce tested a leave request from a dummy apprentice account ("Jordan A. Sample"), picked Royce as approver, got a confusing "no email on file for approver" toast. Hunch was apprentice access restrictions — right in spirit, wrong mechanism.
+- Root cause, verified live via simulated-JWT SQL against ehow: `loadCanonicalStaffMap()` (scripts/supabase.js) resolved approver/requester names to `staff_id` via a raw, unrouted `/rest/v1/staff` fetch, bypassing `sbFetch`'s own role-based routing. A manager JWT gets full-tenant SELECT; a non-manager gets zero rows. Any approver/coworker name then failed to resolve — `leave_requests.approver_id` saved null, invisible to that supervisor's own approval queue, surfacing only as the misleading email toast several steps downstream. Confirmed on one real prior submission too (Collin Toohey, 2026-07-04), not just today's test.
+- Third independent discovery of this exact bug class in 4 days (a security_invoker=on view/table silently collapsing to 0 rows for non-managers) — see the 2026-08-27 `field_managers` dropdown-population fix and the `field_people` SEC-33 fix. This one took a different shape: rerouted through `sbFetch('people', ...)`, reusing the already-shipped `field_people_directory` coworker-safe view (SEC-33, PR #814) instead of flipping another view's RLS as a 4th one-off exception.
+- Also added the same pre-submit resolution guard for the approver that already existed for the requester — an unresolvable name now blocks submission with an honest message instead of saving silently linkless. Royce's explicit choice after seeing the tradeoff stated.
+- eq-field [PR #844](https://github.com/eq-solutions/eq-field/pull/844) (v3.5.615), squash-merged on explicit "yes", confirmed live.

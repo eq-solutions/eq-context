@@ -5677,3 +5677,10 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 - [x] **Royce's call: leave it.** One-off, self-recovering (retry always works), no repeat reports — not worth an auth-adjacent tracing change for a single blip. Full technical detail in eq-cards' own memory record, `cards_handoff_fast_click_untraced.md`.
 
 ---
+
+## eq-field: Manage → Feature Toggles was unreachable for everyone since it shipped (2026-08-30)
+*Royce noticed the Feature Toggles nav item existed but always showed "Not available" when clicked.*
+
+- [x] **Root cause: `PAGE_ACCESS` (the deny-by-default route guard added v3.5.504, 2026-08-16) never got a `'feature-toggles'` entry when the page itself shipped 5 days later (v3.5.561, 2026-08-25)** — every other manager-gated page has one; this one was simply missed. `showPage()` refused the click unconditionally, for every role, before `canManageFeatureToggles()` ever ran. Nav item, lazy-loader entry, and `renderFeatureTogglesPage()` were all already correct — added the one missing entry, mirrors the working `email-templates` entry exactly.
+- [x] **Verified via console-level checks against the real loaded deploy preview** (no live login reachable in this environment): the page actually renders — real title, real description, all 3 toggle switches with correct labels/off-states — and the negative path correctly shows "Supervision access required" instead of the old blanket "Not available".
+- eq-field [PR #842](https://github.com/eq-solutions/eq-field/pull/842) (v3.5.614), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`.

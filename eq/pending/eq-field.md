@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Leave approver resolution — non-manager staff-map RLS gap (v3.5.615, 2026-08-30)
+
+- [ ] **Not exhaustively audited for siblings** — only the one call site found this session (`loadCanonicalStaffMap`) was fixed. Third independent instance of "a raw fetch or a security_invoker=on view unexpectedly collapses to 0 rows for non-managers" found in 4 days (see `eq/changelog/eq-field.md` 2026-08-30 for the other two) — worth a deliberate grep pass for other raw `/rest/v1/<table>` fetches bypassing `sbFetch`'s routing, rather than waiting for a 4th independent discovery. _(added 2026-08-30)_
+- [ ] **Not click-tested live by a real non-manager SKS account** — same standing sandbox limitation as most entries in this file; verified instead via live DB-level JWT simulation (the actual mechanism the bug depends on) plus a console-level check of the exact client-side routing function against the deploy preview. _(added 2026-08-30)_
+
+---
+
 ## eq-field: Map / Roster Overview tiles broken — CARTO required a key we don't have, swapped to OpenStreetMap, then a CSP gap blanked the tiles a second way (2026-08-30)
 *Royce screenshotted the Map page — every tile a grey "API KEY REQUIRED — carto.com/basemaps/apikey" watermark, site markers still plotted correctly on top. Verified live before touching code: fetched the hardcoded `basemaps.cartocdn.com` tile URL directly — 200 OK, but the image itself is the watermark. CARTO's free anonymous basemap tier now gates on a key neither `site-map.js` nor `roster-overview-map.js` ever had; a provider-side change, not a code regression.*
 
