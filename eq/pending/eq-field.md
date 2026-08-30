@@ -67,8 +67,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-field/eq-shell: site_projects (multi-module sites) — read + write both live (2026-08-28→30)
 
-- [ ] **`roster_project_picker` toggle is still OFF** — flip it in Manage → Feature Toggles before any supervisor sees the explicit per-day project-code picker dropdown on Edit Roster. Typing a project code directly into the site cell (e.g. "MOD10") already resolves the real site regardless of this toggle — see `eq/changelog/eq-field.md` (2026-08-30) for the full build. _(added 2026-08-30)_
-- [ ] **`timesheets`'s canonical save path has the same blind-replace/no-compare-and-swap exposure that caused a real live incident on roster's equivalent path** (fixed 2026-08-30, see changelog) — not ported, not confirmed as a live problem there, flagged as a candidate follow-up only. _(added 2026-08-30)_
+- [ ] **`roster_project_picker` toggle is still OFF** — flip it in Manage → Feature Toggles before any supervisor sees the explicit per-day project-code picker dropdown on Edit Roster. Typing a project code directly into the site cell (e.g. "MOD10") already resolves the real site regardless of this toggle, and a hover tooltip on the cell now hints this too — see `eq/changelog/eq-field.md` (2026-08-30) for the full build. _(added 2026-08-30)_
 
 ---
 
