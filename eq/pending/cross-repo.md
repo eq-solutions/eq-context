@@ -14,8 +14,6 @@ status: live
 ## eq-shell + jvkn: a worker's synthetic auth-keying email was displaying as if it were real (2026-08-26)
 *While diagnosing the labour-hire photo issue (see `eq/pending/eq-cards.md`), Royce spotted a worker's Field profile showing `93b24e16-...@cards.eq.solutions` as their email and asked what was happening — expected it to be his real icloud address.*
 
-- [x] **Traced, not guessed**: `shell_control.users.email` had been `null` since signup (2026-07-01, phone-only) — never a real bug or an overwrite. eq-shell's `mint-cards-otp.ts` deliberately falls back to a synthetic `{user_id}@cards.eq.solutions` address when a phone-only user has no email, purely to give GoTrue something to key a magic-link on for the Shell→Cards handoff (a documented, working-as-designed fallback — Royce confirmed this exact behaviour live 2026-08-03, Sentry EQ-SHELL-13). That synthetic value then propagated into `auth.users`/`profiles`/`workers` via existing sync triggers, with no way for the display layer to know it wasn't a real address.
-- [x] **Fixed the specific person**: Royce supplied the real address (`cicero.junior@icloud.com`) for Cicero Goncalves Da Silva Junior. Updated `shell_control.users.email` (the canonical field) plus `public.profiles.email`/`public.workers.email` directly (checked for a collision first — this exact codebase has prior history of email-collision bugs). `auth.users` will self-correct automatically next time he opens Cards (`ensureAuthUser`'s existing sync logic detects and repairs the mismatch) — deliberately did not hand-edit `auth.users`/`auth.identities` directly.
 - [~] **Systemic follow-up spawned and already running**: stop the synthetic placeholder from ever displaying as a real email anywhere a person sees it, and add a gentle (non-blocking — an earlier hard gate here already caused a worse bug once) nudge encouraging phone-only-signup workers to add a real email. Royce: "we dont want that happening - we want to encourage people to fill in their email." Background task, started by Royce in a separate session; investigate whether PR #1125's existing email-capture nudge already covers part of this before building anything new. _(added 2026-08-26)_
 
 ---
@@ -28,12 +26,6 @@ status: live
 
 ## eq-context + eq-shell + eq-field: field_people_iud cross-repo migration coordination gap — closed, restoration migration dispatched live (2026-08-24)
 *Investigated a specific incident: eq-field's own hand-applied migrations and eq-shell's governed One Pipe both edit a handful of `app_data` functions on ehow with no shared ledger between them — confirmed to have actually happened on `field_people_iud()` on 2026-08-23 (eq-field PR #761's upward-identity-push vs eq-shell's 0270/0271, same day). Verified live rather than trusting the task's own framing, which turned out wrong in two ways: 0270/0271 weren't "unrelated" busywork, they were eq-shell's own P0 recovery from a 5-day outage its earlier migration (0249) had silently caused; and PR #761 was never actually applied to ehow — it sat merged-but-dormant in git for most of a day, a live landmine that would have silently reverted 0270/0271's three security gates if hand-applied as written.*
-
-- [x] **Registry documented**: eq-context [PR #176](https://github.com/eq-solutions/eq-context/pull/176) — IDENTITY-MODEL.md §3.3.3, the canonical list of 7 shared functions both repos' CLAUDE.md now reference instead of restating.
-- [x] **eq-shell side**: [PR #1569](https://github.com/eq-solutions/eq-shell/pull/1569) — `migrate-tenants.mjs` fetches and surfaces a registry function's live definition before any migration fully replaces it, so a human reviewing the dispatch can diff it by eye. Merged, confirmed live on core.eq.solutions via commit-ancestry check against the newest ready production deploy, not just "merged."
-- [x] **eq-field side**: [PR #763](https://github.com/eq-solutions/eq-field/pull/763) — `tests/migration-shared-fn-guard.test.js` CI lint (grandfathers 10 pre-existing files; the list was generated programmatically after a hand-derived first pass missed one), marks the dormant PR #761 migration file superseded, CLAUDE.md cross-reference.
-- [x] **The landmine itself, found already fixed**: before building anything, `git branch -a` on eq-shell (forced by the repo's own brief-gate hook) surfaced eq-shell PR #1567 — another concurrent session had already restored the push (migration `0273`, dry-run verified against ehow) minutes before this session got there. Dropped that piece rather than duplicate it.
-- [x] **Migration 0273 dispatched live** — Royce triggered `tenant-migrate.yml` directly (`workflow_dispatch`, 08:33:32 UTC). Verified post-dispatch: live `pg_get_functiondef` shows all 3 security gates plus the upward-push block, correctly merged. Both prerequisite secrets (ehow vault + eq-shell Netlify env) already existed, so the push is functionally active on SKS now, not just code-complete.
 
 **Notes:**
 - The two-ledger mechanism is structural, not incidental: eq-field's hand-applied migrations land in the standard `supabase_migrations.schema_migrations`; eq-shell's governed One Pipe writes its own `app_data._eq_migrations`. Neither pipeline's tooling reads the other's — relevant next time this class of bug shows up on a different shared function.
@@ -60,7 +52,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 
 - [ ] **A real, bigger idea from Royce — one single screen for all access control, not two separate systems** — discussed and deliberately not built today; needs a proper design pass first (grouping ~86 total switches sensibly is its own problem), not a same-day PR. _(added 2026-08-16)_
 - [ ] **eq-shell PR #1380 merged via admin override**, bypassing a required check — confirmed the check's failure was unrelated to this PR (it was flagging something else entirely, see next item), but flagging the override itself since it bypassed a safety gate. _(added 2026-08-16)_
-- [x] **3 database functions on Shell's control-plane database exist live with no matching file anywhere in the repo** — not a mystery after all: all 3 traced directly to a same-day eq-cards change that landed minutes before this check ran. Confirmed by reading eq-cards' own files and comparing every definition to what's actually live, line for line — genuinely accounted for, just not written down in this repo too. Marked as known/accepted so the check stops flagging it; no database change needed. eq-shell [PR #1389](https://github.com/eq-solutions/eq-shell/pull/1389), merged — this is also what had been blocking PR #1380/#1381 above from merging cleanly.
 - [ ] Neither eq-shell PR was clicked through live — no way to sign in as a real Shell admin from this environment. Worth two minutes on Access Control next time you're in there, to see the new switches and the new pointer text for real. _(added 2026-08-16)_
 - [ ] A worktree used for PR #1380 (`eq-shell-perms-discoverability-hint`) is still sitting on disk — cleanup was blocked by a permission check mid-session. Harmless, just needs a manual `git worktree remove` sometime. _(added 2026-08-16)_
 
@@ -74,7 +65,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 ## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15)
 
 **Deferred:**
-- [x] **Global CLAUDE.md corrected + F13 reached rung 4, same day.** Global `CLAUDE.md`'s eq-shell deploy note now reads "corrected 2026-08-15 — the previous version of this note was WRONG and had been re-verified twice while staying wrong... There is no gap between 'merge it' and 'ship it' on this repo," with the 13-merge evidence table this item was asking for. `system/failures.md` F13 independently confirms the guard side: scanner (`substrate_honesty.py`) plus a `pre_tool_use.py` write-time block, both live. Verified 2026-08-15 by reading both files directly, not assumed from this note's own memory of them. _(added 2026-08-15, closed 2026-08-15)_
 - [ ] **Where the 7 deleted test logins came from was never explained.** Each had a Core identity naming SKS but no company invite, so the sign-up fault repaired this session cannot have created them. Creation stopped on its own at the end of June and none have appeared since. Harmless now they're gone, but the door that made them is still unidentified. _(added 2026-08-15)_
 - [ ] **The new standalone-worker tool has never been used on a real account.** It has tests and clean CI, but the first genuine run will be someone's actual login. Richard Brown was the obvious safe first case since he was already a known duplicate — that's since been cleaned up separately, so the next candidate is whoever asks first. Worth doing one deliberate supervised run before it's needed under pressure. _(added 2026-08-15)_
 - [ ] **The email sign-in door reaches 22 of 73 accounts, and none of the six apprentices.** Shipping it didn't change that and can't: a worker still has no way to add an email to their own account. The email on the profile screen is a contact detail that travels with the street address — 73 of 101 worker records have one, but only 17 of those match an actual login. The remaining 58 were typed by admins and never verified, so they must never become logins without the worker proving they own the address. A verified add-an-email flow is the only thing that moves the 22. _(added 2026-08-15, needs your call on priority)_
@@ -87,16 +77,8 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 ## eq-cards + eq-shell: audited every sign-in door, retired the two that weren't real — both live (2026-08-15)
 *Started from one false sentence on the Cards sign-in screen and turned into a full audit of every way into Cards, checked against both repos and live jvkn rather than docs. Royce's read — "a lot of this has evolved into a single login QR method" — was right, but that method lives in Shell, not Cards: `create/resend-worker-invite` and the role-tagged QR both emit `core.eq.solutions/login`, and Cards' own onboarding routes turned out to be the previous generation.*
 
-- [x] Cards sign-in footer said "this sign-in is for existing accounts only" — false for the mobile path, which creates accounts by design. Verified deliberate three ways (`OtpScreen._resolveAndLand`, `NotProvisionedScreen`, and `eq_cards_auto_provision()` read live) before touching it. Copy landed 2026-06-25 in `0a1a26f`, two days before codeless self-signup shipped; never revisited. eq-cards PR [#246](https://github.com/eq-solutions/eq-cards/pull/246), squash `e090418`.
-- [x] `/join` removed entirely — provably unreachable since 2026-06-10 (no emitter in either repo; `AdminWorkerQR.tsx` said routing to `/claim` "not `/join`, is deliberate"). Took `JoinTenantScreen`, `JoinContext`, `join_context_notifier`, `AuthRepository.joinTenantExchange`, `AuthFlowNotifier.joinTenant`, `InviteLookupApi` and three redirect exemptions with it.
-- [x] `/claim?tenant=` (the worker QR poster) removed — resolved against `worker_invites`, which holds 7 rows: 6 claimed, 0 unclaimed and unexpired, so every scan dead-ended on "no invite found". Tokenless `/claim` now falls through to normal sign-in, so already-printed posters still land somewhere sensible — `eq_cards_find_pending_invite` matches their number post-OTP anyway. eq-cards PR [#248](https://github.com/eq-solutions/eq-cards/pull/248), squash `13bfe54`.
-- [x] Shell's `/admin/workers/qr` retired — route, lazy import and `AdminWorkerQR.tsx` deleted, leaving `/admin/workers/join-links` as the single QR door. Its hub link was already removed in the 2026-08-05 simplification pass, so the page had been reachable only by typed URL. eq-shell PR [#1361](https://github.com/eq-solutions/eq-shell/pull/1361), squash `84647b81`.
-- [x] Both live. Cards deployed via `workflow_dispatch` (run `31852098680`, both jobs green, edge functions redeployed to jvkn as part of it). Shell live via the merge itself — its own build came back `Skipped`, superseded by concurrent merges, but `84647b81` is an ancestor of `8bf83a79`, the newest `ready` production deploy.
-
 **Deferred:**
 - [ ] **Neither half click-tested on a real phone** — verified by `flutter analyze`, 283 passing tests, full CI on both repos and the ancestry check, not by actually scanning an old `/claim?tenant=sks` poster or walking a fresh sign-in. Worth Royce doing both once. _(added 2026-08-15)_
-- [x] **`eq_cards_lookup_invite_by_phone` anon-EXECUTE revoke — done, merged, deployed, verified live.** eq-cards [#249](https://github.com/eq-solutions/eq-cards/pull/249) merged (squash `2728110`), migration `0127` applied to jvkn — live grants checked after: only `postgres`/`service_role` remain, `anon`/`authenticated` gone. Companion eq-shell [#1368](https://github.com/eq-solutions/eq-shell/pull/1368) merged (squash `305e6ce5`), deployed, confirmed live — `core.eq.solutions`'s `cards-api?op=lookup_invite_by_phone` now 401s (falls through to the standard auth gate) instead of answering anonymously. `task_5264c029`. _(added 2026-08-15, resolved + shipped 2026-08-15)_
-- [x] **Cards' dead PIN lock screen — done, merged, deployed.** `pin_entry_screen.dart` + `app_lock_notifier.dart` + `app_lock_state.dart` deleted, plus two more found live-orphaned (`raw_auth_events_provider.dart`, `pin_repository.dart`) — eq-cards [#249](https://github.com/eq-solutions/eq-cards/pull/249) merged and deployed, `cards.eq.solutions` rebuilt and smoke-checked 200. `task_4e685ee7`. _(added 2026-08-15, resolved + shipped 2026-08-15)_
 
 ---
 
@@ -117,11 +99,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 ## eq-shell / eq-cards: suite-wide Sentry sweep, identity-collision root cause fixed, 2 bugs shipped (2026-08-14)
 *Continuation of a 17-issue Sentry sweep across all 4 apps. Found the exact mechanism behind 3 identity-collision alerts (a login race in Cards' signup code), confirmed the code fix was already live, and corrected the bad data it left behind (Royce approved before any identity-data write). Also shipped a Cards OCR fix and a Shell dashboard scroll bug Royce spotted from a screenshot. (The EQ Service session-expiry Server Action work from the same sweep is tracked in its own section above/`eq-solves-service` changelog — not repeated here.)*
 
-- [x] **Identity-collision root cause found: a login race in `eq_cards_auto_provision()`.** A session dying mid-signup could leave a broken "Personal Wallet" account with no name/email attached; a downstream sync then wrongly pointed a real staff member's record at the ghost account instead of their real one. The code fix was already live (eq-cards PR #234, confirmed against production) — didn't need re-shipping. Fixed the one known victim's data live (Royce approved first): repointed the staff record to the correct account, switched the ghost one off (deactivated, not deleted).
-- [x] **Full Sentry sweep closed: 17 issues across all 4 apps** — 13 resolved (already-fixed-and-confirmed, or fixed this session), 4 ignored as one-off noise (never recurred), 1 spun off as its own follow-up job (the eq-solves-service Server Action work above).
-- [x] **Cards: licence photo scan crash on unreadable photos fixed** (EQ-CARDS-1H) — was silently forwarding unreadable image bytes to the OCR service instead of showing the existing "photo couldn't be read" message. eq-cards [#236](https://github.com/eq-solutions/eq-cards/pull/236), merged + deployed live.
-- [x] **Shell: dashboard scroll ending in a big blank white bar, fixed.** Royce caught this live from a screenshot ("scrolling ends up with a big white bar at the bottom"). Root cause: scrolling past the end of the sidebar or content pane let the scroll action bubble out to the whole page instead of stopping there. eq-shell [#1336](https://github.com/eq-solutions/eq-shell/pull/1336), merged + deployed live.
-- [x] **Corrected a wrong assumption about why Shell's live site doesn't auto-update after a merge to main.** First guess (a broken GitHub connection) was wrong — it's a deliberate Netlify setting that only auto-publishes preview links, not the live site, matching the "never deploy without being told" rule already in place. Documented the accurate reason and the manual-publish steps in the global CLAUDE.md.
 - [ ] **Shell's own styling and the shared `@eq-solutions/ui` design library define colliding layout style names** (`eq-hub` and friends) — noticed while fixing the scroll bug above, not the cause of it, not yet looked into properly. _(added 2026-08-14)_
 
 ---
@@ -219,7 +196,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 ## eq-cards/eq-shell: Cards SSO handoff hardening, identity-fragmentation root-cause fix, worker-invite dedup (2026-08-04)
 *Direct continuation of the self-join session above — Royce kept testing live (new starters, an apprentice QR) and each report led to a real, verified bug, not a retest of the same thing.*
 
-
 **Decided:**
 - Royce: fix the identity-fragmentation gap properly (harden both the DB hook and the join function), not just patch the symptom for one test number — explicit go on an auth-critical change.
 - Royce: for two known new starters, use the Core admin-invite path rather than the Cards self-join QR — cleaner data capture (name captured up front, which the phone-only self-join door never does), and avoids the self-join edge cases just spent the session hardening.
@@ -251,7 +227,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 ## EQ Cards + Intake: asked "where are we really at" — found two of our own internal notes were wrong, fixed them (2026-08-02)
 *Royce felt lost in the progress and asked for a plain "what's real vs. what's the goal" check on EQ Cards + Intake. Checked live — the actual code, database, and what's actually deployed — instead of trusting our own internal write-ups.*
 
-
 **Deferred:**
 - [ ] Royce is checking directly whether EQ Intake can push timesheets into Workbench (SKS's own payroll tool) — none of the 12 export formats target it today. _(added 2026-08-02)_
 - [ ] **Royce to check `admin/users/migrate` for SKS against the 44-workers number above** — the invite screen and the 44 are counted two different ways (one by tenant employee record, one by Cards worker record), so they may not match exactly. Worth confirming they're the same gap before assuming the invite screen alone closes it. _(added 2026-08-02)_
@@ -260,7 +235,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 
 ## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01)
 *Royce asked why the duplicate-sites screen finds problems a user can't act on. Two real dead ends: a non-manager saw only "ask a manager" with no way to even preview what a merge would do, and marking a match "Unsure" recorded a bare verdict with no way to say why. Fixed both, checked against the real database permissions rather than assumed. Testing the fix live then surfaced a genuine separate bug: even a real manager couldn't confirm a merge.*
-
 
 **Deferred:**
 - [ ] **Royce to click through live**: open the Duplicate Sites panel as a non-manager and confirm Preview now shows; mark a row Unsure with a note and confirm it saves and displays; confirm a real merge now succeeds end-to-end (Preview → Confirm) now that the permission fix is live. _(added 2026-08-01)_
@@ -278,7 +252,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 ## eq-shell + eq-cards: Live smoke-testing the self-join sprint surfaced 3 real bugs, all fixed same day (2026-08-01)
 *Royce started clicking through the self-join work from the entry above with a real test phone. First signup turned out to be a pre-existing stale test account ("Bob Smith") rather than a fresh one — deleted and verified clean everywhere before re-testing. The clean re-test then surfaced three genuine gaps that only show up on a real click-through, not in code review.*
 
-
 **Decided (Royce):**
 - Add an email field to self-join rather than leave the Cards dead-end as-is, or teach Cards to work phone-only.
 - Delete the stale test account and reuse the same phone number rather than get a second test phone.
@@ -290,7 +263,6 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 
 ## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31)
 *Royce tested the Review Queue / Tidy / Dupes screens live on core.eq.solutions and sent screenshots flagging four things: nowhere to see/edit the trades list, a site merge that failed with a permission error, the Data Gaps table showing bare unhelpful labels, and the Contacts Dupes tab having no way to act on a flagged duplicate. Investigated all four against the real code and the live database before building anything.*
-
 
 **Deferred:**
 - [ ] **Royce to click through live** — trigger a failed-then-fixed site merge and confirm it now works; open the Contacts/Staff Dupes tab, archive one flagged duplicate and dismiss another as "not a duplicate," confirm both stick; add a trade in the new Trades screen and confirm it shows up in the Review Queue's trade picker. Needs sign-in, which is off-limits for Claude to do on your behalf. _(added 2026-07-31)_
@@ -308,12 +280,10 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 ## eq-solves-intake + eq-shell: `/intake`'s commit path was quietly skipping the review queue (2026-07-29)
 *While scoping the redesign work above, checked whether it was safe to keep both Intake UI surfaces live — turned out one of them (`/intake`'s "Into EQ" commit) wrote straight to canonical tables, bypassing the same conflict-detection gate the other surface already enforced. A messy/conflicting row dropped through `/intake` would commit immediately instead of parking for review.*
 
-
 **Deferred:**
 - [ ] **The live end-to-end proof is still outstanding**: drop a deliberately-conflicting test row through production `/intake` and confirm it parks in the queue instead of committing. Blocked this session on the file-upload tool refusing to attach a test file not shared directly by Royce in chat — needs either Royce dragging the file into chat, or Royce doing the drop himself while checked live. This becomes easy to verify now that Overview/To Do is the single place to look. _(added 2026-07-29)_
 
 ---
-
 
 ## eq-roles/access-model audit + release tagging shipped across eq-field/eq-shell/eq-solves-service (2026-07-27)
 
@@ -439,13 +409,11 @@ Royce asked four architecture questions about the Cards→tenant consent model (
 
 ---
 
-
 ## ✅ Staff records — birthday/start date, Supervision read-only, middle-name tidy (2026-07-12, MERGED — deploying)
 Extends the 2026-07-11 staff-records work. Three greenlit items + a normaliser follow-up, all merged (deploying to core.eq.solutions + field.eq.solutions):
 - [ ] **Records↔Field seam polish (discussed, not built)** — steelmanned the "one record, many windows" model; creative next steps proposed: (1) a declarative field-ownership registry to kill the ~10-edit-site tax per new field, (2) push phone/name normalisation into a Postgres BEFORE trigger (one definition, every writer, no app duplication), (3) a "Records health" panel reusing `eq_quality_runs` (non-E.164 phones, embedded middles, missing canonical link, orphaned workers) with one-click fixes, (4) Cards as the real front door + canonical↔tenant reconciliation/merge-review to kill dup stubs, (5) extend the pattern to CRM contacts + fix the "Contacts" vocabulary clash. Recommended first move: the DB-level normalise trigger (highest leverage, lowest risk). _(added 2026-07-12)_
 
 ---
-
 
 ## ✅ Staff records — Field/Shell (2026-07-11, SHIPPED live)
 Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#454, v3.5.301), person-wizard → compact edit modal with reliable save + adopt-before-create dedup (#456, v3.5.300). All merged + deployed. Feature complete end-to-end (manager toggles someone off the roster in Core → Field hides them from roster/timesheets). Adding staff → Cards/Core; Field = edit surface.
@@ -532,7 +500,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 ## ⏩ Session close — 2026-07-10 (eq-shell + eq-field) — /sks/field "spinner of death" root-caused + fixed (both apps), Contacts columns made segment-aware
 
 *Two threads. (1) The recurring /sks/field "EQ Field didn't load" card on tab-return: the FIRST fix this session (overlay stacking, eq-shell #714) proved the earlier hypothesis (React #418 hydration crash) was a false premise — Sentry has ZERO #418 events and Shell is a client-only SPA (no SSR, no hydration). Royce then hit the real bug live and screenshotted it: Field was fully working BEHIND the error card. Root-caused end-to-end across both repos and shipped a self-healing handshake. (2) Royce's Contacts observation ("Agency only relevant for labour hire; can columns be customisable?") → segment-aware columns + a Columns picker.*
-
 
 **Notes / recurring risk:**
 - [ ] **Root-checkout collision on eq-field happened 3× in one day** — concurrent sessions committed onto each other's branches via the shared `C:\Projects\eq-field` checkout (forced two version re-stamps this session: 277→278→279). Recommend making worktrees mandatory for eq-field, or a pre-commit guard that refuses a commit when HEAD's branch != the session's intended branch. _(added 2026-07-10)_
@@ -889,7 +856,6 @@ added to `eq-intake/CONFIRM-UI-SPEC.md` as a new section.
 
 ### EQ Shell Phase 1.B (Netlify wire-up) — DONE
 
-
 ### eq-demo-canonical — security advisor cleanup (open) — CLOSED 2026-07-27, see below
 
 Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
@@ -897,7 +863,6 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - [ ] **Toggle leaked-password protection** in eq-canonical (`jvknxcmbtrfnxfrwfimn`) dashboard → Authentication → Settings → enable HaveIBeenPwned check. **(Royce manual step, never confirmed done)** **Correction 2026-07-27: this had 3 duplicate copies elsewhere in this file, all closed as redundant during the backlog cull — but the cull mechanically closed all matching lines including this one, the copy meant to stay as the single live tracker. Reopened here; the underlying toggle is still unconfirmed.**
 
 ### sks-canonical-eq provisioning (gated, not started) — CLOSED 2026-07-27, see below
-
 
 ---
 
