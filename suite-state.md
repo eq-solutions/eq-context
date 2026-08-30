@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
 
 **eq-service:**
-- #816 fix(security): close cross-tenant leak in get_assets_for_grouping
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
@@ -74,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1691 fix(security): entity.view gate on 5 CRM read RPCs called directly from the browser
 - #1690 fix(security): thread tenant_role_overrides denials into the Field JWT
 - #1688 fix(records): not-allowed page for direct nav to a denied entity/staff URL
 
@@ -86,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ✓ success |
+| eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -95,7 +93,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 240 (latest: 0234) applied
+**Migrations:** eq-service has 241 (latest: 0237) applied
 
 ---
 
