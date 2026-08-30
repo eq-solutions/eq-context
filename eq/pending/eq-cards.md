@@ -21,9 +21,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] [PR #329](https://github.com/eq-solutions/eq-cards/pull/329), CI green (4/4 incl. `flutter analyze`+tests), squash-merged (`1ad66b7`) on Royce's "merge and deploy". Deployed via `workflow_dispatch` on `deploy.yml` (this repo's only real trigger — no `release/v*` tag has ever been pushed here). **Live-verified past green CI**: fetched the actual served `main.dart.js` from `cards.eq.solutions` (no-store) and confirmed zero occurrences of "Worker join QR", the induction caption, or the `/join?tenant=` string in the 5.67MB bundle real users get.
 - [x] **Checked the one adjacent item #248 itself flagged** (`eq_cards_lookup_invite_by_phone` anon EXECUTE, left as "Royce's call, a live DB change") — already revoked; live grants are `service_role`/`postgres` only. Not a gap, nothing to do.
 - [x] Not rebuilding self-serve `/join`: would contradict #248's own reasoned decision, duplicate Shell's live replacement, and is the company-scale/cross-tenant Cards build the 90/10 SKS-focus decision parks.
+- [x] **Follow-up, same day**: Royce asked to map it after all. Published as an [Artifact diagram](https://claude.ai/code/artifact/fd6dc9ab-075e-42e9-a07b-e0e0ada9df2f) — the 5 live doors plus the 2 retired ones, re-verified against `origin/main` first (router hadn't moved). Self-reviewed once published and caught a real accuracy gap: the first draft merged all 4 "join an existing tenant" doors into one flat outcome, hiding that 2 resolve instantly and 2 wait on someone else's approval first — fixed before calling it done.
 
 **Deferred:**
-- [ ] A workflow diagram of the Cards onboarding-door system — only worth building if handed to someone outside the session that already reconstructed it. _(added 2026-08-30)_
 - [ ] `.claude/worktrees/cards-remove-dead-join-qr` still holds its one (squash-merged) commit — removal needs Royce's explicit word, not yet given as of this close. _(added 2026-08-30)_
 
 **Notes:**
