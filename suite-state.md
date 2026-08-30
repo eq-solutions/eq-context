@@ -60,9 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-30)
 
+**eq-cards:**
+- #332 fix(cards): 4 more polish-audit fixes — gradient docs, mobile layout, empty-state, tests
+
 **eq-field:**
 - #846 feat(ci): governed apply path for tenant migrations to zaap + ehow
-- #843 v3.5.617 — Dashboard org-wide widgets manager/supervisor-only
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
