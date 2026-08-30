@@ -13,16 +13,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-context: rotation-bug cleanup follow-ups, not built this session (2026-08-30)
-*Byproduct of the `pending-rotate.yml` root-cause fix (PR #189) and the 3 cleanup passes that followed (PRs #190/#191/#192) — 491 zombie done-items removed from live files, 1,535 duplicate copies removed from `pending-archive.md`.*
-
-- [ ] **16 duplicate groups left unresolved in the archives** (12 in `eq/pending-archive.md`, 3 in `sks/pending-archive.md`, 1 in `ops/pending-archive.md`) — `dedupe_pending_archive.py` correctly refused to auto-collapse these since no copy is a clean superset of the others (genuine content differences between same-titled sections, e.g. two sessions reaching opposite calls on the same question hours apart). Listed in PR #190's own description; needs a human read, not urgent. _(added 2026-08-30)_
-- [ ] **The `eq-context/eq/sprints/...` malformed relative-link mistake recurred twice in one day** in `eq/changelog/eq-shell.md`, fixed both times. Possibly worth a targeted `link_check.py` pattern if it happens a third time — two data points isn't enough to design a fix around yet. _(added 2026-08-30)_
-- [ ] **`digest.md`'s queue-health numbers for every touched EQ repo are now stale** — this session removed 491 zombie items across eq-shell/eq-cards/eq-field/eq-solves-service/eq-context/cross-repo/eq-solves-intake, but `digest.md` won't reflect the real counts until its next nightly/triggered refresh. Not a bug, just a heads-up against reading the cached "319 done"-style figures as current. _(added 2026-08-30)_
-- [ ] **`sks/pending-archive.md`'s own smaller duplication (13 copies) was confirmed NOT caused by the same rotation bug** (`sks/pending.md` was never renamed in the 2026-08-17 split, so `pending-rotate.yml`'s file list was never wrong for it) — deduped, but the real cause was never investigated. Worth a look if it recurs. _(added 2026-08-30)_
-
----
-
 ## eq-context: guard-flag investigation turned up 3 follow-ups, not built this pass (2026-08-30)
 *Byproduct of directly investigating digest.md's 5 rung-4 "possibly recurred" flags (F1/F9/F10/F12/F14) against their actual cited session logs, rather than trusting the regex hit at face value — full writeup in `system/failures.md`'s F1/F9/F10/F12/F14 entries and eq-context PR #188.*
 
