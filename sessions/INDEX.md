@@ -1,8 +1,9 @@
 # Session Index
-_141 logs · reverse-chronological · auto-generated_
+_142 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-08-31 | [Removed staff's historical leave/timesheet rows fixed to show real names, not "(unknown)"](2026-08-31.md) |
 | 2026-08-30 | [SEC-35 merged, deployed, and dispatched live to both tenant planes](2026-08-30.md) |
 | 2026-08-29 | [eq-shell sprint request started, not finished before close](2026-08-29.md) |
 | 2026-08-28 | [Documents to Sign: inline viewer's real bug found and fixed, then mapped audience reach](2026-08-28.md) |
