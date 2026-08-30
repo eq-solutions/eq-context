@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-context: guard-flag investigation turned up 3 follow-ups, not built this pass (2026-08-30)
+*Byproduct of directly investigating digest.md's 5 rung-4 "possibly recurred" flags (F1/F9/F10/F12/F14) against their actual cited session logs, rather than trusting the regex hit at face value — full writeup in `system/failures.md`'s F1/F9/F10/F12/F14 entries and eq-context PR #188.*
+
+- [ ] **Regex-tightening for F1 and F10's false-positive shapes** — both entries' `signal` regex matches incidental mentions (a lesson correctly applied, a guard's own diagnostic firing as designed) as readily as a real incident. Identified, not built: the F6/F7 precedent for safely tightening a signal regex involved building a dedicated adversarial test run against a full day's worth of real session logs before shipping, which this pass didn't have scope for. Until tightened, both will keep re-flagging on every future digest run — expected, not a bug. _(added 2026-08-30)_
+- [ ] **A real F15-shaped incident found in `sessions/2026-08-25.md`, not investigated with full rigor** — while checking an F9 flag, found a genuine bare-commit sweep on **eq-cards'** shared checkout (not eq-context's), which is F15's territory. F15's own entry already names this exact git-verb gap as a stated, deliberate scope boundary left open. Worth a pass with the same rigor this session gave F1/F9/F10/F12/F14; not attempted here. _(added 2026-08-30)_
+- [ ] **Design question: should `review_clock.py`'s `generated`-file classification account for hand-maintained sub-sections?** — the exact gap F14's newest recurrence exposed: `suite-state.md` is classified `generated` (3-day freshness clock, since most of it is nightly-rebuilt tables), but its Key Decisions log is hand-appended prose the regen never re-verifies against live state — so the file passing its freshness check said nothing about whether an individual narrative claim inside it was still true. Not obviously right either way (Key Decisions does get appended/evicted by the same process, just not content-checked) — Royce's call whether it's worth a narrower guard. _(added 2026-08-30)_
+
+---
+
 ## eq-context: Claude's hosted GitHub connector can read but not write — known open Anthropic bug, not a config issue (2026-08-24)
 *Surfaced twice, a month apart, at real cost both times: a 2026-07-16 Chat session diagnosed "a GitHub connector installation gap causing session context to fail silently" and got no further (found via a 45-day chat-activity export, not the substrate); this session independently re-derived the same root cause from zero, across roughly two hours of GitHub org/OAuth/Copilot-settings investigation, before finding it was already a filed, open bug on Anthropic's own tracker.*
 

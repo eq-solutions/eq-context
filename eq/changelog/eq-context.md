@@ -9,6 +9,15 @@ status: live
 
 # Changelog — EQ Context Repo
 
+## [2026-08-30] Root scratch docs re-verified (0 archived); index-drift cron confirmed fixed; 3 of 5 "guard bypass?" flags found to be false positives, 2 genuine
+
+**Built by:** Claude Code
+
+- **Re-verified the 6 root-level scratch docs** (`SKS-CUTOVER-CRITICAL-PATH.md`, `SKS-FIELD-PARALLEL-RUN-LOG.md`, `cross-app-linkage-remediation-plan-2026-06-07.md`, `eq-platform-verified-state-2026-06-03.md`, `sec9-jvkn-key-rotation-runbook-2026-07-27.md`, `sks-live-sprint-2026-06-07.md`) per README.md's own recurring discipline — 15 days since the 2026-08-15 pass, which had found 4 of 9 inherited justifications already false. This time all 6 held, several on stronger direct evidence than before (e.g. the SEC-9 rotation runbook's citation confirmed by reading the register's actual Status column, not a secondary pointer). 0 archived — a different result from 2026-07-20 (15/22) and 2026-08-15 (5/9), not less rigor. eq-context [PR #186](https://github.com/eq-solutions/eq-context/pull/186), merged.
+- **`index-drift.yml`'s cron fix (PR #185) confirmed to actually hold** — manually dispatched the workflow against `main` rather than waiting for the next scheduled tick; ran clean.
+- **All 5 rung-4 "possibly recurred" flags in `system/failures.md` (F1/F9/F10/F12/F14) investigated against their actually-cited session logs**, not trusted at face value — this exact blunt-regex false-positive shape was already documented for F6/F7/F12. F1 and F10: false positives (a lesson correctly applied; a guard's own diagnostic firing as designed). F12: a real incident, but F9's failure shape, not F12's — re-attributed. F9: false positive on its own flagged file, but re-scanning surfaced a genuine, previously-uncounted 5th recurrence (a new sub-mechanism: damage from a *third-party* session's git op, not the affected session's own — not yet guarded against) plus one real but out-of-scope eq-cards/F15 incident. F14: genuine and substantive — `suite-state.md`'s Key Decisions log carried a claim that went stale on 2026-08-24 and was the direct cause of a live bug shipping unnoticed for 6 days; corrected. All 5 entries carry a dated investigation note either way. Verified the YAML block still parses and both `failure_recurrence_signals()` and `guard_ratchet.py` run clean against the edited file. eq-context [PR #188](https://github.com/eq-solutions/eq-context/pull/188), merged.
+- 3 follow-ups identified along the way, not built — logged in `eq/pending/eq-context.md`.
+
 ## [2026-08-30] Substrate housekeeping — index-drift cron fixed, 6 pending-item sections archived, 2 flagged duplicates resolved
 
 **Built by:** Claude Code
