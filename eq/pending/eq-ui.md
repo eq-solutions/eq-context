@@ -1,7 +1,7 @@
 ---
 title: EQ UI — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-08-30
 scope: EQ UI engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -17,13 +17,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] Inline-edit primitives for Table — still deferred, needs its own spike on whether Table's cell/row model can support it cleanly; `Table.tsx` is already 1,265 lines. _(added 2026-08-12)_
 - [ ] Whether Table's own column filters should ever be rebuilt on top of the new `MultiSelect` component — low priority, only worth revisiting if the inline-edit spike above happens anyway and touches the same filter code. Not blocking anything; `MultiSelect` shipped standalone (eq-ui PR [#38](https://github.com/eq-solutions/eq-ui/pull/38)) specifically so it didn't have to wait on this. _(added 2026-08-12)_
-
----
-
-## eq-ui: Table multiselect filter ignored filterValue for composite columns — found via an eq-shell Staff table request, fixed, released (2026-08-20)
-
-- [x] **`filterable: 'multiselect'` now falls back to `filterValue(row)`, same as `'text'`/`'select'` already did.** Previously multiselect always read `row[key]` raw, so a composite column with no single backing field (e.g. a Contact column built from phone + email) could never work as a multiselect filter — option-derivation produced an empty list and no row ever matched. [PR #43](https://github.com/eq-solutions/eq-ui/pull/43), `src/Table/Table.tsx`, regression test added. Patch release `@eq-solutions/ui@1.16.2` via version-packages [PR #46](https://github.com/eq-solutions/eq-ui/pull/46).
-- [x] **`Skeleton` shimmer-sweep animation released** — [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) (merged earlier, unreleased) went out via version-packages [PR #48](https://github.com/eq-solutions/eq-ui/pull/48) as `@eq-solutions/ui@1.16.3`.
 
 ---
 
