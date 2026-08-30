@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: product-polish audit → top 5 fixes shipped, merged, deployed live (2026-08-30)
+
+- [ ] 6 feature folders ship with zero test coverage (`alerts`, `consent`, `legal`, `platform`, `worker_house`, `workers`) — including the two with the most room for a silent regression to do real damage: admin role-assignment and invite-claiming. _(added 2026-08-30)_
+- [ ] Two `LinearGradient` photo-legibility scrims (`licence_card.dart:305`, `licence_detail_screen.dart:1047`) sit against the app's own written "no gradients" rule — needs a call: make them flat, or name photo scrims as the one documented exception. _(added 2026-08-30)_
+- [ ] Sign-in screen doesn't reach the edges of an actual phone — visible margin on all sides plus a lot of dead space above the card at a true 375×812 viewport. Reads as a desktop page shrunk down, not mobile-first. _(added 2026-08-30)_
+- [ ] Real usability sessions with actual tradies — flagged in the 25 Aug review too, still not done. No code-level review substitutes for watching one real person use it. _(added 2026-08-25, restated 2026-08-30)_
+- [ ] Empty-state duplication (3 independent `_EmptyState` implementations across profile/licences/admin-members) not consolidated this pass — lower priority than the error-state fix, which shipped. _(added 2026-08-30)_
+- [ ] PR #331's admin-members error/retry state not click-tested live by a real admin hitting a real failure — verified via automated tests and code review only. (The shortened sign-in disclosure WAS confirmed live via screenshot this session — that one's done.) _(added 2026-08-30)_
+
+---
+
 ## eq-cards: live-meeting onboarding kit built for a CEO/executive demo — self-signup verified, EQ Solutions demo org enabled, sprint spun off two real gaps (2026-08-30)
 *Asked for a simple onboarding tool, redirected twice by Royce toward what it actually needed to be: a laminated card + live demo for an in-person executive meeting, walking scan → apply → live approval → Field/Service visibility. Verified every claim against live code and the live DB before building anything, catching a dead feature and a phone-binding constraint along the way.*
 
@@ -184,17 +195,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Royce: "Richard Brown - three of the same certificate have been created." Investigation found 6, not 3 (half were hidden via `is_private`). Root cause: `licence_edit_screen.dart`'s save flow inserts the row, then uploads the photo — if the photo step throws, the screen doesn't remember the row already saved, so retrying inserts a new one instead of updating it. Confirmed via Sentry (`EQ-CARDS-1G`/`1H`, same trace, same user). Luke Wheeler was initially flagged as a second victim of the same pattern — that was a false positive in the blast-radius query (his 3 rows were 3 genuinely different certificates sharing an empty licence number, a normal quick-document quirk); corrected before touching his data.*
 
 - [ ] **Richard Brown needs to re-add his LV Rescue (C40385) photo** — the surviving row has the correct licence details but no photo attached; nothing existed anywhere to recover. The fix means his retry will now update that row cleanly instead of duplicating again. _(added 2026-08-13)_
-
----
-
-## eq-cards: info-density scoping — which screens, what collapses (2026-08-10)
-*Punch-list item 4 ("Cards is very heavy on information — look at simplifying or collapsing info unless a user clicks around") said "needs scoping first." This is that scoping pass — code survey only, no UI changes made. Screen line count used as a rough density proxy, then read the actual outlier to find the real cause.*
-
-- **Clear outlier: `licences_list_screen.dart` (2,022 lines, 55 `Text()` calls)** — more than double the next-biggest screen (`licence_edit_screen.dart`, 1,429 lines; `settings_screen.dart`, 1,224). The other big screens (`profile_screen.dart` 764, `admin_worker_detail_screen.dart` 773, `card_screen.dart` 710) are each in a normal range — the density complaint is really about one screen, not the app broadly.
-- **The individual licence list-item cards are already lean** — thumbnail, title, one meta line, an expiry badge, a privacy toggle, a conditional Renew button. Not the problem.
-- **The real cause: screen-level banner stacking, not the list itself.** Before a user reaches their actual licences, the wallet screen can show, in order: an offline banner, a wallet health card (valid/expiring/expired counts), a pending-connections banner, an outgoing-requests banner, and a required-by-org strip — plus first-run onboarding, first-licence-success, and connection-confirmation moments layered on top via post-frame callbacks. Several of these can legitimately be true at once, so a returning user with a normal wallet can see 3-4 stacked cards before any licence.
-- **What "collapse unless clicked" concretely means here:** candidates are the wallet health card (could collapse to a single-line summary that expands on tap) and consolidating the pending-connections / outgoing-requests / required-by-org strips into one "Needs your attention (N)" affordance instead of one card each. Not scoped further than this — actual collapse/expand UX is a design decision, not made here.
-- [ ] **Not built.** Royce to decide whether this graduates back onto `system/punch-list.md` for the actual simplification work, given the goal's current exclusion on live UI changes affecting real users while overseas. _(added 2026-08-10)_
 
 ---
 

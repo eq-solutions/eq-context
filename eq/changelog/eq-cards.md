@@ -1,13 +1,18 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-27
+last_updated: 2026-08-30
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-30 (PR #331 MERGED + LIVE — 5 polish-audit fixes: spinner, a11y, error UX, wallet tests)
+- Same-day product-polish audit (scorecard: 6/10, published as an artifact) sprinted into 5 shipped fixes: an iOS Safari/PWA freeze-bug regression fixed in 3 files (raw `CircularProgressIndicator` → `EqSpinner`); a missing `Semantics` wrapper added to `claim_invite_screen.dart`'s Privacy Policy link; the sign-in screen's Twilio/USA SMS disclosure shortened (Privacy Policy already covers it); a generic friendly fallback replacing a raw-Postgres-error leak in `user_messages.dart`; a new shared `ErrorStateView` widget (icon + message + retry) adopted in `admin_members_screen.dart` (previously 2 different error strings for 1 failure); and the first-ever screen-level test suite for `licences_list_screen.dart` (8 tests) — the app's highest-churn file (101 commits, 41 "fix"), previously untested.
+- `flutter analyze` 0 issues, `flutter test` 360/360 passing before merge.
+- [PR #331](https://github.com/eq-solutions/eq-cards/pull/331), squash-merged (`7be2318`) on "merge when safe". Deployed via `gh workflow run deploy.yml` on explicit "deploy it" — confirmed live against Netlify's own deploy record (not just a green CI run) and a live screenshot of the shortened sign-in copy.
 
 ## 2026-08-30 (PR #330 MERGED + LIVE — jvkn migrations can now apply through eq-shell's pipeline)
 - New `workflow_dispatch`-only workflow calling eq-shell's new reusable `jvkn-control-plane-apply.yml` ([eq-shell#1671](https://github.com/eq-solutions/eq-shell/pull/1671)). Reuses the 3 secrets #328 already added for the check side — nothing new provisioned.
