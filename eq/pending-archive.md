@@ -5872,3 +5872,14 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 - [x] **`Skeleton` shimmer-sweep animation released** — [PR #41](https://github.com/eq-solutions/eq-ui/pull/41) (merged earlier, unreleased) went out via version-packages [PR #48](https://github.com/eq-solutions/eq-ui/pull/48) as `@eq-solutions/ui@1.16.3`.
 
 ---
+
+## eq-cards: Jordan Sample fast-click handoff investigated — ruled out as the #327 bug, no fix needed, left as-is (2026-08-30)
+*Royce: logged into Shell, clicked into Cards immediately, got bounced to the sign-in screen, retried, and it worked. Investigated live before concluding anything.*
+
+- [x] **Identified "Jordan Sample"** as the demo worker record (jvkn `workers.id` 66d129ab-35c9-4b5b-a4ee-96e08a632a7a, phone +61466118646, email contact@eq.solutions) used for this test login — not a real person.
+- [x] **Ruled out a recurrence of the #327/eq-shell #1636 verifyOTP-hang fix** (2026-08-27): zero Sentry events matching `verifyOTP` in eq-cards (7d) or `mint-cards-otp` in eq-shell (24h); zero `token_verify_failed:*` PostHog `shell_handoff_outcome` outcomes project-wide in the last 3 days. That fix is confirmed still working correctly elsewhere — not what happened here.
+- [x] **Confirmed the retry itself was clean**: `shell_handoff_outcome: token_verify_success`, 4761ms, 2026-08-30 08:07:27 UTC — indistinguishable from any other normal successful handoff.
+- [x] **The failed first attempt left no trace anywhere** — no PostHog event for this identity before the one success (14-day window checked), no Sentry capture on either eq-cards or eq-shell project. Every failure branch on both sides of the handoff (`app_router.dart _handleShellHandoff()` in Cards; `CardsIframe.tsx`'s `onMessage` handler in Shell, including the `mint-cards-otp` fetch/response paths) is instrumented — genuine silence means either the PostHog capture for that one attempt didn't survive the retry, or the failure happened beneath both apps' instrumentation, most plausibly Shell's own session/cookie not yet ready for `mint-cards-otp`'s `credentials: 'include'` fetch when Cards' prewarmed iframe fires its handshake before Shell's post-login state has settled.
+- [x] **Royce's call: leave it.** One-off, self-recovering (retry always works), no repeat reports — not worth an auth-adjacent tracing change for a single blip. Full technical detail in eq-cards' own memory record, `cards_handoff_fast_click_untraced.md`.
+
+---
