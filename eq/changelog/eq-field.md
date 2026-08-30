@@ -2678,3 +2678,10 @@ explicit Royce go-ahead.
 - Fix 2: the default warning sink for an orphaned `staff_id` in `roster-adapter.js`/`leave-adapter.js`/`timesheets-adapter.js` called `showToast` for every user, though the code's own comment said the intent was supervisor-only. Now gated on `field.manage_roster`/`leave.approve`/`ts.approve` respectively.
 - Root-caused the reported `staff_id` live against ehow before fixing anything: resolves to Anthony Hartley, an active/`field_approved` supervisor — confirmed the underlying data was not corrupted.
 - eq-field [PR #839](https://github.com/eq-solutions/eq-field/pull/839) (v3.5.610), squash-merged, live. Rebased 3x mid-session past 3 unrelated concurrent version claims (607/608/609).
+
+## 2026-08-30 (Prestart/Toolbox create+submit no longer permission-gated at all)
+- Direct follow-up to the same day's earlier fix (v3.5.610) after Royce's correction: "everyone should be able to complete a prestart." That fix only restored the create button's visibility; the underlying `EQ_PERMS.can()` check remained in the click handlers, even though every Field role already holds the permission.
+- Removed the permission check entirely from `openPrestartForm()`, `copyLastPrestart()`, `submitPrestart()` (`scripts/site-reports.js`) and `openToolboxForm()`, `submitToolbox()` (`scripts/toolbox.js`) — any Field login can now create and submit one, immune to any future permission-matrix misconfiguration.
+- Reopening an already-submitted record for correction (`reopenPrestart()`/`reopenToolbox()`) deliberately stays supervisor-gated — a separate, more sensitive action.
+- `tests/permission-enforcement-baseline.json` updated per the drift-ratchet test's own required process (2 keys added with a dated, reasoned comment).
+- eq-field [PR #841](https://github.com/eq-solutions/eq-field/pull/841) (v3.5.613), squash-merged, live.
