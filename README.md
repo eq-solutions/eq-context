@@ -1,7 +1,7 @@
 ---
 title: eq-context — Repository README
 owner: Royce Milmlow
-last_updated: 2026-07-19
+last_updated: 2026-08-30
 scope: Human-readable entry point for the eq-context repository
 read_priority: reference
 status: live
@@ -189,6 +189,21 @@ both archived.** Recency was the wrong test: both had already shipped on the
 day they were written (PR #885 and PR #886 respectively), so being recent made
 them *more* likely to be spent, not less. Deferring on age rather than on
 status is what left them at root for a month.
+
+**Added since the 2026-08-15 pass, not yet subject to it** — landed as
+`index-drift.yml` orphans (fixed 2026-08-30, itself a substrate-housekeeping
+pass) rather than through the archival cadence above:
+
+`sprint-2026-08-28-outstanding-items.md` — whole-suite pending sweep (~180
+items across all 11 repo logs + security-register + failures.md), organised
+by what each item is blocked on since no `TODAY.md` goal exists to
+prioritise against.
+`sprint-2026-08-28-security-hardening.md` — the security-shaped slice of the
+outstanding-items sweep above, scoped via `/decide`; jvkn/ehow/zaap grant+RLS
+cleanup and eq-shell's own app-code security gaps.
+`sprint-2026-08-28-worktree-followups.md` — the "needs you" follow-ups left
+after the 2026-08-28 eq-field worktree audit (19 of 24 worktrees cleaned up;
+full trail in `system/worktree-registry.md`).
 
 ## Update frequency
 
