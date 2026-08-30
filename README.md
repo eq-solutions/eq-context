@@ -158,29 +158,94 @@ current and stay at root until whatever cites them is itself resolved.
 > **Re-check the citation before acting on any line below.** A justification
 > nobody re-derives is worse than none, because it reads as checked.
 
+> **Re-verified 2026-08-30 — all 6 hold, 0 archived this pass.** Different
+> result from both prior passes (2026-07-20 archived 15/22, 2026-08-15
+> archived 5/9 and found 4 more justifications false) — not because this pass
+> was less thorough, but because these particular 6 files' citations turned
+> out to be genuinely live, several confirmed against stronger evidence than
+> existed before (see per-file notes below). The discipline this section
+> exists to enforce only shows up as an archive count when there's something
+> to archive; a clean re-check that finds nothing wrong is still the point.
+> One process note while re-checking `scripts/prune_ratchet.py`: its
+> `root_files` ceiling is still 16 in this checkout (`origin/main`), not 19 —
+> the ceiling-raise lives on PR #185 (`claude/substrate-housekeeping-issues-
+> 8b9116`), which is open, not merged. Running the script against current
+> `main` therefore fails on root_files (19 > 16) regardless of this pass's
+> own result; that's pre-existing, resolves whenever #185 merges, and this
+> pass doesn't change the root-file count either way (0 archived).
+
 `SKS-CUTOVER-CRITICAL-PATH.md` — cited by `eq/pending.md` as the current
-pre-cutover state; Phases A–C not yet started.
+pre-cutover state; Phases A–C not yet started. **Re-verified 2026-08-30,
+strongest evidence yet:** `sks/active.md` (last_updated 2026-08-24, 6 days old)
+names this file directly as the current SKS Labour retirement plan ("SKS
+Labour tracking — being retired, see `SKS-CUTOVER-CRITICAL-PATH.md`"). Phases
+A–C still not started in the data — no `field_*` schema exists on the SKS
+tenant; confirmed by its own companion log below.
 `cross-app-linkage-remediation-plan-2026-06-07.md` — **justification corrected
 2026-08-15.** It claimed `digest.md` "still points to its §7a"; `digest.md` has
 zero matches for `cross-app-linkage`. The real live dependency is
 `sks/pending.md` (an open, SKS-live-gated item). Note the file self-declares
 `status: archived` in its own frontmatter while sitting at root — the only root
-file in that state.
+file in that state. **Re-verified 2026-08-30: citation still holds** —
+`sks/pending.md`'s §7a item (SKS anon-remediation on `nspb`) is still an
+unchecked `- [ ]`, still SKS-live gated; nothing in `sessions/` since records
+it being executed (it would need a live Supabase DDL change under an explicit
+"SKS live" instruction — a rare, deliberate, loud action, not something that
+happens quietly). The self-declared `status: archived` frontmatter anomaly
+also still stands, unresolved — noting it again rather than silently fixing
+it, since that's a one-line edit outside this pass's actual scope.
 `eq-platform-verified-state-2026-06-03.md` — **justification corrected
 2026-08-15.** It claimed the file is "named explicitly in this repo's own
 `CLAUDE.md`"; grep returns zero. The real citer is `C:\Projects\CLAUDE.md`, the
 umbrella file that is **not in this repo** and self-describes as invisible to
 every tool except a session rooted there. Keep the file; the reason was wrong.
+**Re-verified 2026-08-30, directly:** the umbrella `C:\Projects\CLAUDE.md` was
+read live at this session's own start (Rule 0.5) and still reads "Start from
+`eq-context/eq-platform-verified-state-2026-06-03.md` (a DB-verified
+snapshot), then re-verify against live." Strongest form of confirmation
+available — the citation was observed directly this session, not inferred
+from grepping a doc that could itself be stale.
 `sks-live-sprint-2026-06-07.md` — **justification corrected 2026-08-15.** It
 claimed `digest.md` "still lists its Security Groups Phase 2–5 work as open";
 `digest.md` has zero matches for `sks-live-sprint`. `eq/pending.md` does keep
 Phase 4 open, but flags it as possibly superseded by the access-model cluster
 work, and `shell_control.user_security_groups` has been 0 rows for 50+ days.
-Still-wanted-or-superseded is Royce's call, not an archival one.
+Still-wanted-or-superseded is Royce's call, not an archival one. **Re-verified
+2026-08-30: citation technically still open, but the decision has now gone
+unanswered even longer.** `eq/pending/eq-shell.md`'s Phase 4 line (the item
+moved here in the 2026-08-17 pending split) is unchanged since 2026-07-27 — 34
+days on the same unresolved either/or. More telling: the fresh 2026-08-28
+whole-suite sweep (`sprint-2026-08-28-outstanding-items.md`, 9 agents reading
+all 11 `eq/pending/*.md` files live) doesn't mention this item at all, open or
+closed — it's fallen out of the active queue without being built or killed. A
+live re-check of the row count was attempted this pass and blocked by the
+session's own tool-safety classifier; doesn't change the call — the citation
+rests on the unresolved decision, not the exact count. Worth Royce settling
+explicitly so this stops silently aging.
 `SKS-FIELD-PARALLEL-RUN-LOG.md` — the EQ Field parallel-run mismatch log +
 clean-week counter the 2026-07-11 cutover plan requires; live, streak at 0.
+**Re-verified 2026-08-30: still live and current** — the file's own most
+recent entry (2026-08-17) postdates this pass's prior baseline, and
+`sks/active.md` (2026-08-24) names it directly as the current tracking file.
+Clean-week streak still 0; the file's own honest diagnosis (entry activity
+bursts, then stalls — twice now) is unchanged.
 `sec9-jvkn-key-rotation-runbook-2026-07-27.md` — ready-to-run SEC-9 rotation
-runbook, Royce-gated; stays at root until the key is rotated.
+runbook, Royce-gated; stays at root until the key is rotated. **Re-verified
+2026-08-30 directly against the register row itself (not a secondary
+pointer) — still open, on stronger evidence than before.**
+`ops/security-register.md`'s SEC-9 row **Status** column reads **OPEN** as of
+its own latest (2026-08-16) entry; that entry closed a related-but-separate
+sub-issue (a `dev`-context masking leak across 17 vars), not the underlying
+jvkn key rotation — Royce's 2026-08-01 call was to defer the rotation itself
+as low-urgency, "whenever convenient." The newer, more specific
+`ops/sec9-sec24-netlify-manual-fix-runbook-2026-08-11.md` explicitly names
+this exact file as "the real fix for that part, whenever you pick a window."
+**Correction to a nearby doc, for the record:** `sprint-2026-08-28-outstanding
+-items.md` flagged (correctly hedged, not asserted as fact) that SEC-9
+"almost certainly" already closed, reasoning from the register showing no
+open P0 entry under that number — that reads the severity column's
+strikethrough, not the Status column, which is unambiguous. Direct read this
+pass confirms: still open.
 
 The 2 that pass deferred as "too recent to judge" —
 `access-model-cluster1-build-plan-2026-07-16.md` and
