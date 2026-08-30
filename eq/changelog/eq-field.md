@@ -2707,3 +2707,8 @@ explicit Royce go-ahead.
 - Routes through `sbFetch('sites', ...)` like every other sites read already does. `setSiteRows()` (roster-adapter.js) already tolerates either the raw-table or view column shapes — no adapter change needed. Also cleaned up a dead `jwt` variable now that both fetches in the function mint their own JWT internally.
 - Audit also considered `calibration.js`'s equipment-record reads (same raw-fetch pattern) and set them aside as low-risk — no "own row or manager" rationale for test-equipment data, and the code documents that table's RLS as tenant-only.
 - eq-field [PR #845](https://github.com/eq-solutions/eq-field/pull/845) (v3.5.616), squash-merged on explicit "yes, merge it", confirmed live.
+
+## 2026-08-30 (PR #846 — tenant-migration caller workflow, OPEN)
+- Thin `workflow_dispatch` caller (`.github/workflows/tenant-migrate-apply.yml`) into eq-shell's new reusable governed pipeline, mirrors eq-cards PR #330's shape. Lets this repo's own `supabase/migrations/*.sql` apply to zaap + ehow through the same mechanism eq-shell uses for itself, instead of hand-applying via the Supabase MCP.
+- `docs/reflection-log.md` entry added in the same commit to satisfy this repo's reflection-gate hook.
+- CI green. Not merged. First real run must be `bootstrap=true` and must not happen before every migration file without a confirmed live ledger match is individually reconciled — done this session, see `eq/pending/eq-field.md`. 3 required secrets (`SUPABASE_ACCESS_TOKEN`, `CONTROL_PROJECT_REF`, `EQ_SHELL_CHECKOUT_TOKEN`) not yet provisioned on this repo.

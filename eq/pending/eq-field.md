@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: tenant-migration governed pipeline — caller workflow built, gated on eq-shell reconciliation (2026-08-30)
+*Full build detail, the 14-file reconciliation, and the `/decide` call live in `eq/pending/eq-shell.md` (2026-08-30 entry) — this is the eq-field-side pointer since PR #846 is this repo's own change.*
+
+- [x] **eq-field [PR #846](https://github.com/eq-solutions/eq-field/pull/846)** — thin `workflow_dispatch` caller into eq-shell's new reusable `tenant-migrate-apply.yml`, mirrors eq-cards PR #330. CI green. **Not merged.** `docs/reflection-log.md` entry added in the same commit to satisfy this repo's reflection-gate hook.
+- [ ] **PR #705 (unlinked-staff problem) is now the direct blocker for a real, live security gap**, not just a data-quality nice-to-have: the ehow timesheets/leave write-scoping fix (drafted, held) can't safely apply while 36 workers + 6 supervisors have no linked staff_id. Reconfirmed live 2026-08-30. Worth re-weighing this PR's priority against that. _(added 2026-08-30)_
+- [ ] **3 secrets not provisioned** (`SUPABASE_ACCESS_TOKEN`, `CONTROL_PROJECT_REF`, `EQ_SHELL_CHECKOUT_TOKEN`) — see `eq-shell.md`, same item. _(added 2026-08-30)_
+
+---
+
 ## eq-field: Leave approver resolution — non-manager staff-map RLS gap (v3.5.615/616, 2026-08-30)
 
 - [x] **`app_data.sites`'s RLS posture confirmed once Supabase MCP reconnected**: it was never role-restricted the way `app_data.staff` was. Only policy touching SELECT is `sites_tenant_isolation` (`FOR ALL`, tenant-only, no role condition) — no narrower `staff_own_or_manager_read`-shaped policy exists for sites. Verified live: apprentice JWT and manager JWT both return the identical 53 rows, on both the raw table and `field_sites`. So v3.5.616 (the sites-fetch fix) was pre-emptive, not curative — a real structural cleanup, but not fixing a live bug the way v3.5.615 (the staff fix) was. No further action needed.
