@@ -54,16 +54,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: RLS-initplan/FK-index hardening reapplied (0162), 0131 header correction reverted (2026-08-26)
-
-Reapplied the 2026-05-31 RLS-initplan/FK-index fix to 8 policies and 15 foreign keys created or recreated since then (including `workers.origin_org_id` from migration 0138) — confirmed live via `get_advisors`: all 8 public-schema `auth_rls_initplan` warnings and all 15 unindexed-FK warnings cleared. `eq_format_au_mobile`'s search_path hardened too. [PR #323](https://github.com/eq-solutions/eq-cards/pull/323), merged and applied to live jvkn.
-
-Also found migration `0131` has actually been live since 2026-08-16 (its header wrongly said "NOT YET APPLIED") — started fixing the header, but CI (`check-function-grants.mjs`) correctly flagged that touching an already-applied migration's function definitions looks like a fresh redefine with no grant statement, the exact pattern that broke these functions' grants the first time 0131 ran. Reverted the file edit rather than force it through; the correction lives in the changelog instead.
-
-- [x] **`organisations_anon_bootstrap_read` dropped** — investigated first, turned out not deliberate: neither real find/browse-company RPC needs it (both already locked to signed-in users at the grant level, one doesn't even touch this table), so it was an orphaned unauthenticated full-table read exposing each org's internal Supabase connection details. [PR #324](https://github.com/eq-solutions/eq-cards/pull/324), merged and applied to live jvkn — confirmed anon now sees zero rows. _(resolved 2026-08-26)_
-  - **Correction, same day, found by a later eq-shell session:** this policy was not orphaned — it's EQ Field's pre-login tenant/host lookup, a cross-repo consumer this investigation's scope (eq-cards' own RPCs and code only) couldn't see. Dropping it broke Field's boot fleet-wide within the hour; restored via eq-shell PR #1618. Full chain in eq-shell memory `organisations-anon-bootstrap-read-recurring-incident.md`. Not a knock on this investigation's rigor — the real gap is that no check exists to catch a control-plane grant change breaking a *different repo's* consumer before merge. _(added 2026-08-26)_
-- [x] **3-table permissive-policy overlap resolved** — `org_credential_requirements`/`org_join_requirements`'s admin "manage-all" policies split into insert/update/delete so they stop overlapping each table's member-read policy on SELECT; `organisations`' overlap cleared as a side effect of dropping the anon policy above. Same [PR #324](https://github.com/eq-solutions/eq-cards/pull/324) — `get_advisors` confirms all 3 `multiple_permissive_policies` warnings cleared. _(resolved 2026-08-26)_
-
 ## eq-cards + eq-shell + eq-field: eq-shell's synthetic cards.eq.solutions email — stopped from ever displaying as real, merged + deployed live across all three apps (2026-08-26)
 *Royce: a phone-only-signup worker's real email was never captured (`shell_control.users.email` null since signup), and eq-shell's internal GoTrue placeholder (`${user.id}@cards.eq.solutions`, minted so a magic-link token has something to key on — working as designed, Sentry EQ-SHELL-13 context) was silently standing in for it, showing as a real address on his EQ Field/Cards profile. Asked to investigate every place it could display across eq-cards + eq-shell, and check whether PR #1125's existing email-capture nudge already covered it, before writing any code.*
 
@@ -82,27 +72,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 **Notes:**
 - All three repos' git surgery was done in isolated worktrees/clones (eq-cards + eq-shell via `.claude/worktrees/`, matching each repo's own established convention) — never the shared bare-root checkouts, consistent with every other entry in this file about that failure class.
 - Netlify deploy verification used direct commit-ancestry checks (`commit_ref` on the newest `ready`/`context:production` deploy vs. the actual merge SHA) rather than trusting "merge succeeded" alone — per the standing eq-shell deploy-verification method documented in global CLAUDE.md.
-
----
-
-## eq-cards + eq-shell: labour-hire licence photos root-caused across all three claim paths, fixed, backfilled, verified live (2026-08-26)
-*Royce: "i got conor to login but his licenses dont load in cards," then clarified it was specifically photos, missing in both Shell and Cards, for Conor Horgan and Nelson Sareto. Investigated against live jvkn data throughout rather than assuming the intake pipeline was at fault.*
-
-- [x] **Root cause traced to three independent places, not one.** The labour-hire intake pipeline genuinely uploads every photo/PDF at intake time (confirmed: files intact in `licence-photos/pending-credentials/{worker_id}/...`, correct byte counts) — nothing was ever lost. But none of the three places that create the real `public.licences` row at claim time ever carried the file reference into `photo_front_url`/`document_url`: this repo's own `eq_cards_claim_invite` RPC, and eq-shell's `shell-join-tenant.ts` and `accept-invite.ts` (which had ported the same promotion logic on 2026-08-23 rather than sharing it, inheriting the identical gap). Even a raw path copy wouldn't have worked — the storage RLS policy on `licence-photos` requires the licence's own id to already appear in the file path, which is impossible for a file uploaded before that row exists.
-- [x] **Built one shared fix instead of three.** New Supabase edge function `promote-labour-hire-photo` (jvkn/eq-canonical): given a licence id, downloads the pending file and re-uploads it under the `{tenant}/{user}/{licence}/{slot}` convention every other working licence photo already uses, then points the row at it. Idempotent — safe to call on an already-fixed licence, or one with nothing to promote. All three claim paths now call this one function instead of duplicating the logic a third and fourth time.
-- [x] **eq-cards side**: migration `0161` wires `eq_cards_claim_invite` to dispatch the new function via `pg_net` (fire-and-forget, wrapped so a photo hiccup can never block a real claim). eq-cards [PR #318](https://github.com/eq-solutions/eq-cards/pull/318), merged. **Real CI catch along the way**: the first draft's `CREATE OR REPLACE` had no trailing `GRANT`, which `check-function-grants.mjs` correctly flagged — this repo's own grant-stripping event trigger would have silently locked `authenticated` out of claiming invites on any future replay. Fixed by folding the grant into the same migration file (a separate follow-up file doesn't satisfy the check, by design) before merge.
-- [x] **eq-shell side**: same fix ported into `shell-join-tenant.ts` and `accept-invite.ts`, calling the same edge function. Used a bounded 10s-timeout await rather than true fire-and-forget — this repo has a documented failure mode where Netlify freezes the function container the instant a response returns, silently killing genuinely-unawaited calls. Reused the existing `LABOUR_HIRE_INTAKE_SECRET`/`SUPABASE_URL` env vars (verified live, no new secrets). eq-shell [PR #1603](https://github.com/eq-solutions/eq-shell/pull/1603), squash-merged, confirmed live via exact commit-ancestry match against the newest production deploy.
-- [x] **Backfilled Conor's and Nelson's 8 existing licences** via direct calls to the new function — all 8 succeeded, byte counts matched the original files exactly. **Click-tested live**: opened `core.eq.solutions/sks/staff`, both workers' rows now show real, rendering licence photos/documents (not placeholders or broken links).
-- [x] **Related, separately-tracked follow-up**: `promote-labour-hire-photo` (added by this work) is missing its own `[functions.promote-labour-hire-photo]` verify_jwt block in `config.toml` — found and spawned as a background task by a concurrent same-day session (see `eq/pending-archive.md`'s "migration-ledger gap sweep" entry), not duplicated here.
-
----
-
-## eq-cards: "You're ready for site" success banner removed outright, deployed live (2026-08-26)
-*Royce: "we keep seeing 'youre ready for site' can you get rid of that in eq cards" — a 2026-08-19 fix (archived, see `eq/pending-archive.md`) addressed one specific recurrence cause but the banner itself remained; rather than chase further recurrence causes, removed the feature entirely on Royce's explicit instruction.*
-
-- [x] Deleted the once-ever "You're ready for site." bottom sheet from `licences_list_screen.dart` — the method, its call site, the SharedPreferences key, and all related now-dead state, cleanly (verified no dangling references before shipping).
-- [x] eq-cards [PR #321](https://github.com/eq-solutions/eq-cards/pull/321), merged, **deployed live** on Royce's explicit "deploy" — dispatched `Build & Deploy`, confirmed the deployed run's commit SHA (`dd199c8`) exactly matches the removal commit, both jobs (Flutter web build, edge functions) succeeded independently.
-- [x] Branch protection required an up-to-date-with-main merge twice during this session (heavy concurrent commit traffic on this repo today) — rebased and re-verified CI green both times before merging.
 
 ---
 
@@ -155,24 +124,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 
 ---
 
-## eq-cards: SEC-45 migration renumbered past a second collision (0135→0144); confirmed it duplicates an already-merged fix (2026-08-25)
-*Branch `claude/sec-45-revoke-authenticated-invite-resolver`'s untracked `0135` draft was already flagged by the 2026-08-23 session below ("a stale untracked migration draft... fully superseded by an already-merged same-purpose migration under a different number (0136). Flagged to Royce, not deleted") — this session picked that thread back up and actually renumbered it. Fresh survey (local tree + `origin/main` + `git log --all` across every branch, since this repo keeps hitting this pattern) found `main` had moved to `0143` by now, past the `0135`/`0136` collision that was live two days ago.*
-
-- [x] Renumbered the untracked file `0135_revoke_authenticated_find_or_create_worker_for_invite.sql` → `0144_revoke_authenticated_find_or_create_worker_for_invite.sql` (next free number above every local/remote branch's claimed numbers), header self-reference corrected to match. The unrelated, already-merged `0135_reject_deactivated_identity_on_worker_link.sql` (file #1 at the real `0135`) untouched. No SQL logic changed — rename/renumber only, per explicit instruction. Not committed — left for whoever drives that branch's PR.
-- [x] **Re-confirmed the 2026-08-23 finding still holds**: `0136_revoke_authenticated_worker_invite_resolver.sql` (live on `origin/main`) runs the identical `REVOKE EXECUTE ... FROM authenticated` against the identical function (`eq_cards_find_or_create_worker_for_invite`), same root-cause reasoning, same sole-legitimate-caller trace. Asked Royce directly this time rather than just flagging it: confirmed to finish the renumber anyway and leave the file untracked rather than delete it — whoever drives the branch's PR decides at review time whether the redundant-but-harmless duplicate is worth keeping.
-- [x] Ruled out a decoy: `origin/claude/fix-0135-self-reference-cleanup` looked like a competing renumber of the same file but is unrelated — a 2026-08-23 comment-only fixup to *file #1* (the real `0135`)'s own stale `[0134]` self-references, left over from its own earlier PR #287 rename.
-- [x] Spawned background task `task_46928df0` ("Resolve duplicate SEC-45 fix: 0136 vs 0144") so whoever picks up that branch's PR has the full context without re-deriving it.
-
-**Deferred:**
-- [x] **0136 vs 0144 final disposition** — keep as a harmless duplicate, drop, or correct 0144's own header (it claims "no later grant/revoke statement... after the 2026-07-27 backfill," which `0136` now contradicts). Tracked in `task_46928df0`. _(added 2026-08-25)_
-  - **Resolved 2026-08-25 as "drop", by two independent routes** — Royce, in a later session, instructed "delete the stale untracked 0144 file", settling the disposition; and the file had in any case already vanished from the shared root by ~19:49 and is unrecoverable (never committed on any branch, in no stash). `0136` on `main` remains the live fix for this function, so nothing is lost. The header-correction option is moot — there is no longer a `0144` header to correct.
-
-**Notes:**
-- Pre-existing, unrelated to this task: `origin/main` itself already carries two different files both numbered `0142` (`0142_get_my_licence_rpc.sql` and `0142_guard_and_revoke_anon_respond_to_access_request.sql` — the latter is this same branch's own PR #300 content, documented in the section below). Not touched, flagging so it isn't lost.
-- Brief-gate (Rule 0.6) fired mid-task via `guard.js`'s brief-gate check on the Edit tool; ran `/brief eq-cards` before completing the header edit, Royce confirmed via the 0136-duplicate question above before the edit landed.
-
----
-
 ## eq-cards: governance docs (ARCHITECTURE/README/STATUS/CHANGELOG) were 87 days stale and actively wrong — corrected, committed, live on PR #300 (2026-08-25)
 *A repo review flagged specific stale claims: auth described as "phone-as-identity retired" (flipped back to mobile-primary 2026-08-15, PR #246); deploy described as auto-on-merge (explicit-only since 2026-08-14); README pointed at a PIN app-lock deleted 2026-08-15 (PR #249) that was never wired into the router; stack table drifted 15+ versions behind `pubspec.yaml`; folder tree still showed 5 feature folders against the current 12. Docs-only task, no code/migration changes, all claims verified against live `pubspec.yaml`/git log/`test/` before rewriting.*
 
@@ -215,12 +166,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 - [ ] **The `Build & Deploy` workflow deploys ALL jvkn edge functions**, not just the changed one (`supabase functions deploy --project-ref jvknxcmbtrfnxfrwfimn`, no function name). Normal path for this repo, but it means the blast radius of any edge-function deploy is "every function at current main". Worth knowing before a hurried deploy. _(added 2026-08-23)_
 - [ ] **Node 20 deprecation warning** on `supabase/setup-cli@v1` in the deploy workflow — forced onto Node 24 by the runner. Unrelated to any change, not failing, but will need bumping. _(added 2026-08-23)_
 
-## eq-cards: Zemi Asri's licence photo — storage path never followed an identity merge, fixed for good (PR #294, merged + live 2026-08-23)
-*Distinct from the earlier org_membership fix logged in eq-shell.md — same symptom ("can't see own photo"), different root cause. `licence-photos` storage paths embed the owner's `user_id` at upload time and are never re-derived. When an identity merge repoints the real owner, the path keeps naming the retired identity forever.*
-
-- [x] Swept all 205 live `licences` rows with a photo/document URL — found 6 with a stale path (5 identity-drift, 1 a different missing-tenant-segment bug), hand-repaired each (copy → verify byte-match → repoint the column → delete the old object). Root-caused and fixed for good: all 4 owner RLS policies + the admin-read policy now resolve ownership via a live join to `licences.user_id` (the licence id already in path segment 3) instead of trusting the frozen path — self-heals on every future identity merge automatically. Migration `0137`. Dry-run validated against live jvkn before applying. Merged `87567f0`.
-- [x] **Click-tested live 2026-08-23** — Royce confirmed Zemi's photo renders in the Staff page.
-
 ## eq-cards: two admin RPCs silently lost their `authenticated` grant to migration 0131, restored (PR #295 + #296, merged + live 2026-08-23)
 *`0131_gate_worker_role_assignment` (2026-08-16) replaced two functions with no trailing `GRANT` — the `eq_enforce_function_privacy` event trigger strips `authenticated`/`anon` on every function replace, same bug class as the documented eq-cards #0111 incident. Live ~1 week undetected.*
 
@@ -228,32 +173,10 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 - [x] `eq_cards_admin_create_invite` — same root cause, found in a follow-up suite-wide sweep (see `eq-solves-service.md` for the full sweep writeup). PR #296, merged.
 - [ ] **Not click-tested live** — nobody has exercised the Cards admin worker-upsert or create-invite flow as a real authenticated org admin since either fix. _(added 2026-08-23)_
 
-## eq-cards: PR #287 migration-number collision (with merged #289) found, fixed, deactivated-identity fix applied live (2026-08-23)
-*Asked to confirm and fix a suspected migration-hygiene CI failure on open PR #287 — both #287 and already-merged #289 had independently claimed migration number `0134`. The PR's own CI still showed green; confirmed that was stale (last ran 3 days before #289 merged), not evidence the collision didn't exist.*
-
-- [x] Renumbered #287's migration `0134→0135` (next free above `main`), confirmed CI green on the re-run, merged on Royce's "merge".
-- [x] **Caught a mistake in my own fix before it reached the database**: the first renumbering commit only staged the `git mv`, not the follow-up edits to the file's internal `[0134]` self-references — they were silently dropped from what got pushed and merged (comments only; SQL logic unaffected). Caught it re-reading the merged file fresh, byte-for-byte, immediately before applying to the live database. Fixed properly in follow-up PR #290, this time verifying `git diff --cached` before committing.
-- [x] Applied migration `0135` (rejects a deactivated identity from linking/creating worker data or claiming an invite — the fix for the Zemi Asri incident described in the migration's own header) live to jvkn on Royce's "go". Direct application via the Supabase MCP was blocked by the session's auto-mode classifier; Royce ran the prepared, byte-verified SQL through the Supabase dashboard instead. Verified live afterward: both functions carry the guard, and `eq_cards_link_or_create_worker`'s previously-missing `authenticated` EXECUTE grant (unrelated pre-existing drift, found during the pre-apply check) is now restored as a side effect of the migration's explicit re-grant.
-
-**Notes:**
-- **Auto-mode classifier blocks direct production DB writes via the Supabase MCP (`apply_migration`), even after explicit in-chat "go" — but did NOT block `git push`/`gh pr merge` this session**, both of which went through cleanly twice each (two `gh pr view` read calls did hit a transient classifier block but succeeded on plain retry). This refines the 2026-07-23 note further down this file, which described `git merge`/`push` as also hard-blocked "regardless of in-chat authorization" — that wasn't this session's experience; only the direct live-DB write hit the classifier. Standing plan for live-DB-write tasks: prepare the exact SQL up front and expect to hand it to Royce for the dashboard rather than assuming `apply_migration` goes through in auto mode.
-- While isolating this fix, found the shared local `eq-cards` checkout had unrelated uncommitted work in progress on branch `claude/sec-45-revoke-authenticated-invite-resolver` (an untracked file already claiming migration number `0135` for a different fix, no PR yet). Not touched — all git surgery this session was done in an isolated fresh clone instead. Whoever resumes that branch will need to renumber past whatever's newest on `main` by then, same as this session did.
-
----
-
 ## eq-cards: Platform console redesigned around a "needs attention" queue instead of a stats wall — merged, deployed, live (2026-08-20)
 
 - [ ] **No real action buttons yet.** Each queue row is tagged which app (Cards/Field) owns the fix, but stays read-only — nothing in this app today can re-invite in bulk or force a sync retry, so a button would have nowhere real to go. Building those is separate follow-on work, your call whether/when. _(added 2026-08-20)_
 - [ ] **The Cards↔Field "bridge" is one-directional.** `eq_cards_platform_stats()` only queries jvkn (Cards' own database) — it can say how many Cards workers have been linked into Field, but not give Field's own independent total to reconcile against. A genuine two-sided view needs a second query into ehow, not built this session. _(added 2026-08-20)_
-
----
-
-## eq-cards: replacing an existing licence wasn't obvious — root-caused and fixed (2026-08-18)
-*Royce: "how does someone replace an existing licence from Cards? It isn't obvious to me." Investigated the full flow before touching anything.*
-
-- [x] **The rescan+OCR mechanism already worked correctly** — it's a full scan → crop → OCR pipeline that updates the existing licence record in place (new photo, new OCR-filled number/expiry), not a duplicate. But it was only shown when a licence was expired or within 30 days of expiring, gated identically in 3 places across the detail screen's layouts. A worker who gets a new physical card early (new number, years of validity left) had no visible way to swap it in — their only options were manually editing the photo with no OCR re-fill, or deleting and re-adding as a brand-new record.
-- [x] Relabelled "Renew licence" → "Replace card" and removed the near-expiry gate on all three detail-screen layouts — always available now. Left the wallet list tile's own compact per-row "Renew" chip untouched (still gated) — always showing a button on every row in a scrollable list is a bigger, separate call.
-- [x] eq-cards [PR #268](https://github.com/eq-solutions/eq-cards/pull/268), merged (`7a3377c`), deployed live — verified against the live bundle (grepped a fresh, cache-busted fetch of `main.dart.js`: "Replace card" now appears 3x, "Renew licence" 0x).
 
 ---
 
@@ -272,20 +195,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 
 **Deferred:**
 - [ ] **No live click-through yet on the Web Share "Save" flow specifically through the Shell iframe** since the `allow="web-share"` fix landed — the permission-policy fix is confirmed live (grepped the deployed Shell bundle for `allow:"web-share"`), but nobody has tapped Save through `core.eq.solutions/sks/cards` since. _(added 2026-08-18)_
-
----
-
-## eq-cards: per-licence PDF export shipped, real bugs found in the xlsx register (2026-08-18)
-*Started as "mock up a PDF and Excel export for a licence" — built for real, then Royce's live device testing surfaced two genuine bugs neither unit tests nor CI could have caught (both web-only browser behaviours), on top of the design polish he asked for.*
-
-- [x] **New: "Export PDF" action on the licence detail screen** — one-page branded PDF per licence (holder, fields, status, QR verify link; private licences export too but skip the QR). eq-cards [PR #265](https://github.com/eq-solutions/eq-cards/pull/265), merged (`4597bfd`), deployed live.
-- [x] **Real bug found: `excel_plus`'s `Excel.save()` silently double-downloads on web.** It clicks its own hidden `<a download>` using a hard-coded default filename (`FlutterExcel.xlsx`) — every "Export my data" tap was giving Royce two files, not one (confirmed by md5-matching his downloaded `FlutterExcel.xlsx` against the real `licences.xlsx` inside his ZIP). Fixed by switching to `Excel.encode()`, same bytes, no side effect. eq-cards [PR #266](https://github.com/eq-solutions/eq-cards/pull/266), merged (`5a3ce1d`), deployed live.
-- [x] **Design fixes from live testing, same PR**: logo bumped from 20x20px to 60x60px (xlsx, deep-blue banner fill) / 34x34px (PDF); xlsx "Licence Type" column now shows the human label (`White Card`) instead of the raw code (`white_card`).
-- [x] **Follow-up: logo contrast regression caught and fixed same day** — the #266 banner fill made the sky-blue logo nearly invisible against the deep-blue background it was placed on (no white logo asset exists). Fixed by recolouring the mark's opaque pixels to white at export time (`whitenLogoPng`, verified visually against a real composited sample). eq-cards [PR #267](https://github.com/eq-solutions/eq-cards/pull/267), merged (`821d9f1`), deployed live.
-- [x] CI's Flutter pin bumped 3.41.9 → 3.44.8 (required for #265 — the only `pdf` package version compatible with `excel_plus`'s xml dependency needs Dart ≥3.12).
-
-**Deferred:**
-- [x] **Royce found and used "Export PDF"** — see the "export flow finished end-to-end" section further up this file for what that testing surfaced (a photo-crop bug and an iOS download bug, both found and fixed same day). _(resolved 2026-08-18)_
 
 ---
 
@@ -335,30 +244,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 
 ---
 
-## eq-cards: CI silently never deployed edge functions — found after a live fix didn't ship, closed for good (2026-08-14)
-*Discovered when PR #238's ocr-licence timeout fix merged, `Build & Deploy` reported success, but the live function on jvkn kept 504ing anyway — the workflow only ever built and deployed the Flutter web app; nothing under `supabase/functions/` was ever touched by CI. Had been silently true the whole time; today's fix was deployed by hand as a stopgap while this was built.*
-
-- [x] Added a `deploy-edge-functions` job to `deploy.yml`, same explicit-only gate (`workflow_dispatch` / `release/v*` tag) as the existing Flutter/Netlify job — deploys stay a deliberate action, not automatic on merge. eq-cards PR [#240](https://github.com/eq-solutions/eq-cards/pull/240), merged.
-- [x] Audited today's earlier manual out-of-band deploy of `ocr-licence` (done via the Supabase MCP as the stopgap) for drift against git — found one harmless one-line difference (a hardcoded value vs. a variable that always evaluates to the same thing), otherwise byte-identical. Confirmed CI deploys won't hit the manual tool's file-path quirk that caused it.
-- [x] First real run of the new job failed immediately — not a secrets problem, a bug in the Supabase CLI's "latest" build: it validates the *entire* project config (including unrelated auth email-template settings) and mis-resolves a file path against the wrong folder. Reproduced locally, pinned CI to a known-good CLI version instead of floating on latest. eq-cards PR [#244](https://github.com/eq-solutions/eq-cards/pull/244), merged.
-- [x] Re-ran the deploy after both fixes — succeeded end-to-end this time, confirmed via the Actions run log.
-- [x] New secret added to eq-cards (`SUPABASE_ACCESS_TOKEN`) — Royce generated and set it himself, not handled by Claude.
-
----
-
-## eq-cards: invite-claim IDOR fixed, 3-day claim outage found + fixed, stale-invite cleanup + guard shipped (2026-08-14)
-*A live code audit found `eq_cards_claim_invite` only checked that the caller was signed in — never that their verified phone matched the invite's target phone, letting one worker claim a colleague's invite by looking up their phone number. Verified against the live database before writing the fix. While preparing it, found something bigger already broken in production.*
-
-- [x] **Invite-claim security gap fixed.** The claim function now checks the caller's verified phone against the invite's target phone before allowing a claim. eq-cards migration `0124`, PR [#239](https://github.com/eq-solutions/eq-cards/pull/239), applied live, merged, deployed.
-- [x] **Found and fixed a live 3-day outage in the same function.** An earlier migration had silently stripped that function's permissions (a known trap in this database — function edits auto-revoke access unless explicitly re-granted). Zero invite claims had gone through since 2026-08-11. Fixed in the same migration, verified live.
-- [x] **William Brown's stale invite investigated and cleaned up** — he already had a live account and had recently updated his licences through it, but an old unclaimed invite for him was still sitting open. Traced the cause to a 2026-07-22 account-merge repair that didn't stop the invite system from still thinking he needed one.
-- [x] **Built a detection tool for this class of problem** — an admin tool that lists any worker who already has a live account but still has an invite outstanding, so this can be caught going forward. eq-cards migration `0125`, PR [#241](https://github.com/eq-solutions/eq-cards/pull/241), live.
-- [x] **Fixed the root cause** — the invite-sending function now refuses to create a new invite for a worker who already has a live account. eq-cards migration `0126`, PR [#242](https://github.com/eq-solutions/eq-cards/pull/242), live.
-- [x] Both deploys confirmed live on cards.eq.solutions.
-- [x] **Security register write-up committed** — was blocked by a stash-pop conflict in this repo (digest.md/suite-state.md/a sprint doc had unresolved conflict markers); resolved same session, register entry now live in `ops/security-register.md`.
-
----
-
 ## eq-cards: licence save silently duplicated the row on a failed photo upload — found via Sentry, fixed, merged, deployed live (2026-08-13)
 *Royce: "Richard Brown - three of the same certificate have been created." Investigation found 6, not 3 (half were hidden via `is_private`). Root cause: `licence_edit_screen.dart`'s save flow inserts the row, then uploads the photo — if the photo step throws, the screen doesn't remember the row already saved, so retrying inserts a new one instead of updating it. Confirmed via Sentry (`EQ-CARDS-1G`/`1H`, same trace, same user). Luke Wheeler was initially flagged as a second victim of the same pattern — that was a false positive in the blast-radius query (his 3 rows were 3 genuinely different certificates sharing an empty licence number, a normal quick-document quirk); corrected before touching his data.*
 
@@ -394,7 +279,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 ## eq-cards: profile-save permission bug — PR merged, live grant confirmed and applied (2026-08-03)
 *Sentry showed `eq_cards_upsert_my_profile` throwing "permission denied" for every signed-in user (same incident class as the earlier `eq_cards_auto_provision` outage). PR #204 (grant-restoration migration) merged; live check before applying found the grant had already been restored, almost certainly by a concurrent session, but only as an untracked ad-hoc fix — applied the migration anyway so it's now in eq-canonical's tracked ledger instead of silently regressing on a future restore.*
 
-
 **Deferred:**
 - [ ] **Royce (or a real signed-in worker) to confirm live**: save/create a Cards profile and confirm it no longer errors. Off-limits for me to click-test myself. _(added 2026-08-03)_
 
@@ -402,7 +286,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 
 ## eq-cards: workers can now self-report their trade/employer, and a new platform-admin console gives Royce a live view of the whole network (2026-08-02)
 *Two features, one session: closing the "who's actually using Cards" gap. First let workers tell Cards their trade and who they work through (licence data alone only reveals trade for the regulated minority). Then, since Royce kept asking "can I see this without writing SQL by hand," built him an actual screen for it.*
-
 
 **Deferred:**
 - [ ] **Bridging Cards' new trade/employer data into Shell** — deliberately not built; no rule exists yet for what happens when a worker's own answer disagrees with what an employer has on file. _(added 2026-08-02)_
@@ -415,7 +298,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 ## eq-cards: netlify.toml dead-config cleanup, orphaned welcome.html removed (2026-07-29)
 *Investigating a report of an old email-login screen appearing on a phone in Brave. Production itself turned out to be correctly configured — the actual cause was a stuck service worker on that one device, not a server bug — but the investigation surfaced a real, unrelated config problem worth fixing while in the area.*
 
-
 **Deferred:**
 - [ ] **Royce to clear Brave's site data for cards.eq.solutions on his own phone** — the actual reported symptom (an old email-login screen). A Flutter service worker registered on that device before the phone-OTP flip is still serving its own cached copy of the old build; production itself is correctly configured (verified live). A full close + clear-site-data + reopen forces the fresh navigation the browser's update check needs. _(added 2026-07-29)_
 
@@ -423,7 +305,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 
 ## eq-cards: worker-reported "my update didn't save" root-caused and fixed, deployed (2026-07-28)
 *Royce shared a screenshot of Brian Griffin-Colls' licence list on the Staff page asking why it hadn't updated — he'd said he updated his First Aid/CPR certificate. Checked the live database directly first: that record had zero write activity of any kind, successful or failed, in the 26 days since it was first added — ruling out a save that silently errored. Traced it to an already-known but ignored crash report: when the app's automatic photo-reading step times out, it correctly falls back to letting the person fill the form in by hand, but the only warning was a message that disappears after a few seconds. Easy to miss, and missing it meant walking away believing the update had gone through when the Save button was never actually pressed.*
-
 
 **Deferred:**
 - [ ] **Royce/a worker to trigger a slow or failed photo-read live and confirm the new message shows and stays** — verified in code + automated tests (88/88 passing), not yet clicked through for real. _(added 2026-07-28)_
@@ -491,7 +372,6 @@ Also found migration `0131` has actually been live since 2026-08-16 (its header 
 ---
 
 ## ⏩ Session close — 2026-07-23 — eq-cards: closed task_d94af51d (ocr-licence 401), fix deployed live; cross-session-message channel identified
-
 
 ### Deferred (added 2026-07-23)
 - [ ] **Confirm intent behind the cross-session-message probe.** If it wasn't Royce, it's worth knowing that any session on this machine can read another session's full transcript and inject messages into it that render indistinguishably from a normal turn — a real capability, not a bug, but one worth being deliberate about. _(needs Royce's confirmation)_
