@@ -29,6 +29,22 @@ Every code + DB item in this sprint is now live: SEC-34/SEC-35/SEC-36/SEC-53/SEC
 
 ---
 
+## eq-shell: Documents — customer-portfolio and ad-hoc multi-site scoped pushes, both merged live (2026-08-30)
+*Direct continuation of the 2026-08-28 site-scoped push work below, same session. Royce: "I am thinking in reality it would be excellent to be able to select a customer and auto do all of the sites. Ultimately the user can sign it once and we could then export a sign off page for any of the sites in their portfolio." Then, after a live demo: "can yo pick multiple sites here?" → confirmed building it.*
+
+- [x] **Customer scope (migration 0289, PR #1660, `b5742803`)**: picking a customer auto-resolves every active site under it at push time (snapshotted, not live-tracked) and creates ONE signoff row covering the whole portfolio — sign once. New `document_signoff_sites` table records which sites a shared signoff covers; `document_register` gets `customer_id`/`customer_name`/`covered_sites`. Certificate/Register can export either the whole portfolio or any single covered site — the actual ask. Royce's call: re-pushing the same customer after a new site joins the portfolio silently extends the existing signoff's coverage rather than forcing a fresh sign.
+- [x] **Ad-hoc multi-site scope (migration 0292, PR #1670, `e76287d4`)**: Royce noticed the Site control was still single-select and asked directly whether multiple sites could be picked. Built as a third, orthogonal scope — hand-pick 2+ specific sites (not a whole customer) and sign once. Site picker became a checkbox list in both push forms. Identity for re-push dedup is a deterministic SHA-256 hash of the sorted/deduped site_ids (`computeSiteSetHash`), not an entity id — unlike a customer, an ad-hoc selection has no natural referent to "extend," so the exact same set re-pushed is idempotent and a different set is a genuinely new signoff. Reused `document_signoff_sites` unchanged — identical coverage-snapshot mechanism regardless of whether the set came from a customer or a hand-pick.
+- [x] **`document_signoffs`'s scope model is now 3-way exclusive**: unscoped, OR `site_id`, OR `customer_id`, OR `site_set_hash` — DB CHECK enforces at most one. `scope_key` (generated STORED coalesce-to-sentinel column, the real UNIQUE target) regenerated each time a new scope was added, same pattern `document_audiences.target_key` originated.
+- [x] **Bonus fix while in this code (PR #1670)**: the Register's site-filter dropdown was miscategorising customer- and site-set-scoped groups as "unscoped" (both have `site_id: null` — the filter only ever checked that one column). Now correctly listed under every site they cover.
+- [x] **Both PRs verified against eq-field's live consumer code before merging** (no eq-field changes needed either time): `document-signoffs.js`'s `list` action does `document_register?select=*&...`, so it picks up every new column automatically; `sign` operates on a specific `signoff_id`, never ambiguous. One pre-existing, still-harmless wrinkle documented but deliberately not touched (different repo, no current impact): the `view` action's `(version_id, signer_user_id)` lookup uses `.limit(1)` with no explicit order, now genuinely ambiguous when one person holds multiple signoff rows for the same version — currently harmless because `view` only returns the shared file path, which is scope-independent.
+- [x] **Both migrations dispatched against the PR branch and verified live on ehow + zaap before merging** (same "app code depends on the migration" reasoning as 0288) — `tenant-migrate.yml -f ref=<branch>`, confirmed via direct SQL (constraint defs, view compiles) before merge, matching the established sequencing.
+- [x] Both confirmed live via Netlify deploy state (`ready`) with `commit_ref` matching each merge commit exactly on `core.eq.solutions`.
+
+**Deferred:**
+- [ ] **Not click-tested live** — same gap as every scope in this arc (site/customer/multi-site all share it): no Shell session/credentials in this environment. Worth one real pass covering all three: push to 2+ sites directly, push to a customer, confirm one signoff + one signature covers the set in both cases, confirm per-site and whole-group certificate exports both render correctly. _(added 2026-08-30)_
+
+---
+
 ## eq-shell: Documents — site-scoped pushes and sign-off certificates, built, merged, live (2026-08-28)
 *Royce asked for a push to carry a site (e.g. one EMP pushed separately per Sydney site), with the certificate and Register showing which site.*
 

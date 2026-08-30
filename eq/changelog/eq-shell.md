@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-28
+last_updated: 2026-08-30
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -14,6 +14,11 @@ status: live
 - `/decide` pass run before building (not just the check-side pattern assumed to transfer): found the script's hardcoded migrations path would have silently read the wrong repo's files if checked out unmodified in a caller's CI — fixed via the override, not a workflow-side workaround. Ledger stays one shared table keyed on filename alone — eq-shell's and eq-cards' naming conventions are structurally different enough that a real collision is unlikely, and a same-name-different-content one already fails loud via the existing checksum-drift check.
 - Mechanism only — first companion consumer is eq-cards ([PR #330](https://github.com/eq-solutions/eq-cards/pull/330)), and its first real dispatch is explicitly gated (see that repo's changelog) on reconciling ~29 migrations that don't match this ledger under any known naming pattern.
 - [PR #1671](https://github.com/eq-solutions/eq-shell/pull/1671), squash-merged (`141fde9f`) on Royce's explicit go. CI green including the read-only plan-mode job (exercises the new code path against live jvkn, writes nothing) and the schema-drift security gate.
+
+## 2026-08-30 (PRs #1660 + #1670 MERGED + LIVE — Documents: customer-portfolio and ad-hoc multi-site scoped pushes)
+- **PR #1660 MERGED + LIVE** — customer scope. Picking a customer auto-resolves every active site under it at push time and creates ONE signoff row covering the whole portfolio, sign once. Migration `0289` adds `customer_id` (mutually exclusive with `site_id`) plus a new `document_signoff_sites` snapshot table recording which sites a shared signoff covers. Register/certificate can export the whole portfolio or any single covered site. Re-pushing the same customer after a new site joins silently extends the existing signoff's coverage (Royce's confirmed call).
+- **PR #1670 MERGED + LIVE** — ad-hoc multi-site scope. Site picker on both push forms became a checkbox list: 2+ sites selected creates a shared-signature push covering exactly that hand-picked set (not a whole customer). Migration `0292` adds `site_set_hash` (a deterministic SHA-256 hash of the sorted/deduped site_ids — not an entity id, since an ad-hoc selection has no natural referent to "extend" the way a customer does). `document_signoffs`'s scope is now 3-way exclusive (site / customer / site-set, DB CHECK-enforced). Reused the same `document_signoff_sites` snapshot table unchanged. Bonus fix: the Register's site-filter dropdown was miscategorising customer/site-set groups as unscoped — corrected.
+- Both migrations dispatched against their own PR branch and verified live on ehow + zaap before merge (same reasoning as 0288 on 2026-08-28 — the app code depends on the schema). Both confirmed live via Netlify deploy state (`commit_ref` match): `b5742803` (#1660), `e76287d4` (#1670). No eq-field changes needed either time — its `document_register?select=*` read picks up new columns automatically.
 
 ## 2026-08-30 (4 more security-hardening PRs merged — 2 code, 2 migration-only pending dispatch)
 - **PR #1663 MERGED + LIVE** — SEC-53 (dead `ktmjmdzqrogauaevbktn.supabase.co` + `quotes.eq.solutions` dropped from core.eq.solutions's CSP) and SEC-67's eq-shell code half (`field-supabase.ts`'s zero-caller `getFieldServiceClient()` deleted outright). Pure code, live via Netlify the moment merged.
