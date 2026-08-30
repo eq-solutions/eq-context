@@ -9,6 +9,14 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-30 (PR #833 MERGED + LIVE, v3.5.606 — Roster: an aliased project code now looks and acts like a real site everywhere, not just on save)
+- v3.5.602 resolved a bare project code (e.g. "MOD10") to a real `site_id` on save, but `isKnownSite`/`getSiteName`/`getSiteAddress`/`jobNumberForSite` in `roster.js` still only matched `STATE.sites` by abbr — an aliased cell saved correctly underneath but Edit Roster still showed the "⚠ Unknown site" warning, and My Schedule/Weekly Roster/Calendar/Roster Tools all silently dropped the site name, address, and job number for that day.
+- Root-caused live before writing anything: queried `ehow` directly and confirmed Blake Reynolds' actual "MOD10" `schedule_entries` row already had a correct `site_id` + `site_project_id` — the write path was never broken. The reported toast was a red herring, explained by a separate, genuinely unresolvable "MOP" cell.
+- Fix: one shared `_resolveSiteAbbr()` helper in `roster.js`, falling back to the already-shipped `codeToSiteOrProject`, reused by all five affected call sites. `eslint.config.js`'s `roster.js` max-lines ceiling bumped 1850→1900 for the addition.
+- Scope was expanded mid-session after Royce pushed back on an initial fix scoped to `isKnownSite` alone ("is this the best work we can do?") — correctly: the other four functions shared the identical gap and are the literal mechanism v3.5.602 promised but never fully delivered.
+- eq-field [PR #833](https://github.com/eq-solutions/eq-field/pull/833), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`.
+- **Open follow-up, found after merge**: `renderSchedule`'s own direct site-lead/internal-contacts lookup (`roster.js` ~line 1456) is a 6th call site not covered by this fix — a MOD10-typed cell still shows no site-lead or "Ask for"/"Backup" contact on a worker's My Schedule. Tracked in `eq/pending/eq-field.md`, spawned as a follow-up task.
+
 ## 2026-08-30 (PR #825 MERGED + LIVE, v3.5.595 — Documents to Sign: report a failed PDF load to Sentry)
 - Follow-on to v3.5.593 (infinite-spinner fix) — Luke retried and hit a different failure ("couldn't load document" shown under the empty viewer, not silent this time). Ruled out data/network/CORS definitively via live storage_logs querying: every byte-fetch that day returned 200 OK. The failure is client-side, inside pdf.js itself, correlated with Android + Samsung Internet in the request logs but not reproduced or explained.
 - `sign-documents-viewer.js`'s `open()` failure path now calls `EQ_OBS.captureException` with device UA + signoffId attached, so the next occurrence yields a real error instead of another log-correlation exercise. Diagnostic infrastructure, not a fix for the underlying cause — flagged as such, not oversold.
