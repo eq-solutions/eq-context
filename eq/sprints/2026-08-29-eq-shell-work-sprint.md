@@ -45,10 +45,10 @@ Small, independent, mostly security hygiene. Good candidates to just knock out i
 4. **Re-confirm the 3 already-tracked P0 findings' current status** in `ops/security-register.md` — 5-minute read, closes the loop on whether national-scale plans are building on solid ground.
 
 ### Wave 3 — this week (bounded, single-session fixes)
-Real work, but each one is scoped and self-contained — good for a focused block, not a multi-day slog.
-1. **2 blank-name worker records** — same shape as an already-fixed case, should be quick once found.
-2. **`eq_revoke_session`'s access-group blind spot** — small, already diagnosed, just needs the fix applied.
-3. **2 orphaned auth users on jvkn** — investigate and resolve (probably a quick identity-link fix, same pattern as prior orphan cleanups this session).
+**Update 30 Aug**: 3 of 6 done or built this session — struck through below.
+1. ~~**2 blank-name worker records**~~ — **done.** Both identified, nothing to backfill (phone-only signups, no name anywhere in the source data).
+2. ~~**`eq_revoke_session`'s access-group blind spot**~~ — **built**, [PR #1678](https://github.com/eq-solutions/eq-shell/pull/1678), open.
+3. ~~**2 orphaned auth users on jvkn**~~ — turned out bigger than expected: **root-caused, not fixed.** A real recurring bug (`handle_phone_dedup()` misses phones stored on `shell_control.users` without being the person's actual auth identity), not stray data — count's already grown to 4. Needs your go before touching the fix; it's auth-identity code with its own incident history. Detail moved to the Security gaps section above.
 4. **"Rollback" button** — quick decision (build for real vs. remove), then a small build either way.
 5. **Mobile Home's 10-minute cache mismatch** — quick decision (shrink TTL vs. staleness stamp), then a small fix.
 6. **6 Equinix sites' contact data** — blocked on you supplying real names/numbers, not a build task.
@@ -95,8 +95,8 @@ Real, but too big to just "pick up" — each of these deserves its own brief bef
 - **46 more actions share the same missing-origin-check gap** a 2026-08-16 fix closed elsewhere — a compromised sibling `*.eq.solutions` site could trigger real admin actions via the shared cookie. Already handed off, in progress in separate sessions — worth confirming status before re-scoping.
 - **SEC-63: a dev-context `SUPABASE_JWT_SECRET` plaintext leak** — you chose to delete it yourself via the Netlify dashboard rather than retry past a blocking classifier. Never confirmed done. 2026-08-24.
 - **Anon-EXECUTE grant on 2 unallowlisted SECURITY DEFINER functions** on the control plane — spun off as its own task, status unconfirmed. 2026-08-19.
-- **`eq_revoke_session`** has the same access-group blind spot as an already-fixed sibling function. Small, noted, not actioned. 2026-08-16.
-- **2 auth users on jvkn have no matching login record at all** — an unexplained orphan category, distinct from the (expected/explained) office-admin-account orphans found in the same audit. 2026-08-23.
+- ~~**`eq_revoke_session`** has the same access-group blind spot as an already-fixed sibling function.~~ **Built** — [PR #1678](https://github.com/eq-solutions/eq-shell/pull/1678), open, CI green. 2026-08-16 → 2026-08-30.
+- **Orphaned auth users on jvkn — root-caused 30 Aug, real recurring bug.** `handle_phone_dedup()` only checks `auth.users.phone` for an existing match, missing anyone whose phone lives on `shell_control.users.phone` without being their actual auth identity — creates a fresh, harmless-looking orphan every time someone in that shape first tries phone-OTP. Count grew 2→4 with zero code change in between, confirming it's ongoing, not historical. Not fixed — touches an auth-identity trigger with its own incident history (EQ-SHELL-11), needs your go. Detail: memory `phone-dedup-misses-shell-only-phone`. 2026-08-23 → 2026-08-30.
 - **No server-side `quotes.view` check** on the two core quote-reading functions — any authenticated tenant member can call them directly regardless of role. You chose to ship ownership-scoping first; this is the gap that's still open underneath it. 2026-08-23.
 - **Quote status/notes write functions never verified for role checks** this session. 2026-08-23.
 - **Database function-grant safety net only covers the `public` schema** — the actual function it exists to catch a mistake in lives in `app_data`, outside its coverage. 2026-08-23.
@@ -119,7 +119,7 @@ Real, but too big to just "pick up" — each of these deserves its own brief bef
 
 ## Data and operational gaps
 
-- **2 more blank-name worker records** sit in `app_data.field_people_removed` on ehow, same shape as an already-fixed case — not yet identified or backfilled. 2026-08-26.
+- ~~**2 more blank-name worker records** sit in `app_data.field_people_removed` on ehow~~ — **resolved 30 Aug.** Both identified: phone-only self-signups with no name captured anywhere in the source data either, nothing to backfill. 2026-08-26.
 - **6 of 8 renamed Equinix sites still have no contact data**, and there's no way to derive it — needs real names/numbers from you directly. 2026-08-25.
 - **6 workers have no date of birth anywhere**, with nothing in the data to recover one — needs a Cards signup or asking directly, not a code fix. 2026-08-17.
 - **Only 117 of 250 SKS canonical sites carry a customer link** — Service's report rollups are blank for the rest. This is a Shell-side backfill, not a Service bug. 2026-07-08.

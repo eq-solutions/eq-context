@@ -270,7 +270,7 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ## eq-shell: blank-name worker records — 3rd distinct gap found + fixed live, admin-override merged (2026-08-26)
 
 - [x] **The "Schema drift + anon-grant + policy-lint" required check that was red on `main` — table identified, root-caused, and fixed live by a later session the same day.** It was `public.organisations` on jvkn losing its anon pre-login bootstrap-read policy — full writeup in this file's own "organisations anon-read regression" section below. _(resolved 2026-08-26 — see below)_
-- [ ] **2 other blank-name rows already sit in `app_data.field_people_removed` on ehow** (found earlier this session during the sks-nsw-labour reconciliation) — same shape as Don Milmlow's record below, not yet identified or backfilled. _(added 2026-08-26)_
+- [x] **2 other blank-name rows in `app_data.field_people_removed` — identified, confirmed nothing to backfill.** Both (`dbac7ad2…`, `2621f521…`) are phone-only Cards self-signups with no name captured anywhere, including the canonical `public.workers` row on jvkn — not a Shell-side data-loss bug, no hidden duplicate. Investigated by a concurrent session 2026-08-30 (memory: `staff-duplicate-rows-outage-resolved-conor-nelson`), independently re-confirmed live same day. _(added 2026-08-26, resolved 2026-08-30)_
 - [ ] **Not click-tested live by a person** — verified via `tsc -b --force`, eslint, live Supabase tracing of the exact chain, and a production commit-ancestry check, not a real join-flow click-through as a brand-new user. _(added 2026-08-26)_
 
 ---
@@ -503,7 +503,7 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 ## eq-shell: identity ownership rule enforced — lock bypass, upward-write gap, jvkn phone normalisation (PR #1544) (2026-08-23)
 
-- [ ] **2 auth users on jvkn have no `shell_control.users` row**; 8 shell users have no Cards profile and 7 no worker record (expected — office/admin accounts), and 3 profiles have no worker record. Only the 2 orphaned credentials look worth a look. _(added 2026-08-23)_
+- [ ] **Root-caused 2026-08-30, not fixed — real recurring bug, not stray data.** The count grew from 2 to 4 with no code change in between: `handle_phone_dedup()` (jvkn) only matches an existing account via `auth.users.phone`, missing anyone whose phone lives on `shell_control.users.phone` without being their actual Supabase auth identity (e.g. an email-auth user with a phone recorded for contact purposes). One of the 4 (Leif Lundberg) hit exactly this — his real account works fine, but a harmless orphaned `auth.users` row got created the first time he tried phone-OTP, 3 seconds before his real account's `last_login_at` updated for the same login. The other 3 have no matching `shell_control.users`/`public.workers` row at all — genuine never-invited phone-verification attempts, inert. Full root-cause + recommended fix shape: memory `phone-dedup-misses-shell-only-phone`. Not fixed — touches the same identity-dedup trigger that carries its own EQ-SHELL-11 incident history in its own comments; needs your go before editing, not a solo patch mid-investigation. _(added 2026-08-23, root-caused 2026-08-30)_
 
 ---
 
@@ -916,7 +916,7 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 ## eq-shell: permission-hygiene report checked against live code, 2 real gaps fixed, 1 database fix applied by Royce (2026-08-16)
 
 - [ ] **The "Rollback" button on the activity log still doesn't work** — confirmed still broken, an earlier fix already made it fail with a clear message instead of crashing, and explicitly left the "build it for real, or remove the button" decision for Royce. Not decided again this session. _(added 2026-08-16)_
-- [ ] **One database function has the same access-group blind spot as the Number Reviews fix above, not yet fixed** — `eq_revoke_session`. Noted, not actioned. _(added 2026-08-16)_
+- [x] **`eq_revoke_session`'s access-group blind spot — fixed.** [PR #1678](https://github.com/eq-solutions/eq-shell/pull/1678), reuses the same `shell_control.caller_holds_group_perm` helper the Number Reviews fix built. Open, CI green, awaiting merge. _(added 2026-08-16, built 2026-08-30)_
 
 ---
 
