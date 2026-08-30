@@ -1,7 +1,7 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-30
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
@@ -679,7 +679,7 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 **Shipped live this session (verified):**
 
 **Crumbs needing Royce (surfaced so they're not forgotten):**
-- [ ] **Send Huon** the connection-email reply + before/after graphic. _(added 2026-07-02)_
+- **Send Huon** the connection-email reply + before/after graphic — de-duplicated 2026-08-30, this is the same item as `eq/pending/eq-cards.md`'s "connection-email deep-link" session-close entry (also 2026-07-02); tracked there now, not carried twice. _(added 2026-07-02)_
 - [ ] **Resolve the pending "432470463 · No licences yet" connection request** on core.eq.solutions/sks/staff — nameless self-signup from before the name-gate; approve/decline + nudge to add details. _(added 2026-07-02)_
 - [x] **Define the required-credential policy** (what SKS actually requires) + decide whether to add a worker **trade field** — the two blockers before the gaps engine can ship. _(added 2026-07-02)_
 ---
@@ -751,7 +751,7 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 **Completed:**
 
 **Open / next:**
-- [ ] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history _(added 2026-06-28)_
+- [x] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history _(added 2026-06-28)_. Verified live 2026-08-30 (this line is a duplicate of `eq/pending/eq-context.md`'s "Brain 10/10" entry, closed there with the same evidence): `.pre-commit-config.yaml` wires real gitleaks v8.21.2, and the always-on native fallback `scripts/pre-commit-secrets.sh` (via `.githooks/pre-commit`, fail-closed) covers it too.
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation _(added 2026-06-28)_
 - [ ] **Token refresh smoke test** — shorten TTL locally to confirm ShellTokenRefresh fires (4h is hard to test live) _(added 2026-06-28)_
 ---

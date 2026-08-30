@@ -1,8 +1,11 @@
 ---
 title: eq-shell security-hardening sprint
 date: 2026-08-28
+last_updated: 2026-08-30
 owner: Royce Milmlow (scope chosen via /decide, 2026-08-28)
 scope: the security-shaped slice of sprint-2026-08-28-outstanding-items.md — jvkn/ehow/zaap grant+RLS cleanup, eq-shell's own app-code security gaps, and the security decisions that gate them
+read_priority: high
+status: live
 ---
 
 # eq-shell security-hardening sprint (2026-08-28 → 2026-08-30)

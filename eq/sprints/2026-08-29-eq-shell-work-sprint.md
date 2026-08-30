@@ -2,8 +2,10 @@
 title: eq-shell — full open-work triage and sprint
 owner: Royce Milmlow
 created: 2026-08-29
-status: open
+last_updated: 2026-08-30
 scope: A full triage of every open (`- [ ]`) item in eq/pending/eq-shell.md and eq/pending/cross-repo.md, sorted into what's actually actionable vs. what's noise. No TODAY.md goal exists to prioritise against — this is a menu, not a plan with a deadline.
+read_priority: high
+status: live
 ---
 
 # eq-shell — full open-work triage and sprint

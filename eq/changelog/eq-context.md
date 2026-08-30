@@ -1,13 +1,25 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-08-18
+last_updated: 2026-08-30
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
 
 # Changelog — EQ Context Repo
+
+## [2026-08-30] Substrate housekeeping — index-drift cron fixed, 6 pending-item sections archived, 2 flagged duplicates resolved
+
+**Built by:** Claude Code
+
+- **`index-drift.yml` fixed — 3rd time this exact cron has failed the same way** (see 2026-08-14 and 2026-08-18 entries below; same failure class each time, a real new file landing without its tier-README mention). This time 6 files: 3 sprint docs at repo root, 3 in `eq/sprints/`. Indexed in `README.md` and `eq/README.md`; verified `INDEX_DRIFT_STRICT=1 python scripts/index_drift.py` clean (0 orphans, was 6) before committing.
+- **6 fully-closed `eq/pending/eq-context.md` sections archived to `eq/pending-archive.md`**, each individually re-verified against live state first, not pattern-matched — including confirming two 2026-08-18 guard-hook gaps (`brief-gate` exemption regex, `stale-main-gate` cwd resolution) are actually fixed by reading the current `~/.claude/hooks/guard.js` source directly, and spot-checking that a 2026-08-15 audit's live claim about `~/.claude/CLAUDE.md`'s Model Triage table is still true today.
+- **Both "possible duplicate pending items" flagged by `digest.md` resolved.** The gitleaks pre-commit hook item, logged in both `eq-context.md` and `cross-repo.md`: verified live (`.pre-commit-config.yaml` wires real gitleaks v8.21.2; `scripts/pre-commit-secrets.sh`, wired via `.githooks/pre-commit`, is the always-on native fallback) and checked off in both. "Send Huon the connection-email reply" item: de-duplicated down to its correctly-owning file (`eq/pending/eq-cards.md`), `cross-repo.md`'s copy replaced with a pointer.
+- **5 pre-existing broken links fixed in `eq/pending-archive.md`**, found incidentally by `scripts/link_check.py` while validating the above — same boilerplate sentence, copy-pasted into 5 different archived write-ups, each one directory too deep (`../../system/...` instead of `../system/...`).
+- **`scripts/prune_ratchet.py`'s `root_files` ceiling raised 16 → 19**, explained in-code: the 3 newly-indexed root sprint docs are 2 days old and genuinely still active (verified by reading their content), not stale accumulation. `scripts/test_prune_ratchet.py` still green.
+- eq-context [PR #185](https://github.com/eq-solutions/eq-context/pull/185), opened — held for Royce's merge approval rather than self-merged, per this repo's own direct-push convention being a *permission*, not an obligation to skip review on a batched housekeeping change.
+- **Not attempted this session, by design:** draining the ~500 done-but-unarchived items still sitting across the other product repos' pending files (eq-shell 319, eq-cards 115, eq-field 101, eq-solves-service 93, cross-repo ~26). That needs the same one-item-at-a-time verification this session applied to eq-context's own file, which doesn't compress into a single pass — scoping it is Royce's call. A separate, well-scoped follow-up was spawned (re-verify 6 root-level scratch docs untouched since 2026-08-15, `task_ff7a2156`).
 
 ## [2026-08-18] index_drift.py --strict cleared — 5 orphaned files indexed
 

@@ -20,9 +20,14 @@ What it measures, and why each one:
                and never ticked. They are what made the queue unreadable, and
                nothing counted them.
 
-  root_files   Loose .md at repo root. Went 21 -> 16 on 2026-08-15. Root is the
-               first thing every tool sees; it silts up because a dated one-off
-               is always easier to drop here than to file.
+  root_files   Loose .md at repo root. Went 21 -> 16 on 2026-08-15, then 16 -> 19
+               on 2026-08-30: 3 new sprint docs (sprint-2026-08-28-outstanding-
+               items.md/-security-hardening.md/-worktree-followups.md), all
+               2 days old, all still active per their own content (not archived
+               -- see README.md's "Root scratch docs" section for the per-file
+               justification). Root is the first thing every tool sees; it
+               silts up because a dated one-off is always easier to drop here
+               than to file.
 
   archive_unindexed
                Files in archive/ with no row in archive/README.md. Archiving
@@ -87,7 +92,7 @@ HEADING = re.compile(r"^##\s+")
 # in THIS commit's content, not a number borrowed from a future run.
 CEILINGS = {
     "residue": 411,
-    "root_files": 16,
+    "root_files": 19,  # 16 -> 19 on 2026-08-30, see root_files comment above
     "archive_unindexed": 0,
 }
 
