@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: site "Ask for"/"Backup" contacts — canonical conversion shipped, migrations dispatched + verified live (2026-08-29/30)
+*Continuation of the 2026-08-24/25 site-internal-contacts build further down this file — Royce noticed Ask for/Backup were free text, unlike the linked "Contact" field, and asked whether they should be staff-picked instead. First call was to hold pending an admin's cheat-sheet template; the canonical-contacts picker shipped the same window instead of waiting (see `eq-field.md`'s memory-note pointer for the reversed call).*
+
+- [x] **`primary_contact_name/phone` + `secondary_contact_name/phone` on `app_data.sites` replaced with 2 more `contact_site_links` roles** (`ask_for`, `backup`), same mechanism as the existing `site_contact` role. Edit Site modal (Customers + EQ Ops) now shows 2 ContactPicker dropdowns instead of 4 text boxes, each with an inline "+ Add new contact." `app_data.field_sites` (eq-field's read view) repointed to resolve via the same join — column names/order unchanged, confirmed eq-field needs no code changes. eq-shell [PR #1669](https://github.com/eq-solutions/eq-shell/pull/1669), merged 2026-08-29.
+- [x] **Found and fixed along the way**: `contact_site_links`'s unique constraint was `(contact_id, site_id)` — no `role`. With 2 more roles, the same person holding two roles at one site (e.g. `site_contact` + `ask_for`) would have silently overwritten the first link. Widened to `(contact_id, site_id, role)` (migration 0293), plus the 3 other call sites that upsert against this table.
+- [x] **Both migrations dispatched + verified live.** `0291_field_sites_internal_contacts_via_links.sql` and `0293_contact_site_links_role_composite_unique.sql` merged "drafted only, not dispatched" (One Pipe gate) — the session that built them crashed before getting Royce's go. Dispatched via `tenant-migrate.yml` 2026-08-30 01:04 UTC (triggering actor: Milmlow), applying cleanly to both `eq` (zaap) and `sks` (ehow) in <15s combined. A follow-on crash-recovery session re-verified from scratch against live systems rather than trusting the crashed session's "still needs your go" state: `app_data.field_sites` on ehow resolves Equinix SY5 → Matthew Miller (ask_for) / Scott Hotson (backup); the unique constraint is confirmed `(contact_id, site_id, role)`; role counts show the expected 1 `ask_for` + 1 `backup` backfilled row; production deploy on `core.eq.solutions` confirmed serving a commit 2 ahead of the PR's merge.
+- [ ] **Not click-tested live by a person** — verified via live SQL + deploy-state checks, not by opening the Edit Site modal itself. Worth a real pass on Equinix SY5: confirm Ask for/Backup show Matthew Miller/Scott Hotson, try the inline "+ Add new contact" flow, save, reopen, confirm it stuck. _(added 2026-08-30)_
+- [ ] **6 of 8 renamed Equinix sites still have no contact data** (CA1, SY1-4, SY9) — same pre-existing gap tracked further down this file (2026-08-24/25 entry) and in `eq-field.md`; unaffected by this conversion, still needs real names/numbers from Royce. Noting only that the storage mechanism underneath that gap has changed.
+
+---
+
 ## eq-shell: field_sites.site_lead — stale free-text passthrough replaced with canonical contact link (2026-08-30)
 *Royce forwarded a bug report he'd found by reading code/schema, not by reproducing it — explicit instruction to verify live before treating it as urgent.*
 

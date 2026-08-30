@@ -13,6 +13,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: site "Ask for"/"Backup" contacts now resolve via eq-shell's canonical contact_site_links (2026-08-30)
+*Field-side note only — no eq-field code changed. Full build + migration-dispatch detail in `eq/pending/eq-shell.md` (2026-08-29/30 entry) and `eq/changelog/eq-shell.md`.*
+
+- [x] **`app_data.field_sites` (what eq-field reads for My Schedule/Sites) now resolves Ask for/Backup via eq-shell's new `contact_site_links` roles** instead of the old free-text `sites` columns — repointed by eq-shell migration 0291, dispatched + verified live 2026-08-30. Verified directly: Equinix SY5 resolves to Matthew Miller (ask_for) / Scott Hotson (backup). Column names/order on the view are unchanged, so nothing in this repo needed touching.
+- [ ] **Still not click-tested live in the actual Field UI** (My Schedule / Sites pages) — only verified via direct SQL against `field_sites`. _(added 2026-08-30)_
+
+---
+
 ## eq-field: Apprentice journal privacy fix — two open questions (2026-08-29)
 - [ ] **Historical-exposure unknown.** `apprentice-data.js` writes nothing to `audit_log`, so there's no way to confirm whether any manager/supervisor account fetched another apprentice's private journal entries during the ~11 days this was live unfixed (endpoint shipped 2026-08-18, journal-specific gap closed 2026-08-29 — [PR #828](https://github.com/eq-solutions/eq-field/pull/828)). Needs Royce's call on whether that residual unknown is worth raising with anyone. _(added 2026-08-29)_
 - [ ] **"Only my account" vs. today's actual model.** Royce's framing this session ("only my account and the apprentice should see it") is narrower than what's enforced — the fix above closes the journal gap specifically; the other 6 apprentice tables still follow the existing manager/supervisor-sees-all model, which matches his own original ask on 2026-08-18 (see "apprentice data readable by any authenticated SKS session" further down this file: "I want me to be able to see all of them") but not his exact wording today. Not raised as a problem, just flagging the gap between the two asks in case it matters later. _(added 2026-08-29)_
