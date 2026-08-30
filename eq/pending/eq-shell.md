@@ -501,12 +501,6 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 ---
 
-## eq-shell: identity ownership rule enforced — lock bypass, upward-write gap, jvkn phone normalisation (PR #1544) (2026-08-23)
-
-- [ ] **Root-caused 2026-08-30, not fixed — real recurring bug, not stray data.** The count grew from 2 to 4 with no code change in between: `handle_phone_dedup()` (jvkn) only matches an existing account via `auth.users.phone`, missing anyone whose phone lives on `shell_control.users.phone` without being their actual Supabase auth identity (e.g. an email-auth user with a phone recorded for contact purposes). One of the 4 (Leif Lundberg) hit exactly this — his real account works fine, but a harmless orphaned `auth.users` row got created the first time he tried phone-OTP, 3 seconds before his real account's `last_login_at` updated for the same login. The other 3 have no matching `shell_control.users`/`public.workers` row at all — genuine never-invited phone-verification attempts, inert. Full root-cause + recommended fix shape: memory `phone-dedup-misses-shell-only-phone`. Not fixed — touches the same identity-dedup trigger that carries its own EQ-SHELL-11 incident history in its own comments; needs your go before editing, not a solo patch mid-investigation. _(added 2026-08-23, root-caused 2026-08-30)_
-
----
-
 ## eq-shell: field_people_iud()/field_people_removed_iud() — PR #761 push collision (0273), a separate reactivation-guard bug found live-testing with Royce (0274/PR #1571), and a second push collision investigated as harmless (2026-08-24)
 
 - [ ] **Not yet click-tested live** — job_title, structured emergency contact, and the upward push all need a real edit on a linked SKS person to confirm end-to-end. Tracked in `eq/pending/eq-field.md`. Full detail: `eq/changelog/eq-shell.md`, `sessions/2026-08-24.md`. _(added 2026-08-24)_
@@ -916,7 +910,6 @@ _(recovered from an unpopped stash 2026-08-20 — never made it into this file a
 ## eq-shell: permission-hygiene report checked against live code, 2 real gaps fixed, 1 database fix applied by Royce (2026-08-16)
 
 - [ ] **The "Rollback" button on the activity log still doesn't work** — confirmed still broken, an earlier fix already made it fail with a clear message instead of crashing, and explicitly left the "build it for real, or remove the button" decision for Royce. Not decided again this session. _(added 2026-08-16)_
-- [x] **`eq_revoke_session`'s access-group blind spot — fixed.** [PR #1678](https://github.com/eq-solutions/eq-shell/pull/1678), reuses the same `shell_control.caller_holds_group_perm` helper the Number Reviews fix built. Open, CI green, awaiting merge. _(added 2026-08-16, built 2026-08-30)_
 
 ---
 

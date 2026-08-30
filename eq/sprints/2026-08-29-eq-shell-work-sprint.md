@@ -45,10 +45,10 @@ Small, independent, mostly security hygiene. Good candidates to just knock out i
 4. **Re-confirm the 3 already-tracked P0 findings' current status** in `ops/security-register.md` — 5-minute read, closes the loop on whether national-scale plans are building on solid ground.
 
 ### Wave 3 — this week (bounded, single-session fixes)
-**Update 30 Aug**: 3 of 6 done or built this session — struck through below.
+**Update 30 Aug**: 3 of 6 fully done this session — struck through below.
 1. ~~**2 blank-name worker records**~~ — **done.** Both identified, nothing to backfill (phone-only signups, no name anywhere in the source data).
-2. ~~**`eq_revoke_session`'s access-group blind spot**~~ — **built**, [PR #1678](https://github.com/eq-solutions/eq-shell/pull/1678), open.
-3. ~~**2 orphaned auth users on jvkn**~~ — turned out bigger than expected: **root-caused, not fixed.** A real recurring bug (`handle_phone_dedup()` misses phones stored on `shell_control.users` without being the person's actual auth identity), not stray data — count's already grown to 4. Needs your go before touching the fix; it's auth-identity code with its own incident history. Detail moved to the Security gaps section above.
+2. ~~**`eq_revoke_session`'s access-group blind spot**~~ — **done.** [eq-shell#1678](https://github.com/eq-solutions/eq-shell/pull/1678), merged + live.
+3. ~~**2 orphaned auth users on jvkn**~~ — turned out bigger than expected, but **done anyway.** Root-caused a real recurring bug (`handle_phone_dedup()` misses phones stored on `shell_control.users` without being the person's actual auth identity) — count had grown to 4 with no code change. Fixed on your go: [eq-shell#1679](https://github.com/eq-solutions/eq-shell/pull/1679), merged + live. The 4 already-orphaned rows themselves left as-is — inert, no live harm.
 4. **"Rollback" button** — quick decision (build for real vs. remove), then a small build either way.
 5. **Mobile Home's 10-minute cache mismatch** — quick decision (shrink TTL vs. staleness stamp), then a small fix.
 6. **6 Equinix sites' contact data** — blocked on you supplying real names/numbers, not a build task.
@@ -95,8 +95,8 @@ Real, but too big to just "pick up" — each of these deserves its own brief bef
 - **46 more actions share the same missing-origin-check gap** a 2026-08-16 fix closed elsewhere — a compromised sibling `*.eq.solutions` site could trigger real admin actions via the shared cookie. Already handed off, in progress in separate sessions — worth confirming status before re-scoping.
 - **SEC-63: a dev-context `SUPABASE_JWT_SECRET` plaintext leak** — you chose to delete it yourself via the Netlify dashboard rather than retry past a blocking classifier. Never confirmed done. 2026-08-24.
 - **Anon-EXECUTE grant on 2 unallowlisted SECURITY DEFINER functions** on the control plane — spun off as its own task, status unconfirmed. 2026-08-19.
-- ~~**`eq_revoke_session`** has the same access-group blind spot as an already-fixed sibling function.~~ **Built** — [PR #1678](https://github.com/eq-solutions/eq-shell/pull/1678), open, CI green. 2026-08-16 → 2026-08-30.
-- **Orphaned auth users on jvkn — root-caused 30 Aug, real recurring bug.** `handle_phone_dedup()` only checks `auth.users.phone` for an existing match, missing anyone whose phone lives on `shell_control.users.phone` without being their actual auth identity — creates a fresh, harmless-looking orphan every time someone in that shape first tries phone-OTP. Count grew 2→4 with zero code change in between, confirming it's ongoing, not historical. Not fixed — touches an auth-identity trigger with its own incident history (EQ-SHELL-11), needs your go. Detail: memory `phone-dedup-misses-shell-only-phone`. 2026-08-23 → 2026-08-30.
+- ~~**`eq_revoke_session`** has the same access-group blind spot as an already-fixed sibling function.~~ **Done** — [eq-shell#1678](https://github.com/eq-solutions/eq-shell/pull/1678), merged + live. 2026-08-16 → 2026-08-30.
+- ~~**Orphaned auth users on jvkn**~~ — **done.** Root-caused a real recurring bug (`handle_phone_dedup()` misses phones stored on `shell_control.users` without being the person's actual auth identity — count had grown 2→4 with zero code change) and fixed on your go: [eq-shell#1679](https://github.com/eq-solutions/eq-shell/pull/1679), merged + live. Detail: memory `phone-dedup-misses-shell-only-phone`. 2026-08-23 → 2026-08-30.
 - **No server-side `quotes.view` check** on the two core quote-reading functions — any authenticated tenant member can call them directly regardless of role. You chose to ship ownership-scoping first; this is the gap that's still open underneath it. 2026-08-23.
 - **Quote status/notes write functions never verified for role checks** this session. 2026-08-23.
 - **Database function-grant safety net only covers the `public` schema** — the actual function it exists to catch a mistake in lives in `app_data`, outside its coverage. 2026-08-23.
