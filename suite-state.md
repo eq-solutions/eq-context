@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-30)
 
 **eq-field:**
-- #836 v3.5.607 — Dashboard + Trial Dashboard: an aliased project code now shows its real site name too
+- #836 v3.5.610 — Dashboard + Trial Dashboard: an aliased project code now shows its real site name too
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
