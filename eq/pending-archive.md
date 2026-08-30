@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-29
+last_updated: 2026-08-30
 scope: Done items rotated out of eq/pending.md nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -17540,5 +17540,8 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 - [x] **MOD10-style project-code cells now resolve to site info in the UI — the concurrent worktree this entry originally flagged was the fix, and it landed.** Royce asked directly whether typing "MOD10" would show the site address; source review confirmed the *save* path already resolved correctly (`roster-adapter.js`'s `codeToSiteOrProject`) but `getSiteName`/`getSiteAddress`/`isKnownSite`/`jobNumberForSite`/`resolveCellJob` in `roster.js` still did a bare `sites.abbr` match with no fallback — a typed alias saved fine underneath but showed no name/address/job-number and a false "⚠ Unknown site" warning. That session's own root-cause work (live-queried Blake Reynolds' actual `schedule_entries` row directly on ehow before writing anything, confirming the write path was already correct — the toast Royce screenshotted was a separate, genuinely-unresolvable "MOP" cell, not a MOD10 regression) independently reached the same diagnosis reported here. Fixed via one shared `_resolveSiteAbbr()` fallback reused by all five call sites. eq-field [PR #833](https://github.com/eq-solutions/eq-field/pull/833) (v3.5.606), squash-merged, confirmed live via `field.eq.solutions/sw.js`.
 - [x] **6th call site closed**: `renderSchedule`'s own direct site-lead/internal-contacts lookup (`roster.js` ~line 1456) — a MOD10-typed cell now shows `site_lead`/`site_lead_phone` and the "Ask for"/"Backup" contacts block, not just name/address/job-number. eq-field [PR #835](https://github.com/eq-solutions/eq-field/pull/835) (v3.5.607), squash-merged, confirmed live. `task_1007afb5` closed.
 - [x] **Dashboard's separate site-lookup copy also closed**: `dashboard.js`/`trial-dashboard.js`'s own underscore-prefixed `_getSiteName` shared the identical abbr-only gap — an aliased project code now resolves to its real site name on the Dashboard/Trial Dashboard too. eq-field [PR #836](https://github.com/eq-solutions/eq-field/pull/836) (v3.5.611), squash-merged, confirmed live. `task_18045ada` closed. This closes out every known call site for the MOD10/site_projects alias-resolution gap.
+
+**Notes:**
+- `task_1007afb5` (the 6th-call-site fix above, #835) was independently built from scratch by a separate concurrent session too — opened as its own PR (#837) — without knowing Royce had already opened #835 about 8 minutes earlier; both forked from the same pre-#834 `main`. That session diffed the two before doing anything further: #835 was a strict superset (same fix plus the day-specific project-badge bug), authored by Royce directly with live-screenshot evidence the other build didn't have. #837 was closed on explicit confirmation once the diff was checked, branch/worktree removed, nothing merged from that side.
 
 ---
