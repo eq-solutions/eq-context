@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #333 fix(cards): polish sprint round 2 — reliability, a11y, design system
 
 **eq-field:**
-- #849 v3.5.619 — Feature Toggles: concrete examples + live mini-preview per switch
 - #846 feat(ci): governed apply path for tenant migrations to zaap + ehow
 
 **eq-service:**
@@ -77,7 +76,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1685 fix(staff): readable conversation viewer + attach source documents
-- #1684 feat(ci): let eq-field apply its own tenant migrations via this pipeline
 
 ---
 
