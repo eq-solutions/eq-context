@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-30)
 
 **eq-field:**
+- #845 v3.5.616 — Roster site-code map: same unrouted-fetch pattern as v3.5.615
 - #843 v3.5.616 — Dashboard org-wide widgets manager/supervisor-only
 
 **eq-service:**
