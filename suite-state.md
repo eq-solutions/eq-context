@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-30)
 
 **eq-field:**
-- #843 v3.5.615 — Dashboard org-wide widgets manager/supervisor-only
+- #843 v3.5.616 — Dashboard org-wide widgets manager/supervisor-only
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
