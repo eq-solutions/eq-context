@@ -1,13 +1,23 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-08-31 (PR #848 MERGED + LIVE, v3.5.619 — FIX: a removed person's historical leave/timesheet rows read "(unknown)" forever)
+- Royce screenshotted a leave-screen warning: "Leave row references staff_id ... not found in the staff list — showing as (unknown)." Root-caused live before touching code: the `staff_id` belongs to Liam Brook-Jackson (SKS), removed from Field 2026-08-26 (`archived=true`, `active=false`, now in `app_data.field_people_removed`), whose approved July-2026 leave request still references it. `staffIdToName()` (`scripts/leave-adapter.js`, shared by the roster and timesheets adapters) only ever resolved against the LIVE staff map (`field_approved=true`), so once someone is removed, every historical row referencing them can never resolve a name again — permanently "(unknown)", even though the person's record still exists.
+- Scope-checked before fixing: not isolated to the one reported row — 35 timesheet rows tenant-wide have the same orphaned-`staff_id` gap. Silent there by design (timesheets' `note()` sink is console-only to avoid toast spam, per v3.5.610's fix); only leave's `warn()` toasts to `leave.approve` holders, which is why only this one row surfaced to Royce.
+- FIX — `staffIdToName()` now falls back to a removed-staff map (`setRemovedStaffRows()`, new) when the live map misses. Fallback only, one direction: never feeds `nameToStaffId()`, so a removed person still can't be picked for a *new* leave/roster/timesheet entry, and the live map always wins if a `staff_id` is ever in both.
+- `loadCanonicalStaffMap()` (`scripts/supabase.js`) fetches `people_removed` — the same already-routed, already-proven-safe table `people.js`'s "Show removed" toggle reads, no new fetch pattern introduced — and wires it into the fallback. Gated to `canManagePeople()` so removed-staff PII isn't pulled into every worker's session, only a supervisor's. Non-fatal on failure, same pattern as the adjacent site-map fetch.
+- `tests/leave-adapter.test.js` — 3 new assertions: fallback resolves the real name, no warning fires when it resolves, live map takes precedence over the fallback if a `staff_id` is ever in both.
+- Mid-session version collision, caught before shipping: bumped to v3.5.618 (free at the time), then PR #847 landed that exact number while this PR was still open. Committed on the old base, rebased onto the new `origin/main` (one conflict in `index.html`'s changelog banner, both entries kept), re-picked v3.5.619, re-verified zero residual `3.5.618` references anywhere before pushing.
+- eq-field [PR #848](https://github.com/eq-solutions/eq-field/pull/848), squash-merged on Royce's explicit "merge it", confirmed live via `field.eq.solutions/sw.js` within ~10s of merge.
+- **Open follow-up**: not click-tested live — no Field session/credentials in this environment. Tracked in `eq/pending/eq-field.md`.
 
 ## 2026-08-30 (PR #840 MERGED + LIVE, v3.5.612 — FIX: Map tiles blank after v3.5.608 — CSP img-src never got the new OpenStreetMap domain)
 - v3.5.608 swapped the Map / Roster Overview tile provider from CARTO to OpenStreetMap (CARTO started requiring an API key), but never updated CSP's `img-src` to allow the new domain — an oversight in that fix, not a second provider-side failure. Every tile request had been silently blocked by the browser since that release: site marker pins rendered correctly, the map background stayed completely blank, no visible error anywhere.

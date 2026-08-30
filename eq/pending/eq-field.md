@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,12 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: removed staff's historical leave/timesheet rows showed "(unknown)" forever (2026-08-31)
+
+- [ ] **Not click-tested live** — no Field session/credentials in this environment. Worth a real pass: sign in as an SKS supervisor, open Leave, confirm Liam Brook-Jackson's row now shows his name instead of "(unknown)" and the warning toast no longer fires for it. eq-field [PR #848](https://github.com/eq-solutions/eq-field/pull/848) (v3.5.619), merged + live. _(added 2026-08-31)_
 
 ---
 
