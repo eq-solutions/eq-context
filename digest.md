@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-30 08:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-30 09:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-30 08:47 UTC → 2026-08-30 08:59 UTC)
+## Since last refresh (2026-08-30 08:59 UTC → 2026-08-30 09:14 UTC)
 
-- Merged: eq-shell [#1682](https://github.com/eq-solutions/eq-shell/pull/1682) fix(auth): active-account re-check on 11 endpoints missing i
-- Merged: eq-shell [#1669](https://github.com/eq-solutions/eq-shell/pull/1669) feat(sites): canonical contacts only for site "Ask for" / "B
-- Merged: eq-shell [#1667](https://github.com/eq-solutions/eq-shell/pull/1667) fix(security): tender-pipeline zaap tables get real authenti
-- Merged: eq-shell [#1666](https://github.com/eq-solutions/eq-shell/pull/1666) feat(documents): requires_signoff flag on document_categorie
-- Merged: eq-shell [#1664](https://github.com/eq-solutions/eq-shell/pull/1664) fix(documents): lazy-load Register and Reference library tab
-- Merged: eq-shell [#1662](https://github.com/eq-solutions/eq-shell/pull/1662) fix(security): scope user_invites reads to managers, revoke 
-- Merged: eq-shell [#1659](https://github.com/eq-solutions/eq-shell/pull/1659) feat(schedule): site_project_id on schedule_entries — write 
-- Merged: eq-shell [#1656](https://github.com/eq-solutions/eq-shell/pull/1656) feat(documents): site-scope document pushes and sign-off cer
+- Merged: eq-shell [#1670](https://github.com/eq-solutions/eq-shell/pull/1670) feat(documents): ad-hoc multi-site document pushes and sign-
+- Merged: eq-shell [#1665](https://github.com/eq-solutions/eq-shell/pull/1665) fix(security): add the same-origin check to 15 more cookie-a
+- Merged: eq-shell [#1663](https://github.com/eq-solutions/eq-shell/pull/1663) fix(security): drop dead Supabase/Quotes refs from CSP + del
+- Merged: eq-shell [#1661](https://github.com/eq-solutions/eq-shell/pull/1661) fix(schedule): correct 0290's view column order + scope to S
+- Merged: eq-shell [#1660](https://github.com/eq-solutions/eq-shell/pull/1660) feat(documents): push a document to a customer's whole site 
+- Merged: eq-shell [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every documen
+- Merged: eq-shell [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (
+- Merged: eq-shell [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment
 
 ## ⚠ Needs you (8)
 
@@ -56,7 +56,7 @@ _…and 250 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 4d ago | 6 | 9d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 12d ago | 0 | — |
 
@@ -105,7 +105,7 @@ _Showing 15 of 90 · full record in [sessions/](sessions/)_
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (29 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (33 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (171 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
@@ -130,15 +130,15 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1585 | 181 / 100 | 57 | 56 |
-| [eq-cards](eq/pending/eq-cards.md) | 390 | 40 / 17 | 73 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1149 | 133 / 50 | 102 | 33 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 662 | 73 / 26 | 93 | 27 |
-| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 152 | 13 / 6 | 5 | 17 |
+| [eq-cards](eq/pending/eq-cards.md) | 322 | 40 / 17 | 12 | 6 |
+| [eq-field](eq/pending/eq-field.md) | 1017 | 133 / 50 | 25 | 33 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 541 | 73 / 26 | 1 | 27 |
+| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 146 | 13 / 6 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 226 | 23 / 6 | 17 | 4 |
-| [cross-repo](eq/pending/cross-repo.md) | 915 | 128 / 43 | 23 | 60 |
+| [eq-context](eq/pending/eq-context.md) | 212 | 27 / 6 | 1 | 4 |
+| [cross-repo](eq/pending/cross-repo.md) | 880 | 128 / 43 | 2 | 60 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 482 | 92 / 12 | 2 | 51 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
@@ -187,4 +187,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 08:59 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 09:14 UTC._
