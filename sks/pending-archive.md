@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-26
+last_updated: 2026-08-30
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -125,6 +125,19 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 
 ---
 
+## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13 (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement (see `eq/changelog/field.md` "SKS = Core-only auth", v3.5.200). **[CLOSED 2026-07-27 — Royce-gated decision now tracked fresher at ops/pending.md's SEC-1 checklist (memory sks-labour-retiring.md)]**
+- [x] **eq-shell** — ~~converge `c2-shell-roles` + `sks-field-host` branches~~ — `c2-shell-roles` no longer exists in eq-shell repo (deleted). Re-assess: verify whether the security-groups work from `sks-live-sprint-2026-06-07.md` Prompt A was folded into main or abandoned before reopening this track. **[CLOSED 2026-07-27 — re-checked live: security-groups work was folded into main (not abandoned) — merged PRs #210/#231/#237/#240/#285, still actively extended (PR #1047, 2026-07-27)]**
+
+---
+
+## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13 (rotated 2026-08-14 — open items remain in pending.md)
+
+- [x] **Security groups Phase 2–5 — all 3 pieces now confirmed live, checked 2026-08-13.** Session extra_perms wiring + AdminSecurityGroups CRUD page (confirmed 2026-07-27), and the first real `user_security_groups` row landed 2026-08-11 (`royce.milmlow@sks.com.au` → "Staff Conversations" group, live-queried on jvkn). Worth noting: that row is for the unrelated Staff Conversations feature, not a deliberate exercise of this specific SKS rollout track — but it does satisfy the letter of "first real row for a SKS user." No further action unless a broader SKS security-groups rollout was actually intended beyond this.
+
+---
+
 ## ⏩ SKS Field — session 2026-07-03 (QA batch: 9 live bug reports) (rotated 2026-07-27 — open items remain in pending.md)
 
 - [x] At least one SKS person ("Collin ... Toohey") has no record in canonical `app_data.staff`, blocking their leave submissions — data-ops backfill needed, not a code fix _(added 2026-07-03)_ — **RESOLVED, confirmed live 2026-07-06**: `app_data.staff` row exists (`3c9714bd-…`, email `collin.toohey@sks.com.au`, trade `electrical`). Not built this session — found already-fixed during the remediation-queue audit below, likely landed via the 2026-07-02/03 EQ Intake steward-run. Worth confirming his leave submissions actually work end-to-end now that the record exists.
@@ -174,6 +187,12 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 ## Added 2026-07-05 (rotated 2026-07-27 — open items remain in pending.md)
 
 - [x] sks-charters generator — reviewed, built, and committed locally (`59ec109`)
+
+---
+
+## Added 2026-07-05 (rotated 2026-07-27 — open items remain in pending.md)
+
+- [x] sks-charters has no GitHub remote — decide whether it gets pushed to `eq-solutions` org or stays local-only _(added 2026-07-05)_ **[CLOSED 2026-07-27 — done — pushed to eq-solutions/sks-charters (see the closed item at the top of this file, 2026-07-27)]**
 
 ---
 
@@ -234,19 +253,6 @@ section's done items live here; its open items stayed in `sks/pending.md`.
 - [x] Logged the resolved name + duplicate-customer history to memory (`project_equinix_entity_map.md`) so future Coupa/PO matching doesn't second-guess "Equinix Hyperscale" (no suffix) as live.
 
 (full investigation + fix recorded in `eq/changelog/field.md` "2026-07-19" — DB-only grant restore PR #498, CI guard PR #500)
-
----
-
-## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13 (rotated 2026-07-27 — open items remain in pending.md)
-
-- [x] **Standalone `sks-nsw-labour` retirement** — NOTE: app is still receiving active feature work as of 2026-06-26 (PRs #32–#54 merged in June). 'Keep warm' understates current investment. Retirement gating question is still open — confirm with Royce whether ehow Field has superseded the standalone app before setting a retirement date. **PIN audit 2026-07-05 (Royce-confirmed):** this repo has its own independent login/PIN system, still actively used — a completely different codebase from eq-field, not affected by eq-field's own PIN-gate retirement (see `eq/changelog/field.md` "SKS = Core-only auth", v3.5.200). **[CLOSED 2026-07-27 — Royce-gated decision now tracked fresher at ops/pending.md's SEC-1 checklist (memory sks-labour-retiring.md)]**
-- [x] **eq-shell** — ~~converge `c2-shell-roles` + `sks-field-host` branches~~ — `c2-shell-roles` no longer exists in eq-shell repo (deleted). Re-assess: verify whether the security-groups work from `sks-live-sprint-2026-06-07.md` Prompt A was folded into main or abandoned before reopening this track. **[CLOSED 2026-07-27 — re-checked live: security-groups work was folded into main (not abandoned) — merged PRs #210/#231/#237/#240/#285, still actively extended (PR #1047, 2026-07-27)]**
-
----
-
-## Added 2026-07-05 (rotated 2026-07-27 — open items remain in pending.md)
-
-- [x] sks-charters has no GitHub remote — decide whether it gets pushed to `eq-solutions` org or stays local-only _(added 2026-07-05)_ **[CLOSED 2026-07-27 — done — pushed to eq-solutions/sks-charters (see the closed item at the top of this file, 2026-07-27)]**
 
 ---
 
@@ -325,21 +331,6 @@ output).*
 
 ---
 
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-01 — open items remain in pending.md)
-
-
----
-
-## SKS Field — session 2026-07-21 (mobile My Schedule + home tile: show Sat/Sun when rostered) (rotated 2026-08-01)
-
-**Trigger:** Royce spotted the mobile "My Schedule" day cards only showing Monday-Friday, even though a screenshot showed people rostered to work weekends.
-
-**Completed:**
-
-**Deferred:**
-
----
-
 ## ⏩ SKS — Fernando Alba (Communication Technician) onboarding via core Add Licence (2026-08-04) (rotated 2026-08-05)
 
 **Trigger:** Royce signed Fernando up via core login (not Cards self-signup) — Fernando isn't tech-savvy and emailed his licence photos for a manager to enter on his behalf. Surfaced two real platform gaps, fixed same day (see `eq/pending.md` "EQ Shell — admin licence backfill").
@@ -378,11 +369,6 @@ output).*
 
 ---
 
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-05 — open items remain in pending.md)
-
-
----
-
 ## ⏩ SKS Field / EQ Field — session 2026-07-10 (full pagination sweep) (rotated 2026-08-05)
 
 **Trigger:** picked up the eq-field export truncation flag from the earlier same-day session (`task_69a6ff0f` above). Before building, verified the premise against live git/GitHub state rather than trusting the flag at face value — this caught that the referenced "SKS v3.10.89 fix" was real (PR #56, merged, a genuine live incident — Simon Bramall's far-future roster gap) but only covered the `schedule` table; its sibling `timesheets` load in the exact same function was never touched.
@@ -394,11 +380,6 @@ output).*
 
 ## Leave — delete an approved request, including its roster entry — shipped (v3.10.111, PR #78, merged 2026-08-10) (rotated 2026-08-13)
 *Royce: someone's approved leave needed to be deleted, including removing it from the roster/calendar. Investigated first — no delete path existed at all; Archive only hid it from the Leave tab, the roster grid still showed the leave code because approval writes it directly into schedule cells (`writeLeaveToSchedule()`) and nothing reversed that. Built a manager-only Delete action that reverses the write-back (only clears a day if it still holds exactly that leave code, so a day since overwritten with a real shift is left alone) then hard-deletes the row. `realtime.js` already had DELETE handling wired up for `leave_requests` — this was the missing UI trigger.*
-
----
-
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-13 — open items remain in pending.md)
-
 
 ---
 
@@ -414,25 +395,9 @@ output).*
 
 ---
 
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-14 — open items remain in pending.md)
-
-
----
-
-## ⏩ SKS Field — sessions 2026-06-07 through 2026-06-13 (rotated 2026-08-14 — open items remain in pending.md)
-
-- [x] **Security groups Phase 2–5 — all 3 pieces now confirmed live, checked 2026-08-13.** Session extra_perms wiring + AdminSecurityGroups CRUD page (confirmed 2026-07-27), and the first real `user_security_groups` row landed 2026-08-11 (`royce.milmlow@sks.com.au` → "Staff Conversations" group, live-queried on jvkn). Worth noting: that row is for the unrelated Staff Conversations feature, not a deliberate exercise of this specific SKS rollout track — but it does satisfy the letter of "first real row for a SKS user." No further action unless a broader SKS security-groups rollout was actually intended beyond this.
-
----
-
 ## Richard Brown's duplicate LV Rescue certificates cleaned up (2026-08-13) (rotated 2026-08-16 — open items remain in pending.md)
 
 - [x] 6 duplicate `lvr` rows found (a failed photo upload was silently duplicating the row on every retry), 5 removed, root cause fixed and deployed live.
-
----
-
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-16 — open items remain in pending.md)
-
 
 ---
 
@@ -442,24 +407,20 @@ output).*
 
 ---
 
-## Labour Hire archive + rehire rating — DONE, shipped EQ Field v3.5.371 (rotated 2026-08-17)
-- [x] Mirrored live in `scripts/people-labour-hire.js` (split out of `people.js` at the same version, which is also what pulled `people.js` under the file-size threshold). Roster-grid archive icon (`openLHArchiveModal`) and a People-page re-rate button (`openLHRateModal`) share one modal, 1-5 star "would rehire" rating, writes through to Supabase, audit-logged. Verified directly against the live file 2026-08-17 — this item had gone stale for 3 weeks after the feature actually shipped (added 2026-07-28, merged 2026-07-31). _(added 2026-07-28, corrected 2026-08-17)_
-
----
-
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-17 — open items remain in pending.md)
-
-
----
-
 ## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14) (rotated 2026-08-18 — open items remain in pending.md)
 
 - [x] **Roster site-map query fixed** — was filtering on `active=eq.true` only, now also filters on `field_enabled`. eq-field [PR #711](https://github.com/eq-solutions/eq-field/pull/711), merged, live (`v3.5.508`). _(added 2026-08-14, shipped 2026-08-17)_
 
 ---
 
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-18 — open items remain in pending.md)
+## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14) (rotated 2026-08-25 — open items remain in pending.md)
 
+- [x] **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). **Found already done, corrected 2026-08-24**: this item still read open, but both rows verified live with `active=false`, `updated_at=2026-08-14` — same day the item was added, just never ticked off. Not this session's work; whoever/whatever flipped them didn't close the loop here. _(added 2026-08-14)_
+
+---
+
+## Labour Hire archive + rehire rating — DONE, shipped EQ Field v3.5.371 (rotated 2026-08-17)
+- [x] Mirrored live in `scripts/people-labour-hire.js` (split out of `people.js` at the same version, which is also what pulled `people.js` under the file-size threshold). Roster-grid archive icon (`openLHArchiveModal`) and a People-page re-rate button (`openLHRateModal`) share one modal, 1-5 star "would rehire" rating, writes through to Supabase, audit-logged. Verified directly against the live file 2026-08-17 — this item had gone stale for 3 weeks after the feature actually shipped (added 2026-07-28, merged 2026-07-31). _(added 2026-07-28, corrected 2026-08-17)_
 
 ---
 
@@ -469,20 +430,10 @@ output).*
 
 ---
 
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-19 — open items remain in pending.md)
-
-
----
-
 ## Roster-notification login popup removed (v3.10.110, PR #77, sks-nsw-labour) (rotated 2026-08-20)
 *Royce: "remove the notification about getting notified when roster changes." Found the target was a real, live feature — `scripts/auth.js:1021-1126`'s "Get notified when your roster changes" banner (3s after login) is the front door to a deployed Supabase edge function (`send-roster-push`) that actually pushes when a supervisor rosters someone onto tomorrow's schedule. Confirmed scope via AskUserQuestion before touching anything: hide the ask-for-permission popup only, don't stop delivery for anyone already subscribed.*
 - [x] Deleted `_showPushBanner()`/`_requestAndSubscribe()` outright (both were only ever called from the popup's own click handlers) — `initPushOptIn()` now only refreshes an existing grant's subscription, never prompts.
 - [x] Verified: no leftover references anywhere in the repo; ran `initPushOptIn()` directly in-browser for both `Notification.permission` states, no throw, no banner element, existing-grant refresh path still fires.
-
----
-
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-20 — open items remain in pending.md)
-
 
 ---
 
@@ -504,22 +455,6 @@ output).*
 - [x] eq-shell's mobile home screen (what a non-manager worker sees first) was missing the button into the maintenance/defects app (Service) — other apps had it, this one didn't, and there was no reason found for the gap. Also added the SKS logo, which wasn't showing there at all. Fixed and live. _(eq-shell PR #1456)_
 - [x] **The database-level fix for who can create/edit/delete Prestarts/Toolbox Talks/Incidents/Site Diaries/Site Audits** — written, approved, applied to the live system, and confirmed working. _(eq-field PR #728, applied 2026-08-19)_
 - [x] ~~Confirmed live 2026-08-20: the two extra gaps did NOT make it into the fix above~~ — **wrong, corrected same day.** That first check only looked at PR #728's migration (the 6-table one) and stopped there without searching for a sibling fix. There is one: `20260819_app_config_manager_supervisor_write.sql`, written the same session, targets `public.app_config` — the one settings table behind *both* the weekly digest's section toggles and EQ Field's own tenant PIN codes (`staff_code`/`supervisor_code`, read by `verify-pin.js` for tenants that use PIN-gated login instead of full Shell auth). Checked `pg_policies` on ehow directly: `app_config_manager_supervisor_{insert,update,delete}` are live now, same RESTRICTIVE pattern as the 6-table fix. Both extra gaps were already closed — the migration file's own "DRAFT — NOT APPLIED" header is just stale, like its sibling's was. Nothing left open here. _(added 2026-08-19, wrongly marked "still needs its own fix" 2026-08-20, corrected same day)_
-
----
-
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-23 — open items remain in pending.md)
-
-
----
-
-## SKS → EQ Field roster CSV sync — investigated live, feasible with zero new code (2026-08-14) (rotated 2026-08-25 — open items remain in pending.md)
-
-- [x] **Deactivate the two stale site rows in ehow** — `Erilyan` (`site_id 6c221319…`, code EC6) and `Microsoft SYD27` (`site_id 7fb2d662…`, code SYD27). **Found already done, corrected 2026-08-24**: this item still read open, but both rows verified live with `active=false`, `updated_at=2026-08-14` — same day the item was added, just never ticked off. Not this session's work; whoever/whatever flipped them didn't close the loop here. _(added 2026-08-14)_
-
----
-
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-25 — open items remain in pending.md)
-
 
 ---
 
@@ -550,10 +485,5 @@ output).*
 
 ## ehow RLS gap — 26 SKS tables were readable/writable cross-tenant, now closed (2026-08-23) (rotated 2026-08-26)
 *Fix landed on the eq-field side — see `ops/pending.md` (2026-08-23, "ehow (SKS canonical) hardcoded-org_id RLS sweep") for full detail. This entry is the SKS-side pointer.*
-
----
-
-## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-08-26 — open items remain in pending.md)
-
 
 ---

@@ -1,7 +1,7 @@
 ---
 title: Machinery Index
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-08-30
 scope: Every executable file in the substrate — hooks, scripts, CI workflows — and what each one actually does. The prose tiers have per-file tables enforced by index_drift; until 2026-08-15 the machinery had none.
 read_priority: reference
 status: live
@@ -60,6 +60,7 @@ its pure logic separable — that is the convention, not an accident.
 | `changelog_duplicates.py` | Every `eq/changelog/*.md` duplicate must self-mark (`superseded_by:` or `UNRECONCILED PAIR`) — catches a silent live/live duplicate before it costs another PR #727. |
 | `link_check.py` | Every internal markdown link must resolve to a real file. Ratchet at 0, no headroom. |
 | `rotate_pending.py` | Moves done items out of the tier `pending.md` files into their archives, per item rather than per session. |
+| `dedupe_pending_archive.py` | Collapses duplicate sections in a `pending-archive.md` — built after `pending-rotate.yml`'s 2026-08-17→08-30 file-list bug let the same sections re-archive nightly without ever leaving the live file. Keeps one copy per identical/superset group; leaves genuine content conflicts untouched and reported rather than guessing. |
 | `substrate_honesty.py` | Verifies load-bearing facts against reality — dead project refs, the F13 deploy-posture claim, liveness probes. |
 | `claim_expiry.py` | The F3 guard: expires stale incident claims so a dead claim cannot block a live investigation. |
 | `generate_session_index.py` | Regenerates `sessions/INDEX.md`, reverse-chronological. |
@@ -67,7 +68,7 @@ its pure logic separable — that is the convention, not an accident.
 | `duplicate_sessions.py` | No two `sessions/*.md` files may hold byte-identical content — extracted whole from `md-health-daily.py`, the one genuinely unique, portable check it had. |
 | `security_audit.py` | Cross-project Supabase security-advisor sweep. Needs `SUPABASE_ACCESS_TOKEN`; no-ops cleanly without it. |
 | `rls_probe.py` | The public-key data-leak test — proves an anon key returns zero rows where it should. |
-| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
+| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_dedupe_pending_archive.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
 
 ## `.github/scripts/` — generators
 
