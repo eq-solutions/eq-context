@@ -16,6 +16,13 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## SKS Live — roles/security-groups track — killed, superseded (2026-06-07) (fully closed 2026-08-30)
+*The rollout's own Phase 4 (walk one real SKS user through it end-to-end, creating the first-ever `user_security_groups` row) sat unstarted for 34 days after being flagged 2026-07-27 as needing a direct decision — raised again during the 2026-08-30 root-scratch-docs re-verification pass, and asked directly this time.*
+
+- [x] **Killed — superseded by the access-model cluster's per-action RLS enforcement, which already covers the same underlying goal a different way (table/RLS-based, not named-group-based).** `shell_control.user_security_groups` stays at 0 rows permanently, not just today — this track is not being finished. Full plan archived: `archive/sks-live-sprint-2026-06-07.md`. Decision recorded: `ops/decisions.md` 2026-08-30.
+
+---
+
 ## eq-shell: tenant-plane cross-repo consumer-check gap — decided, built, merged live; CHECK 7 exception logic live-tested (2026-08-27) (fully closed 2026-08-27)
 *Follow-up to the field_managers/CHECK 7 incident directly below — Royce: "sprint this" against that close's own deferred items, then `/decide`, then "build option B", then "merge it".*
 

@@ -9,6 +9,14 @@ status: live
 
 # Changelog — EQ Context Repo
 
+## [2026-08-30] SKS security-groups sprint killed, superseded — archived with a full decision record
+
+**Built by:** Claude Code
+
+- **`sks-live-sprint-2026-06-07.md` archived, not built.** Its own Phase 4 (walk one real SKS user through the rollout end-to-end) had sat unstarted for 34 days after a 2026-07-27 flag asking for a direct decision; today's earlier root-scratch-docs re-verification pass found it had since dropped out of the most recent whole-suite backlog sweep entirely, tracked by nobody. Explained plainly and asked directly — Royce's call: superseded by the access-model cluster's already-shipped, already-live per-action RLS enforcement, which covers the same permission-granularity goal a different way. `shell_control.user_security_groups` stays at 0 rows permanently.
+- Moved to `archive/sks-live-sprint-2026-06-07.md` (relative links fixed for the new depth), `eq/pending/eq-shell.md`'s matching section moved wholesale to `eq/pending-archive.md`, decision recorded in full ADR form in `ops/decisions.md`. Explicitly no code/schema change — the built `security_groups`/`AdminSecurityGroups` infrastructure stays exactly as-is, just permanently unpopulated; removing it is a separate, not-yet-asked question.
+- Verified clean before pushing: `index_drift.py --strict`, `prune_ratchet.py`, `link_check.py` (caught and fixed 6 broken links the move itself introduced).
+
 ## [2026-08-30] Root scratch docs re-verified (0 archived); index-drift cron confirmed fixed; 3 of 5 "guard bypass?" flags found to be false positives, 2 genuine
 
 **Built by:** Claude Code

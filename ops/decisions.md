@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-07-12
+last_updated: 2026-08-30
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -17,6 +17,22 @@ Format: Status → Decision → Why → Alternatives considered → Implications
 Status values: Accepted | Superseded by [date+title] | On Hold | Deprecated | Proposed.
 Append-only — never delete an entry. Supersede or deprecate it instead.
 For the current built state of each system, see [system/architecture.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/architecture.md).
+
+---
+
+## 2026-08-30 — SKS Live roles/security-groups track killed, superseded by access-model cluster's per-action enforcement
+
+**Status:** Accepted (Royce, direct decision in-session, 2026-08-30).
+
+**Decision:** The named-security-groups rollout for SKS (`sks-live-sprint-2026-06-07.md`, sprint prepared 2026-06-07) is not being finished. `shell_control.user_security_groups` stays at 0 rows permanently — Phase 4 (walk one real SKS user through it end-to-end) will not be built.
+
+**Why:** Phase 4 sat unstarted for 34 days after being flagged 2026-07-27 as needing a direct decision — still wanted, or superseded by the access-model cluster's `field.manage_*` work, which had since shipped a different (table/RLS-based, not named-group-based) enforcement model for the same underlying goal. Re-surfaced during a scheduled root-scratch-docs re-verification pass (2026-08-30); asked directly this time rather than left to age further — it had already dropped out of the most recent (2026-08-28) whole-suite backlog sweep entirely, tracked by nobody.
+
+**Alternatives considered:**
+- Finish the rollout (build Prompt D — walk one real user through it) — rejected: redundant with the already-shipped, already-live access-model enforcement, which covers the same permission-granularity goal via a different mechanism.
+- Leave it open, undecided — rejected: this is exactly how it had already gone from "worth a direct decision" to "dropped off everyone's radar entirely" once before; a live yes/no closes that loop.
+
+**Implications:** `sks-live-sprint-2026-06-07.md` archived to `archive/sks-live-sprint-2026-06-07.md` (design rationale for Phases 0–3, which did ship and remain live infrastructure, kept as historical record — not a build plan to resume). `eq/pending/eq-shell.md`'s Phase 4 item moved to `eq/pending-archive.md`. No code, schema, or live-system change — `security_groups`/`security_group_perms`/`user_security_groups` tables, the `AdminSecurityGroups` admin page, and the `extra_perms` session-wiring all stay exactly as they are (built, functional, just never populated with a real assignment). Whether to actually remove that now-permanently-unused schema/UI from eq-shell is a separate, larger, not-yet-asked question — this decision is about the plan, not the code.
 
 ---
 

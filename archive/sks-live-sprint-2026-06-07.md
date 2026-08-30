@@ -1,19 +1,34 @@
 ---
 title: SKS Live — Roles / Security-Groups Sprint
 owner: Royce Milmlow
-last_updated: 2026-06-08
-scope: Handoff + agent prompts for the roles/security-groups track of SKS Live
+last_updated: 2026-08-30
+scope: Handoff + agent prompts for the roles/security-groups track of SKS Live — SUPERSEDED, kept for the design rationale only
 read_priority: reference
-status: live
+status: archived
 ---
+
+> **KILLED 2026-08-30 — superseded, not built.** Phase 4 (the only piece that
+> was ever actually missing — walking one real SKS user through this end to
+> end) sat unstarted for 34 days after being flagged 2026-07-27 as needing a
+> direct decision. Raised again during that day's root-scratch-docs
+> re-verification pass and answered directly: **the access-model cluster's
+> per-action RLS enforcement (table/RLS-based, not named-group-based) already
+> covers the same underlying goal a different way**, and has already shipped
+> for several real features. `shell_control.user_security_groups` stays at 0
+> rows permanently, not just today. Decision: `ops/decisions.md` 2026-08-30.
+> Read this file only as the historical design rationale for Phases 0–3
+> (per this file's own 2026-06-08 audit note below, `@eq-solutions/roles`
+> v2.3.0, the `extra_perms` session wiring, and the `AdminSecurityGroups`
+> admin page had all shipped by then — not re-verified fresh today) — never
+> as current status.
 
 # SKS Live — Roles / Security-Groups Sprint (handoff + agent prompts)
 
 **Prepared:** 2026-06-07
 **Track:** App-layer roles + security groups for the first real SKS user.
-**Sibling track (do not conflate):** [SKS-CUTOVER-CRITICAL-PATH.md](SKS-CUTOVER-CRITICAL-PATH.md) — the Field *schema + live-data* migration (Phases A–E). This file and the cutover plan are **parallel workstreams** toward "SKS live," not the same plan.
+**Sibling track (do not conflate):** [SKS-CUTOVER-CRITICAL-PATH.md](../SKS-CUTOVER-CRITICAL-PATH.md) — the Field *schema + live-data* migration (Phases A–E). This file and the cutover plan are **parallel workstreams** toward "SKS live," not the same plan.
 
-> Security groups stay **APP-LAYER** (locked decision). RLS in the data plane only reads `app_metadata.tenant_id`; group perms flow through the Shell **session** as `extra_perms`, not through the Supabase JWT. See [eq/field/permissions/field-shell-security-groups-2026-06-05.md](eq/field/permissions/field-shell-security-groups-2026-06-05.md).
+> Security groups stay **APP-LAYER** (locked decision). RLS in the data plane only reads `app_metadata.tenant_id`; group perms flow through the Shell **session** as `extra_perms`, not through the Supabase JWT. See [eq/field/permissions/field-shell-security-groups-2026-06-05.md](../eq/field/permissions/field-shell-security-groups-2026-06-05.md).
 
 ---
 
@@ -204,6 +219,6 @@ No deploy without explicit instruction.
 
 ## Cross-references
 
-- [SKS-CUTOVER-CRITICAL-PATH.md](SKS-CUTOVER-CRITICAL-PATH.md) — the Field schema + live-data migration (parallel track).
-- [eq/field/permissions/field-shell-security-groups-2026-06-05.md](eq/field/permissions/field-shell-security-groups-2026-06-05.md) — the app-layer-groups locked decision.
-- [eq-platform-verified-state-2026-06-03.md](eq-platform-verified-state-2026-06-03.md) — DB-verified platform snapshot (re-verify; drifts).
+- [SKS-CUTOVER-CRITICAL-PATH.md](../SKS-CUTOVER-CRITICAL-PATH.md) — the Field schema + live-data migration (parallel track).
+- [eq/field/permissions/field-shell-security-groups-2026-06-05.md](../eq/field/permissions/field-shell-security-groups-2026-06-05.md) — the app-layer-groups locked decision.
+- [eq-platform-verified-state-2026-06-03.md](../eq-platform-verified-state-2026-06-03.md) — DB-verified platform snapshot (re-verify; drifts).

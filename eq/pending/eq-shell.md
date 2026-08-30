@@ -1861,13 +1861,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] Google Maps: add Distance Matrix + Air Quality to API key when dispatch travel times / site safety features are built _(added 2026-06-29)_
 ---
 
-## SKS Live — roles / security-groups track (2026-06-07)
-
-Parallel to the Field schema/data cutover below. Full plan + agent prompts (A–E): [`sks-live-sprint-2026-06-07.md`](../../sks-live-sprint-2026-06-07.md). Live-verified 2026-06-07: `shell_control` has 9 groups / 16 perms / **0** user assignments; tenant `sks` = 3 × manager.
-
-- [ ] **eq-shell Phase 4** — walk ONE real SKS user end-to-end; first-ever `user_security_groups` row (Prompt D). **Re-verified live 2026-07-27**: `shell_control.user_security_groups` on jvkn is still **0 rows**, 50 days after this was flagged — unlike the other items in this section, this one hasn't just gone quiet, it's never been started. Worth a direct decision: still wanted, or superseded by the access-model `field.manage_*` cluster work that's since shipped a different (table/RLS-based, not security-groups-based) enforcement model for the same underlying goal.
----
-
 ## ⏩ Session close — 2026-06-05 (part b) — PostHog MCP + EQ Core go-live readiness
 
 **Done:**

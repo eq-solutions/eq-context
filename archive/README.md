@@ -1,7 +1,7 @@
 ---
 title: Archive
 owner: Royce Milmlow
-last_updated: 2026-07-20
+last_updated: 2026-08-30
 scope: Parked, deferred, and historical content kept out of default AI load
 read_priority: reference
 status: live
@@ -15,6 +15,7 @@ explicitly directed.
 
 | File | Why archived | When to revisit |
 |---|---|---|
+| `sks-live-sprint-2026-06-07.md` | Archived 2026-08-30 as a **killed-by-decision record**, not a completed-cutover one. Its Phase 4 (walk one real SKS user end-to-end) sat unstarted for 34 days after a 2026-07-27 flag asking for a direct decision; asked directly during that day's root-scratch-docs re-verification pass. Royce's call: superseded — the access-model cluster's per-action RLS enforcement already covers the same underlying goal, shipped, live. `shell_control.user_security_groups` stays at 0 rows permanently. Decision: `ops/decisions.md` 2026-08-30. | Never as a build plan to resume — Phases 0–3 (roles resolver, session wiring, admin UI) did ship and still work as general-purpose infrastructure; only read this for that design rationale |
 | `changelog-eq-quotes.md` | Historical Flask v1 changelog. Note: EQ Quotes was un-deferred 2026-05-19 and briefly live, but was RETIRED in 2026 — replaced by EQ Ops. See `eq/products.md` "Killed / Deferred" for current status | Superseded — EQ Ops is the successor, no revival planned |
 | `changelog-ahd.md` | AHD parked to 2027 capital activation | 2027 capital activation review |
 | `changelog-cards-dead-twin.md` | EQ Cards changelog, stops 2026-06-30. Own scope line already said "duplicates eq/changelog/cards.md ... Consolidate, flagged as a follow-up" — that follow-up, done 2026-08-15. `eq-cards.md` (309 lines, current) is the live changelog | Superseded by `eq/changelog/eq-cards.md`, `superseded_by:` frontmatter added |

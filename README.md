@@ -173,6 +173,14 @@ current and stay at root until whatever cites them is itself resolved.
 > `main` therefore fails on root_files (19 > 16) regardless of this pass's
 > own result; that's pre-existing, resolves whenever #185 merges, and this
 > pass doesn't change the root-file count either way (0 archived).
+>
+> **Same-day update:** `sks-live-sprint-2026-06-07.md`'s citation above was
+> re-verified as "technically still open" — the file's justification held,
+> but the underlying decision (still-wanted-or-superseded) it flagged had
+> now gone unanswered for 34 days. Asked directly rather than left open a
+> third time: Royce's call was superseded — killed. Archived same day
+> (`archive/sks-live-sprint-2026-06-07.md`, `ops/decisions.md` 2026-08-30).
+> Its bullet below is removed rather than left as a stale "still live" entry.
 
 `SKS-CUTOVER-CRITICAL-PATH.md` — cited by `eq/pending.md` as the current
 pre-cutover state; Phases A–C not yet started. **Re-verified 2026-08-30,
@@ -205,23 +213,6 @@ read live at this session's own start (Rule 0.5) and still reads "Start from
 snapshot), then re-verify against live." Strongest form of confirmation
 available — the citation was observed directly this session, not inferred
 from grepping a doc that could itself be stale.
-`sks-live-sprint-2026-06-07.md` — **justification corrected 2026-08-15.** It
-claimed `digest.md` "still lists its Security Groups Phase 2–5 work as open";
-`digest.md` has zero matches for `sks-live-sprint`. `eq/pending.md` does keep
-Phase 4 open, but flags it as possibly superseded by the access-model cluster
-work, and `shell_control.user_security_groups` has been 0 rows for 50+ days.
-Still-wanted-or-superseded is Royce's call, not an archival one. **Re-verified
-2026-08-30: citation technically still open, but the decision has now gone
-unanswered even longer.** `eq/pending/eq-shell.md`'s Phase 4 line (the item
-moved here in the 2026-08-17 pending split) is unchanged since 2026-07-27 — 34
-days on the same unresolved either/or. More telling: the fresh 2026-08-28
-whole-suite sweep (`sprint-2026-08-28-outstanding-items.md`, 9 agents reading
-all 11 `eq/pending/*.md` files live) doesn't mention this item at all, open or
-closed — it's fallen out of the active queue without being built or killed. A
-live re-check of the row count was attempted this pass and blocked by the
-session's own tool-safety classifier; doesn't change the call — the citation
-rests on the unresolved decision, not the exact count. Worth Royce settling
-explicitly so this stops silently aging.
 `SKS-FIELD-PARALLEL-RUN-LOG.md` — the EQ Field parallel-run mismatch log +
 clean-week counter the 2026-07-11 cutover plan requires; live, streak at 0.
 **Re-verified 2026-08-30: still live and current** — the file's own most
