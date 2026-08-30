@@ -13,10 +13,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Leave approver resolution — non-manager staff-map RLS gap (v3.5.615, 2026-08-30)
+## eq-field: Leave approver resolution — non-manager staff-map RLS gap (v3.5.615/616, 2026-08-30)
 
-- [ ] **Not exhaustively audited for siblings** — only the one call site found this session (`loadCanonicalStaffMap`) was fixed. Third independent instance of "a raw fetch or a security_invoker=on view unexpectedly collapses to 0 rows for non-managers" found in 4 days (see `eq/changelog/eq-field.md` 2026-08-30 for the other two) — worth a deliberate grep pass for other raw `/rest/v1/<table>` fetches bypassing `sbFetch`'s routing, rather than waiting for a 4th independent discovery. _(added 2026-08-30)_
-- [ ] **Not click-tested live by a real non-manager SKS account** — same standing sandbox limitation as most entries in this file; verified instead via live DB-level JWT simulation (the actual mechanism the bug depends on) plus a console-level check of the exact client-side routing function against the deploy preview. _(added 2026-08-30)_
+- [ ] **`app_data.sites`'s actual RLS posture still not independently verified.** Supabase MCP was unreachable for this entire session (repeated connection timeout, not a one-off blip) — the sites fix shipped on the structural pattern-match alone, not live proof the way the staff fix was. Worth confirming next time DB access works, for completeness; the fix carries no downside either way regardless of the answer. _(added 2026-08-30)_
+- [ ] **Not click-tested live by a real non-manager SKS account** — same standing sandbox limitation as most entries in this file; verified instead via live DB-level JWT simulation (the actual mechanism the original bug depends on) plus console-level checks of the deployed function source against each deploy preview. _(added 2026-08-30)_
 
 ---
 
