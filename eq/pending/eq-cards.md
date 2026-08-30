@@ -46,12 +46,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-cards + eq-shell: `/auth/handoff` signup-blocker root-caused, fixed, merged, deployed live (2026-08-27)
 *Asked to investigate why `cards.eq.solutions/auth/handoff` — the page Shell's SSO handoff lands new signups on, 99%+ of suite signup traffic — was losing almost everyone who reached it. Given PostHog evidence up front (30d trailing, project 162632): 1,378 pageviews but only 243 (18%) ever resolved to a `shell_handoff_outcome` event at all; of those, 236 were `token_verify_success` (97%); but only 27 of those 236 (11%) ever reached `signup_completed`. A 100-minute session recording showed zero clicks, zero keypresses, no console errors — a silent hang, not a crash. Read-only investigation first, propose a fix only once the actual mechanism was found — not the symptom.*
 
-- [x] **Root cause A (the 82% non-resolution) found**: `_handleShellHandoff()` in `app_router.dart`'s `verifyOTP()` call was the one unguarded async call in the whole handoff flow — every sibling call (`requestAndReceiveShellToken`, `getUser`, `refreshSession`) already had a `.timeout()`. When it stalled, the user was stuck on a bare unclickable spinner forever: no error, no console log, no `shell_handoff_outcome` event (that only fires once the awaited call resolves). Ruled out first: CSP (connect-src correctly allowlists jvkn), Shell's side of the postMessage bridge (`CardsIframe.tsx` always responds, with its own retry-on-network-failure), and `requestAndReceiveShellToken()` itself (already properly bounded at 10s).
-- [x] **Root cause B (the 11% post-success conversion) found**: `signup_completed` requires `auth.users.created_at` within 30 minutes of now — a heuristic that breaks specifically for this path, because `mint-cards-otp.ts`'s `ensureAuthUser()` sets that timestamp lazily on the user's *first-ever* handoff attempt. Someone who hangs on attempt 1 (root cause A) and succeeds on a later retry falls outside their own window and is silently uncounted, even though it's a genuine first signup.
-- [x] **Fixed in eq-cards**: `.timeout(15s)` on `verifyOTP`, a bounded (15s) fallback UI on `_SplashScreen` ("This is taking longer than expected" + Try again / Continue with email — previously zero fallback for any stall), `Sentry.capture*` on both failure paths (previously this path never touched Sentry at all, unlike Shell's own side of the same bridge). [PR #327](https://github.com/eq-solutions/eq-cards/pull/327), merged (`e2ce6ba1`), **deployed live** on Royce's explicit "deploy eq-cards" — `gh workflow run deploy.yml` (run 33055529730), confirmed live via Netlify's newest `ready` deploy on `cards.eq.solutions` matching the workflow's own upload timestamp to the second (this repo's deploy uploads a build zip directly via API, so deploy rows carry no `commit_ref` — timestamp match is the correct verification method here, not commit-ancestry).
-- [x] **Fixed in eq-shell**: `ensureAuthUser` now returns whether it just created the `auth.users` row — the authoritative "is this genuinely new" signal, computed once at the moment of creation rather than reconstructed later from a timestamp that drifts under retries. `mint-cards-otp.ts`/`CardsIframe.tsx` forward it as `is_new_user`; eq-cards consumes it via a new `AnalyticsService.trackConfirmedNewSignup` that bypasses the 30-min window for this one caller (still one-shot per device, can't double-count against the generic path). [PR #1636](https://github.com/eq-solutions/eq-shell/pull/1636), merged (`7ac9baf7`) on Royce's explicit "merge both" — **confirmed live** via commit-ancestry check against the newest `ready`/`production` Netlify deploy (this repo's standing verification method, since it auto-deploys on merge and a concurrent merge from another session briefly published first — had to wait for this commit's own deploy row to reach ready and re-check, not trust the first green deploy seen).
-- [x] Both verified clean locally before merge: `flutter analyze` (whole eq-cards project), `flutter test` 352/352, eq-shell `tsc -b --force` + `eslint` (0 errors, 1 unrelated pre-existing warning confirmed present before this change too).
-- [x] **Re-queried the PostHog funnel post-deploy on request** — too early to mean anything (~25-40 min of live traffic): 1 pageview since the fix, its outcome event hadn't fired yet; zero events on the verify-success→signup_completed leg. Reported as inconclusive, not as a result — the 82%/11% baseline numbers above are still the only real read until real traffic accumulates.
 
 **Deferred:**
 - [ ] **Neither PR was click-tested live by a person** — no live Shell session was available this session. Worth a real click-through of the slow-fallback retry UI, and one genuine new-signup handoff to confirm `is_new_user`/`signup_completed` fire correctly end-to-end. _(added 2026-08-27)_
@@ -136,25 +130,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **The `Build & Deploy` workflow deploys ALL jvkn edge functions**, not just the changed one (`supabase functions deploy --project-ref jvknxcmbtrfnxfrwfimn`, no function name). Normal path for this repo, but it means the blast radius of any edge-function deploy is "every function at current main". Worth knowing before a hurried deploy. _(added 2026-08-23)_
 - [ ] **Node 20 deprecation warning** on `supabase/setup-cli@v1` in the deploy workflow — forced onto Node 24 by the runner. Unrelated to any change, not failing, but will need bumping. _(added 2026-08-23)_
 
-## eq-cards: two admin RPCs silently lost their `authenticated` grant to migration 0131, restored (PR #295 + #296, merged + live 2026-08-23)
-*`0131_gate_worker_role_assignment` (2026-08-16) replaced two functions with no trailing `GRANT` — the `eq_enforce_function_privacy` event trigger strips `authenticated`/`anon` on every function replace, same bug class as the documented eq-cards #0111 incident. Live ~1 week undetected.*
-
-- [ ] **Not click-tested live** — nobody has exercised the Cards admin worker-upsert or create-invite flow as a real authenticated org admin since either fix. _(added 2026-08-23)_
-
 ## eq-cards: Platform console redesigned around a "needs attention" queue instead of a stats wall — merged, deployed, live (2026-08-20)
 
 - [ ] **No real action buttons yet.** Each queue row is tagged which app (Cards/Field) owns the fix, but stays read-only — nothing in this app today can re-invite in bulk or force a sync retry, so a button would have nowhere real to go. Building those is separate follow-on work, your call whether/when. _(added 2026-08-20)_
 - [ ] **The Cards↔Field "bridge" is one-directional.** `eq_cards_platform_stats()` only queries jvkn (Cards' own database) — it can say how many Cards workers have been linked into Field, but not give Field's own independent total to reconcile against. A genuine two-sided view needs a second query into ehow, not built this session. _(added 2026-08-20)_
-
----
-
-## eq-cards: export flow finished end-to-end — Export/Download merged into one sheet, auto-provision session race fixed, export-all PDF/Excel added, PDF photo embed shipped then fixed twice, iOS downloads fixed, two nagging reminders removed (2026-08-18)
-*Direct continuation of the PDF/xlsx export work above. Royce's own live device testing (Safari + the Cards PWA, both directly on cards.eq.solutions and through the Shell iframe embed) drove every fix in this section — none of these were caught by CI or code review.*
-
-**Resolves the earlier deferred item** ("Royce still hasn't confirmed finding Export PDF on his own phone," added 2026-08-18 above) — he did find and use it; that testing is what surfaced the crop bug and the iOS download bug fixed in this section.
-
-**Deferred:**
-- [ ] **No live click-through yet on the Web Share "Save" flow specifically through the Shell iframe** since the `allow="web-share"` fix landed — the permission-policy fix is confirmed live (grepped the deployed Shell bundle for `allow:"web-share"`), but nobody has tapped Save through `core.eq.solutions/sks/cards` since. _(added 2026-08-18)_
 
 ---
 
@@ -182,12 +161,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] Get Royce's "first-open popup / info overload" screenshots (mentioned as sent separately, never received/incorporated), scope what's still missing against what PR #235 already shipped, build the remainder. _(added 2026-08-16)_
 - [ ] Once resolved, update `punch-list.md` item 4's note to match reality — it currently still reads as if nothing shipped. _(added 2026-08-16)_
-
----
-
-## eq-cards: 3 permission-audit gaps closed — dead JWT minter retired, empty employer credential list fixed, unreachable admin policy fixed (2026-08-16)
-
-- [ ] **Live click-through not done on the credential-list fix specifically.** Verified via live RLS/RPC checks, CI (`flutter analyze` + `flutter test`), and the deploy's ETag change — not by an actual signed-in admin opening a worker's detail screen and seeing their credentials render. _(added 2026-08-16)_
 
 ---
 

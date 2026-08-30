@@ -42,12 +42,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 
 ---
 
-## eq-roles + eq-shell + eq-solves-service: PM Calendar digest switched from a hardcoded group ID to a real, grantable permission — built, released, live (2026-08-18)
-
-- [ ] **Not clicked through live by a person** — the corrected recipient count (20, see above) is verified directly against the live database, not by watching a real digest email send; sending stays paused until Royce reviews the list and flips `SUPERVISOR_DIGEST_PAUSED` off (tracked in [eq/pending/eq-solves-service.md](eq-solves-service.md), the actionable Netlify-settings item lives there). _(added 2026-08-18)_
-
----
-
 ## eq-field + eq-shell: access-control cleanup — Pipeline/Teams/Apprentices/Email Templates get their own permission switches, then a real gap in Shell's Access Control page found and closed (2026-08-16)
 
 - [ ] **A real, bigger idea from Royce — one single screen for all access control, not two separate systems** — discussed and deliberately not built today; needs a proper design pass first (grouping ~86 total switches sensibly is its own problem), not a same-day PR. _(added 2026-08-16)_
@@ -648,7 +642,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 **Crumbs needing Royce (surfaced so they're not forgotten):**
 - **Send Huon** the connection-email reply + before/after graphic — de-duplicated 2026-08-30, this is the same item as `eq/pending/eq-cards.md`'s "connection-email deep-link" session-close entry (also 2026-07-02); tracked there now, not carried twice. _(added 2026-07-02)_
 - [ ] **Resolve the pending "432470463 · No licences yet" connection request** on core.eq.solutions/sks/staff — nameless self-signup from before the name-gate; approve/decline + nudge to add details. _(added 2026-07-02)_
-- [x] **Define the required-credential policy** (what SKS actually requires) + decide whether to add a worker **trade field** — the two blockers before the gaps engine can ship. _(added 2026-07-02)_
 ---
 
 ## ⏩ Session close — 2026-06-30 (part I) — EQ Cards Sentry + dead code + iOS spinner fix
@@ -718,7 +711,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 **Completed:**
 
 **Open / next:**
-- [x] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history _(added 2026-06-28)_. Verified live 2026-08-30 (this line is a duplicate of `eq/pending/eq-context.md`'s "Brain 10/10" entry, closed there with the same evidence): `.pre-commit-config.yaml` wires real gitleaks v8.21.2, and the always-on native fallback `scripts/pre-commit-secrets.sh` (via `.githooks/pre-commit`, fail-closed) covers it too.
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation _(added 2026-06-28)_
 - [ ] **Token refresh smoke test** — shorten TTL locally to confirm ShellTokenRefresh fires (4h is hard to test live) _(added 2026-06-28)_
 ---

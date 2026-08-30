@@ -157,7 +157,6 @@ changelog and session logs are for.
 **Completed:**
 
 **Open / next:**
-- [x] **gitleaks pre-commit hook** — prevent PAT exposure in substrate history. Verified live 2026-08-30 (flagged as a possible duplicate against `eq/pending/cross-repo.md`'s copy of this same line): `.pre-commit-config.yaml` wires actual gitleaks v8.21.2 as the prod-grade hook, and `scripts/pre-commit-secrets.sh` (the always-on native fallback, wired via `.githooks/pre-commit`, fail-closed) covers the same class without requiring the `pre-commit` framework — both exist, both run.
 - [ ] **Update C:\Projects\.git-credentials** files with new PAT after rotation
 ---
 

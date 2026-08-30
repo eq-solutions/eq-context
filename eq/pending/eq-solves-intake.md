@@ -13,11 +13,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-intake + eq-shell: Overview "Fix these" gap cards get a real bulk-fill grid instead of one-row-at-a-time (2026-08-18)
-- [ ] **Not click-tested live** — verified via `tsc --noEmit` clean, `vitest run` 50/50, CI green on both PRs, and a Netlify deploy-commit match confirming it's genuinely live — but no authenticated session was available to click through the real UI. Worth 2 minutes: open a "Fix these" card on the Overview tab, fill a few rows in the new grid, Save, confirm the count drops and the score updates. eq-solves-intake [PR #120](https://github.com/eq-solutions/eq-solves-intake/pull/120) + eq-shell [PR #1445](https://github.com/eq-solutions/eq-shell/pull/1445), both merged, live on core.eq.solutions. _(added 2026-08-18)_
-
----
-
 ## eq-solves-intake: the data-cleaning queue actually shrinks as you work it now, plus a bad-merge error fixed (2026-08-16)
 *Royce flagged three problems with the review queue from screenshots: decided duplicate rows just sat there cluttering the list forever with no way to fix a wrong answer, a duplicate-contacts merge threw a raw error on screen, and the "unknown trade" list had no way to fix several people at once. Built and merged, then self-reviewed the same work and fixed six more bugs the review turned up before calling it done.*
 

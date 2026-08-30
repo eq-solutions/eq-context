@@ -18,13 +18,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **CI still fails on this job** — after all 3 renames, bootstrap gets further than ever but now fails on an unrelated, pre-existing bug: `0197_report_settings_per_tier.sql` references a column that doesn't exist yet at that point in a fresh migration sequence. Matches this workspace's own documented rule that this specific CI job is a known pre-existing failure, not a merge blocker (`tsc + next build` is the real gate) — left as-is, not investigated further. _(added 2026-08-23)_
 
-## eq-solves-service: suite-wide grant-drift sweep — 9 functions across jvkn/ehow fixed, zaap confirmed clean (PRs #295/#296/#807/#808/#809, all merged + live 2026-08-23)
-*Asked to sweep the rest of the EQ suite for the same "silently lost `authenticated` grant" bug class as `eq_cards_admin_upsert_worker`. Built a full-history replay across every repo that migrates the three canonical planes (jvkn, zaap, ehow).*
-
-- [ ] **Not click-tested live** — none of the 9 fixes have been exercised by a real user/cron run since (beyond the near-miss cron job, which was specifically re-verified). _(added 2026-08-23)_
-
----
-
 ## eq-solves-service: automated tests added for the compliance-reports page, merged, live (2026-08-21)
 *Continuing the same day's push to get real automated test coverage across the app, one page at a time (maintenance checks, then ACB/NSX/RCD testing pages, now Reports). Built in its own isolated copy of the repo rather than the shared one, since the shared one was busy with another session's database work at the time.*
 
@@ -52,13 +45,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: added missing test coverage for the "just start tapping" check behaviour — merged, live (2026-08-21)
-*A maintenance check that hasn't been started yet doesn't reject a technician's first tap on pass/fail/N-A — it quietly starts the check on their behalf first, then records the result, so a tech who forgets to press "Start Check" isn't blocked. That behaviour already existed; nothing had ever tested that it actually works, or that it fails safely (no result saved, check left startable) if the auto-start itself fails. Direct ask, not self-discovered.*
-
-- [x] Found in passing, not part of this task but worth knowing: this repo's "merge" button doesn't actually wait for its own safety checks to finish first — armed it to merge automatically once checks passed, and it went through immediately instead of waiting, before the main build check had even finished (it did pass, just after the fact, confirmed separately). Logged in [worktree-registry.md](../../system/worktree-registry.md) so the next merge on this repo doesn't assume otherwise.
-
----
-
 ## eq-solves-service: worktree/branch/stash graveyard cleared — 8 stranded branches, 23 orphaned folders, and 3 stale stashes, every one confirmed already-shipped before removal (2026-08-21)
 *Asked to check one specific stranded worktree (`fix/session-expiry-suite-wide`) that looked like finished work with no PR. Confirmed by content hash (`git patch-id`), not just ancestry, that it was a byte-for-byte duplicate of already-merged PR #727 — two sessions had done the same fix, one got the PR, the other was left behind under a different commit. Asked to check the rest of the repo's stranded worktrees for the same pattern, then to "complete the survey" against two more branches that were only visible because they still held old stashes. Same result every single time: the content had already shipped, just under a different SHA.*
 
@@ -66,14 +52,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **One leftover worktree folder (`acb-check-report-wiring-1baa7e`) still can't be deleted** — Windows reports it's in use by a running process. It's empty with no git linkage, so it's inert; delete it once whatever's holding it open is closed. Three attempts across the session all failed the same way. _(added 2026-08-21)_
-
----
-
-## eq-solves-service: Shell session keepalive found permanently dying on any hiccup — fixed, merged, confirmed live (2026-08-20)
-*Flagged directly, not self-discovered — handed a specific known defect in `ShellTokenRefresh.tsx` (the component that quietly renews a Shell-embedded tech's login every 4 hours, built 2026-06-28) found during Tier C offline-write scoping recon: after a single failed renewal attempt, it gave up silently for the rest of the browser tab's life. The renewal only ever gets one ~15-second try, once, per 4-hour session — a tech with one bad moment of signal in that window lost their whole session for good, with every save afterward failing on a generic, unhelpful error until they reloaded the page. Already showing up once in the error tracker before this was fixed.*
-
-**Deferred:**
-- [ ] **Not click-tested live in an actual embedded Shell session** — verified via 15 targeted automated tests (8 of which fail against the original broken code, proving they're real regression tests, not vacuous ones), a full clean production build, and full lint, not by watching a real technician's session survive a real dropped connection on-site. _(added 2026-08-20)_
 
 ---
 
@@ -104,48 +82,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: unchecked-Supabase-query-error bug fully closed out across all 55 `page.tsx` files — dashboard fixed by hand, the remaining 30 swept by 5 parallel isolated-worktree agents, all 6 PRs merged and confirmed live (2026-08-19)
-*Dashboard.tsx was flagged separately from the rest of this bug class because its 8-query fetch sits upstream of three different render paths (setup checklist, tech dashboard, full dashboard) and needed a real read-through rather than a mechanical copy of contract-scope's fix. Along the way, found the task's own premise ("other files already fixed") didn't hold up against a live check — then, independently, a concurrent session made most of it true anyway before this session closed. Asked to "sprint the remaining 30" afterward — done via 5 parallel subagents, each isolated in its own git worktree (this repo's shared checkout had already cost this session one lost edit earlier the same day; 5 concurrent agents on the same tree would have guaranteed worse), each auditing a disjoint module and opening its own PR.*
-
-**Deferred:**
-- [ ] **Not click-tested live by a real signed-in user, across all 43 touched files now (dashboard + the 30-file sweep)** — verified via `tsc --noEmit`, CI (only the pre-existing Integration-tests flake failed on every PR), and Netlify commit-ancestry/secret-scan checks, not by actually loading the app and triggering a real query failure. Sentry MCP wasn't authenticated in this session either, so none of the new `route:`-tagged error captures have been watched for live. _(added 2026-08-19)_
-
----
-
-## eq-solves-service: classification gate built for contract-scope timing — merged, live-verified (2026-08-19)
-
-**Deferred:**
-- [ ] **Not click-tested live** — verified via full type-check + production build, not a real signed-in click-through. Worth a few minutes: open a scope item, try all three timing options, confirm the label looks right, press Generate Calendar once; separately, run an import and confirm the batch timing picker sets the right dates. A working live-session path now exists for this app (`claude-in-chrome` MCP against Royce's own already-authenticated Shell browser session — used 2026-08-20 to click-test the job-plans Global-scope filter fix), so "no working local sign-in" is no longer the real blocker; a bare local dev server still has no session, but that workaround does. _(added 2026-08-19, updated 2026-08-20)_
-
-**Note:** hit a real collision this session — a different concurrent session switched the shared checkout to its own branch mid-edit, so this work briefly landed on the wrong branch. Caught immediately before anything was pushed under the wrong name; both branches ended up exactly where they should, nothing lost. Same known, structural gap already tracked further down this file (2026-07-23 entry) — a fresh occurrence, not a new problem (a second, independent occurrence hit a concurrent session the same day too — see the dashboard.tsx entry above, bullet 3 — three known hits today alone).
-
----
-
 ## eq-solves-service: PM calendar can now generate itself from contract dates — 3-regime date model, RRULE support, built end-to-end and shipped live in one session (2026-08-19)
 
 **Deferred:**
 - [ ] **`pm_roster_coverage` (the "is anyone rostered near this date" view) has no screen yet.** A real, live database view — nothing in the app UI shows it to anyone yet. _(added 2026-08-19)_
 - [ ] **The generator was run for real once today (145/145 SKS scopes, all placeholder-dated 18 Oct) and then deliberately cleared same day.** The single real run made the classification gap visible immediately — 145 identical placeholder dates, no real scheduling value yet — so Royce chose to reset the live calendar to empty rather than leave that in front of the team. Cleared via soft-delete (`is_active = false`), not dropped: the generator, its migrations, and all 145 original rows are fully intact and recoverable. Re-run any time — most usefully once scope items actually carry a real hard/window classification (see the classification-gate entry above), at which point each reclassified scope moves off the shared placeholder date to its real one. _(added 2026-08-19)_
-
----
-
-## eq-solves-service: click-to-create on the calendar, a working "reconnect" button on session timeouts, faster warm-up after a deploy, and a safety net for lost in-progress readings (2026-08-18)
-*Follow-on the same day: asked "can we click a date to create an entry, like Outlook" — yes, built it. While testing, hit two other real annoyances (a session-timeout message with nothing to click, and the calendar loading slowly right after a deploy) and fixed both. Then asked for "the best sprint possible" — picked the most real, most buildable items off the backlog rather than a wishlist.*
-
-- eq-service PRs [#758](https://github.com/eq-solutions/eq-service/pull/758) and [#760](https://github.com/eq-solutions/eq-service/pull/760), both merged and confirmed live.
-
-**Deferred:**
-- [ ] **Not click-tested live by a real signed-in user.** This session's sandbox has no working login for service.eq.solutions — verified via type-checking and a full production build only. Worth two minutes clicking a calendar day, triggering a session timeout, and filling in part of an ACB/NSX/RCD check then reloading to confirm the draft comes back. _(added 2026-08-18)_
-
----
-
-## eq-solves-service: Calendar + every people-list in Service made canonical, 3 database updates shipped to live (2026-08-17)
-*Royce asked whether the maintenance calendar could be made canonical (shared with the rest of the EQ suite, not just Service's own copy) and asked that every place Service shows a list of people pull from the one shared roster Shell uses — the same duplicate-person risk already fixed for the Users list. While sweeping the app for "list of people" spots, found the separate notification-bell bug written up in the entry directly below — spun that off as its own piece of work rather than mixing it into this one.*
-
-- eq-service PRs [#748](https://github.com/eq-solutions/eq-service/pull/748), [#750](https://github.com/eq-solutions/eq-service/pull/750), [#751](https://github.com/eq-solutions/eq-service/pull/751) — all merged, all live on service.eq.solutions.
-
-**Deferred:**
-- [ ] **Not clicked through live by a real signed-in user** — verified via code review, live-database dry-runs, and clean CI, not by actually opening the Calendar page and checking the technician/supervisor dropdowns show the right names. _(added 2026-08-17)_
 
 ---
 
@@ -185,13 +126,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: any signed-in worker — apprentice, labour hire, subcontractor — could write maintenance checks, defects, test results and assets straight to the database, skipping every in-app permission check. Fixed, shipped, and confirmed live (2026-08-16)
-
-**Deferred:**
-- [ ] **Not clicked through live.** The database change is live on production now — worth two minutes to confirm a low-privilege account (apprentice/labour hire/subcontractor) actually gets blocked from writing, and that an assigned technician can still update their own job. Needs a real signed-in session, not checkable from here. _(added 2026-08-16)_
-
----
-
 ## eq-solves-service: Settings page showed broken account controls to Shell-embedded users — fixed, merged, live (2026-08-16)
 *Started from Royce spotting UI on `core.eq.solutions/sks/service/settings` that "shouldn't be there" — a broken "Member Since: Invalid Date" caught the eye. Traced live against both databases: Service's own old sign-in record for the account and Shell's real one are two different IDs, so the settings page was looking up the wrong record every time someone reached it through Shell.*
 
@@ -199,21 +133,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Not clicked through live in either state.** No safe way to produce a working Shell login locally to test the fixed version, and the standalone side has no working test account — the practice/demo login has been broken since a database move in June and was never reconnected. Worth Royce opening `core.eq.solutions/sks/service/settings` once to eyeball it for real. _(added 2026-08-16)_
 - [ ] **The practice/demo account is still broken** — unrelated to this fix, but found while trying to test it. Sign-in intentionally hides the "try the demo" option because it fails every time; worth reseeding if the demo link is still wanted. _(added 2026-08-16)_
 - [ ] **The original question — what Shell's access-control screen looks like for Service permissions — wasn't followed up.** This session only got as far as the settings-page bug that jumped out first; the permissions-matrix screenshot Royce shared is still unreviewed. _(added 2026-08-16)_
-
----
-
-## eq-solves-service: NSX Test Report fixed — dead ACB-only fields left it always printing blank sections (2026-08-14)
-*Simon Bramall reported an ACB check's report came out empty in some sections. ACB's report wiring traced clean end-to-end (every field has a real collection path). The NSX Test Report, though, still carried template rows copy-pasted from ACB that the NSX workflow never actually collects.*
-
-**Deferred:**
-- [ ] **Not click-tested against a real generated NSX report** — fix verified via typecheck + code trace only; worth Royce pulling a real NSX Test Report next time one's generated to eyeball the CB Details table looks right. _(added 2026-08-14)_
-
----
-
-## eq-solves-service: /admin/* pages closed to non-managers (2026-08-14)
-*Royce: gate the remaining Admin pages that were reachable by any signed-in technician who typed the URL directly — the sidebar hid the link, but that's not access control. A prior sweep (PRs #707-#727) had already closed 3 of 9 admin pages; this closed the rest.*
-
-- [ ] **Not click-tested by a real non-manager account** — no such login was available in this environment. Worth Royce confirming a technician account gets bounced off `/admin/*` now. _(added 2026-08-14)_
 
 ---
 

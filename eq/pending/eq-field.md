@@ -89,17 +89,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Leave approver dropdown empty for every plain worker — field_managers security_invoker exception (2026-08-27)
-*Brendan Drinkwater (SKS) reported the Leave request form showing no supervisors. Traced to eq-shell's SEC-33 fix (migration 0256, PR #1510, applied 2026-08-21 to both ehow and zaap) — correct on `app_data.staff` itself, but `app_data.field_managers` (a security_invoker=on view over the same table) silently inherited the restriction even though it exposes no PII, collapsing to 0 rows for every non-manager caller, tenant-wide, since 2026-08-21. Same root cause and the same fix shape as the `field_people` regression below — found independently, shortly before that investigation.*
-
-- [x] **`field_managers` flipped to `security_invoker=false` with an inline `tenant_id` filter** — documented as a deliberate, one-off exception to this repo's "always invoker=on" rule, safe specifically because this view carries no sensitive columns (unlike `field_people`). Applied live to both `ehowgjardagevnrluult` and `zaapmfdkgedqupfjtchl` via Supabase MCP ahead of the PR, on Royce's explicit "apply to both." eq-field [PR #813](https://github.com/eq-solutions/eq-field/pull/813), merged.
-- [x] **Verified via a JWT-simulated read as Brendan's real session** (his tenant/role/actor_id) rather than a live click-through: the supervisor list went from 0 to 20 rows; cross-tenant isolation reconfirmed intact on both planes.
-- [x] **Same fix incidentally restored Recognitions, Incidents notify, Sites lead display, Teams display, and CC-on-leave-emails for plain workers** — all read the same `STATE.managers`/`field_managers` data source, so nothing further was needed for those.
-- [ ] **Not yet click-tested live by Brendan himself.** Royce is meeting him in person to test on a real phone (planned for 2026-08-28) — no live SKS credentials in this environment. This is the one remaining verification gap on this fix, and since it's the same account, doubles as a live check of the related `field_people` coworker-visibility fix below.
-- **Follow-on, found in a separate later session (not this one):** the inline `tenant_id = auth.jwt()...` filter this fix introduced is unreachable from a `service_role` caller (no JWT claims in that context) — surfaced by the digest "Send test to myself" bug, fixed in eq-field [PR #818](https://github.com/eq-solutions/eq-field/pull/818). Worth remembering if another server-side (non-browser) caller ever needs to read `field_managers`.
-
----
-
 ## eq-field: Timesheets — day-cell clicks now fill the whole broken-up week too, not just the Fill Week button (2026-08-28)
 *Follow-on to the 2026-08-27 Fill Week entry further down this file — Royce, from the same live screenshot pattern (Aiden Crowley, TAFE on Tuesday): clicking "+Add" on a day cell still only opened a "Mon · 1 day" editor, because Fill Week (v3.5.583) shipped as a separate row button rather than changing what the ordinary cell click itself does.*
 
@@ -123,9 +112,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Documents to Sign — inline PDF viewer shipped, root-caused a total-failure bug, audience-reach mapped out (2026-08-27)
 *Follow-on to the 2026-08-20 six-round saga further down this file — a full rebuild of View, not another patch to the old `window.open()`-a-raw-file approach. Plan: convert every upload to PDF at commit time (eq-shell, self-hosted Gotenberg), render it in an embedded PDF.js viewer (eq-field), gate Sign on actually having scrolled through it.*
 
-- [x] **eq-shell: Office→PDF conversion pipeline shipped.** Self-hosted Gotenberg, converts Office uploads to PDF at upload-commit time, writes `pdf_storage_path`/`pdf_status` onto `document_versions` (migration 0287). Caught and fixed a real bug before merge: the backfill function was missing Netlify's required `-background` filename suffix, which would have silently capped it at the site's 26s ceiling instead of the intended 15-minute background budget. eq-shell [PR #1635](https://github.com/eq-solutions/eq-shell/pull/1635), merged, live.
-- [x] **eq-field: inline PDF.js viewer shipped, in two passes.** First pass ([PR #811](https://github.com/eq-solutions/eq-field/pull/811), v3.5.586) replaced `window.open()`-the-raw-file with an embedded same-origin viewer plus a reached-the-last-page-and-held-it-open sign gate. It didn't actually work: the viewer's toolbar rendered but the document itself never loaded, for any file, regardless of size — first read as a large-file timing issue (a loading spinner shipped as a hedge). Royce's own DevTools Console screenshot carried the real error: PDF.js's own built-in `validateFileURL` guard was rejecting the viewer's `?file=<url>` parameter outright because the PDF's origin (Supabase Storage) doesn't match the viewer's own — a deliberate XSS/open-redirect protection in Mozilla's code, not a bug, that fires unconditionally and never even attempts a fetch. Fixed by dropping the `?file=` param entirely and driving the load via `PDFViewerApplication.open({url})` instead — PDF.js's own documented API for a host page supplying the URL, which bypasses that guard by design. Verified live by directly exercising the vendored viewer's own JS, not just reasoned through. eq-field [PR #816](https://github.com/eq-solutions/eq-field/pull/816) (v3.5.588), merged, confirmed live.
-- [x] **eq-shell: Register tab went stale after upload/push.** Royce uploaded a real document (Safety Handbook) and pushed it, then couldn't find it again on the Register tab; DB confirmed the data was never lost — the tab's fetch just never re-ran after either action. Fixed with a silent post-action refetch. eq-shell [PR #1644](https://github.com/eq-solutions/eq-shell/pull/1644), merged, live.
 - [ ] **Audience reach for "push to everyone" is real but indirect — 5 role-pushes, not 1.** Royce asked how to open Documents to Sign to all staff. The push picker (`push-document-audience.ts`) takes one role, one crew, or one person per push — no "all" option (confirmed still true even after the same-evening #1645 multi-select-person-picker ship, which speeds up naming individuals but adds no bulk/all control). Reaching everyone with a Shell login today means repeating the Push action once per role — 5 live roles as of this session: employee (26), supervisor (11), manager (11), apprentice (8), labour_hire (6). A UX gap in an existing, working mechanism, not something built or requested to be built this session. _(added 2026-08-27)_
 - [ ] **14 of 74 active SKS staff (~19%) have no linked Shell login and are structurally unreachable by any push.** Role, crew, and person pushes all resolve through `shell_control.user_tenant_memberships`/a real Shell login; an unlinked `app_data.staff` row silently never appears in any of them. Same root population as the long-running unlinked-staff backlog tracked in `eq/pending/eq-shell.md` (37 in mid-August, 24 on 2026-08-20) — now 14, continuing to close on its own as people complete Cards/Core signup. Full list (9 Direct, 4 Labour Hire, 1 Apprentice; 11 of the 14 from a single 2026-06-12/15 bulk-import batch that's never been chased since) given to Royce directly in-session, not reproduced here since it'll drift — re-query `app_data.staff` on ehow (`active=true and user_id is null`) for a fresh list. _(added 2026-08-27)_
 
@@ -146,18 +132,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: schedule_entries never recorded who edited a roster row (2026-08-27)
-
-- [ ] **Not click-tested through the real Field UI.** The DB-trigger fix (created_by/updated_by now stamped via `app_data.eq__caller_actor_staff_id`, PR #807, merged + deploy-verified live) was confirmed via a direct write test simulating the same JWT claim PostgREST sets per request, not through the actual roster screen — no live SKS Shell session reachable this session. Worth a real Batch Fill edit next time someone's signed in via Core, then a direct query confirming the row's `created_by` matches. Full detail in `eq/changelog/eq-field.md` and `sessions/2026-08-27.md`. _(added 2026-08-27)_
-
----
-
 ## eq-field: Timesheets Fill Week + Approved column, plus the "OFF ≠ approved leave" display gap (2026-08-27)
 *Royce screenshotted Phoenix Khatri showing "OFF" on Timesheets with no leave approval findable, PDF export of all 43 leave requests attached (none his). Root-caused live: a roster batch-fill (Luke Wheeler, audit-logged), not a leave request — Timesheets renders straight from the roster/schedule cell and never checks `leave_requests` at all. From there, Royce asked for one-pass whole-timesheet fill when a locked leave/TAFE day splits the week. Shipped together as eq-field [PR #808](https://github.com/eq-solutions/eq-field/pull/808) (v3.5.583), squash-merged on explicit "merge", confirmed live via `field.eq.solutions/sw.js`.*
 
-- [x] **"Fill week" row button** (`scripts/timesheets-spans.js`) — one editor spanning every currently-workable weekday, skipping locked leave/TAFE days automatically, existing job/hours merged in; weekend opt-in via an in-modal checkbox.
-- [x] **Dedicated Approved column** (`scripts/timesheets.js`, new `_tsApprovalButton`) replacing the old faint chip; Name column narrowed 110px → 88px to make room.
-- [x] **`timesheets.js` max-lines ceiling bumped 2400 → 2450** (`eslint.config.js`) to absorb the above — documented escape-valve bump, not a silent ratchet loosen; see the PR/session log for why extraction was rejected (the new button is a deliberate sibling of the existing `_tsApprovalChip`, kept side by side for gating-rule comparison).
 - [ ] **Standing display gap, not fixed**: Timesheets still can't distinguish a supervisor-set roster OFF from a genuinely approved leave request — they render identically, which is exactly what made Phoenix's case confusing. Only worth fixing if it causes real confusion again; the fix would be surfacing which mechanism produced the OFF state, or requiring OFF/leave-type roster codes to link back to a real `leave_requests` row. _(added 2026-08-27)_
 - [ ] **A fully blank Timesheets row shows an empty Approved-column cell, no placeholder** — could read as "forgot to check" vs. "nothing to approve yet." Not fixed, judged scope creep past what was asked. _(added 2026-08-27)_
 - [ ] **In-modal weekend toggle only preserves typed Sat/Sun hours across one ON→OFF cycle**, not a second OFF→ON→OFF→ON — re-enabling re-seeds from the DB. Uncommon click pattern, no data-integrity risk (Save is separate/explicit). _(added 2026-08-27)_
@@ -178,12 +155,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Leave/incident email links fixed, Approve/Reject scanner-prescan hole closed (2026-08-26)
-
-- [ ] **Not click-tested live.** The new confirm-interstitial page (GET renders it, POST applies the decision) is verified at the handler-logic level (isolated Node harness driving the real `exports.handler`, 18/18 assertions) but not against an actual email delivered to and clicked from a real inbox — sending a real message to test it was out of scope for unilateral action. Worth a real click-through next time a genuine SKS leave request goes through email. _(added 2026-08-26)_
-
----
-
 ## eq-field: job-numbers Ops→Field status link verified + 7-week migration drift fixed (2026-08-26)
 *Royce asked whether Field's Job Numbers board reflects live status from EQ Ops. It does — but verifying it surfaced eq-field's own repo had been silently wrong about how its own backing function works for 7 weeks.*
 
@@ -201,22 +172,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Royce, relaying a request from Cicero (a field worker) via a screenshot of his phone on EQ Field's Home tab: could Field link out to Workbench and the payroll site (ESS), so workers only need one app/bookmark. Built and shipped same session — eq-field [PR #794](https://github.com/eq-solutions/eq-field/pull/794) (v3.5.575), merged, live.*
 
 - [ ] **Neither link brings a worker back to Field.** Tapping either opens a second browser tab with no return affordance — delivers "one bookmark," not fully "one app," which is the softer version of the goal Royce actually stated. No reasonable client-side fix exists without native-app affordances Field doesn't have; named rather than left implicit in the shipped changelog copy. Only worth revisiting if it turns out to actually bother people in practice. _(added 2026-08-26)_
-
----
-
-## eq-field: TAFE holidays config could silently lose ranges when added quickly (2026-08-25)
-*Royce: "tafe holidays dont save / I added in 4 ranges and they didnt save properly." Reproduced against the real save code in an isolated harness rather than guessed at — confirmed a real async race, not a one-off glitch.*
-
-- [ ] **Not click-tested live through the real TAFE Holidays admin screen** — same standing sandbox limitation as most entries in this file (no authenticated SKS session reachable here). Verified via the isolated reproduction above plus full lint/test/drift CI, not a real click-through of typing 4 ranges and reloading. Worth 2 minutes to confirm for real next time someone's in the app. _(added 2026-08-25)_
-
-eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570), squash-merged on explicit "yes", confirmed live via `field.eq.solutions/sw.js`.
-
----
-
-## eq-field: Edit Roster week-picker — pin a "Current: ..." row when paged away from the active week (2026-08-25)
-*Royce, from a screenshot: the week-picker dropdown's visible window didn't include the currently-selected week, no way to tell "where am I" once paged away via Earlier/Later. Confirmed via hand-computed date arithmetic that the popover's paging math itself was correct (matched the screenshot exactly) — the gap was that the existing `.current` bold-highlight (v3.5.400) has nothing to attach to once the active week scrolls out of the rendered window.*
-
-- [ ] **Not click-tested live through a rendered popover** — verified function-level (`toggleWeekPicker`/`_shiftWeekPickerWindow`/`_recenterWeekPicker` called directly against a real DOM built in-page) since no authenticated SKS session was reachable this session, same standing limitation as most entries in this file. The click handlers just call these same functions with no extra logic, so this is a smaller gap than most, but not zero. eq-field [PR #780](https://github.com/eq-solutions/eq-field/pull/780) (v3.5.567), squash-merged, confirmed live via `field.eq.solutions/sw.js`. _(added 2026-08-25)_
 
 ---
 
@@ -367,24 +322,11 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 ---
 
-## eq-field: apprentices can self-create their initial profile (2026-08-18)
-*Direct follow-up to the self-view fix in the section below — Royce asked "shouldn't the apprentice do their own setup?" after confirming self-viewers with no profile were stuck waiting on a manager. Confirmed via AskUserQuestion: yes, let them self-create.*
-
-- [ ] **Not click-tested live by a real self-signed-up apprentice** — same SKS Core-only sandbox limitation as PR #722 below. _(added 2026-08-18)_
-
----
-
 ## eq-field: boot-perf — 3 of the 4 flagged scripts moved off the critical path, closes the 2026-07-28 audit item (2026-08-18)
 *Closes the "audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint" item further down this file (2026-07-28). Built a grounded prompt for a future audit session, then ran it the same day — measured EQ Field's real boot performance first (the 2026-07-28 note was 3 weeks stale) and verified each of the 4 named candidates live before moving any. digest-settings.js, apprentice-widget.js and recognitions.js were all genuinely safe to defer, using the same render-when-ready pattern `leave.js` already proves (`_ensureLeaveLoaded()`); region-filter.js doesn't fit the tab-scoped lazy-load model at all and was dropped from scope, not deferred again.*
 
 - [ ] **`core-bundle-b4.js` is now a degenerate one-file bundle** (`home.js` only, after digest-settings.js and recognitions.js both moved out of it) — flagged in both PR bodies as a legitimate small follow-up, deliberately not done to keep each PR tight and respect "never delete files without explicit permission." _(added 2026-08-18)_
 - [ ] **Not click-tested live through a real signed-in session** — verified via CI, drift guards, and production `sw.js` CACHE checks instead. _(added 2026-08-18)_
-
----
-
-## eq-field: apprentice list fail-open bug + full onboarding/login audit across ehow, jvkn, Sentry (2026-08-18)
-
-- [ ] **Not click-tested live as a non-manager** — same SKS Core-only sandbox limitation as PR #720's own entry below; verified via CI + live DB trace instead. _(added 2026-08-18)_
 
 ---
 
