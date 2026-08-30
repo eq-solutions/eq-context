@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: field_sites.site_lead — stale free-text passthrough replaced with canonical contact link (2026-08-30)
+*Royce forwarded a bug report he'd found by reading code/schema, not by reproducing it — explicit instruction to verify live before treating it as urgent.*
+
+- [x] **Verified live before fixing, not hypothetical**: 9 real SKS sites (Equinix SY1–SY5, Equinix Head Office, St George Private Hospital, SY6, SY7) had `field_sites.site_lead`/`site_lead_phone` blank in EQ Field despite each having a correctly-linked contact via `app_data.contact_site_links` (`role='site_contact'`) — `site_lead` was still reading the old free-text `sites.site_contact_name`/`phone` columns, which `crm-write.ts`'s `update_site` unconditionally nulls on every save. Migration `0291` (PR #1669, merged earlier the same day) had already moved the sibling `ask_for`/`backup` fields onto the same canonical-link mechanism and even named `site_contact` as the correct-behaviour reference in its own header comment — but didn't touch `site_lead` itself.
+- [x] **Fixed**: migration `0294` (eq-shell [PR #1672](https://github.com/eq-solutions/eq-shell/pull/1672), squash `a4d578a1`) repoints `site_lead`/`site_lead_phone` to the same `contact_site_links` join, `role='site_contact'` — same DROP+CREATE+`security_invoker`+`GRANT` pattern as `0159`/`0278`/`0291` for this view. No eq-field changes needed (reads the view by column name) and no competing Field-side write path (`scripts/sites.js` blocks site saves outright for the `sks` tenant).
+- [x] Merged on Royce's "merge when say and deploy if neeed", dispatched via `tenant-migrate.yml` (Royce ran it directly — the workflow's own "no approval gate, applies immediately fleet-wide" design tripped Claude Code's own classifier). Applied cleanly to both `eq` and `sks`. Re-verified live post-apply: all 9 sites now show a real `site_lead` (and phone, where the linked contact has one on file).
+
+**Deferred:**
+- [ ] **A second, related bug found in passing, not fixed here**: `eq-shell/src/modules/quotes/QuotesCustomers.tsx` (EQ Ops' own Customers-page site editor — a different component than the one PR #1669 converted) still renders free-text "Site contact" Name/Phone/Email inputs wired to the same `update_site` action; typing into them and saving is a silent no-op since the server nulls those columns regardless of what's submitted. Spawned as background task `task_2d48d0fc`, Royce started it in a separate session; running independently, not yet reported back as of this close. _(added 2026-08-30)_
+
+---
+
 ## eq-shell: security-hardening sprint — 8 items shipped, merged, and live (2026-08-30)
 
 Every code + DB item in this sprint is now live: SEC-34/SEC-35/SEC-36/SEC-53/SEC-59/SEC-67 (code half) + the 15-endpoint same-origin-check gap. Dispatching #1662 (jvkn) also swept up 2 other already-merged, previously-undispatched migrations from earlier this session (Hussain + second-wave divergent-name fixes) — both self-guarded `UPDATE ... WHERE name = '<old value>'`, confirmed harmless no-ops since those rows were already on the new value. Full build detail: `sessions/2026-08-30.md`, `eq/changelog/eq-shell.md`.
