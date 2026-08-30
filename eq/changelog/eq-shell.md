@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -2281,3 +2281,10 @@ Note (2026-08-20): #1465/#1467/#1468/#1469/#1470/#1472 are covered at the top of
 - `scripts/migrate-tenants.mjs`: added `MIGRATIONS_DIR` env override + a tenant-aware `--bootstrap` mode (seeds the ledger for a new consumer repo, respects the existing plane-header scope guard). New reusable `.github/workflows/tenant-migrate-apply.yml`, mirrors `jvkn-control-plane-apply.yml`'s two-repo-checkout pattern — lets eq-field (or any future consumer) apply its own tenant migrations through this repo's governed pipeline instead of hand-applying via the Supabase MCP.
 - CI green: typecheck/test/lint, function-grants-preserved, migration-ledger-hygiene, schema-drift/anon-grant/policy-lint, gitleaks, deploy preview. The edit itself matched `tenant-migrate.yml`'s own PR path filter, auto-triggering its read-only Plan job against live zaap/ehow — passed, a free extra validation.
 - Squash-merged (`824fe91f`) on explicit "merge 1684 and 846", confirmed live via commit-ancestry against the production deploy. No bootstrap or live dispatch run against eq-field — held pending the exclude-list mechanism (see `eq/sprints/2026-08-30-field-pipeline-and-rls-sprint.md`) and Royce's go.
+
+## 2026-08-31 (PR #1690, OPEN, not merged)
+- **Threads `tenant_role_overrides` denials into the Field iframe JWT — companion to eq-field's own deny-consumption PR (#851).** `token-exchange.ts` already fetched `roleOverrides` via `getRoleOverridePerms()` for the grant side (`liveFieldExtraPerms`) but discarded `roleOverrides.denials`. PR #1686 fixed the identical gap for this repo's own cookie-session model (`_shared/permissions.ts`'s `can()`) but explicitly named this JWT-mint path as separate and unaddressed — this PR closes that.
+- `netlify/functions/_shared/supabase-jwt.ts`: `SupabaseJwtClaims.app_metadata` gains optional `denied_perms?: string[]`; `signJwtWithSecret()`/`signSupabaseJwt()` gain a new **trailing** optional `deniedPerms` param — `mint-tenant-jwt.ts`'s existing calls stop earlier in the positional list, so they're unaffected. `mint-tenant-jwt.ts` itself deliberately not touched: confirmed via grep it has zero references in eq-field, isn't part of Field's auth chain.
+- Role-level only (`roleOverrides.denials`) — no per-user revoke path exists anywhere yet, matching `@eq-solutions/roles`' own `resolveEffectivePermissions()` comment ("revokes is RESERVED... GRANT-ONLY today").
+- CI green (typecheck·test·lint, schema drift, gitleaks, function grants, migration ledger hygiene). Not merged — this PR alone has zero live effect until eq-field#851 also merges (nothing reads the new claim yet).
+- Same gap found one layer deeper, not touched by this PR: 14 `public.eq_*` Quotes/CRM RPC functions on ehow check `extra_perms` directly (not via `_shared/permissions.ts`), so a `tenant_role_overrides` deny still wouldn't stop a direct RPC call even after this PR ships. Tracked as `task_9f3eb7a8`.

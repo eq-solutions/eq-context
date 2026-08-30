@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -1348,6 +1348,14 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 - [ ] **Not click-tested live** — deploy previews sit on a different domain than `core.eq.solutions`, so the production session cookie doesn't carry over and entering credentials to get past login wasn't an option. Verified instead via `tsc -b --force` (clean), eslint (only the same 3 pre-existing errors #1514 already flagged, confirmed on lines this PR didn't touch), and the login page itself rendering correctly on the deploy preview (no build regression). Worth two minutes: group by Person, confirm no "custodian" text anywhere, and that phone/email actually show for an assigned item. _(added 2026-08-23)_
 - [ ] **Table cell and item-detail-drawer still show name only, no contact info** — the ask was specifically about the Person-group header view, so the table's "Assigned to" column and the drawer's "Assigned to" row weren't touched. Easy follow-up if Royce wants contact info there too. _(added 2026-08-23)_
+
+---
+
+## eq-shell: threads tenant_role_overrides denials into the Field JWT (PR #1690)
+*Companion to eq-field PR #851 — this repo's own PR #1686 fixed the identical "denials silently ignored" gap for Shell's cookie-session model but explicitly flagged this JWT-mint path (token-exchange.ts) as separate and unaddressed.*
+
+- [ ] **Not merged — needs Royce's review**, paired with eq-field#851; this PR alone has zero live effect (nothing reads the new claim yet). _(added 2026-08-31)_
+- [ ] **Same gap exists one layer deeper**, in 14 `public.eq_*` Quotes/CRM RPC functions on ehow that check `extra_perms` directly (not via `_shared/permissions.ts`'s `can()`, which #1686 already fixed) — found while scoping the eq-field companion work, not touched by either PR. Spawned as eq-field-side task `task_9f3eb7a8` since that's where the investigation happened, but the fix belongs in this repo's own governed pipeline. _(added 2026-08-31)_
 
 ---
 
