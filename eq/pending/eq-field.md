@@ -19,6 +19,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Apprentices feature critique — item 1 closed, 2 of 3 open (2026-08-30)
+- [ ] **No reminder mechanism for supervisors.** Unlike leave/timesheets' Friday digest, nothing nudges a supervisor to actually rate an apprentice or leave feedback each quarter — the feature's two-sided value depends entirely on a supervisor remembering unprompted. _(added 2026-08-30)_
+- [ ] **No usage instrumentation.** No count exists anywhere of self-assessments completed, journal entries written, or feedback given per month — real adoption beyond the one live profile checked (Elliot Gross) is unknown. Check before investing further effort in this feature. _(added 2026-08-30)_
+- [ ] **[PR #832](https://github.com/eq-solutions/eq-field/pull/832)'s fix may have blocked a real workflow with no replacement.** If a supervisor was using the old manager-bypass to help an apprentice fill in their own self-assessment together in person, that now hard-stops. Additive fix available if wanted: stamp `entered_by`/`on_behalf_of` instead of blocking outright. _(added 2026-08-30)_
+
+---
+
 ## eq-field: Leave approver dropdown empty for every plain worker — field_managers security_invoker exception (2026-08-27)
 *Brendan Drinkwater (SKS) reported the Leave request form showing no supervisors. Traced to eq-shell's SEC-33 fix (migration 0256, PR #1510, applied 2026-08-21 to both ehow and zaap) — correct on `app_data.staff` itself, but `app_data.field_managers` (a security_invoker=on view over the same table) silently inherited the restriction even though it exposes no PII, collapsing to 0 rows for every non-manager caller, tenant-wide, since 2026-08-21. Same root cause and the same fix shape as the `field_people` regression below — found independently, shortly before that investigation.*
 

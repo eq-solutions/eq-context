@@ -9,6 +9,14 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-30 (PR #832 MERGED + LIVE, v3.5.604 — SECURITY: apprentice self-assessment — a manager could rate an apprentice's own "self" score for them)
+- Found while critiquing the Apprentices feature at Royce's request, following the prior day's journal-privacy fix (v3.5.600): `submitRating()`'s self-assessment branch let a manager submit a "self" rating on behalf of any apprentice, written identically to the apprentice's own answer with no record of who actually entered it — quietly undermining the Skills Passport's honest self-vs-supervisor comparison.
+- Fix: dropped the manager bypass — self-assessment is now ownership-only, full stop, matching journal/request-feedback's existing "no manager bypass" rule in the same file. The file's own header already documented this tier as self-only; the code hadn't matched it.
+- Client-side: `apprentices-skills-passport.js`'s "How am I going?" button now only renders for the profile's own owner (`_isSelfProfile`) — previously shown to every viewer regardless of role, which would 403 on submit for a manager once the server fix landed.
+- Added a regression case to `tests/apprentice-write-scoping.test.js` (manager `submit-self-assessment` on someone else's profile → 403) — the existing suite never asserted the manager-caller case for this action, which is how it shipped unnoticed.
+- eq-field [PR #832](https://github.com/eq-solutions/eq-field/pull/832), squash-merged on explicit "merge when safe" (mergeability re-checked clean immediately before merge), confirmed live via `field.eq.solutions/sw.js` (`v3.5.604`). No version-stamp collision this time.
+- **Open follow-up, not resolved this session**: if a supervisor was using the old manager-bypass to help an apprentice fill in their own self-assessment in person, that workflow now hard-stops with no replacement offered. Tracked in `eq/pending/eq-field.md`.
+
 ## 2026-08-30 (PR #830 MERGED + LIVE, v3.5.603 — timesheets gets roster's staleness guard preemptively; roster cells hint at the project-code shortcut)
 - Timesheets' canonical save path (`_sbTimesheetsCanon`) has the identical blind whole-week delete+insert shape that caused v3.5.601's real live incident on roster's twin path — same tenant (`sks`), same architecture. Verified live before porting: `app_data.timesheets` has `updated_at`, row-level-only RLS, `sks` genuinely in `TIMESHEETS_CANONICAL_TENANTS`. Ported preemptively rather than waiting for an observed incident.
 - `timesheets-adapter.js` gains `weekRevFingerprint()`/`isFingerprintAware()`; a timesheet day can hold multiple job segments (unlike roster's single value), so its fingerprint is the MAX `updated_at` across that day's segments — proven adversarially: a drift on just one of two same-day segments still correctly refuses the overwrite. `supabase-canon-write.js` gains `_weekStillFreshTs()`, a parallel (not shared) implementation to roster's own.
