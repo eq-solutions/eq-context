@@ -9,6 +9,17 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-30 (PR #836 MERGED + LIVE, v3.5.611 — Dashboard + Trial Dashboard: an aliased project code now shows its real site name too)
+- Follow-up to PR #833 (v3.5.606): that PR fixed `roster.js`'s own site-name/address/job-number lookups via a new `_resolveSiteAbbr()` helper, but deliberately left `dashboard.js`/`core-bundle-b1.js` and `trial-dashboard.js` alone — each keeps its own separate, underscore-prefixed site-name fallback, used only while `roster.js` hasn't lazy-loaded yet.
+- Confirmed this isn't a narrow race before fixing it: `dashboard.js` ships eagerly inside `core-bundle-b1.js` on every boot, but `roster.js` is lazy per-tab and isn't a declared dependency of the `'dashboard'` or `'trial'` lazy-loader tab entries — a session that never opens Roster sits on the unresolved fallback the whole time.
+- FIX — `scripts/dashboard.js`: `_getSiteName`'s fallback now mirrors `_resolveSiteAbbr` (direct `STATE.sites` match → `EQ_ROSTER_ADAPTER.codeToSiteOrProject`/`siteIdToCode` alias lookup → give up), instead of a plain abbr match with no alias path.
+- FIX — `scripts/trial-dashboard.js`: its equivalent fallback was even thinner (raw code, no `STATE.sites` lookup at all) — brought to the same behaviour.
+- `scripts/core-bundle-b1.js` regenerated via `build-bundles.mjs --write` (dashboard.js is a bundle source). `site-map.js` (Dashboard's map view) checked — no site-abbr lookup of its own, nothing to change.
+- Live-verified in the deploy preview (browser, `?tenant=demo`, no login needed): `window.EQ_ROSTER_ADAPTER` loaded while `window.getSiteName` was not, during the eager pre-login Dashboard render — the exact fallback-branch condition this fix targets, confirmed live rather than only inferred from source.
+- Needed three rebases to land: `origin/main` moved 606→607(#834)→608(#838)→609(#835)→610(#839) while this PR was open, with two sibling PRs independently claiming this branch's exact next version number in a row. Resolved each time by re-fetching, rebasing, renumbering past main's current tip, and re-running the full verification suite — final number v3.5.611.
+- eq-field [PR #836](https://github.com/eq-solutions/eq-field/pull/836), squash-merged on Royce's explicit "merge everything", confirmed live via `field.eq.solutions/sw.js`.
+- **Open follow-up**: not click-tested live against real MOD10/SLDC data — no live SKS/Core credentials in this environment, same standing limitation as PR #833. Tracked in `eq/pending/eq-field.md`.
+
 ## 2026-08-30 (PR #838 MERGED + LIVE, v3.5.608 — FIX: Map / Roster Overview map tiles — CARTO now requires an API key we don't have)
 - Both map views (`site-map.js`'s Map page, `roster-overview-map.js`'s optional Roster Overview map) rendered every tile as a grey "API KEY REQUIRED — carto.com/basemaps/apikey" watermark, site markers still plotting correctly on top. Verified live before touching code: fetched a real tile from the hardcoded `basemaps.cartocdn.com` URL both files used — 200 OK, but the image itself is the watermark. CARTO's free anonymous basemap tier now gates on a key neither file ever had; a provider-side change, not a regression in this codebase.
 - FIX — swapped both call sites to OpenStreetMap's standard tile server (`tile.openstreetmap.org`), verified live (fetched a real tile, confirmed it renders actual map data, no key needed). Added the OSM attribution string neither file carried before — a pre-existing gap, since the CARTO tiles were shown completely unattributed.
