@@ -9,6 +9,15 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-30 (Resourcing rebuilt — in-place panel, readable history, dashboard/RLS leak closed)
+- Row click on the Resourcing dashboard opens conversation history in a slide-in panel in place instead of navigating to the Staff page.
+- Saved formal conversations (Check-in / Development Review) are readable again — previously only an auto-generated one-line heading ever showed after the save. Development Review ratings now show a `(was N, +delta)` comparison against the previous review.
+- "Happy and engaged?" is now required and asked first in both templates, not optional and last — live data showed 0 of 27 backfilled reviews had a real answer.
+- Fixed a real leak: the Resourcing dashboard read `app_data.staff_conversations` via a service-role client that bypassed the table's creator-only RLS, so a second supervisor granted `staff.manage_conversations` would have seen every other supervisor's private summaries and engagement answers. Content is now redacted per-viewer immediately after fetch; coverage metadata (last spoken to, counts) stays roster-wide by design.
+- Default A-Z sort and an "overdue" flag (180+ days since any conversation, new starters excluded) added to the dashboard.
+- 8-angle review before merge caught and fixed 10 real issues, most notably the new panel not remounting its conversations component on person-switch (an in-progress "Log a conversation" entry could have silently saved under the wrong person's id).
+- eq-shell [PR #1683](https://github.com/eq-solutions/eq-shell/pull/1683), merged `ae90be65`, confirmed live via commit-ancestry + direct function check.
+
 ## 2026-08-30 (endpoint audit closed out — the "13 remaining" from earlier today was never real)
 - Re-audited the 13 endpoints left over from #1682 (below) before starting any fix work on them. First pass used a stale local checkout on an unrelated branch — it claimed 0 gaps but also claimed the 11 files #1682 had *just* fixed were still unfixed, which is what gave it away as reading the wrong state. Redid it from a fresh worktree off verified `origin/main`.
 - A plain grep for "session-authenticated, no `requirePerm`, no active-check by name" turns up 24 files on `main` today — but reading each one's actual logic (not just the presence/absence of a function-call string) shows all 24 are already safe: 13 are pure reads that a crude scan mislabelled as writes (PDF/Excel rendering, AI-suggestion text, dashboards, status lookups — no INSERT/UPDATE/DELETE anywhere in the file), and 10 already run the identical check inline (`.eq('active', true)` on the user lookup, immediately followed by a 401 if nothing comes back) without going through the named `isUserActive()` helper — spot-verified directly on the 3 that mint live credentials (`mint-supabase-jwt.ts`, `switch-tenant.ts`, `token-exchange.ts`), confirming the check runs before the token is minted, not just somewhere in the file.
