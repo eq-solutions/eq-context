@@ -72,7 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1673 feat(documents): edit requires_signoff + reach category management from any tab
+- #1674 feat(staff): start_date capture + Resourcing gap indicator
 
 ---
 
