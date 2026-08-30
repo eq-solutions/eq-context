@@ -60,6 +60,13 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-30)
 
+**eq-cards:**
+- #334 fix(cards): polish sprint round 3 — the rest of the deferred list
+
+**eq-field:**
+- #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
+- #850 feat(ci): pass exclude through to the tenant-migrate reusable workflow
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -67,6 +74,12 @@ _If this file is >48h old, the cron is broken._
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1691 fix(security): entity.view gate on 5 CRM read RPCs called directly from the browser
+- #1690 fix(security): thread tenant_role_overrides denials into the Field JWT
+- #1688 fix(records): not-allowed page for direct nav to a denied entity/staff URL
+- #1687 feat(migrate): --exclude flag for bootstrap, skip genuinely-pending files
 
 ---
 
