@@ -685,11 +685,8 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ---
 
 ## eq-shell: switching someone off didn't actually stop them — closed at both ends, live (2026-08-15)
-*Follow-on from the Richard Brown incident, where a deactivated duplicate account kept writing to a live staff record for two days. The question asked was whether that was one endpoint or something wider. It was wider: deactivating someone set a flag and did nothing else — it never ended the session they already had. Three sessions closed it in parallel; the numbers below were measured against the live code and database, not estimated.*
 
-**Deferred:**
 - [ ] **None of it has been tried on a real switched-off account.** Everything above is verified by tests and by calling the live endpoints unauthenticated, not by taking a real person's session and watching it get refused. Three switched-off accounts still attached to a company are available to test with whenever you want to spend ten minutes on it. _(added 2026-08-15)_
-- [x] **33 data-changing endpoints don't use the shared permission check** and so didn't get the new guard. Real count turned out to be 24, not 33 — several of the original 33 were misclassified reads or already fixed. A full one-by-one read of the 24 (not just a name-based scan) found only 11 were real gaps — the highest-stakes ones: 8 admin-only actions (including permanently deleting a tenant) plus 3 places someone switched off could still change their own login PIN or email. [eq-shell#1682](https://github.com/eq-solutions/eq-shell/pull/1682), merged and live. The other 13 turned out to already be safe — either genuine reads, or already doing the same active-account check by hand instead of through the shared helper (spot-checked directly on the 3 highest-stakes: token/JWT minting and tenant-switching). One harmless non-issue left alone: logging out doesn't need an active-account check, since logging out is itself what deactivation wants to happen. Nothing left open here. _(added 2026-08-15, resolved 2026-08-30)_
 
 ---
 
