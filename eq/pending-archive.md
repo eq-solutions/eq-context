@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -13,6 +13,14 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-field: Apprentices list still showed everyone despite v3.5.517's fix — root cause was a boot-order race, not the scoping logic; plus 4 nav permission-scope gaps found in the same live review (2026-08-19) (fully closed 2026-08-31)
+*Royce logged in as a real SKS apprentice ("Jordan A. Sample") to check the earlier v3.5.517-519 scoping fix and found it hadn't actually worked: still saw the full company roster, plus flagged Timesheets ("can an apprentice even use this?") and a wrong Safety submenu ("should see prestarts, toolboxes and test equipment").*
+
+- [x] **"Safety has disappeared" mystery finally root-caused, 12 days later — recurred live on the same Jordan A. Sample account (2026-08-30/31), diagnosed properly this time.** Not a stale service-worker cache: `scripts/app-state.js`'s `applyTierVisibility()` carries a `v3.5.172` "Apprentice portal" block that unconditionally force-hides `nav-group-safety` (header + every child, Prestarts/Toolboxes included) for any apprentice session — predates apprentices ever being granted `reports.prestart`/`reports.toolbox` access at all (that grant came later, permission-matrix.js v2.6, 2026-08-24), and nobody revisited the strip-list since. Fixed: removed `nav-group-safety` from the strip array; the group's own children already carry correct individual `.edit-only` gating. **Not fully reconciled against this section's own title** — whether this is the *same* underlying bug as the "boot-order race" diagnosed here for the list-shows-everyone symptom, or a second, independent cause that happened to produce the same visible symptom, was not determined. Full write-up: `sessions/2026-08-31.md`, eq-field [PR #847](https://github.com/eq-solutions/eq-field/pull/847) (v3.5.618).
+- [x] **The list-shows-everyone symptom itself also recurred, same session, same account — different mechanism than "boot-order race."** `apprentices.js`'s self-scoping (v3.5.517) only engaged when a server round-trip to `netlify/functions/apprentice-data.js` succeeded *and* that function's own `session.tenant_slug === 'sks'` check matched — silently missed Jordan's Shell-embedded/Core token, falling open to the full unfiltered roster with no visible error. Root cause of *why* the tenant_slug check misses that token shape not chased down. Fixed robustly at the client instead: self-scoping now also tries `EQ_PERMS.myPersonId()`, independent of that server round-trip. Same PR #847.
 
 ---
 
