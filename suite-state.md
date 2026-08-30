@@ -35,7 +35,7 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
 |--------|-------|--------|
-| Sites | 211 | app_data.sites |
+| Sites | 209 | app_data.sites |
 | Customers | 39 | app_data.customers |
 | Assets | 2,842 | app_data.assets |
 | Tenants | 1 (SKS Technologies) | service.tenants |
@@ -72,7 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1672 fix(sites): field_sites.site_lead via contact_site_links (role=site_contact)
+- #1673 feat(documents): edit requires_signoff + reach category management from any tab
 
 ---
 
