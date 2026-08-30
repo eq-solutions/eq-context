@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-30 04:17 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-30 04:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-30 04:11 UTC → 2026-08-30 04:17 UTC)
+## Since last refresh (2026-08-30 04:17 UTC → 2026-08-30 04:25 UTC)
 
-- Merged: eq-shell [#1670](https://github.com/eq-solutions/eq-shell/pull/1670) feat(documents): ad-hoc multi-site document pushes and sign-
-- Merged: eq-shell [#1665](https://github.com/eq-solutions/eq-shell/pull/1665) fix(security): add the same-origin check to 15 more cookie-a
-- Merged: eq-shell [#1663](https://github.com/eq-solutions/eq-shell/pull/1663) fix(security): drop dead Supabase/Quotes refs from CSP + del
-- Merged: eq-shell [#1661](https://github.com/eq-solutions/eq-shell/pull/1661) fix(schedule): correct 0290's view column order + scope to S
-- Merged: eq-shell [#1660](https://github.com/eq-solutions/eq-shell/pull/1660) feat(documents): push a document to a customer's whole site 
-- Merged: eq-shell [#1655](https://github.com/eq-solutions/eq-shell/pull/1655) fix(auth): add same-device path for mobile TOTP enrollment
-- Merged: eq-shell [#1654](https://github.com/eq-solutions/eq-shell/pull/1654) fix(data): resolve 4 more divergent staff/shell login names
-- Merged: eq-shell [#1653](https://github.com/eq-solutions/eq-shell/pull/1653) feat(nav): unpin Users/Audit log/Security groups/Settings fr
+- Merged: eq-shell [#1669](https://github.com/eq-solutions/eq-shell/pull/1669) feat(sites): canonical contacts only for site "Ask for" / "B
+- Merged: eq-shell [#1667](https://github.com/eq-solutions/eq-shell/pull/1667) fix(security): tender-pipeline zaap tables get real authenti
+- Merged: eq-shell [#1666](https://github.com/eq-solutions/eq-shell/pull/1666) feat(documents): requires_signoff flag on document_categorie
+- Merged: eq-shell [#1664](https://github.com/eq-solutions/eq-shell/pull/1664) fix(documents): lazy-load Register and Reference library tab
+- Merged: eq-shell [#1662](https://github.com/eq-solutions/eq-shell/pull/1662) fix(security): scope user_invites reads to managers, revoke 
+- Merged: eq-shell [#1659](https://github.com/eq-solutions/eq-shell/pull/1659) feat(schedule): site_project_id on schedule_entries — write 
+- Merged: eq-shell [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every documen
+- Merged: eq-shell [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (
 
 ## ⚠ Needs you (9)
 
@@ -87,13 +87,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-30 | eq-shell | [#1672](https://github.com/eq-solutions/eq-shell/pull/1672) fix(sites): field_sites.site_lead via contact_site_links (role=si |
 | 2026-08-30 | eq-shell | [#1668](https://github.com/eq-solutions/eq-shell/pull/1668) feat(documents): category can override doc_type's signoff routing |
 | 2026-08-30 | eq-shell | [#1671](https://github.com/eq-solutions/eq-shell/pull/1671) feat(ci): let other repos apply their own jvkn migrations via thi |
+| 2026-08-30 | eq-field | [#839](https://github.com/eq-solutions/eq-field/pull/839) v3.5.610 — FIX: Prestart/Toolbox create unreachable on mobile; ro |
 | 2026-08-30 | eq-field | [#835](https://github.com/eq-solutions/eq-field/pull/835) v3.5.607 — FIX: My Schedule site lead/contacts/project badge miss |
 | 2026-08-30 | eq-field | [#838](https://github.com/eq-solutions/eq-field/pull/838) v3.5.608 — FIX: Map / Roster Overview map tiles — CARTO now requi |
 | 2026-08-30 | eq-field | [#834](https://github.com/eq-solutions/eq-field/pull/834) v3.5.606 — Prestart Crew: surface recently-approved staff not yet |
 | 2026-08-30 | eq-field | [#833](https://github.com/eq-solutions/eq-field/pull/833) v3.5.606 — Roster: an aliased project code now looks and acts lik |
 | 2026-08-30 | eq-field | [#831](https://github.com/eq-solutions/eq-field/pull/831) v3.5.604 — FIX: CSV people import silently nulled existing fields |
 | 2026-08-30 | eq-field | [#832](https://github.com/eq-solutions/eq-field/pull/832) v3.5.604 — SECURITY: apprentice self-assessment — a manager could |
-| 2026-08-30 | eq-cards | [#330](https://github.com/eq-solutions/eq-cards/pull/330) feat(ci): apply eq-cards' own jvkn migrations via eq-shell's gove |
 _Showing 15 of 91 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 04:17 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 04:25 UTC._
