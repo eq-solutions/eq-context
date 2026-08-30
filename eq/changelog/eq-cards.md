@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-30 (PR #330 MERGED + LIVE — jvkn migrations can now apply through eq-shell's pipeline)
+- New `workflow_dispatch`-only workflow calling eq-shell's new reusable `jvkn-control-plane-apply.yml` ([eq-shell#1671](https://github.com/eq-solutions/eq-shell/pull/1671)). Reuses the 3 secrets #328 already added for the check side — nothing new provisioned.
+- **Not yet safe to dispatch with `bootstrap=true`.** Of eq-cards' 161 tracked migrations, 29 don't match eq-shell's ledger under any known naming pattern (not proof they're missing — a real number, not a suspicion). Bootstrapping now would stamp any genuinely-unapplied file among those 29 as done without ever running it. That reconciliation is the one thing standing between this and eq-cards' first real governed migration.
+- [PR #330](https://github.com/eq-solutions/eq-cards/pull/330), squash-merged (`3d735e9e`) on Royce's explicit go. CI green, including the pre-existing advisory jvkn check ([#328](https://github.com/eq-solutions/eq-cards/pull/328)) confirming the new workflow file didn't disturb it.
+
 ## 2026-08-30 (PR #329 MERGED + LIVE — dead join-QR card removed from Profile)
 - `_JoinQrCard` on the Profile screen advertised a QR for `cards.eq.solutions/join?tenant=<slug>` to managers/supervisors with zero backing route — [PR #248](https://github.com/eq-solutions/eq-cards/pull/248) (2026-08-15) had already audited and killed `/join`'s entire backend, replaced by Shell's role-tagged self-join QR, but never touched this file.
 - Removed the card and its `joinUrl`/`isQrEligible`/`tenantSlug` computation (68 lines, pure deletion); `qr_flutter` import removed from this file only, package stays live elsewhere (`admin_worker_detail_screen.dart`, `licence_detail_screen.dart`).

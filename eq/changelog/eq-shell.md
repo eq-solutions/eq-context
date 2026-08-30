@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-30 (PR #1671 MERGED + LIVE — jvkn migration pipeline extended to other repos)
+- `scripts/migrate-control-plane.mjs` gets an additive `MIGRATIONS_DIR` env override (defaults unchanged); new `.github/workflows/jvkn-control-plane-apply.yml` reusable workflow lets another repo apply its own migrations to jvkn through this pipeline instead of hand-applying or building an equivalent of its own. Mirrors `jvkn-control-plane-check.yml`'s proven checkout/auth pattern (eq-cards#328) — reuses `EQ_SHELL_CHECKOUT_TOKEN`, no new secret.
+- `/decide` pass run before building (not just the check-side pattern assumed to transfer): found the script's hardcoded migrations path would have silently read the wrong repo's files if checked out unmodified in a caller's CI — fixed via the override, not a workflow-side workaround. Ledger stays one shared table keyed on filename alone — eq-shell's and eq-cards' naming conventions are structurally different enough that a real collision is unlikely, and a same-name-different-content one already fails loud via the existing checksum-drift check.
+- Mechanism only — first companion consumer is eq-cards ([PR #330](https://github.com/eq-solutions/eq-cards/pull/330)), and its first real dispatch is explicitly gated (see that repo's changelog) on reconciling ~29 migrations that don't match this ledger under any known naming pattern.
+- [PR #1671](https://github.com/eq-solutions/eq-shell/pull/1671), squash-merged (`141fde9f`) on Royce's explicit go. CI green including the read-only plan-mode job (exercises the new code path against live jvkn, writes nothing) and the schema-drift security gate.
+
 ## 2026-08-30 (4 more security-hardening PRs merged — 2 code, 2 migration-only pending dispatch)
 - **PR #1663 MERGED + LIVE** — SEC-53 (dead `ktmjmdzqrogauaevbktn.supabase.co` + `quotes.eq.solutions` dropped from core.eq.solutions's CSP) and SEC-67's eq-shell code half (`field-supabase.ts`'s zero-caller `getFieldServiceClient()` deleted outright). Pure code, live via Netlify the moment merged.
 - **PR #1665 MERGED + LIVE** — 15 more cookie-authenticated endpoints gated with `checkShellOrigin()` (account-security, GM Reports, Intake, Labour Hire ×9, uploads ×3, job-creation). Enforcing immediately (`ENFORCE_IFRAME_ORIGIN=true` in prod already), not just logging.
