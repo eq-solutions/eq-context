@@ -72,6 +72,8 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1686 fix(security): tenant_role_overrides denials were silently inert everywhere
+- #1685 fix(staff): readable conversation viewer + attach source documents
 - #1684 feat(ci): let eq-field apply its own tenant migrations via this pipeline
 
 ---
