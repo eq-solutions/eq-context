@@ -13,6 +13,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Prestart Crew step now surfaces recently-approved workers not yet on today's roster (2026-08-30)
+*Part of a broader EQ Cards → EQ Shell → EQ Field onboarding-gap sprint (steelmanned, then planned) — this is the one item actually shipped; a second candidate (Field realtime push for the people list) was costed and explicitly deferred, not built. Full context in `eq/pending/eq-cards.md` (2026-08-30 entry) — this is where it landed.*
+
+- [x] **Built**: a new "＋ Add recently approved" affordance next to the Prestart Briefing Crew step's existing "Pull from today's roster" — that pull only ever matched people with a schedule row for today, silently finding nobody for a worker approved same-day (first day, or a same-day EQ Cards → EQ Shell approval), with the only workaround being manual name entry. The new option fetches `field_approved` staff approved in the last 48h, excludes anyone already on today's roster or already in the crew, lists the rest as individual one-tap adds — deliberately not a blind bulk-add, since "recently approved" isn't the same claim as "working here today." `scripts/site-reports.js`.
+- [x] **DB half**: `app_data.field_people`/`field_people_directory` gained a passthrough `field_approved_at` column (was already on `app_data.staff`, written by eq-shell's `cards-approve-staff.ts`, never exposed through either Field-facing view) — applied and verified live on both `ehow` and `zaap`, `security_invoker` correct on both (`on`/`false` respectively). Two new migration files, both idempotent, self-verifying.
+- [x] **Real merge conflict found and resolved, not just merged through**: this branch and an unrelated, already-merged roster/site-alias PR had both independently claimed `v3.5.606`. Renumbered to `v3.5.607` (changelog entry, `APP_VERSION`, service-worker cache name, `app-state.js`'s own cache-buster tag) and re-ran `check-cache-busters.mjs` / `build-bundles.mjs --check` / the full 35-file test suite / eslint after resolving — all clean — before merging.
+- [x] eq-field [PR #834](https://github.com/eq-solutions/eq-field/pull/834) (v3.5.607), merged on Royce's explicit "merge", live (merge to `main` auto-deploys here).
+- [ ] **Not click-tested live end-to-end** — the exact scenario (a `field_approved`, recently-approved, unrostered worker becoming selectable) wasn't exercised through the real UI; verified via the local test suite plus direct schema checks before and after the DB migrations landed. _(added 2026-08-30)_
+
+**Notes:**
+- Built by a background agent in its own dedicated worktree (`prestart-fresh-worker-fix-ba2585`), not the shared root or any of the 3+ other concurrent worktrees active in this repo at the time.
+- GitHub MCP (`mcp__d2708d72…`) 404'd on this repo throughout (same tool, same gap eq-cards.md's 2026-08-27 entry already noted for that repo) — `gh` CLI used instead.
+- Both DB migrations initially blocked by the Claude Code auto-mode classifier — same wall that blocked an `accepts_applications` flip on eq-canonical earlier this session (see eq-cards.md). Applied by Royce directly via the Supabase SQL editor after being handed the exact SQL, verified live from this session afterward.
+
+---
+
 ## eq-field: app_data.sites duplicate-row cleanup — Equinix SY5 recon closes out; SLDC triple-duplicate merged live; MOD10 display gap fixed by the concurrent session, 1 further gap found + spawned (2026-08-30)
 *Royce asked for a recon of 3 suspected duplicate "Equinix SY5" site rows on ehow, surfaced while building eq-shell PR #1669 (canonical site contacts). Turned into a broader dedup sweep, a live DB fix, and a related product question, all in one session.*
 

@@ -9,6 +9,14 @@ status: live
 
 # eq-field changelog
 
+## 2026-08-30 (PR #834 MERGED + LIVE, v3.5.607 — Prestart Crew step now surfaces recently-approved workers not yet on today's roster)
+- The Prestart Briefing Crew step's "Pull from today's roster" only ever matched people with a schedule row for today — a worker approved same-day (first day on site, or a same-day EQ Cards → EQ Shell approval) has no roster row yet, since rostering happens ahead of time. The pull silently found nobody, no hint why; the only workaround was manual name entry.
+- New sibling affordance: "＋ Add recently approved" — fetches `field_approved` staff approved in the last 48h, excludes anyone already on today's roster (any site) or already in the crew, lists the rest as one-tap adds. Deliberately not a blind bulk-add. `scripts/site-reports.js`.
+- DB half: `app_data.field_people`/`field_people_directory` gained a passthrough `field_approved_at` column on both `ehow` and `zaap` — was already on `app_data.staff`, never exposed through either Field-facing view. Applied and verified live on both tenants (`security_invoker` correct on both) before merge.
+- Real merge conflict resolved during this PR: an unrelated, already-merged roster/site-alias PR had independently claimed the same `v3.5.606`. Renumbered to `v3.5.607` across the changelog entry, `APP_VERSION`, service-worker cache name, and `app-state.js`'s cache-buster tag; `check-cache-busters.mjs`/`build-bundles.mjs --check`/the full test suite/eslint all re-verified clean post-resolution.
+- eq-field [PR #834](https://github.com/eq-solutions/eq-field/pull/834), merged on explicit "merge", live (merge to `main` auto-deploys here).
+- **Open follow-up**: not click-tested live end-to-end (the exact recently-approved-and-unrostered scenario) — verified via the test suite and direct schema checks. Tracked in `eq/pending/eq-field.md`.
+
 ## 2026-08-30 (PR #833 MERGED + LIVE, v3.5.606 — Roster: an aliased project code now looks and acts like a real site everywhere, not just on save)
 - v3.5.602 resolved a bare project code (e.g. "MOD10") to a real `site_id` on save, but `isKnownSite`/`getSiteName`/`getSiteAddress`/`jobNumberForSite` in `roster.js` still only matched `STATE.sites` by abbr — an aliased cell saved correctly underneath but Edit Roster still showed the "⚠ Unknown site" warning, and My Schedule/Weekly Roster/Calendar/Roster Tools all silently dropped the site name, address, and job number for that day.
 - Root-caused live before writing anything: queried `ehow` directly and confirmed Blake Reynolds' actual "MOD10" `schedule_entries` row already had a correct `site_id` + `site_project_id` — the write path was never broken. The reported toast was a red herring, explained by a separate, genuinely unresolvable "MOP" cell.
