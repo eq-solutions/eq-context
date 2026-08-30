@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-30 15:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-30 18:01 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-30 10:24 UTC → 2026-08-30 15:55 UTC)
+## Since last refresh (2026-08-30 15:55 UTC → 2026-08-30 18:01 UTC)
 
-- Merged: eq-shell [#1669](https://github.com/eq-solutions/eq-shell/pull/1669) feat(sites): canonical contacts only for site "Ask for" / "B
-- Merged: eq-shell [#1667](https://github.com/eq-solutions/eq-shell/pull/1667) fix(security): tender-pipeline zaap tables get real authenti
-- Merged: eq-shell [#1666](https://github.com/eq-solutions/eq-shell/pull/1666) feat(documents): requires_signoff flag on document_categorie
-- Merged: eq-shell [#1664](https://github.com/eq-solutions/eq-shell/pull/1664) fix(documents): lazy-load Register and Reference library tab
-- Merged: eq-shell [#1662](https://github.com/eq-solutions/eq-shell/pull/1662) fix(security): scope user_invites reads to managers, revoke 
-- Merged: eq-shell [#1659](https://github.com/eq-solutions/eq-shell/pull/1659) feat(schedule): site_project_id on schedule_entries — write 
-- Merged: eq-shell [#1656](https://github.com/eq-solutions/eq-shell/pull/1656) feat(documents): site-scope document pushes and sign-off cer
-- Merged: eq-shell [#1654](https://github.com/eq-solutions/eq-shell/pull/1654) fix(data): resolve 4 more divergent staff/shell login names
-- ✅ Needs you: 8 → 7
+- Merged: eq-shell [#1670](https://github.com/eq-solutions/eq-shell/pull/1670) feat(documents): ad-hoc multi-site document pushes and sign-
+- Merged: eq-shell [#1665](https://github.com/eq-solutions/eq-shell/pull/1665) fix(security): add the same-origin check to 15 more cookie-a
+- Merged: eq-shell [#1663](https://github.com/eq-solutions/eq-shell/pull/1663) fix(security): drop dead Supabase/Quotes refs from CSP + del
+- Merged: eq-shell [#1661](https://github.com/eq-solutions/eq-shell/pull/1661) fix(schedule): correct 0290's view column order + scope to S
+- Merged: eq-shell [#1660](https://github.com/eq-solutions/eq-shell/pull/1660) feat(documents): push a document to a customer's whole site 
+- Merged: eq-shell [#1658](https://github.com/eq-solutions/eq-shell/pull/1658) feat(documents): make categories assignable on every documen
+- Merged: eq-shell [#1657](https://github.com/eq-solutions/eq-shell/pull/1657) fix(security): revoke stray anon SELECT on 7 field_* views (
+- Merged: eq-shell [#1651](https://github.com/eq-solutions/eq-shell/pull/1651) feat(customers): Field read adapter for site_projects (0288)
 
 ## ⚠ Needs you (7)
 
@@ -32,7 +31,7 @@ _2026-08-30 15:55 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🟠 **PR aging 10d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 
-## 🙋 Waiting on you (219)
+## 🙋 Waiting on you (220)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -48,7 +47,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass next time someone's mid-enrollment on a phone: confirm tapping "Open in authenticator app" actually hands off to an installed app on both iOS and Android, confirm the copy button copies the right secret. _(added 2026-08-28)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open the Register tab for a tenant with several signed documents, confirm names now match Staff, open one signer's evidence modal, confirm the signature image still loads (now on demand). _(added 2026-08-28)_
 - **eq-shell** · **"Merged, live" above means the code path exists — Gotenberg itself was never actually provisioned.** Checked live 2026-08-28/30: `GOTENBERG_URL` doesn't exist anywhere in eq-shell's Netlify env vars. Every conversion attempt (new upload or the backfill endpoint) silently degrades to `pdf_status='failed'` — confirmed against real data: of 18 pre-pipeline Office documents on ehow, 0 have ever reached `pdf_status='ready'`. Self-hosted on Fly.io per the PR's own recorded decisions (private networking, always-warm); `flyctl` is installed locally but not authenticated, needs Royce's `flyctl auth login` at minimum. Royce's explicit call 2026-08-28: defer — only 2 of the 18 stuck documents actually have signoffs assigned (the rest are unassigned templates nobody's opening), and the one that mattered (Environmental Management Plan) has a zero-infra manual workaround (export to PDF, re-upload as a new version — skips Gotenberg entirely since an already-PDF upload never calls it). Revisit if this starts happening often enough to justify the infra spend. _(added 2026-08-28, reconfirmed 2026-08-30)_
-_…and 207 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 208 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -56,7 +55,7 @@ _…and 207 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 5d ago | 6 | 10d |
-| eq-field | ✓ success | 0d ago | 2 | 0d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 12d ago | 0 | — |
 
@@ -92,14 +91,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-30 | eq-shell | [#1672](https://github.com/eq-solutions/eq-shell/pull/1672) fix(sites): field_sites.site_lead via contact_site_links (role=si |
 | 2026-08-30 | eq-shell | [#1668](https://github.com/eq-solutions/eq-shell/pull/1668) feat(documents): category can override doc_type's signoff routing |
 | 2026-08-30 | eq-shell | [#1671](https://github.com/eq-solutions/eq-shell/pull/1671) feat(ci): let other repos apply their own jvkn migrations via thi |
-| 2026-08-30 | eq-field | [#845](https://github.com/eq-solutions/eq-field/pull/845) v3.5.616 — Roster site-code map: same unrouted-fetch pattern as v |
+| 2026-08-30 | eq-field | [#843](https://github.com/eq-solutions/eq-field/pull/843) v3.5.617 — Dashboard org-wide widgets manager/supervisor-only |
 _Showing 15 of 89 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (244 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (55 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (169 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (170 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (90 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -187,4 +186,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 15:55 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-30 18:01 UTC._
