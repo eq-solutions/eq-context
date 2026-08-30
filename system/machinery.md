@@ -61,6 +61,7 @@ its pure logic separable — that is the convention, not an accident.
 | `link_check.py` | Every internal markdown link must resolve to a real file. Ratchet at 0, no headroom. |
 | `rotate_pending.py` | Moves done items out of the tier `pending.md` files into their archives, per item rather than per session. |
 | `dedupe_pending_archive.py` | Collapses duplicate sections in a `pending-archive.md` — built after `pending-rotate.yml`'s 2026-08-17→08-30 file-list bug let the same sections re-archive nightly without ever leaving the live file. Keeps one copy per identical/superset group; leaves genuine content conflicts untouched and reported rather than guessing. |
+| `clean_zombie_live_sections.py` | Companion to `dedupe_pending_archive.py` — removes done-item content from a live `eq/pending/<repo>.md` that a matching `pending-archive.md` entry already proves was safely recorded, replaying the removal half of a rotation that never committed. Never touches a done item with no archive match — that's rotate_pending.py's own job, now fixed. |
 | `substrate_honesty.py` | Verifies load-bearing facts against reality — dead project refs, the F13 deploy-posture claim, liveness probes. |
 | `claim_expiry.py` | The F3 guard: expires stale incident claims so a dead claim cannot block a live investigation. |
 | `generate_session_index.py` | Regenerates `sessions/INDEX.md`, reverse-chronological. |
@@ -68,7 +69,7 @@ its pure logic separable — that is the convention, not an accident.
 | `duplicate_sessions.py` | No two `sessions/*.md` files may hold byte-identical content — extracted whole from `md-health-daily.py`, the one genuinely unique, portable check it had. |
 | `security_audit.py` | Cross-project Supabase security-advisor sweep. Needs `SUPABASE_ACCESS_TOKEN`; no-ops cleanly without it. |
 | `rls_probe.py` | The public-key data-leak test — proves an anon key returns zero rows where it should. |
-| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_dedupe_pending_archive.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
+| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_dedupe_pending_archive.py` · `test_clean_zombie_live_sections.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
 
 ## `.github/scripts/` — generators
 
