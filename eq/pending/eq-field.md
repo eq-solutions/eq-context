@@ -15,7 +15,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-field: Leave approver resolution — non-manager staff-map RLS gap (v3.5.615/616, 2026-08-30)
 
-- [ ] **`app_data.sites`'s actual RLS posture still not independently verified.** Supabase MCP was unreachable for this entire session (repeated connection timeout, not a one-off blip) — the sites fix shipped on the structural pattern-match alone, not live proof the way the staff fix was. Worth confirming next time DB access works, for completeness; the fix carries no downside either way regardless of the answer. _(added 2026-08-30)_
+- [x] **`app_data.sites`'s RLS posture confirmed once Supabase MCP reconnected**: it was never role-restricted the way `app_data.staff` was. Only policy touching SELECT is `sites_tenant_isolation` (`FOR ALL`, tenant-only, no role condition) — no narrower `staff_own_or_manager_read`-shaped policy exists for sites. Verified live: apprentice JWT and manager JWT both return the identical 53 rows, on both the raw table and `field_sites`. So v3.5.616 (the sites-fetch fix) was pre-emptive, not curative — a real structural cleanup, but not fixing a live bug the way v3.5.615 (the staff fix) was. No further action needed.
 - [ ] **Not click-tested live by a real non-manager SKS account** — same standing sandbox limitation as most entries in this file; verified instead via live DB-level JWT simulation (the actual mechanism the original bug depends on) plus console-level checks of the deployed function source against each deploy preview. _(added 2026-08-30)_
 
 ---
