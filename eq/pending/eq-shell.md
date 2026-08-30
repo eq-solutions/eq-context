@@ -689,7 +689,7 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 **Deferred:**
 - [ ] **None of it has been tried on a real switched-off account.** Everything above is verified by tests and by calling the live endpoints unauthenticated, not by taking a real person's session and watching it get refused. Three switched-off accounts still attached to a company are available to test with whenever you want to spend ten minutes on it. _(added 2026-08-15)_
-- [ ] **33 data-changing endpoints don't use the shared permission check** and so didn't get the new guard. Several are actually reads that a crude scan mislabelled, and a couple are internal background jobs — they need looking at one by one rather than a blanket fix, which is why they weren't swept in. _(added 2026-08-15)_
+- [ ] **33 data-changing endpoints don't use the shared permission check** and so didn't get the new guard. Real count turned out to be 24, not 33 — several of the original 33 were misclassified reads or already fixed. **11 of the 24 fixed 2026-08-30**: the highest-stakes ones — 8 admin-only actions (including permanently deleting a tenant) plus 3 places someone switched off could still change their own login PIN or email. [eq-shell#1682](https://github.com/eq-solutions/eq-shell/pull/1682), merged and live. 13 remain, need the same one-by-one review. _(added 2026-08-15, updated 2026-08-30)_
 
 ---
 
