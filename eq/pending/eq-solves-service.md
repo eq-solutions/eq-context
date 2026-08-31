@@ -13,6 +13,36 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: 4-axis service review → full P0/P1 sprint built and shipped live, including a critical cross-tenant leak found and closed (2026-08-31)
+
+*Asked to review EQ Service across code/security, performance, features, and UX, rate each, and build a sprint. Delivered ratings (Code & Security 8/10, Performance 6/10, Features 8/10, UX 6/10) as a published artifact, then built and shipped the full P0+P1 backlog (13 items) on Royce's go-ahead. Implementation surfaced a live cross-tenant data leak the review itself hadn't caught: `get_assets_for_grouping` had never filtered by tenant across 5 revisions and ran via the RLS-bypassing admin client, so every tenant's asset register was reachable from every other tenant's default Assets view (zero actual victims today — SKS is still the only tenant with data — but a hard blocker before ever onboarding a second one). Found and fixed the identical gap in `get_distinct_asset_types` too, co-built with Royce directly in a separate session (eq-service [PR #818](https://github.com/eq-solutions/eq-service/pull/818)). Also found real, ongoing data loss: editing any asset from the Assets page's default grouped view had been silently blanking manufacturer/model/install date and un-setting dark-site-test on save, because the query that view read from never fetched those columns.*
+
+**Shipped** (eq-service [PR #816](https://github.com/eq-solutions/eq-service/pull/816), [#817](https://github.com/eq-solutions/eq-service/pull/817), [#818](https://github.com/eq-solutions/eq-service/pull/818) — all merged and live; Netlify deploy and Sentry both verified clean post-deploy):
+- Tenant-scoped `get_assets_for_grouping` + `get_distinct_asset_types`; rebuilt DB indexes lost when sites/customers/assets/maintenance_checks were canonicalized into views (the old `public.*` indexes never carried across); closed a dangling (not currently exploitable, but latent) anon-EXECUTE grant on `get_sites_for_map`
+- Zod validation on 5 bulk-import actions that previously hand-validated rows; `withIdempotency` on the RCD save actions to match ACB/NSX
+- Real pagination on `/defects` (was silently dropping rows past 200, nothing bounds its growth); batched the customer portal's per-site queries (was up to 80 concurrent requests per page load) and fixed a PostgREST 1000-row undercount found in the same query
+- Removed `shadow-*` from the 4 shared components (Modal/SlidePanel/BulkActionBar/SplitButton) that violated the brand's no-shadow rule; consolidated duplicated status pills onto `StatusBadge`; new `Alert` component + migrated 133 hand-rolled error/success/warning boxes across 69 files
+- Documented 4 previously-undocumented modules in FEATURES.md; corrected 3 stale "proposed" docs for features that had actually shipped
+
+**Decided:**
+- Royce: build both P0 and P1 tiers of the sprint backlog, not just review them.
+- Royce: apply the tenant-scope migration to live ehow immediately once the leak was found, rather than schedule it.
+- Royce: ship the coordinated app-code deploy (not a temporary DB-only revert) to fix the mid-session outage the migration caused.
+
+**Notes (load-bearing — a mistake made and corrected live this session, worth the same weight as the file's other durable Postgres lessons):**
+- **A DB function signature change and its calling app code are not independently deployable once the change removes a default.** Applying the `get_assets_for_grouping` migration (added a required `p_tenant_id`, dropped the old overload) without deploying the matching app-code change in the same step broke the live Assets page for several minutes — the deployed code still called the old shape, and PostgREST has no fallback once the old overload is gone. Fixed by shipping both halves together in one PR. Next time a migration removes or adds a required RPC parameter: stage the app code and the migration as one atomic release.
+- Confirmed live: `eq_enforce_function_privacy` (the auto-revoke event trigger from SEC-16) works exactly as designed — every `CREATE OR REPLACE FUNCTION` in `public`/`service` needs its `authenticated` grant re-added explicitly in the same migration, every time, or the caller breaks.
+- The notification-cron decision (`0229`, restated further down this file) is still unmade — re-confirmed this session rather than assumed: `0229`'s own header explicitly parks it as "a product decision... not a technical one," not an oversight. Left alone.
+
+**Deferred:**
+- [ ] P2 items from the review, no urgency: pin `search_path` on `service.tg_maintenance_checks_iud`; narrow `revalidateMaintenanceSurfaces()`'s blast radius on the per-checklist-item save path; give Data Quality a per-row worklist instead of aggregate counts; fix 5 isolated dashboard gradients; consolidate `ExportButton`/`CsvExportButton`. _(added 2026-08-31)_
+- [ ] **Retire the legacy `shell-sso` / `/auth/shell-bridge` path — needs Royce's explicit sign-off, it's an auth change.** Still live per CLAUDE.md (provisioning only inert because of a missing column). _(added 2026-08-31)_
+- [ ] **Live authenticated UX click-through never done.** This worktree had no `.env.local`; copying the working credentials from the main checkout was correctly blocked by the permission classifier as a credentials-file action. The UX rating (6/10) is built on a full source-level consistency audit, not hands-on interaction — worth a real pass once a session has working dev credentials. _(added 2026-08-31)_
+- [ ] **Relay 2 live ERROR-level advisor findings to whoever owns them — not this repo's fix.** `app_data.field_managers` / `field_people_directory` are SECURITY DEFINER views with no migration in eq-solves-service; they belong to Field or Shell's canonical schema. _(added 2026-08-31)_
+- [ ] CLAUDE.md's "DB-verified scope" note still cites migrations `0180-0182/0186` for instruments/calibration — the memory file this traces to already carries the correction (`0183-0186`, renamed by #535), but CLAUDE.md's own summary line was never updated to match. Minor, spotted in passing. _(added 2026-08-31)_
+
+---
+
 ## eq-solves-service: CLAUDE.md's StatusBadge description was stale — verified against the live kit, fixed (2026-08-31)
 *Royce had already checked the actual `@eq-solutions/ui` v1.15.0 source (the exact version pinned in package.json) and found the doc describing props (`tone`, `size`) that don't exist — the real props are `status`/`label`/`density`. This session independently re-verified against the installed `node_modules` copy before editing, then applied the fix.*
 

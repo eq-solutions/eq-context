@@ -1,13 +1,21 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-23
+last_updated: 2026-08-31
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-08-31 (PR #816 + #817 + #818 MERGED + LIVE — 4-axis service review → P0/P1 sprint, critical cross-tenant leak found and closed)
+- Full review across code/security, performance, features, UX (rated 8/6/8/6 out of 10), published as an artifact, then the full 13-item P0/P1 backlog built and shipped same session.
+- **#816**: `get_assets_for_grouping` had never filtered by tenant across 5 revisions — ran via the RLS-bypassing admin client, so every tenant's asset register was reachable from every other tenant's default Assets view (zero actual victims to date, SKS is still the only tenant with data). Also fixed real, ongoing data loss in the same function: 4 missing columns (`manufacturer`/`model`/`install_date`/`dark_site_test`) meant every asset edit from the grouped view silently blanked them. Migration `0237`. Applying the migration without its matching app-code deploy broke the live Assets page for several minutes — fixed via this same PR shipping both halves together.
+- **#817**: Zod validation on 5 bulk-import actions; `withIdempotency` on RCD save actions; real `/defects` pagination (was silently dropping rows past 200); batched the customer-portal per-site queries (was up to 80 concurrent requests/page) + fixed a PostgREST 1000-row undercount found along the way; removed `shadow-*` from 4 shared UI components; consolidated duplicated status pills onto `StatusBadge`; new `Alert` component migrated onto 133 call sites across 69 files; FEATURES.md documentation for 4 modules; 3 stale "proposed" docs corrected to shipped. Also: migration `0235` (rebuilt indexes lost when sites/customers/assets/maintenance_checks were canonicalized into views) and `0236` (closed a dangling, not-currently-exploitable anon-EXECUTE grant on `get_sites_for_map`).
+- **#818**: the identical tenant-filter gap in `get_distinct_asset_types`, closed the same way. Built by Royce directly in a separate session.
+- Both migrations confirmed applied and verified live (grants, indexes, function signatures) before either PR merged; post-deploy check confirmed Netlify's current production deploy `ready` with a clean secret scan, and Sentry showing zero unresolved issues across the incident window.
+- Notification cron (`0229`) re-checked and confirmed still a deliberately parked product decision, not a bug — left alone.
 
 ## 2026-08-25 (PR #815 MERGED + LIVE — @eq-solutions/roles bumped to v2.7.5)
 - Mirrors the same bump already shipped in eq-shell: Supervisor no longer holds `audit.view` (eq-roles [PR #31](https://github.com/eq-solutions/eq-roles/pull/31), released `v2.7.5`). Royce asked for this repo's pin to follow directly after that close.
