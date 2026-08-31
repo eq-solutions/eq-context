@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #822 fix(defects): revalidate /defects on check-item fail/un-fail
-- #821 P2 polish: search_path hardening, dashboard gradients, focus-trap dedup, tighter revalidation, real Data Quality worklists
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
@@ -97,7 +96,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 244 (latest: 0238) applied
+**Migrations:** eq-service has 245 (latest: 0239) applied
 
 ---
 
