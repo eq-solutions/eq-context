@@ -64,19 +64,17 @@ _If this file is >48h old, the cron is broken._
 - #337 test(cards): re-baseline licence_card_* goldens for Flutter 3.44.8
 
 **eq-field:**
+- #853 v3.5.621 — FIX: Teams — untick-to-remove silently didn't save
 - #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
 
 **eq-service:**
+- #819 docs(claude-md): fix stale StatusBadge prop description
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
-
-**eq-shell:**
-- #1690 fix(security): thread tenant_role_overrides denials into the Field JWT
-- #1688 fix(records): not-allowed page for direct nav to a denied entity/staff URL
 
 ---
 
@@ -87,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ✓ success |
+| eq-shell | ? in_progress |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
