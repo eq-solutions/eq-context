@@ -1003,10 +1003,15 @@ Items when triggered:
 ---
 
 ## eq-field: consumes tenant_role_overrides denials (v3.5.621, PR #851)
-*Cross-repo handoff from eq-shell PR #1686, which fixed Shell's own cookie-session model but explicitly flagged Field's grant-only JWT/RLS path as a separate, unaddressed problem. Scoped, drafted, and opened as two paired PRs — not merged, nothing applied to live ehow.*
 
 - [ ] **Not merged — needs Royce's review.** eq-field PR #851 (client + session-token + a NOT-APPLIED migration) and eq-shell PR #1690 (the companion JWT claim). Neither merges anything to production on its own; #851 is inert without #1690, and the migration inside #851 needs a separate explicit dispatch decision even after both PRs merge. _(added 2026-08-31)_
-- [ ] **URGENT, unrelated finding surfaced while verifying the migration's target tables**: `20260819_site_reports_manager_supervisor_write.sql` has been live on ehow since 2026-08-18 (its own file header wrongly still says "DRAFT — NOT APPLIED") and is currently blocking employee/apprentice/labour_hire from creating prestarts/toolbox talks/incidents/site diaries/audits — confirmed via live `pg_policies` query, contradicting Royce's explicit v3.5.610/613 "must never be blockable" fix from 2026-08-30. Spawned as `task_2517f0eb`. Royce had already started the earlier, understated version of this chip (`task_c278e59b`, framed as a future risk rather than a live bug) before severity was confirmed — needs redirecting to the accurate one. _(added 2026-08-31)_
 - [ ] **14 `public.eq_*`/`eq__assert_*` Quotes/CRM RPC functions + 3 policies on ehow share the identical extra_perms-without-denied_perms gap, but are eq-shell's, not eq-field's** (confirmed via repo-wide grep — zero eq-field references). Spawned as `task_9f3eb7a8`, not built here — would extend eq-shell PR #1686's fix one layer deeper (the DB RPC layer, not just Shell's TS permission-resolution layer). _(added 2026-08-31)_
+
+---
+
+## eq-field: site-reports RLS — prestart/toolbox_talks write gate fixed (2026-08-31)
+*Resolves the item flagged just above as `task_2517f0eb` (that write-up is trimmed per this file's archive rule now it's closed) — also corrected its timeline claim: the client/DB conflict was only reachable from 2026-08-30 (v3.5.610 fixed the CSS bug that had been hiding the "+ New" button), not since 2026-08-18 as first flagged. Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-31.md`.*
+
+- [ ] **Not click-tested live by a real non-manager/supervisor SKS account** — no test credentials in this environment; verified instead via direct `pg_policies` before/after the fix, plus `get_advisors` (zero flags on any of the 6 tables). _(added 2026-08-31)_
 
 ---
