@@ -15,7 +15,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-field: EQ-SHELL-14 duplicate-identity bug orphaned a worker's future roster onto a dead record (2026-08-31)
 
-- [ ] **Root cause still open** — Nelson Sareto's 15 orphaned schedule rows (24 Aug–11 Sep) were repointed to his real active staff record and verified live, but the upstream cause (duplicate canonical worker identity creating two `app_data.staff` rows for one person, same pattern as the earlier "Emma Curth" case) is untouched. Spawned as background task `task_c74f9351`: live-sweep ehow for other pairs with the same shape (matching email/phone/DOB, different `cards_worker_id`) before assuming Nelson was the only one. Full detail in `sessions/2026-08-31.md`. _(added 2026-08-31)_
+- [ ] **Root cause still open, sweep now running.** Nelson Sareto's 15 orphaned schedule rows (24 Aug–11 Sep) were repointed to his real active staff record and verified live, but the upstream cause (duplicate canonical worker identity creating two `app_data.staff` rows for one person, same pattern as the earlier "Emma Curth" case) is untouched. Royce started the live-sweep task (`task_c74f9351`, ehow, other pairs matching email/phone/DOB with different `cards_worker_id`) in a separate session — check its result before assuming Nelson was the only one. Full detail in `sessions/2026-08-31.md`. _(added 2026-08-31)_
 
 ---
 
