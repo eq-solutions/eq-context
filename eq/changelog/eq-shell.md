@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-31 (quote write-ownership scoped to created_by; quotes.view_all click-tested live)
+- `eq_update_quote_status`/`eq_add_quote_note` now scoped to `v_can_view_all OR created_by = caller`, closing the write-side gap alongside this morning's read-side `quotes.view_all` promotion. No live behaviour change (verified no grant existed without both permissions together).
+- eq-shell [PR #1692](https://github.com/eq-solutions/eq-shell/pull/1692), merged `0a5920f8`, migration `0299` dispatched and verified live on both ehow and zaap.
+- Access Control's "See all quotes" grant confirmed rendering correctly by Royce, live — closes the one open item from this morning's promotion.
+
 ## 2026-09-01 (tenant_role_overrides deny-check closes on the last 13 Quotes/CRM RPCs + 3 policies)
 - eq-field#851 flagged 14 `public.eq_*`/`eq__assert_*` RPCs + 3 RLS policies as needing a `tenant_role_overrides` deny-check, out of eq-field's own scope. #1693 (2026-08-31) closed the first (`eq__assert_entity_role`); this closes the remaining 13 functions + 3 policies, plus the 2 JWT minters (`tenant-data-proxy.ts`, `mint-sks-jwt.ts`) that reach them and didn't carry the `denied_perms` claim yet.
 - Every boolean restructured as `is_platform_admin OR (grant AND NOT denied)`, not a flat wrap — a flat wrap would let a tenant-role deny collide with and lock out a platform admin whose session role matches the denied role. Matches `_shared/permissions.ts`'s `can()` precedence (PR #1686), independently confirmed by #1693's own migration using the identical ordering.

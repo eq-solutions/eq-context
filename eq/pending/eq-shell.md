@@ -1299,12 +1299,14 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 ---
 
-## eq-shell: quotes.view_all promoted to a grantable permission — merged, live (2026-08-31)
-*Royce asked what guard rails exist on who can see quotes in EQ Ops, and whether visibility was ever limited. Investigation found manager/supervisor always see every quote, employee always sees only their own, with no lever to grant one specific employee the escalation without a role promotion — even though the RPCs already checked an `extra_perms` claim for exactly this. `/decide` pass run before building.*
-
-- [x] **eq-roles [PR #32](https://github.com/eq-solutions/eq-roles/pull/32) (v2.7.6)**: promoted `quotes.view_all` from a Shell-local permission into the canonical `@eq-solutions/roles` package — same default (manager+supervisor), no behaviour change. Merged, tagged `v2.7.6`.
-- [x] **eq-shell [PR #1689](https://github.com/eq-solutions/eq-shell/pull/1689)**: bumped the `@eq-solutions/roles` pin to v2.7.6, made `src/modules/quotes/permissions.ts` a pure re-export (matching equipment/service/field), updated `check-perm-sync.mjs` and the `isReadPerm` classification test to match. `pnpm run build` + full test suite (461/461) + drift guard + eslint all clean. Merged (squash `d89caf29`), confirmed live via commit-ancestry against the production deploy.
-- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: Access Control → Ops section, confirm "See all quotes" now appears under Manager/Supervisor and can be granted to an Employee individually via a custom group. _(added 2026-08-31)_
-
 ---
 
+
+## eq-shell: Supervisor's default quote-visibility — scoped, not yet decided (2026-08-31)
+*Royce, after seeing the quotes.view_all work live: the business's actual concern is people seeing pricing/quotes they shouldn't -- a role having too much access by default, not a request for a new sharing feature. Investigated live rather than assumed.*
+
+- [ ] **Recommendation ready, not yet confirmed**: narrow Supervisor's default `quotes.view_all` to own-only (same mechanism as the promotion above -- an eq-roles model.json change), then re-grant it individually to whichever supervisors are real estimators. Of SKS's 12 Supervisors, only 2 have ever created a quote via `created_by` -- Brian Griffin-Colls (4 quotes, would be unaffected since they're already his own) and the now-deactivated old Richard Brown account (irrelevant going forward). Every other Supervisor has never created a quote -- narrowing costs them nothing they use today. Royce has not yet said go. _(added 2026-08-31)_
+- [x] **First-pass analysis was wrong, corrected before acting**: initially checked `quote.estimator_name` (free-text display field) instead of `quote.created_by` (the field the actual RLS check reads) -- missed Brian Griffin-Colls, who created 4 quotes under his own login but typed a different person's name as the estimator. Re-verified against the right field before finalizing the recommendation above.
+- [x] **A separate, real duplicate-account bug found and root-caused along the way, then found to already be fully covered**: the old (no-email) Richard Brown Shell account and its later real replacement were a live duplicate for 8 days (2026-08-09 to 08-17), already found and closed by someone before this session. Traced why: a "grandfathered at launch" Field-access stub with no email/phone, never matched against his later real Shell invite. Checked all 4 other stub accounts in the same shape (Dylan Lieu, Elliot Gross, Mitchell Forsyrh, Taya Moody) -- initially looked like a live latent-risk gap, but a deeper check found `check-duplicate-shell-accounts.ts` (an existing daily Sentry-wired monitor, built last month from a near-identical Brian Griffin-Colls incident) already anchors on the right table (`app_data.staff`, not `public.workers`) and already has real contact info for all 4. Confirmed via Sentry: this exact incident already fired as EQ-SHELL-11, already resolved. Live re-check on both tenants: zero staff records anywhere with a linked account and no contact info. **No code needed -- the existing monitor already covers this.**
+
+---
