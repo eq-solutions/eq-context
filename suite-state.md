@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
 - #1696 chore(deps): bump @sentry/react from 10.53.1 to 10.71.0
 - #1695 chore(deps): bump papaparse and @types/papaparse
-- #1694 fix(security): thread tenant_role_overrides denials into Quotes/CRM RPCs + their JWT minters
 
 ---
 
