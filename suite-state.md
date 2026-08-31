@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #336 fix(cards): AA-compliant background for EqButton primary/hero
 
 **eq-field:**
-- #852 security(rls): open prestart/toolbox INSERT+UPDATE to every role
 - #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
 
 **eq-service:**
