@@ -1,13 +1,19 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-31
+last_updated: 2026-09-01
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-01 (tenant_role_overrides deny-check closes on the last 13 Quotes/CRM RPCs + 3 policies)
+- eq-field#851 flagged 14 `public.eq_*`/`eq__assert_*` RPCs + 3 RLS policies as needing a `tenant_role_overrides` deny-check, out of eq-field's own scope. #1693 (2026-08-31) closed the first (`eq__assert_entity_role`); this closes the remaining 13 functions + 3 policies, plus the 2 JWT minters (`tenant-data-proxy.ts`, `mint-sks-jwt.ts`) that reach them and didn't carry the `denied_perms` claim yet.
+- Every boolean restructured as `is_platform_admin OR (grant AND NOT denied)`, not a flat wrap — a flat wrap would let a tenant-role deny collide with and lock out a platform admin whose session role matches the denied role. Matches `_shared/permissions.ts`'s `can()` precedence (PR #1686), independently confirmed by #1693's own migration using the identical ordering.
+- Reconciled against two other same-day PRs that merged mid-build: #1692 (added `created_by` ownership scoping to 2 of the same 13 functions — rebuilt on top of its live bodies rather than reverting it) and #1693 (independently fixed `eq__assert_entity_role` + `mint-tenant-jwt.ts` — dropped from this PR as pure duplication). Migration renumbered 0299 → 0300 after a 3-way same-day number collision.
+- eq-shell [PR #1694](https://github.com/eq-solutions/eq-shell/pull/1694), squash-merged `ae70b0d3`, confirmed live via `published_at`. Migration dispatched via `tenant-migrate.yml`, applied cleanly to both zaap and ehow, confirmed live via direct `pg_proc`/`pg_policy` query on both planes.
 
 ## 2026-08-31 (quotes.view_all promoted to a grantable permission)
 - Audited EQ Ops quote-visibility guard rails from live code: module gate, own-vs-all row scoping, margin/PII column masking, write gate — all confirmed enforced server-side as of the immediately-preceding PR #1681.
