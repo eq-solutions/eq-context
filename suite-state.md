@@ -61,12 +61,17 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-31)
 
 **eq-service:**
+- #820 chore(migrations): add --reconcile mode, steer sessions off MCP apply_migration
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
 - #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
+
+**eq-shell:**
+- #1694 fix(security): thread tenant_role_overrides denials into Quotes/CRM RPCs + their JWT minters
+- #1693 fix(security): thread tenant_role_overrides denials into the tenant Supabase JWT
 
 ---
 
