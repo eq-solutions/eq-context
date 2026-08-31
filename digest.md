@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-31 10:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-31 10:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-31 09:58 UTC → 2026-08-31 10:04 UTC)
+## Since last refresh (2026-08-31 10:04 UTC → 2026-08-31 10:12 UTC)
 
-- Merged: eq-shell [#1683](https://github.com/eq-solutions/eq-shell/pull/1683) feat(staff): Resourcing in-place panel, readable conversatio
-- Merged: eq-shell [#1679](https://github.com/eq-solutions/eq-shell/pull/1679) fix(auth): phone-dedup misses accounts whose phone lives on 
-- Merged: eq-shell [#1677](https://github.com/eq-solutions/eq-shell/pull/1677) fix(staff): Resourcing Name column search/filter matches not
-- Merged: eq-shell [#1675](https://github.com/eq-solutions/eq-shell/pull/1675) fix(staff): reactivate a matching inactive stub on Cards app
-- Merged: eq-shell [#1674](https://github.com/eq-solutions/eq-shell/pull/1674) feat(staff): start_date capture + Resourcing gap indicator
-- Merged: eq-shell [#1673](https://github.com/eq-solutions/eq-shell/pull/1673) feat(documents): edit requires_signoff + reach category mana
-- Merged: eq-shell [#1671](https://github.com/eq-solutions/eq-shell/pull/1671) feat(ci): let other repos apply their own jvkn migrations vi
-- Merged: eq-shell [#1668](https://github.com/eq-solutions/eq-shell/pull/1668) feat(documents): category can override doc_type's signoff ro
+- Merged: eq-shell [#1686](https://github.com/eq-solutions/eq-shell/pull/1686) fix(security): tenant_role_overrides denials were silently i
+- Merged: eq-shell [#1682](https://github.com/eq-solutions/eq-shell/pull/1682) fix(auth): active-account re-check on 11 endpoints missing i
+- Merged: eq-shell [#1681](https://github.com/eq-solutions/eq-shell/pull/1681) fix(security): quotes RPCs had no server-side permission che
+- Merged: eq-shell [#1680](https://github.com/eq-solutions/eq-shell/pull/1680) fix(security): upgrade zaap/ehow's function-privacy trigger,
+- Merged: eq-shell [#1678](https://github.com/eq-solutions/eq-shell/pull/1678) fix(security): close eq_revoke_session's group-permission bl
+- Merged: eq-shell [#1676](https://github.com/eq-solutions/eq-shell/pull/1676) fix(sites): QuotesCustomers' Edit Site panel writes contact_
+- Merged: eq-shell [#1672](https://github.com/eq-solutions/eq-shell/pull/1672) fix(sites): field_sites.site_lead via contact_site_links (ro
+- Merged: eq-shell [#1670](https://github.com/eq-solutions/eq-shell/pull/1670) feat(documents): ad-hoc multi-site document pushes and sign-
 
 ## ⚠ Needs you (14)
 
@@ -63,7 +63,7 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 6 | 10d |
 | eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 13d ago | 0 | — |
 
 ## Live errors (Sentry)
@@ -92,13 +92,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-31 | eq-field | [#851](https://github.com/eq-solutions/eq-field/pull/851) v3.5.622 — SECURITY: eq-field now consumes tenant_role_overrides  |
 | 2026-08-31 | eq-field | [#853](https://github.com/eq-solutions/eq-field/pull/853) v3.5.621 — FIX: Teams — untick-to-remove silently didn't save |
 | 2026-08-31 | eq-field | [#852](https://github.com/eq-solutions/eq-field/pull/852) security(rls): open prestart/toolbox INSERT+UPDATE to every role |
+| 2026-08-31 | eq-cards | [#339](https://github.com/eq-solutions/eq-cards/pull/339) fix(cards): AA-compliant colour for 14 more white-on-sky spots |
+| 2026-08-31 | eq-cards | [#337](https://github.com/eq-solutions/eq-cards/pull/337) test(cards): re-baseline licence_card_* goldens for Flutter 3.44. |
 | 2026-08-31 | eq-cards | [#338](https://github.com/eq-solutions/eq-cards/pull/338) test(cards): add licence edit screen coverage; fix invisible swit |
 | 2026-08-31 | eq-cards | [#336](https://github.com/eq-solutions/eq-cards/pull/336) fix(cards): AA-compliant background for EqButton primary/hero |
 | 2026-08-30 | eq-shell | [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called directl |
 | 2026-08-30 | eq-shell | [#1687](https://github.com/eq-solutions/eq-shell/pull/1687) feat(migrate): --exclude flag for bootstrap, skip genuinely-pendi |
 | 2026-08-30 | eq-shell | [#1689](https://github.com/eq-solutions/eq-shell/pull/1689) feat(permissions): quotes.view_all now grantable per-person (bump |
-| 2026-08-30 | eq-shell | [#1685](https://github.com/eq-solutions/eq-shell/pull/1685) fix(staff): readable conversation viewer + attach source document |
-| 2026-08-30 | eq-shell | [#1684](https://github.com/eq-solutions/eq-shell/pull/1684) feat(ci): let eq-field apply its own tenant migrations via this p |
 _Showing 15 of 94 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -136,9 +136,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1363 | 184 / 75 | 44 | 60 |
-| [eq-cards](eq/pending/eq-cards.md) | 294 | 43 / 14 | 7 | 6 |
+| [eq-cards](eq/pending/eq-cards.md) | 293 | 43 / 14 | 6 | 6 |
 | [eq-field](eq/pending/eq-field.md) | 1025 | 137 / 52 | 25 | 33 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 498 | 75 / 21 | 0 | 27 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 499 | 76 / 21 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-31 10:04 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-31 10:12 UTC._
