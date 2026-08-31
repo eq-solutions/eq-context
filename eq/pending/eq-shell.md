@@ -1352,3 +1352,12 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 ---
 
+## eq-shell: quotes.view_all promoted to a grantable permission — merged, live (2026-08-31)
+*Royce asked what guard rails exist on who can see quotes in EQ Ops, and whether visibility was ever limited. Investigation found manager/supervisor always see every quote, employee always sees only their own, with no lever to grant one specific employee the escalation without a role promotion — even though the RPCs already checked an `extra_perms` claim for exactly this. `/decide` pass run before building.*
+
+- [x] **eq-roles [PR #32](https://github.com/eq-solutions/eq-roles/pull/32) (v2.7.6)**: promoted `quotes.view_all` from a Shell-local permission into the canonical `@eq-solutions/roles` package — same default (manager+supervisor), no behaviour change. Merged, tagged `v2.7.6`.
+- [x] **eq-shell [PR #1689](https://github.com/eq-solutions/eq-shell/pull/1689)**: bumped the `@eq-solutions/roles` pin to v2.7.6, made `src/modules/quotes/permissions.ts` a pure re-export (matching equipment/service/field), updated `check-perm-sync.mjs` and the `isReadPerm` classification test to match. `pnpm run build` + full test suite (461/461) + drift guard + eslint all clean. Merged (squash `d89caf29`), confirmed live via commit-ancestry against the production deploy.
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: Access Control → Ops section, confirm "See all quotes" now appears under Manager/Supervisor and can be granted to an Employee individually via a custom group. _(added 2026-08-31)_
+
+---
+

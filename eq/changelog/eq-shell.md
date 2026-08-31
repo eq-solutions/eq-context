@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-31 (quotes.view_all promoted to a grantable permission)
+- Audited EQ Ops quote-visibility guard rails from live code: module gate, own-vs-all row scoping, margin/PII column masking, write gate — all confirmed enforced server-side as of the immediately-preceding PR #1681.
+- Found and closed the real gap: `quotes.view_all` (own quotes vs. every quote in the tenant) was hardcoded manager+supervisor with no way to grant it to one specific Employee without a role promotion.
+- `@eq-solutions/roles` bumped to v2.7.6 (eq-roles PR #32) — `quotes.view_all` is now a canonical, per-person-grantable permission via Access Control's existing custom-groups UI. No behaviour change by default.
+- eq-shell [PR #1689](https://github.com/eq-solutions/eq-shell/pull/1689), merged `d89caf29`, confirmed live via commit-ancestry.
+
 ## 2026-08-30 (hollow historical reviews root-caused, document attachment shipped)
 - Root-caused why backfilled historical Development Reviews showed "Not answered" everywhere: the 2026-08-30 backfill wrote a real summary per review but never the structured answers — verified live across all 27, 100% hollow.
 - The read view now always shows a real (non-auto-generated) summary, and collapses ~20 individual "Not answered" lines into one explanatory note when a formal entry has no structured answers at all.
