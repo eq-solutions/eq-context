@@ -1291,12 +1291,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 ---
 
-## eq-shell: threads tenant_role_overrides denials into the Field JWT (PR #1690)
-
-- [ ] **13 of 14 `public.eq_*` Quotes/CRM/pricing RPCs on ehow still have no deny-check.** #1690 merged (paired with eq-field#851, both live). Of the 14 RPCs flagged here, only `eq__assert_entity_role` has since been closed (PR #1693, merged 2026-08-31 — confirmed live via `pg_get_functiondef`). Still ungated (`extra_perms` checked, `denied_perms` not): `eq__assert_pricing_role`, `eq__assert_pricing_view_role`, `eq_add_quote_note`, `eq_add_tenant_trade`, `eq_duplicate_dismiss`, `eq_get_quote_detail`, `eq_list_contacts_for_customer`, `eq_list_contacts_for_site`, `eq_list_quotes`, `eq_list_suppliers`, `eq_remove_tenant_trade`, `eq_set_job_number`, `eq_update_quote_status` — re-verified live 2026-09-01, not assumed from #1693's scope. Zero live exploitation surface today (no `tenant_role_overrides` deny row targets a Quotes/pricing/trade key yet). Spawned as eq-field-side task `task_9f3eb7a8`; fix belongs in this repo's own governed pipeline. _(added 2026-08-31, narrowed 2026-09-01)_
-
----
-
 ## eq-shell: direct-URL nav to a denied Records/Staff page showed broken chrome instead of a clear message — PR #1688, merged, live (2026-08-31)
 *Deferred from PR #1686: nav links correctly hid for a denied caller, but hitting the URL directly still rendered the page's real chrome (search box, headers, filters) with the data fetch just failing or coming back empty.*
 

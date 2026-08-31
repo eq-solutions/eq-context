@@ -6704,3 +6704,9 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 
 ---
+
+## eq-shell: threads tenant_role_overrides denials into the Field JWT (PR #1690) — full arc CLOSED (2026-09-01)
+
+- [x] **13 of 14 `public.eq_*` Quotes/CRM/pricing RPCs on ehow — CLOSED.** #1690 merged (paired with eq-field#851, both live) closed `eq__assert_entity_role` via #1693. The remaining 13 (`eq__assert_pricing_role`, `eq__assert_pricing_view_role`, `eq_add_quote_note`, `eq_add_tenant_trade`, `eq_duplicate_dismiss`, `eq_get_quote_detail`, `eq_list_contacts_for_customer`, `eq_list_contacts_for_site`, `eq_list_quotes`, `eq_list_suppliers`, `eq_remove_tenant_trade`, `eq_set_job_number`, `eq_update_quote_status`) closed by PR #1694, migration `0300_quotes_crm_rpcs_denied_perms.sql` — applied to **both** ehow and zaap (the "ehow-only" scope assumed a few hours earlier the same day was wrong; these RPCs exist on both planes). #1694 also fixed two JWT-minting paths (`mint-sks-jwt.ts`, `tenant-data-proxy.ts`) that weren't sending `extra_perms`/`denied_perms` at all. Confirmed live via `pg_get_functiondef` on both planes, 2026-09-01 — not assumed from the PR merging. Was eq-field-side task `task_9f3eb7a8`, now closed. Third and final correction of this exact claim within one session — see the memory note on pacing.
+
+---
