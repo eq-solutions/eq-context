@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-31)
 
 **eq-service:**
-- #820 chore(migrations): add --reconcile mode, steer sessions off MCP apply_migration
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
@@ -76,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 - #1696 chore(deps): bump @sentry/react from 10.53.1 to 10.71.0
 - #1695 chore(deps): bump papaparse and @types/papaparse
 - #1694 fix(security): thread tenant_role_overrides denials into Quotes/CRM RPCs + their JWT minters
-- #1693 fix(security): thread tenant_role_overrides denials into the tenant Supabase JWT
 
 ---
 
