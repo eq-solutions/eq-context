@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-31)
 
+**eq-field:**
+- #859 fix(security): role-default bypasses tenant_role_overrides deny-check on 13 app_data objects
+
 **eq-service:**
 - #822 fix(defects): revalidate /defects on check-item fail/un-fail
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
