@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-31)
 
-**eq-field:**
-- #858 v3.5.626 — FIX: roster/timesheets group classification silently null for managers + people_removed
-
 **eq-service:**
 - #822 fix(defects): revalidate /defects on check-item fail/un-fail
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -73,6 +70,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1700 fix(crm): compute customer Field/Service status from owned sites
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
