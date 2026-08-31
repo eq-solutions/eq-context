@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-31)
 
+**eq-cards:**
+- #337 test(cards): re-baseline licence_card_* goldens for Flutter 3.44.8
+
 **eq-field:**
 - #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
 
