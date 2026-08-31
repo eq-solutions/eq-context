@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-31 11:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-31 17:42 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-31 10:12 UTC → 2026-08-31 11:36 UTC)
+## Since last refresh (2026-08-31 11:36 UTC → 2026-08-31 17:42 UTC)
 
-- Merged: eq-shell [#1692](https://github.com/eq-solutions/eq-shell/pull/1692) fix(security): scope quote status/note writes to created_by
-- Merged: eq-shell [#1685](https://github.com/eq-solutions/eq-shell/pull/1685) fix(staff): readable conversation viewer + attach source doc
-- Merged: eq-shell [#1684](https://github.com/eq-solutions/eq-shell/pull/1684) feat(ci): let eq-field apply its own tenant migrations via t
-- Merged: eq-shell [#1683](https://github.com/eq-solutions/eq-shell/pull/1683) feat(staff): Resourcing in-place panel, readable conversatio
-- Merged: eq-shell [#1679](https://github.com/eq-solutions/eq-shell/pull/1679) fix(auth): phone-dedup misses accounts whose phone lives on 
-- Merged: eq-shell [#1677](https://github.com/eq-solutions/eq-shell/pull/1677) fix(staff): Resourcing Name column search/filter matches not
-- Merged: eq-shell [#1675](https://github.com/eq-solutions/eq-shell/pull/1675) fix(staff): reactivate a matching inactive stub on Cards app
-- Merged: eq-shell [#1674](https://github.com/eq-solutions/eq-shell/pull/1674) feat(staff): start_date capture + Resourcing gap indicator
+- Merged: eq-shell [#1689](https://github.com/eq-solutions/eq-shell/pull/1689) feat(permissions): quotes.view_all now grantable per-person 
+- Merged: eq-shell [#1686](https://github.com/eq-solutions/eq-shell/pull/1686) fix(security): tenant_role_overrides denials were silently i
+- Merged: eq-shell [#1682](https://github.com/eq-solutions/eq-shell/pull/1682) fix(auth): active-account re-check on 11 endpoints missing i
+- Merged: eq-shell [#1681](https://github.com/eq-solutions/eq-shell/pull/1681) fix(security): quotes RPCs had no server-side permission che
+- Merged: eq-shell [#1680](https://github.com/eq-solutions/eq-shell/pull/1680) fix(security): upgrade zaap/ehow's function-privacy trigger,
+- Merged: eq-shell [#1678](https://github.com/eq-solutions/eq-shell/pull/1678) fix(security): close eq_revoke_session's group-permission bl
+- Merged: eq-shell [#1676](https://github.com/eq-solutions/eq-shell/pull/1676) fix(sites): QuotesCustomers' Edit Site panel writes contact_
+- Merged: eq-shell [#1673](https://github.com/eq-solutions/eq-shell/pull/1673) feat(documents): edit requires_signoff + reach category mana
 
 ## ⚠ Needs you (14)
 
@@ -60,8 +60,8 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 7 | 11d |
+| eq-shell | ✓ success | 0d ago | 7 | 0d |
+| eq-solves-service | ✓ success | -1d ago | 6 | 11d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 13d ago | 0 | — |
@@ -74,7 +74,7 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | [Error: Active org_memberships held by non-members: 14](https://eq-solutions.sentry.io/issues/142429897/) | 8 | 2026-08-30 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 7 | 2026-08-30 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 7 | 2026-08-26 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 6 | 2026-08-31 |
+| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 5 | 2026-08-31 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 2 | 2026-08-24 |
 | eq-shell | [phone-otp: requested for inactive account](https://eq-solutions.sentry.io/issues/141933696/) | 2 | 2026-08-20 |
 | eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-08-20 |
@@ -87,6 +87,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-31 | eq-shell | [#1692](https://github.com/eq-solutions/eq-shell/pull/1692) fix(security): scope quote status/note writes to created_by |
 | 2026-08-31 | eq-shell | [#1688](https://github.com/eq-solutions/eq-shell/pull/1688) fix(records): not-allowed page for direct nav to a denied entity/ |
 | 2026-08-31 | eq-shell | [#1690](https://github.com/eq-solutions/eq-shell/pull/1690) fix(security): thread tenant_role_overrides denials into the Fiel |
+| 2026-08-31 | eq-solves-service | [#820](https://github.com/eq-solutions/eq-service/pull/820) chore(migrations): add --reconcile mode, steer sessions off MCP a |
 | 2026-08-31 | eq-solves-service | [#819](https://github.com/eq-solutions/eq-service/pull/819) docs(claude-md): fix stale StatusBadge prop description |
 | 2026-08-31 | eq-solves-service | [#818](https://github.com/eq-solutions/eq-service/pull/818) fix(security): close cross-tenant leak in get_distinct_asset_type |
 | 2026-08-31 | eq-solves-service | [#817](https://github.com/eq-solutions/eq-service/pull/817) P0/P1 sprint: security, performance, and UX fixes from the servic |
@@ -98,12 +99,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-31 | eq-cards | [#338](https://github.com/eq-solutions/eq-cards/pull/338) test(cards): add licence edit screen coverage; fix invisible swit |
 | 2026-08-31 | eq-cards | [#336](https://github.com/eq-solutions/eq-cards/pull/336) fix(cards): AA-compliant background for EqButton primary/hero |
 | 2026-08-30 | eq-shell | [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called directl |
-| 2026-08-30 | eq-shell | [#1687](https://github.com/eq-solutions/eq-shell/pull/1687) feat(migrate): --exclude flag for bootstrap, skip genuinely-pendi |
-_Showing 15 of 94 · full record in [sessions/](sessions/)_
+_Showing 15 of 95 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (250 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (249 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (55 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (178 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (96 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-31 11:36 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-31 17:42 UTC._
