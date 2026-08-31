@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-09-01
 scope: EQ Solutions work — products, decisions, build state
 read_priority: critical
 status: live
@@ -109,6 +109,7 @@ Every canonical EQ file as a full URL — clickable from `/context/claude`:
 | `sprints/2026-08-26-organisations-anon-read-hardening.md` | Sprint hardening after the 3rd `organisations_anon_bootstrap_read` regression (eq-shell) — sequences in-flight work against what's genuinely still unbuilt |
 | `sprints/2026-08-27-tenant-plane-cross-repo-consumer-check.md` | Sprint: tenant-plane cross-repo consumer-check gap — field_managers/field_people_directory follow-up after eq-field PR #813/#814 tripped eq-shell's CHECK 7 with zero cross-repo warning |
 | `sprints/2026-08-29-eq-shell-work-sprint.md` | Full triage of every open item in eq-shell + cross-repo pending (367 items) into actionable/verification-debt/deferred/stale buckets |
+| `sprints/2026-08-30-field-pipeline-and-rls-sprint.md` | Close-out sprint for the Field tenant-migration pipeline build (eq-shell #1684 + eq-field #846, merged 2026-08-30) + 2 real timesheet/leave RLS gaps it surfaced. Wave 1 (ship now, no decisions): 1 of 4 done (the merge itself); remaining = provision 3 eq-field secrets, 2 migration "don't re-apply" header warnings, 1 zaap dispatch. Wave 2: 2 decisions needed from Royce (bootstrap exclude-list approach; reconciling eq-field's genuinely-pending migrations) before the actual cutover to the governed pipeline can run |
 | `changelog/*.md` | Per-product changelogs, all repo-slug named, all live, no unresolved duplicates. **6 dead-twin pairs physically archived** — `shell.md`/`service.md`/`cards.md`/`eq-field.md` (2026-08-15), plus `field.md` and `eq-solves-service.md` (2026-08-17), each already carried or now carries a "Superseded"/"RETIRED" banner; all six moved to `archive/changelog-*-dead-twin.md`, `superseded_by:` frontmatter added. **2026-08-17: the two pairs flagged below as of 2026-08-15 are now both resolved.** `field.md`/`eq-field.md` — a fresh `eq-field.md` had been recreated after the 2026-07-19 `field.md` merge and diverged again (5 unique entries, PR #703/#705/#709/#710/#711); merged into `eq-field.md`, `field.md` archived. `eq-service.md`/`eq-solves-service.md` — the genuinely-unresolved live pair (both appended 2026-08-14 by different sessions, cost: PR #727 sat recorded as "open, holds for Royce" a day after it merged) was deliberately left unreconciled pending Royce's own call (`sessions/2026-08-11.md`); that call was made 2026-08-17 — merge by date rather than pick a survivor, 244 distinct PR references preserved, `eq-solves-service.md` archived. Live folder is now 9 files: `eq-cards.md`, `eq-field.md`, `eq-shell.md`, `eq-context.md`, `eq-intake.md`, `eq-roles.md`, `eq-ui.md`, `eq-receipts.md`, `eq-service.md`. `scripts/changelog_duplicates.py` still gates every PR on self-marking, so a silent pair can't happen again. |
 
 ## Killed / deferred (do not reference as live products)

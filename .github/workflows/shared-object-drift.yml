@@ -1,0 +1,57 @@
+name: Shared DB object drift check
+
+# Diffs the LIVE definition of every object in eq/identity/shared-db-objects.json
+# (pg_get_viewdef / pg_get_functiondef against ehow) versus the checked-in
+# snapshot in eq/identity/shared-db-objects.snapshot.json. Fails on any
+# change — column shape, security_invoker, grants, function body, or the
+# object disappearing — regardless of which repo's migration pipeline (or a
+# hand-applied Supabase MCP/dashboard change outside both) caused it.
+#
+# WHY THIS EXISTS: eq-field and eq-shell edit the same handful of app_data
+# objects on ehow through two migration pipelines that don't read each
+# other's ledger. Two narrower guards already existed (eq-field's
+# security_invoker clause check; eq-shell's live-fingerprint warning, functions
+# only, fires only on eq-shell's own applies) before this — neither would have
+# caught eq-shell's 0249_field_people_view_parity.sql changing field_people's
+# column shape on 2026-08-19, not discovered until 2026-09-01. See
+# scripts/check_shared_object_drift.py's own header and
+# eq/identity/IDENTITY-MODEL.md §3.3.3 for the full incident history.
+#
+# A failure here surfaces automatically in digest.md's "Needs you" as a
+# 🔴 Cron failing line — refresh_digest.py's scheduled_workflow_health()
+# auto-discovers any workflow with a `schedule:` trigger by scanning
+# .github/workflows/*.yml at read time, so nothing else needs wiring.
+#
+# SUPABASE_ACCESS_TOKEN reuses the exact secret security-audit.yml already
+# has configured for scripts/security_audit.py — no new secret to add.
+
+on:
+  schedule:
+    - cron: "41 8 * * *"   # ~06:41 Sydney (AEST) — off the :00 mark, ahead of suite-state (10:00 UTC)
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "scripts/check_shared_object_drift.py"
+      - "scripts/test_shared_object_drift.py"
+      - "eq/identity/shared-db-objects.json"
+      - "eq/identity/shared-db-objects.snapshot.json"
+      - ".github/workflows/shared-object-drift.yml"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: Unit tests (normalize/fingerprint/diagnose logic)
+        working-directory: scripts
+        run: python3 test_shared_object_drift.py
+
+      - name: Live definition drift check
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: python3 scripts/check_shared_object_drift.py
