@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,14 @@ status: live
 # EQ Service — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-service: CLAUDE.md's StatusBadge description was stale — verified against the live kit, fixed (2026-08-31)
+*Royce had already checked the actual `@eq-solutions/ui` v1.15.0 source (the exact version pinned in package.json) and found the doc describing props (`tone`, `size`) that don't exist — the real props are `status`/`label`/`density`. This session independently re-verified against the installed `node_modules` copy before editing, then applied the fix.*
+
+**Deferred:**
+- [ ] **Fix committed but not pushed.** `docs(claude-md): fix stale StatusBadge prop description` (`9541e92`) sits on branch `worktree-statusbadge-doc-fix` in an isolated worktree (`.claude/worktrees/statusbadge-doc-fix`), based on current main. Push/PR wasn't requested this session. _(added 2026-08-31)_
 
 ---
 
