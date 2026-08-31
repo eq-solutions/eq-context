@@ -1,13 +1,19 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-31
+last_updated: 2026-09-01
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-09-01 (PR #820 MERGED + LIVE — migration-governance review closed: DB-first PR split adopted, `--reconcile` tooling shipped)
+- Closes `task_38071324`, spun off by the 2026-08-31 P0/P1 sprint close (entry directly below) after several sessions that day bypassed the governed migration pipeline via Supabase MCP `apply_migration`, jamming a real dispatch mid-run. Root cause: `apply-service-migrations.yml`'s `production` environment restricts `workflow_dispatch` to `main`, so the sanctioned path can only ever apply a migration *after* merge — for a fix needing its DB contract live before the dependent app code deploys, that structurally pushes toward the MCP bypass instead.
+- Verified live before proposing anything, rather than trusting the incoming report: pipeline was not still jammed (a prior re-dispatch had already succeeded); both `get_assets_for_grouping`/`get_distinct_asset_types` correctly tenant-scoped live (one overload each); zero new ERROR-level advisor findings. Audited the full `0169`-`0238` ledger range for the same gap — found one more undocumented instance (`0223`/`0224`, 2026-08-20) not previously logged; no others found. Running total: 5 bypass-then-reconcile incidents.
+- Royce chose, of three options presented via `AskUserQuestion`: a **DB-first PR split** discipline (split a contract-changing migration into its own PR, merge + dispatch it before the dependent app-code PR — no infra change) over loosening the branch policy; a `--reconcile <file...> --reason <text>` mode on `migrate-service.mjs` formalizing the by-hand ledger backfill done 5 times now (executes directly with credentials in env, otherwise prints the exact `INSERT` — correct sha256 included — for a session to run via Supabase MCP `execute_sql`); and a docs-only steering note over technically restricting MCP access. All three landed together in [PR #820](https://github.com/eq-solutions/eq-service/pull/820) — built by a concurrent session while this one was independently mid-plan on the identical change; verified against its own test plan before merging rather than duplicating it.
+- The durable rule now lives in `AGENTS.md` § "Migrations to live ehow — governed pipeline only".
 
 ## 2026-08-31 (PR #816 + #817 + #818 MERGED + LIVE — 4-axis service review → P0/P1 sprint, critical cross-tenant leak found and closed)
 - Full review across code/security, performance, features, UX (rated 8/6/8/6 out of 10), published as an artifact, then the full 13-item P0/P1 backlog built and shipped same session.
