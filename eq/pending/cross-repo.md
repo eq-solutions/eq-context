@@ -1,13 +1,29 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-09-01
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
 ---
 
 # Cross-Repo — Pending
+
+---
+
+## eq-context + eq-shell + eq-field: shared DB object drift check generalized past the two prior pattern-specific guards — both PRs merged (2026-09-01)
+
+*Follow-on to the field_people_iud gap closed 2026-08-24 (below) — a 4th incident in the same family (eq-shell's `0249_field_people_view_parity.sql` silently changed `field_people`'s/`field_people_removed`'s column shape, 2026-08-19, not discovered until this session) showed neither existing guard (the `security_invoker` clause check, the shared-fn header-citation check) generalizes past the one pattern each was built for. Replaced the "add a third regex" instinct with an object-shape-agnostic live-definition diff instead.*
+
+**Notes:**
+- Shipped: `eq/identity/shared-db-objects.json` (machine-readable registry, now includes the two views), a checked-in snapshot seeded from live queries against ehow, `scripts/check_shared_object_drift.py` (nightly + on-push, rides the existing `scheduled_workflow_health()` cron-health scan for `digest.md` alerting — no new alerting built), and the `IDENTITY-MODEL.md` §3.3.3 update. [eq-context PR #196](https://github.com/eq-solutions/eq-context/pull/196), merged.
+- Also closed a confirmed, live registry-array asymmetry found while auditing this: `field_job_numbers_src` was in the doc and in eq-field's own array but missing from eq-shell's `SHARED_REGISTRY_FUNCTIONS`. [eq-shell PR #1701](https://github.com/eq-solutions/eq-shell/pull/1701), merged.
+- Full investigation (incident timeline, both existing guards' exact scope, 3 options considered) published as an artifact in the originating eq-field session; not duplicated here.
+
+**Deferred:**
+- [ ] **eq-shell-side notification hook** — extend `migrate-tenants.mjs`'s existing live-fingerprint warning to fire the `suite-state-changed` `repository_dispatch` eq-context already listens for, so a touch to a registered object reaches eq-field's side automatically instead of staying in eq-shell's own CI log. Scoped, not built — Royce picked the narrower option this session. _(added 2026-09-01)_
+- [ ] **`field_people_worker_id_iu`** — surfaced live during this session's audit (writes `cards_worker_id` back onto `app_data.staff`, same object family as `field_people_iud`). Tracked in `shared-db-objects.json`'s `candidates_not_yet_decided`, not enforced. Needs your call on whether it belongs in the registry. _(added 2026-09-01)_
+- [ ] **2 broken internal links in eq-context** (`link_check.py` failing on `main`, unrelated to the above — found while checking this session's own PR's CI) — spawned as background task `task_7db34849`, running independently. _(added 2026-09-01)_
 
 ---
 
