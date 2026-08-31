@@ -1015,3 +1015,11 @@ Items when triggered:
 - [ ] **Not click-tested live by a real non-manager/supervisor SKS account** — no test credentials in this environment; verified instead via direct `pg_policies` before/after the fix, plus `get_advisors` (zero flags on any of the 6 tables). _(added 2026-08-31)_
 
 ---
+
+## eq-field: Teams — untick-to-remove silently didn't save, fixed (v3.5.621, PR #853, merged + live)
+*Collin Toohey reported: adding people to a team via Manage Teams saves, but unticking someone to remove them doesn't. Root cause: the edit panel renders into two permanent containers (the modal and the standalone Teams page) that mirror each other, and closing the modal never clears its content — so once a team had been edited once, both held a live duplicate of the same checkboxes, one visible and one hidden. The save read both without scoping, and a person only needed to be checked in one copy to count as "keep" — so adding always worked but removing silently didn't. Fixed by scoping every form read to whichever container is actually on screen; the identical duplicate-ID bug in the create-team form was fixed alongside (same root cause, same file). Verified against the real, unmodified file via a local static-server harness (raw `file://` silently fails to resolve the app's relative `<script src>` tags — discovered mid-session) — 10/10 checks across both entry points, the add-regression check, and the create-team fix. Merged and confirmed live via `field.eq.solutions/sw.js` (v3.5.621). Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-31.md`.*
+
+- [ ] **Worth a live SKS team-roster spot-check** — this bug has likely been silently live since the standalone Teams page shipped (v3.5.256), so any supervisor who removed someone via Manage Teams since then may have seen "Saved" while it silently didn't take. Nobody has reported this beyond Collin's one case, but nothing has actively checked for it either. _(added 2026-08-31)_
+- [ ] **Not click-tested live by a real SKS supervisor through Core** — no SKS/Core credentials in this environment; verified instead via a real-code local-harness test (above) plus a clean, error-free deploy-preview boot. _(added 2026-08-31)_
+
+---
