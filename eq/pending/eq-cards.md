@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -13,14 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: product-polish audit → top 5 fixes shipped, merged, deployed live (2026-08-30)
+## eq-cards: product-polish audit → 3 rounds, 4 PRs, all shipped/merged/deployed live (2026-08-30 → 08-31)
 
-- [ ] 6 feature folders ship with zero test coverage (`alerts`, `consent`, `legal`, `platform`, `worker_house`, `workers`) — including the two with the most room for a silent regression to do real damage: admin role-assignment and invite-claiming. _(added 2026-08-30)_
-- [ ] Two `LinearGradient` photo-legibility scrims (`licence_card.dart:305`, `licence_detail_screen.dart:1047`) sit against the app's own written "no gradients" rule — needs a call: make them flat, or name photo scrims as the one documented exception. _(added 2026-08-30)_
-- [ ] Sign-in screen doesn't reach the edges of an actual phone — visible margin on all sides plus a lot of dead space above the card at a true 375×812 viewport. Reads as a desktop page shrunk down, not mobile-first. _(added 2026-08-30)_
-- [ ] Real usability sessions with actual tradies — flagged in the 25 Aug review too, still not done. No code-level review substitutes for watching one real person use it. _(added 2026-08-25, restated 2026-08-30)_
-- [ ] Empty-state duplication (3 independent `_EmptyState` implementations across profile/licences/admin-members) not consolidated this pass — lower priority than the error-state fix, which shipped. _(added 2026-08-30)_
-- [ ] PR #331's admin-members error/retry state not click-tested live by a real admin hitting a real failure — verified via automated tests and code review only. (The shortened sign-in disclosure WAS confirmed live via screenshot this session — that one's done.) _(added 2026-08-30)_
+- [~] EqButton's shared primary style (white text on sky blue) falls short of WCAG AA contrast at normal text sizes — app-wide, not one screen. Royce started this in a separate concurrent session (chip `task_22f29e79`); running independently as of this close. _(added 2026-08-30)_
+- [~] `licence_edit_screen.dart` fills 4 fields with `EqColours.surface` while the rest of the app (incl. its own sibling fields) uses `EqColours.white` — the actual outlier, found while investigating a different suspected drift that turned out not to be one. Royce started this in a separate concurrent session (chip `task_824a07b7`); running independently as of this close. _(added 2026-08-31)_
+- [ ] The new PWA "update available" banner (round 3) can't be fully verified by `flutter test` — needs a real deployed check: ship two versions, confirm the banner actually appears and "Refresh" actually updates the tab. _(added 2026-08-31)_
+- [ ] Real usability sessions with actual tradies — flagged in the 25 Aug review, still not done after 3 further rounds of code-level fixes. No code-level review substitutes for watching one real person use it. _(added 2026-08-25, restated 2026-08-31)_
+- [ ] Live click-throughs still owed on specific shipped fixes: PR #331's admin-members error/retry state, and the mobile sign-in layout on an actual phone (both verified via automated tests + code review / a screenshot, not a real signed-in session). _(added 2026-08-30, restated 2026-08-31)_
 
 ---
 

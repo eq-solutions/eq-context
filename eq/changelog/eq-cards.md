@@ -1,13 +1,33 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-08-31 (PR #334 MERGED + LIVE — polish sprint round 3: every remaining code-buildable finding, last 4 untested folders covered)
+- Round 3 of the same-day-and-a-half polish sprint: input-style + ErrorStateView-retry consistency on admin_worker_detail_screen.dart; WCAG button-contrast fix on connect_to_company_screen.dart; dropdown-helper dedup on profile_edit_screen.dart (a suspected token-drift fix was checked against actual values and correctly declined — the file was already on the dominant convention; the real outlier, licence_edit_screen.dart, was spawned as its own follow-up instead); settings_screen.dart's stale copy-paste email workaround replaced with real url_launcher; Future.wait parallelization in PDF/Excel export; a non-blanking refresh fix on platform_console_screen.dart; a new PWA "update available" banner (real controllerchange detection, fails inert when nothing fires); 8 more Semantics accessibility fixes across the app's highest-traffic screens.
+- First-ever test coverage for the last 4 untested feature folders (alerts, platform, consent, legal — 66 new tests). Every feature folder in the app now has real coverage. Two real bugs caught while writing tests, not just coverage: a "never expires" credential could still fire a misleading expiry notification; a JSON-key mapping got a regression guard after it broke a production screen once already.
+- `flutter analyze` 0 issues, `flutter test` 451/451 passing (up from 381) before merge.
+- [PR #334](https://github.com/eq-solutions/eq-cards/pull/334), squash-merged (`5859597`) on "merge when safe". Deployed via `gh workflow run deploy.yml` on "deploy" — confirmed live via the workflow's own Netlify upload log and a bundle-content check for new strings (Netlify MCP connector was intermittently unresponsive this session).
+
+## 2026-08-31 (PR #333 MERGED + LIVE — polish sprint round 2: expiry-alert reliability, offline resilience, site-gate screen re-tokenized)
+- A fresh audit pass (2 parallel research agents covering screens and architecture round 1 hadn't touched) found: workerCredentialsList had no refresh capability or error handling despite feeding expiry-alert scheduling; offline handling was a one-screen special case; show_screen.dart (the site-gate screen) used zero design-system tokens, including a hand-rolled "EXPIRED" red that didn't match the app's real error token; 3 more missing Semantics labels; the wallet screen re-sorted its whole list on every search keystroke.
+- Fixed: worker_credentials_notifier.dart given a proper refresh()-capable shape matching sibling providers (traced every write path first — no client-side mutation exists for this data, so an invalidation-after-mutation hook had nowhere real to attach); profile_screen.dart now shows the offline banner using cache-fallback logic that already existed in profile_notifier.dart but was never surfaced; show_screen.dart fully re-tokenized onto EqColours/EqTypography plus a new page-position indicator on its PageView (the only one in the app, previously had none); 3 more Semantics wrappers added; licences_list_screen.dart's search now sorts once and caches instead of re-sorting per keystroke, with a new regression test.
+- `flutter analyze` 0 issues, `flutter test` 381/381 passing (up from 380) before merge.
+- [PR #333](https://github.com/eq-solutions/eq-cards/pull/333), squash-merged (`92b928f`) on "merge when safe". Deployed via `gh workflow run deploy.yml` on "deploy it" — confirmed live via Netlify's deploy record and a live mobile-viewport screenshot.
+
+## 2026-08-31 (PR #332 MERGED + LIVE — polish sprint round 1 continued: gradient docs, mobile layout, empty-state widget, workers-folder tests)
+- Documented the app's one deliberate exception to "no gradients" (photo-legibility scrims on licence_card.dart/licence_detail_screen.dart are functional fades, not decoration) rather than flattening them, per AGENTS.md.
+- Fixed the sign-in screen's mobile layout: email_entry_screen.dart no longer wraps its form in bordered/rounded card chrome or fully vertical-centers below 600px width, removing a large dead-space gap on real phone viewports.
+- New shared EmptyStateView widget (icon + message + optional action), mirroring ErrorStateView from PR #331. Migrated profile_screen.dart and admin_members_screen.dart onto it; deliberately left licences_list_screen.dart's multi-CTA empty state bespoke rather than force a bad fit.
+- First-ever test coverage for the workers feature folder's two highest-risk screens (previously 0 of 17 files tested): admin_worker_form_screen.dart (10 tests, incl. the specific "role change actually persists the new value" case) and claim_invite_screen.dart (10 tests, incl. invalid/expired invites, double-tap protection, and the SEC-25 phone-mismatch regression copy).
+- `flutter analyze` 0 issues, `flutter test` 380/380 passing (up from 360) before merge.
+- [PR #332](https://github.com/eq-solutions/eq-cards/pull/332), squash-merged (`8a5da26`) on "merge when safe". Deployed via `gh workflow run deploy.yml` on "deploy it" — confirmed live via Netlify's deploy record and a live mobile-viewport screenshot of the corrected sign-in layout.
 
 ## 2026-08-30 (PR #331 MERGED + LIVE — 5 polish-audit fixes: spinner, a11y, error UX, wallet tests)
 - Same-day product-polish audit (scorecard: 6/10, published as an artifact) sprinted into 5 shipped fixes: an iOS Safari/PWA freeze-bug regression fixed in 3 files (raw `CircularProgressIndicator` → `EqSpinner`); a missing `Semantics` wrapper added to `claim_invite_screen.dart`'s Privacy Policy link; the sign-in screen's Twilio/USA SMS disclosure shortened (Privacy Policy already covers it); a generic friendly fallback replacing a raw-Postgres-error leak in `user_messages.dart`; a new shared `ErrorStateView` widget (icon + message + retry) adopted in `admin_members_screen.dart` (previously 2 different error strings for 1 failure); and the first-ever screen-level test suite for `licences_list_screen.dart` (8 tests) — the app's highest-churn file (101 commits, 41 "fix"), previously untested.
