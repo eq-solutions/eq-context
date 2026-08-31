@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-08-31 19:01 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-08-31 19:03 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-08-31 18:58 UTC → 2026-08-31 19:01 UTC)
+## Since last refresh (2026-08-31 19:01 UTC → 2026-08-31 19:03 UTC)
 
-- Merged: eq-shell [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called di
-- Merged: eq-shell [#1689](https://github.com/eq-solutions/eq-shell/pull/1689) feat(permissions): quotes.view_all now grantable per-person 
-- Merged: eq-shell [#1686](https://github.com/eq-solutions/eq-shell/pull/1686) fix(security): tenant_role_overrides denials were silently i
-- Merged: eq-shell [#1682](https://github.com/eq-solutions/eq-shell/pull/1682) fix(auth): active-account re-check on 11 endpoints missing i
-- Merged: eq-shell [#1681](https://github.com/eq-solutions/eq-shell/pull/1681) fix(security): quotes RPCs had no server-side permission che
-- Merged: eq-shell [#1680](https://github.com/eq-solutions/eq-shell/pull/1680) fix(security): upgrade zaap/ehow's function-privacy trigger,
-- Merged: eq-shell [#1678](https://github.com/eq-solutions/eq-shell/pull/1678) fix(security): close eq_revoke_session's group-permission bl
-- Merged: eq-shell [#1674](https://github.com/eq-solutions/eq-shell/pull/1674) feat(staff): start_date capture + Resourcing gap indicator
+- Merged: eq-shell [#1687](https://github.com/eq-solutions/eq-shell/pull/1687) feat(migrate): --exclude flag for bootstrap, skip genuinely-
+- Merged: eq-shell [#1685](https://github.com/eq-solutions/eq-shell/pull/1685) fix(staff): readable conversation viewer + attach source doc
+- Merged: eq-shell [#1684](https://github.com/eq-solutions/eq-shell/pull/1684) feat(ci): let eq-field apply its own tenant migrations via t
+- Merged: eq-shell [#1683](https://github.com/eq-solutions/eq-shell/pull/1683) feat(staff): Resourcing in-place panel, readable conversatio
+- Merged: eq-shell [#1679](https://github.com/eq-solutions/eq-shell/pull/1679) fix(auth): phone-dedup misses accounts whose phone lives on 
+- Merged: eq-shell [#1677](https://github.com/eq-solutions/eq-shell/pull/1677) fix(staff): Resourcing Name column search/filter matches not
+- Merged: eq-shell [#1676](https://github.com/eq-solutions/eq-shell/pull/1676) fix(sites): QuotesCustomers' Edit Site panel writes contact_
+- Merged: eq-shell [#1675](https://github.com/eq-solutions/eq-shell/pull/1675) fix(staff): reactivate a matching inactive stub on Cards app
 
 ## ⚠ Needs you (15)
 
@@ -39,7 +39,7 @@ _2026-08-31 19:01 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-30 · [failures.md](system/failures.md) F11
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (226)
+## 🙋 Waiting on you (227)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -55,15 +55,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Duplicate-code 409 and remove-chip specifically still not confirmed live.** Partially overtaken since 2026-08-27: MOD10 on Telstra SLDC is now a real, actively-used code — Field reads it (chips on Sites/My Schedule), writes against it (roster picker + a typed-code alias resolver), and it's been exercised heavily via direct queries this session — so "does a real code exist and get used for real" is answered. What's specifically NOT confirmed: the add-UI's duplicate-code 409 response and the remove-✕ button, neither exercised this session. _(added 2026-08-27, narrowed 2026-08-30)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force`, live DB queries (jvkn/ehow), and production commit-ancestry, not a real signed-in session creating a fresh Labour Hire/Apprentice/Subcontractor invite end-to-end. Worth a real click-through next time someone invites a non-Employee worker: confirm the Staff record shows the correct employment_type immediately, before the invite is ever claimed. _(added 2026-08-26)_
 - **eq-shell** · **Field-driven writes to `app_data.staff` have no reliable attribution in the audit trail** — root-caused while tracing who archived Mark Brame's staff record (Royce himself, via EQ Field's "Remove from roster" action, not a bug). **Correction to this item's own premise, later the same day:** "Field's PostgREST path never sets [x-eq-actor]" is wrong — `scripts/supabase.js`'s `sbFetch()` has set it since 2026-07-30 for exactly this purpose, and it demonstrably works: ehow's live `app_data.audit_log` shows most recent `staff` writes correctly attributed (`source='shell'`, real `actor_id`). The gap is narrower and still unexplained: this one genuine "Remove from roster" click didn't carry it. Checked and ruled out as the cause: `field_people_iud()` (its UPDATE never references `updated_by`, confirmed live), eq-shell's `entity-patch.ts`/`entity-actions.ts`/`staff-create.ts` (none apply to this write), and all 10 live triggers on `app_data.staff`. **Considered and rejected**: a `fn_audit()` fallback to `auth.uid()`/JWT `sub` — eq-field's data-plane JWT deliberately sets `sub` to the tenant id, not the caller, so that fallback would misattribute writes to the wrong "person," and `auth.uid()` separately raises outright on the leave-canonical magic-link JWT (see memory `field-approval-write-paths`). Left `fn_audit()`/`field_people_iud()` unchanged. **Shipped instead**: eq-field [PR #803](https://github.com/eq-solutions/eq-field/pull/803), merged, live — a one-per-tab diagnostic breadcrumb (`EQ_OBS.captureException`) in `sbFetch` for the next time a tab that previously had a real actor id produces a write without one, so the next occurrence self-documents instead of needing this kind of after-the-fact reconstruction. **Overlaps `task_66de20f0`** (Royce's independently-started background task, separate session, same gap) — check its output before doing more here; feed it this session's findings rather than re-deriving them. _(added 2026-08-26, corrected + breadcrumb shipped 2026-08-26)_
-_…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 0d |
+| eq-shell | ✓ success | 0d ago | 6 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 7 | 11d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 13d ago | 0 | — |
 
@@ -95,18 +95,18 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-31 | eq-solves-service | [#819](https://github.com/eq-solutions/eq-service/pull/819) docs(claude-md): fix stale StatusBadge prop description |
 | 2026-08-31 | eq-solves-service | [#818](https://github.com/eq-solutions/eq-service/pull/818) fix(security): close cross-tenant leak in get_distinct_asset_type |
 | 2026-08-31 | eq-solves-service | [#817](https://github.com/eq-solutions/eq-service/pull/817) P0/P1 sprint: security, performance, and UX fixes from the servic |
+| 2026-08-31 | eq-field | [#858](https://github.com/eq-solutions/eq-field/pull/858) v3.5.626 — FIX: roster/timesheets group classification silently n |
 | 2026-08-31 | eq-field | [#857](https://github.com/eq-solutions/eq-field/pull/857) chore(hooks): local pre-push guard for cache-buster drift |
 | 2026-08-31 | eq-field | [#855](https://github.com/eq-solutions/eq-field/pull/855) v3.5.623 — FIX: roster/timesheets staff-name map 400ing for every |
 | 2026-08-31 | eq-field | [#856](https://github.com/eq-solutions/eq-field/pull/856) v3.5.624 — Teams: click anywhere in a team row to open its edit p |
 | 2026-08-31 | eq-field | [#854](https://github.com/eq-solutions/eq-field/pull/854) v3.5.623 — FEATURE: Teams — live "Selected" chip panel while edit |
-| 2026-08-31 | eq-field | [#851](https://github.com/eq-solutions/eq-field/pull/851) v3.5.622 — SECURITY: eq-field now consumes tenant_role_overrides  |
 _Showing 15 of 96 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (247 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (57 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (178 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (179 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (96 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-31 19:01 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-08-31 19:03 UTC._
