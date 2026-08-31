@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-31)
 
-**eq-cards:**
-- #336 fix(cards): AA-compliant background for EqButton primary/hero
-
 **eq-field:**
 - #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
 
@@ -86,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 
 | Repo | Status |
 |------|--------|
-| eq-service | ? in_progress |
+| eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
