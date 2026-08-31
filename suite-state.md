@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-08-31)
 
-**eq-field:**
-- #855 v3.5.623 — FIX: roster/timesheets staff-name map 400ing for every non-manager
-
 **eq-service:**
 - #821 P2 polish: search_path hardening, dashboard gradients, focus-trap dedup, tighter revalidation, real Data Quality worklists
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
