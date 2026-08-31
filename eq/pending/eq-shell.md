@@ -1292,10 +1292,16 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 ---
 
 ## eq-shell: threads tenant_role_overrides denials into the Field JWT (PR #1690)
-*Companion to eq-field PR #851 — this repo's own PR #1686 fixed the identical "denials silently ignored" gap for Shell's cookie-session model but explicitly flagged this JWT-mint path (token-exchange.ts) as separate and unaddressed.*
 
-- [ ] **Not merged — needs Royce's review**, paired with eq-field#851; this PR alone has zero live effect (nothing reads the new claim yet). _(added 2026-08-31)_
-- [ ] **Same gap exists one layer deeper**, in 14 `public.eq_*` Quotes/CRM RPC functions on ehow that check `extra_perms` directly (not via `_shared/permissions.ts`'s `can()`, which #1686 already fixed) — found while scoping the eq-field companion work, not touched by either PR. Spawned as eq-field-side task `task_9f3eb7a8` since that's where the investigation happened, but the fix belongs in this repo's own governed pipeline. _(added 2026-08-31)_
+- [ ] **13 of 14 `public.eq_*` Quotes/CRM/pricing RPCs on ehow still have no deny-check.** #1690 merged (paired with eq-field#851, both live). Of the 14 RPCs flagged here, only `eq__assert_entity_role` has since been closed (PR #1693, merged 2026-08-31 — confirmed live via `pg_get_functiondef`). Still ungated (`extra_perms` checked, `denied_perms` not): `eq__assert_pricing_role`, `eq__assert_pricing_view_role`, `eq_add_quote_note`, `eq_add_tenant_trade`, `eq_duplicate_dismiss`, `eq_get_quote_detail`, `eq_list_contacts_for_customer`, `eq_list_contacts_for_site`, `eq_list_quotes`, `eq_list_suppliers`, `eq_remove_tenant_trade`, `eq_set_job_number`, `eq_update_quote_status` — re-verified live 2026-09-01, not assumed from #1693's scope. Zero live exploitation surface today (no `tenant_role_overrides` deny row targets a Quotes/pricing/trade key yet). Spawned as eq-field-side task `task_9f3eb7a8`; fix belongs in this repo's own governed pipeline. _(added 2026-08-31, narrowed 2026-09-01)_
+
+---
+
+## eq-shell: direct-URL nav to a denied Records/Staff page showed broken chrome instead of a clear message — PR #1688, merged, live (2026-08-31)
+*Deferred from PR #1686: nav links correctly hid for a denied caller, but hitting the URL directly still rendered the page's real chrome (search box, headers, filters) with the data fetch just failing or coming back empty.*
+
+- [x] **eq-shell [PR #1688](https://github.com/eq-solutions/eq-shell/pull/1688)**: `EntityBrowserPage.tsx`'s default export now picks the right permission per entity type before rendering (`entity.view` for customer/contact/site/asset, `field.view` for schedule/leave_request/team/prestart/toolbox_talk, `field.view_hours` for timesheet, `tender` stays ungated) — mirrors `entity-rows.ts`'s own CRM_ENTITIES/FIELD_ENTITIES/HOURS_GATED_ENTITIES split. `StaffPage.tsx` gained a `field.view` `<Gate>` wrapper around the renamed `StaffPageInner`, same pattern as Suppliers.tsx/LabourHireRates.tsx/ComplianceReport.tsx/gm-reports. Both render the existing "Not allowed" `eq-empty` block. `tsc -b --force`/`check:perms`/full test suite (468/470, 2 pre-existing skips)/`pnpm run build` all clean. Merged (squash `85ae80b4`), confirmed live via `published_at` (`2026-08-31T10:03:34Z`), not just the deploy record existing.
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: sign in as a denied SKS apprentice, hit `/sks/staff` and `/sks/data/customer` directly, confirm "Not allowed" renders instead of broken chrome; confirm an allowed caller sees the page unchanged. _(added 2026-08-31)_
 
 ---
 
