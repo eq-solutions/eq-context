@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #337 test(cards): re-baseline licence_card_* goldens for Flutter 3.44.8
 
 **eq-field:**
-- #853 v3.5.621 — FIX: Teams — untick-to-remove silently didn't save
 - #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
 
 **eq-service:**
@@ -85,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 | Repo | Status |
 |------|--------|
 | eq-service | ✓ success |
-| eq-shell | ? in_progress |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
