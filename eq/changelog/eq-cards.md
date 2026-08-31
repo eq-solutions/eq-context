@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-31 (PR #338 MERGED — licence edit screen gets test coverage; fixed an invisible switch-toggle ink bug it exposed)
+- `licence_edit_screen.dart` had zero test coverage (`task_236abfe6`, flagged by the PR #335 session below) despite create/edit/renewal flows, OCR prefill, the expiry-unchanged renewal guard, and White Card lifetime handling — the file behind the 2026-08-13 Richard Brown duplicate-row incident (further down this file). Added 8 widget tests across those four areas.
+- The first test run exposed a real, pre-existing bug: the "never expires" and "private" toggles wrap `SwitchListTile` in a plain `Container` with a background colour, hiding the tile's own ink splashes (Flutter's own debug assertion — "ListTile background color or ink splashes may be invisible"). Fixed both to `Material` — visually identical, confirmed via full-project `flutter analyze` and a repo-wide grep confirming no other test or golden touches this screen.
+- `flutter analyze` 0 issues (whole project), `flutter test` 8/8 passing on the new file.
+- [PR #338](https://github.com/eq-solutions/eq-cards/pull/338), squash-merged on explicit "merge". Confirmed live against the post-merge `origin/main` that `deploy.yml` is still `workflow_dispatch`/release-tag only — no deploy triggered.
+
 ## 2026-08-31 (PR #335 MERGED + LIVE — licence edit screen's dropdown/date/search fill matched to its own text-field convention)
 - Closes `task_824a07b7`, flagged by the PR #334 session just below as the real design-system outlier once its own suspected token drift (`profile_edit_screen.dart`) checked out clean. 4 form controls in `licence_edit_screen.dart` (state dropdown, licence-type picker, type-search field, both date fields) filled with `EqColours.surface` (warm-sand "elevated surface" token) instead of the white this same screen's plain text fields use via `EqTextField`'s spec'd convention ("V9 spec: white (card) fill"). An internal look-and-feel inconsistency, not a functional bug. Confirmed `EqColours.white` is the dominant app-wide pattern (85 usages vs 31 for `surface`) before fixing.
 - `flutter analyze` 0 issues — confirmed via a stash/pop baseline diff that pre-existing analyzer noise (missing codegen in the fresh worktree, `.freezed.dart`/`.g.dart` are gitignored) was identical with or without the change. Requested test file (`licence_edit_screen_test.dart`) doesn't exist — verified genuinely absent via grep, not a wrong-tree artifact; spawned as a follow-up chip (see `eq/pending/eq-cards.md`).
