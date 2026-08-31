@@ -2772,3 +2772,22 @@ explicit Royce go-ahead.
 - CI caught a real cache-buster drift on first push (`app-state.js`'s static `?v=` tag in `index.html` wasn't bumped alongside `APP_VERSION` — `teams.js` itself is lazy-loaded so needed no tag). Fixed before merge.
 - Squash-merged on explicit "merge it", confirmed live via `field.eq.solutions/sw.js` (`v3.5.621`).
 - Not click-tested live by a real SKS supervisor through Core — no SKS/Core credentials in this environment. This bug has likely been live since the standalone Teams page shipped (v3.5.256) — worth a live roster spot-check for any team member who was supposedly removed in the past and it silently didn't take.
+
+## 2026-09-01 (v3.5.623 — PR #854 MERGED + LIVE — Teams: live "Selected" chip panel while editing)
+- Royce, reacting to a live screenshot of v3.5.621: "with all that space on the rigth ahnd side can you sho a summary of whos selected?" A `/decide` pass upgraded the first-draft design (a read-only mirror list) to removable chips — a chip is both the summary and its own remove control, so there's one source of truth instead of two lists to reconcile by eye.
+- Page-only (`scripts/teams.js renderTeamsPage()`) — the Manage Teams modal opened from Roster/Contacts/Schedule/Timesheets is untouched. Page widens 640→960px only while a team is being edited, collapses back on Cancel/Save. New `_renderSelectedSummary()`/`_removeSelectedTeamMember()`; new `id="edit-team-members-list"` on the existing checkbox wrapper for a single delegated `change` listener rather than one per checkbox.
+- The summary panel does NOT use `_teamsEditorRoot()` (the modal-vs-page helper `saveEditTeam()` uses) — it's pinned unconditionally to the page's own checkbox list, since it only ever renders there. Caught during design review: without this, the panel could silently show the modal's stale tick-state if the modal happened to be left open from an earlier navigation. Covered by its own test scenario.
+- Verified via a 28-scenario local harness against the real, unmodified file through a local static server (`file://` doesn't resolve the app's relative `<script src>` tags), plus real mouse-click verification in the browser pane with the app's actual CSS loaded.
+- CI caught a cache-buster drift on first push — `app-state.js`'s tag again, same shape as the v3.5.621 catch. Fixed before merge.
+- Squash-merged on explicit "merge it", confirmed live via `field.eq.solutions/sw.js` (`v3.5.623`).
+- Not click-tested live on SKS — no Core/SKS credentials in this environment, same disclosed gap as v3.5.621.
+
+## 2026-09-01 (v3.5.624 — PR #856 MERGED + LIVE — Teams: click anywhere in a team row to open its edit panel)
+- Royce, reacting to the live v3.5.623 screenshot: "Can you make it so clicking anywhere within the teams row brings up the edit section."
+- The whole row (colour swatch, name, member count) now opens edit via `startEditTeam()`, matching the audit log's existing `.audit-row-jumpable` hover/click pattern (new `.team-row-clickable` in `styles/base.css`). `role="button"`/`tabindex="0"`/Enter-Space keyboard handling included, not just a mouse-only `onclick`.
+- The old "✎ Edit" button is removed — redundant once the whole row does the same thing — replaced by a small "Editing" label on whichever row is currently open. Delete stays a separate control, `event.stopPropagation()`'d so declining a delete never also opens the edit panel underneath the confirm dialog.
+- View-only users (no `field.manage_teams`) get no click affordance, class, or delete button at all — unchanged from before.
+- Verified via 7 new scenarios added to the same harness (35/35 total): row click opens edit, Edit button confirmed gone, Delete click doesn't also open edit, view-only rows stay inert — plus a real mouse click in the browser pane.
+- CI caught a second cache-buster drift on first push — this time `styles/base.css`'s own tag, the first time this class of miss has hit a CSS file rather than a `.js` file. Fixed before merge.
+- Squash-merged on explicit "merge it", confirmed live via `field.eq.solutions/sw.js` (`v3.5.624`).
+- Not click-tested live on SKS — same disclosed gap as v3.5.621/v3.5.623.
