@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-30 (nightly cron)_
+_Last verified: 2026-08-31 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-30)
+## Open PRs (as of 2026-08-31)
 
 **eq-cards:**
 - #336 fix(cards): AA-compliant background for EqButton primary/hero
@@ -81,7 +81,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-30)
+## System Health (as of 2026-08-31)
 
 **CI on main:**
 
@@ -96,7 +96,7 @@ _If this file is >48h old, the cron is broken._
 **Deploys:**
 _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 241 (latest: 0237) applied
+**Migrations:** eq-service has 243 (latest: 0237) applied
 
 ---
 
