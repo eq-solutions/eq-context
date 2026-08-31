@@ -61,13 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-08-31)
 
 **eq-cards:**
+- #339 fix(cards): AA-compliant colour for 14 more white-on-sky spots
 - #337 test(cards): re-baseline licence_card_* goldens for Flutter 3.44.8
 
 **eq-field:**
 - #851 v3.5.621 — SECURITY: eq-field now consumes tenant_role_overrides denials
 
 **eq-service:**
-- #819 docs(claude-md): fix stale StatusBadge prop description
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
