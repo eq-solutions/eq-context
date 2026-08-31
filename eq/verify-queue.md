@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2401,5 +2401,29 @@ a bug rather than just deleting the line.
 **From:** eq-roles + eq-shell + eq-solves-service: PM Calendar digest switched from a hardcoded group ID to a real, grantable permission — built, released, live (2026-08-18)
 
 - [ ] **Not clicked through live by a person** — the corrected recipient count (20, see above) is verified directly against the live database, not by watching a real digest email send; sending stays paused until Royce reviews the list and flips `SUPERVISOR_DIGEST_PAUSED` off (tracked in [eq/pending/eq-solves-service.md](eq-solves-service.md), the actionable Netlify-settings item lives there). _(added 2026-08-18)_
+
+---
+
+**From:** eq-shell: Documents — site-scoped pushes and sign-off certificates, built, merged, live (2026-08-28)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push the same document to two different sites, confirm two independent Register entries and certificates (each showing only its own site's signers), confirm an existing unscoped push still renders unchanged. _(added 2026-08-28)_
+
+---
+
+**From:** eq-shell: Mobile TOTP enrollment — same-device lockout fixed, merged live (2026-08-28)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass next time someone's mid-enrollment on a phone: confirm tapping "Open in authenticator app" actually hands off to an installed app on both iOS and Android, confirm the copy button copies the right secret. _(added 2026-08-28)_
+
+---
+
+**From:** eq-shell: Admin sidebar decluttered — Users/Audit log/Security groups/Settings unpinned, live (2026-08-28)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment; verified instead via `tsc -b --force`, a full `pnpm run build`, and a direct trace confirming `AdminHub.tsx` already tiles all four removed items. Worth a real pass: sign in as a manager, confirm the Admin section shows only the 5 remaining items and all 4 removed ones are still reachable via All admin tools. _(added 2026-08-28)_
+
+---
+
+**From:** eq-field: Timesheets — day-cell clicks now fill the whole broken-up week too, not just the Fill Week button (2026-08-28)
+
+- [ ] **Not click-tested live by a real signed-in supervisor** — same standing sandbox limitation as most entries in this file; `?tenant=demo` resolves to the `eq` sandbox tenant (Core-only, standalone PIN gate confirmed a dead end live, matching this repo's own documented behaviour) and no SKS/Core credentials are reachable here. Verified instead via an isolated harness loading the real shipped file and calling the exact function the click handler invokes. Worth 2 minutes next time someone's signed in via Core with a person whose week is split by leave/TAFE. _(added 2026-08-28)_
 
 ---

@@ -117,45 +117,12 @@ Every code + DB item in this sprint is now live: SEC-34/SEC-35/SEC-36/SEC-53/SEC
 
 ---
 
-## eq-shell: Documents — site-scoped pushes and sign-off certificates, built, merged, live (2026-08-28)
-*Royce asked for a push to carry a site (e.g. one EMP pushed separately per Sydney site), with the certificate and Register showing which site.*
-
-- [x] **Investigated before building**: confirmed `app_data.sites` already exists as a real, populated entity (Customers module, 200+ rows on ehow, incl. active SY1–SY9 codes) — Royce's own fallback proposal was a hardcoded 9-item list; used the live table instead, on his confirmed call.
-- [x] **Found the real architecture gap**: there's no "push" as its own row — a push is an insert into `document_audiences` (a write-only ledger, never joined into `document_register`) plus upserts into `document_signoffs`, uniquely constrained `(version_id, signer_user_id)` tenant/version-wide forever. Letting the same signer hold an independent signoff per site needed that constraint rebuilt, not just a new column — Royce's confirmed call was the full rework, not a metadata-only shortcut.
-- [x] **Built**: migration `0288` adds `document_signoffs.site_id` (FK → `app_data.sites`, not on `documents`/`document_versions`) plus a generated `site_key` column (same coalesce-to-sentinel trick `document_audiences.target_key` already uses) so untagged pushes keep today's exact single-global-signoff guarantee while site-tagged ones get independent rows. `document_register` view extended (new columns appended at the very end — this view has broken from a mid-list insert twice before, 0253/0287). Server: site validated tenant-scoped on push, threaded through the shared upsert helper; certificate endpoint takes a 3-state `site_id` (absent/`none`/real uuid) so an unscoped group's certificate can't accidentally pull in another site's signers. Client: Site dropdown on both push forms, Register now groups by (document, site) so the same document pushed twice reads as two independent cards each with its own certificate link, plus a site filter.
-- [x] **Left `document_audiences.target_kind='site'` alone** — an existing, currently-disabled, unrelated feature (resolving signers FROM a site roster via `staff.default_site_id`, which has no real data) that happens to share the word "site." Confirmed via the file's own header comment before assuming it was reusable.
-- [x] **Migration applied before merge, not after** — this PR's own code depends on the new columns existing (unlike the usual pure-schema-fix PRs this repo's merge-then-dispatch convention assumes), so merging first would have broken Documents in production until someone separately dispatched the apply. Dispatched `tenant-migrate.yml` against the PR branch first (Royce's explicit go), verified live on both ehow and zaap (including the real "Environmental Management Plan" pilot document still rendering `site_id: null` for its existing signers), then merged.
-- [x] eq-shell [PR #1656](https://github.com/eq-solutions/eq-shell/pull/1656), squash-merged (`b651bba8`), confirmed live via Netlify deploy state (`ready`, published 2026-08-28 06:04 UTC) matching the merge commit exactly. `tsc -b --force` + `eslint` clean; deploy preview loaded cleanly pre-merge.
-
-**Deferred:**
-- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push the same document to two different sites, confirm two independent Register entries and certificates (each showing only its own site's signers), confirm an existing unscoped push still renders unchanged. _(added 2026-08-28)_
-
----
-
-## eq-shell: Mobile TOTP enrollment — same-device lockout fixed, merged live (2026-08-28)
-*Royce: "people on mobile can't use 2FA - it's a negative loop as they can't scan the QR code on the phone so they get locked out. what can we do?"*
-
-- [x] **Root cause**: the QR code and the phone trying to scan it are the same device — physically impossible to scan. The only existing fallback was hand-typing a 32-character secret with no copy button, which is what was actually causing the lockouts. Hits specifically because TOTP is forced onto managers/supervisors/platform-admins once their grace period expires (`App.tsx`'s `requires_totp_enrollment` gate) — no way around the screen.
-- [x] **Fix**: `EnrollTotp.tsx` — added a tappable `otpauth://` deep-link button next to the QR (every major authenticator app registers that URI scheme on iOS/Android, so tapping it hands off straight to "add account" pre-filled), and a copy-to-clipboard button on the manual secret, matching the existing backup-codes copy pattern. Client-only — no backend, schema, or auth-policy change; `enroll-totp`/`confirm-totp` untouched.
-- [x] eq-shell [PR #1655](https://github.com/eq-solutions/eq-shell/pull/1655) — `tsc -b --force` clean, independent merge-readiness audit confirmed single-file scope and no auth-logic touched (all 5 required checks passed, zero drift from main), merged (squash `18f6391d`), confirmed live via Netlify deploy state (`ready`, published 2026-08-28 05:28 UTC) matching the merge commit exactly.
-
-**Deferred:**
-- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass next time someone's mid-enrollment on a phone: confirm tapping "Open in authenticator app" actually hands off to an installed app on both iOS and Android, confirm the copy button copies the right secret. _(added 2026-08-28)_
-
----
-
 ## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28)
 *Royce, live, comparing the Staff page to the Documents Register for the same person: "Why is Mohammed Hussain's name different? Even the capital letters? Should be the same record?" Also asked to speed up the Register's load time.*
 
-- [x] **Root cause confirmed live**: `shell_control.users.id` (jvkn) matched `app_data.staff.user_id` (ehow) exactly for this person — one record, not a duplicate identity. The Register was reading the raw, once-only name capture from invite-acceptance (`shell_control.users.name` = "Mohammed Nabeel HUSSAIN"); Staff reads the curated `app_data.staff` record ("Mohammed"/"Hussain"). Same bug class as [PR #1540](https://github.com/eq-solutions/eq-shell/pull/1540) (2026-08-23, "resolve the 7 divergent staff/shell login names") — this is an 8th case that audit's discovery query missed.
-- [x] **Data fix**: applied the same guarded-UPDATE pattern live to jvkn ("Mohammed Nabeel HUSSAIN" → "Mohammed Hussain"), Royce-confirmed via AskUserQuestion before running it. Audit-trail migration `supabase/migrations/2026_08_28_resolve_hussain_divergent_staff_shell_name.sql`.
-- [x] **Code fix**: `push-document-audience.ts`'s `handleRegister`/`handleCertificate` now resolve signer names STAFF-PREFERRED (`app_data.staff` wins when a matching row exists, `shell_control.users` is the fallback) via a new shared `resolveSignerNames()` helper, so the Register and its certificate PDF can't drift from each other — or from Staff — again, even before the underlying data is individually corrected. `handleOptions`'s push-picker gets the same `parseSurname` cleanup the Staff page already used.
-- [x] **Load-time fix**: `signature_image` (a full base64 PNG data URI, tens of KB) was being selected for EVERY already-signed row on EVERY Register/Templates load, used only if an admin opened that row's evidence modal. Moved to an on-demand `resource=signature-image` fetch, same pattern already established for `resource=document-file`.
-- [x] eq-shell [PR #1652](https://github.com/eq-solutions/eq-shell/pull/1652) — `tsc -b --force` + `eslint` clean on both changed files, merged (squash `224548d6`), confirmed live via Netlify deploy state (`ready`, published 2026-08-27 18:53 UTC) matching the merge commit exactly.
 
 **Deferred:**
 - [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open the Register tab for a tenant with several signed documents, confirm names now match Staff, open one signer's evidence modal, confirm the signature image still loads (now on demand). _(added 2026-08-28)_
-- [x] **Full re-sweep, already run** — spawned as a background task, Royce started it in a separate session while this one was closing. It found 4 more divergent names on ehow (Moahmmed Elsayed, Eric Nguyen, Nelson Sareto — "staff wins", Royce-confirmed per-case same as every prior fix; Amir Farid — NULL fill) and confirmed all 8 prior fixes (#1540 + Hussain) still hold live — 12 confirmed total across 3 discovery passes now. Separately root-caused (not fixed, low urgency) a DIFFERENT bug on zaap: Royce Milmlow's own `app_data.staff.user_id` there points to a `user_id` that resolves to zero rows anywhere on jvkn — a bad-import artifact from the 2026-05-21 Cards bulk-seed, not the name-divergence shape. Full write-up in the `documents-register-signer-name-divergence` memory file.
 - [ ] **eq-shell PR #1654** ("resolve 4 more divergent staff/shell login names") — OPEN, not merged. The live data fixes for the 3 "staff wins" cases + 1 NULL-fill were applied directly (same precedent as this session's Hussain fix); the PR carries the audit-trail migration + doesn't need to block on data correctness, but still needs a merge decision. _(added 2026-08-28)_
 
 ---
@@ -164,26 +131,6 @@ Every code + DB item in this sprint is now live: SEC-34/SEC-35/SEC-36/SEC-53/SEC
 *Two eq-shell PRs shipped as companions to eq-field's Documents-to-Sign inline-viewer rebuild — full narrative (including the real root-cause bug the two together exposed, and the audience-reach/unlinked-staff findings) lives in `eq/pending/eq-field.md`, 2026-08-27.*
 
 - [ ] **"Merged, live" above means the code path exists — Gotenberg itself was never actually provisioned.** Checked live 2026-08-28/30: `GOTENBERG_URL` doesn't exist anywhere in eq-shell's Netlify env vars. Every conversion attempt (new upload or the backfill endpoint) silently degrades to `pdf_status='failed'` — confirmed against real data: of 18 pre-pipeline Office documents on ehow, 0 have ever reached `pdf_status='ready'`. Self-hosted on Fly.io per the PR's own recorded decisions (private networking, always-warm); `flyctl` is installed locally but not authenticated, needs Royce's `flyctl auth login` at minimum. Royce's explicit call 2026-08-28: defer — only 2 of the 18 stuck documents actually have signoffs assigned (the rest are unassigned templates nobody's opening), and the one that mattered (Environmental Management Plan) has a zero-infra manual workaround (export to PDF, re-upload as a new version — skips Gotenberg entirely since an already-PDF upload never calls it). Revisit if this starts happening often enough to justify the infra spend. _(added 2026-08-28, reconfirmed 2026-08-30)_
-
----
-
-## eq-shell: Admin sidebar decluttered — Users/Audit log/Security groups/Settings unpinned, live (2026-08-28)
-*Royce asked whether cleaning up the nav bar from his own (highest-access) account would filter down to everyone. It doesn't work that way: the sidebar is permission-gated per signed-in user (`useCan()`), never copied from any one session — a separate per-user "Simple" nav-scope toggle (2026-08-26, below) already existed for individual decluttering. What he actually wanted was a shared-code change: fewer permanently-pinned Admin links for everyone.*
-
-- [x] **Built**: removed Users, Audit log, Security groups, and Settings from the permanently-pinned Admin sidebar list in `HubSidebar.tsx` — all four already have a matching tile on the Admin Overview page ("All admin tools"), so nobody loses access, just one extra click for the less-frequent ones. Remaining pinned Admin items: All admin tools, Add workers, Intake, Labour hire rates, Suppliers. Doesn't reopen the 2026-07-06 call below to leave Import/Labour hire rates pinned — different items, same principle (access-safe, not "manager-only from now on").
-- [x] Kept `navScope.ts`'s Simple-mode item list and `AccessControlPage.tsx`'s nav-preview tool trimmed the same way, per this repo's own documented 3-consumer sync invariant — confirmed `AdminEditUser.tsx` needed no direct edit since it imports the shared list rather than duplicating it.
-- [x] eq-shell [PR #1653](https://github.com/eq-solutions/eq-shell/pull/1653), squash-merged (`6c2b5dc2`), confirmed live via Netlify deploy state (`ready`, `published_at` set, exact `commit_ref` match, ~7 min build-to-publish).
-
-**Decided:**
-- Royce: trim all four (Users, Audit log, Security groups, Settings) — not just the two he first named (Users, Audit log) — once shown all four share the identical tile-redundancy.
-- Royce: Admin section only for this pass — Records/Apps/Resourcing left alone.
-
-**Deferred:**
-- [ ] **Not click-tested live** — no Shell session/credentials in this environment; verified instead via `tsc -b --force`, a full `pnpm run build`, and a direct trace confirming `AdminHub.tsx` already tiles all four removed items. Worth a real pass: sign in as a manager, confirm the Admin section shows only the 5 remaining items and all 4 removed ones are still reachable via All admin tools. _(added 2026-08-28)_
-
-**Notes:**
-- This worktree's `node_modules` was missing `heic2any` (declared in `package.json` since PR #1619, 2026-08-26) — a plain `pnpm install` fixed it. Unrelated to this task; flagging in case a fresh worktree hits the same gap.
-- Checked 5 old branches (`feat/nav-tile-drift-and-preview`, `claude/nav-cleanup-fixes`, `claude/access-control-polish-e8d7ca`, `claude/access-control-security-groups-287cf3`, `claude/field-perms-visibility`) for overlap before starting — all single-commit, superseded/abandoned (Aug 7–25), none conflicted with this change.
 
 ---
 
