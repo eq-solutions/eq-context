@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-08-30 (hollow historical reviews root-caused, document attachment shipped)
+- Root-caused why backfilled historical Development Reviews showed "Not answered" everywhere: the 2026-08-30 backfill wrote a real summary per review but never the structured answers — verified live across all 27, 100% hollow.
+- The read view now always shows a real (non-auto-generated) summary, and collapses ~20 individual "Not answered" lines into one explanatory note when a formal entry has no structured answers at all.
+- Shipped attach-a-document on any conversation entry — 2 new dedicated functions reusing the existing `app_data.attachments` spine, with an explicit creator-only ownership check the generic upload/list functions don't have (needed here since this table is otherwise creator-only by design).
+- eq-shell [PR #1685](https://github.com/eq-solutions/eq-shell/pull/1685), merged `0f9b4613`, confirmed live via deploy state + direct function check on both new endpoints.
+
 ## 2026-08-30 (Resourcing rebuilt — in-place panel, readable history, dashboard/RLS leak closed)
 - Row click on the Resourcing dashboard opens conversation history in a slide-in panel in place instead of navigating to the Staff page.
 - Saved formal conversations (Check-in / Development Review) are readable again — previously only an auto-generated one-line heading ever showed after the save. Development Review ratings now show a `(was N, +delta)` comparison against the previous review.
