@@ -1,0 +1,40 @@
+{
+  "$comment": "Machine-readable companion to IDENTITY-MODEL.md §3.3.3 'Shared DB objects'. Read by scripts/check_shared_object_drift.py. This file is the object list; that section is the narrative (ownership rationale, incident history). Whichever side notices a gap first should add to BOTH in the same PR — that's the rule this file exists to make cheap to follow.",
+  "plane": "ehow",
+  "project_ref": "ehowgjardagevnrluult",
+  "objects": [
+    {
+      "schema": "app_data",
+      "name": "field_people",
+      "kind": "view",
+      "note": "Not in IDENTITY-MODEL.md's table historically — tracked only as prose in eq-field's own CLAUDE.md, guarded there for exactly one property (security_invoker). Added to this registry 2026-09-01 after eq-shell's 0249_field_people_view_parity.sql changed its column shape (added a `group` alias, stubbed `employment_type` to NULL) and neither existing guard noticed."
+    },
+    {
+      "schema": "app_data",
+      "name": "field_people_removed",
+      "kind": "view",
+      "note": "Twin of field_people — same history, same gap, same fix."
+    },
+    { "schema": "app_data", "name": "field_people_iud", "kind": "function" },
+    { "schema": "app_data", "name": "field_people_removed_iud", "kind": "function" },
+    { "schema": "app_data", "name": "field_teams_iud", "kind": "function" },
+    { "schema": "app_data", "name": "field_team_members_iud", "kind": "function" },
+    { "schema": "app_data", "name": "field_team_supervisors_iud", "kind": "function" },
+    { "schema": "app_data", "name": "eq__guard_timesheet_status", "kind": "function" },
+    { "schema": "app_data", "name": "eq__guard_leave_status", "kind": "function" },
+    {
+      "schema": "app_data",
+      "name": "field_job_numbers_src",
+      "kind": "function",
+      "note": "Rewritten 4x by eq-shell's Ops/Quotes pipeline before eq-field noticed (2026-08-26, reconciled PR #796). Was already added to both eq-field's and eq-shell's own hand-maintained arrays; this is its first appearance in a live-diffed check."
+    }
+  ],
+  "candidates_not_yet_decided": [
+    {
+      "schema": "app_data",
+      "name": "field_people_worker_id_iu",
+      "kind": "function",
+      "note": "Trigger on app_data.field_people writing cards_worker_id back to app_data.staff — surfaced live during the 2026-09-01 investigation. Same family as field_people_iud but ownership/shared-edit status not yet confirmed either way. Not enforced by check_shared_object_drift.py (only the `objects` array above is). Royce's call whether to promote it."
+    }
+  ]
+}
