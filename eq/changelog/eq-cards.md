@@ -9,6 +9,13 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-08-31 (PR #336/#337/#339 MERGED + LIVE — white-on-sky button text failed WCAG AA; new skyAA token, 27 instances fixed, deployed)
+- `EqButtonVariant.primary`/`.hero` — the shared component behind the app's main CTA buttons — rendered white text on `EqColours.sky` at ~2.69:1, failing WCAG AA even at the relaxed 3:1 large-text/UI-component floor. Added `EqColors.skyAA` (`#267DA6`, ~4.60:1 — clears the full 4.5:1 bar at every text size the app uses) after Royce reviewed a rendered comparison against `deep`/`ink`/the status quo.
+- [PR #336](https://github.com/eq-solutions/eq-cards/pull/336): `EqButtonVariant.primary`/`.hero` switched to `skyAA`; `connect_to_company_screen.dart`'s "Apply" button fixed too (a second instance of the same bug, missed by PR #313's earlier a11y sweep); a spawned background audit's 9-more-instances fix (auth/consent/licence-capture/admin screens) folded in via merge-conflict resolution against a same-day concurrent PR (#334) that had independently applied a partial `deep`-based fix to the same Apply button.
+- [PR #339](https://github.com/eq-solutions/eq-cards/pull/339): second, broader sweep — 14 more sky-contrast spots, plus a new `TextButtonTheme` default so bare `TextButton`s stop inheriting Material's stock blue.
+- [PR #337](https://github.com/eq-solutions/eq-cards/pull/337): unrelated licence-card golden-image drift (Flutter 3.44.8 rendering shift) found and re-baselined by a separately-spawned background task.
+- All 3 squash-merged, CI green throughout. Deployed live via explicit `Build & Deploy` dispatch — confirmed via the Netlify API (`state: ready`, `published_at` set) and a live screenshot of `cards.eq.solutions`'s sign-in button, not just the workflow's own exit code.
+
 ## 2026-08-31 (PR #338 MERGED — licence edit screen gets test coverage; fixed an invisible switch-toggle ink bug it exposed)
 - `licence_edit_screen.dart` had zero test coverage (`task_236abfe6`, flagged by the PR #335 session below) despite create/edit/renewal flows, OCR prefill, the expiry-unchanged renewal guard, and White Card lifetime handling — the file behind the 2026-08-13 Richard Brown duplicate-row incident (further down this file). Added 8 widget tests across those four areas.
 - The first test run exposed a real, pre-existing bug: the "never expires" and "private" toggles wrap `SwitchListTile` in a plain `Container` with a background colour, hiding the tile's own ink splashes (Flutter's own debug assertion — "ListTile background color or ink splashes may be invisible"). Fixed both to `Material` — visually identical, confirmed via full-project `flutter analyze` and a repo-wide grep confirming no other test or golden touches this screen.

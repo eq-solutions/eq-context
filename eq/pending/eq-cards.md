@@ -22,6 +22,28 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: white-on-sky button text failed WCAG AA everywhere it appeared — new skyAA token, 27 instances fixed across 3 PRs, deployed live (2026-08-31)
+*Flagged: `EqButtonVariant.primary`/`.hero` (the app's main shared button style) rendered white text on `EqColours.sky` at ~2.69:1 — fails WCAG AA even at the relaxed 3:1 large-text/UI-component floor, let alone the 4.5:1 normal-text bar. Computed the real contrast math for every candidate (sky/deep/skyAA/ink) against the actual text sizes EqButton and other call sites use, rendered a visual comparison, and let Royce pick the exact shade rather than silently swapping a component used on dozens of screens.*
+
+- [x] Added `EqColors.skyAA` (`#267DA6`, ~4.60:1 white-on-bg — clears AA at every text size the app uses, same blue hue family as sky/deep) to `eq_tokens.dart`/`eq_colours.dart`. Royce chose this over reusing `deep` (partial fix only, still short of 4.5:1 for normal-size text), switching to `ink` (loses the brand-blue identity), or documenting an exception (indefensible — sky fails even the 3:1 floor).
+- [x] `EqButtonVariant.primary`/`.hero` switched to `skyAA` — [PR #336](https://github.com/eq-solutions/eq-cards/pull/336).
+- [x] Found in passing while fixing the above: `connect_to_company_screen.dart`'s "Apply" button had the identical sky/white fail, missed by an earlier a11y sweep ([PR #313](https://github.com/eq-solutions/eq-cards/pull/313)) that fixed a `Radio` a few lines above it in the same file — fixed in the same PR.
+- [x] Broader sweep at Royce's request: 9 more `EqColours.sky`-as-button-background instances across auth/consent/licence-capture/admin screens (background task, folded into #336 via merge-conflict resolution against a same-day, independently-landed `main` PR that had also partially fixed the Apply button — see Notes).
+- [x] Second sweep: 14 more sky-contrast spots plus a `TextButtonTheme` default (bare `TextButton`s were inheriting Material's default blue instead of any EQ color) — [PR #339](https://github.com/eq-solutions/eq-cards/pull/339).
+- [x] Deployed live (`workflow_dispatch` → Netlify) and verified two ways: the Netlify API shows `state: ready` / `published_at` set (not just "uploaded"), and a live screenshot of `cards.eq.solutions`'s sign-in screen shows the new darker button.
+
+**Deferred:**
+- [ ] Not click-tested by a person with actual low vision or a screen reader — verified via computed contrast ratios, a rendered swatch comparison, downloaded golden PNGs, and a live screenshot, not a real assistive-tech session. _(added 2026-08-31)_
+- [ ] `EqColors.skyDeep` in `eq_tokens.dart` is a byte-identical duplicate of `EqColors.deep` (both `#2986B4`) — noticed while adding `skyAA` next to it, not cleaned up (out of scope for this pass). _(added 2026-08-31)_
+- [ ] 61 remaining `EqColours.sky` references left untouched on purpose (decorative accents, low-alpha borders, transient spinners, icons beside a duplicate visible text label) — documented in PR #339's own commit message rather than silently dropped, but worth Royce's spot-check if he wants zero `sky` left in button-adjacent contexts. _(added 2026-08-31)_
+
+**Notes:**
+- A same-day, independently-driven PR (#334, "round 3 of the polish sprint" — see the section above) fixed the same `connect_to_company_screen.dart` Apply button mid-flight (sky → `deep`), landing on `main` while this work was still open as a PR. Caught via `mergeable: CONFLICTING`, resolved in favour of the fuller `skyAA` fix — that PR's own commit message had already named the remaining gap as "its own follow-up."
+- A background task spawned from this session (auditing the rest of the app for the same pattern) pushed its finished commit directly onto this session's own PR branch rather than an independent one — not unsafe in the end (re-fetched before every push, no work lost), but worth knowing for next time: a `spawn_task` prompt should say explicitly whether follow-up work should extend the calling session's branch or use its own.
+- eq-cards' deploy workflow reports `state: uploaded` on success, not `ready`/published — same "green checkmark ≠ live" gap already documented for eq-shell in global `CLAUDE.md`. Confirmed the same verification method (poll the Netlify API for `state: ready` + `published_at`, don't trust the Action's own exit code alone) applies here too.
+
+---
+
 ## eq-cards: live-meeting onboarding kit built for a CEO/executive demo — self-signup verified, EQ Solutions demo org enabled, sprint spun off two real gaps (2026-08-30)
 *Asked for a simple onboarding tool, redirected twice by Royce toward what it actually needed to be: a laminated card + live demo for an in-person executive meeting, walking scan → apply → live approval → Field/Service visibility. Verified every claim against live code and the live DB before building anything, catching a dead feature and a phone-binding constraint along the way.*
 
