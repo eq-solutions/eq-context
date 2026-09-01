@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-08-31
+last_updated: 2026-09-01
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-08-31 (nightly cron)_
+_Last verified: 2026-09-01 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,13 +58,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-08-31)
+## Open PRs (as of 2026-09-01)
 
 **eq-field:**
 - #859 fix(security): role-default bypasses tenant_role_overrides deny-check on 13 app_data objects
 
 **eq-service:**
-- #822 fix(defects): revalidate /defects on check-item fail/un-fail
+- #823 fix(migrations): add missing report_show_* columns to the 00001 fixture
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
@@ -73,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1702 docs: correct eq_enforce_function_privacy scope + behavior per plane
 - #1700 fix(crm): compute customer Field/Service status from owned sites
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
@@ -82,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-08-31)
+## System Health (as of 2026-09-01)
 
 **CI on main:**
 
