@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-cards:**
 - #341 fix(deps): bump pdfrx_engine to 0.4.7
-- #340 fix(cards): add visible label to Wallet Export button
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
