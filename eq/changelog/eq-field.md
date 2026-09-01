@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-01 (live data, no PR — SKS NSW Labour prestart/toolbox-talk history backfilled into EQ Field's SKS tenant)
+- Royce asked, direct request, to copy sks-nsw-labour's (standalone app/repo) historical safety records into EQ Field. 178 prestarts + 5 toolbox talks copied into `ehow`'s `public.prestarts`/`toolbox_talks` (source dates 2026-07-06 to 2026-08-31), deduped against EQ Field's own pre-existing 46/1 records first (29 already covered, both systems had been recording the same window in parallel) — Royce chose dedup-first over a raw append. Live count: 224 prestarts (was 46), 6 toolbox talks (was 1). Embedded signature/photo images stripped during the copy (up to ~800KB per row); every other field carried over.
+- `site_abbr` normalized for 59 of the 79 originally-unresolved rows (13 → `ARN`, 8 casing fixes, 38 "DR"/"Dr" → `SYD11` per Royce's correction — `SYD11.customer_name` is "Digital Realty"). 20 rows (15 blank + 5 one-offs) left unresolved rather than guessed. Full detail: `eq/pending/eq-field.md` (2026-09-01 entry), `sessions/2026-09-01.md`.
+- No eq-field code changed, no PR, no deploy — pure data operation via the Supabase MCP directly against live `ehow`.
+
 ## 2026-08-31 (PR #849 MERGED + LIVE, v3.5.620 — Feature Toggles: descriptions get concrete examples + a live mini-preview of what each switch actually renders)
 - Royce sent a screenshot of Manage → Feature Toggles (SKS tenant) with two asks: "who can see this menu?" and "can we help with improving the descriptions / show examples of what each feature does?"
 - Access question answered from live code before touching anything: `field.manage_feature_toggles` (`permission-matrix.js`) is granted to `manager` and `supervisor` only, enforced three times over — the nav item is hidden via inline style unless `canManageFeatureToggles()` is true (`auth.js`), the `PAGE_ACCESS` route guard refuses navigation otherwise (`index.html`), and the page's own render function re-checks and shows "You don't have access to this page" if somehow reached (`feature-toggles.js`).
