@@ -9,6 +9,11 @@ status: live
 
 # SKS Pending
 
+## SKS Uniform Order Template added to `sks/templates.md` (2026-09-01)
+*A Chat-drafted patch (Sharon Maroni's "Uniforms" email + Stay Safe Wholesale catalogue), delivered via the chat-gateway Drive-relay mechanism and applied after live verification against `origin/main`. eq-context [PR #198](https://github.com/eq-solutions/eq-context/pull/198), squash-merged. See `eq/pending/eq-context.md`'s 2026-08-24 GitHub-connector entry for the mechanism-level findings this also surfaced.*
+
+- [ ] **Division→kit mapping is Title-only, not confirmed** — the Stay Safe catalogue has no per-division SKU split, so the template's 9 roles pick kit by Title (Site/Management/Office) only; Division (Electrical/Comms/AV) currently only drives a suggested embroidery tag. Needs Sharon/Royce to confirm whether Division should actually change colour/garment/embroidery before wider rollout. _(added 2026-09-01)_
+
 ## Edit Person "Birthday" (day+month) was silently unsaveable for 45 of 81 active SKS staff — root-caused + fixed live (2026-08-24)
 
 - [ ] **Affects 45 of 81 active SKS staff** (everyone Cards-linked with no wizard-entered full date of birth) — fixed going forward, but nobody's birthday has actually been re-entered yet. No action needed unless Royce wants a nudge to re-save. Most should self-resolve as people go through Cards' own licence-scan step, which fills a real date of birth in automatically. _(added 2026-08-24)_
