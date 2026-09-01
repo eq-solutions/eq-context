@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-01 08:34 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-01 08:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-01 08:28 UTC → 2026-09-01 08:34 UTC)
+## Since last refresh (2026-09-01 08:34 UTC → 2026-09-01 08:48 UTC)
 
-- Merged: eq-shell [#1701](https://github.com/eq-solutions/eq-shell/pull/1701) fix: add field_job_numbers_src to SHARED_REGISTRY_FUNCTIONS
-- Merged: eq-shell [#1693](https://github.com/eq-solutions/eq-shell/pull/1693) fix(security): thread tenant_role_overrides denials into the
-- Merged: eq-shell [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called di
-- Merged: eq-shell [#1689](https://github.com/eq-solutions/eq-shell/pull/1689) feat(permissions): quotes.view_all now grantable per-person 
-- Merged: eq-shell [#1688](https://github.com/eq-solutions/eq-shell/pull/1688) fix(records): not-allowed page for direct nav to a denied en
-- Merged: eq-shell [#1686](https://github.com/eq-solutions/eq-shell/pull/1686) fix(security): tenant_role_overrides denials were silently i
-- Merged: eq-shell [#1682](https://github.com/eq-solutions/eq-shell/pull/1682) fix(auth): active-account re-check on 11 endpoints missing i
-- Merged: eq-shell [#1681](https://github.com/eq-solutions/eq-shell/pull/1681) fix(security): quotes RPCs had no server-side permission che
+- Merged: eq-shell [#1713](https://github.com/eq-solutions/eq-shell/pull/1713) feat(staff): ratings rollup on Resourcing + weakness_improve
+- Merged: eq-shell [#1694](https://github.com/eq-solutions/eq-shell/pull/1694) fix(security): thread tenant_role_overrides denials into Quo
+- Merged: eq-shell [#1692](https://github.com/eq-solutions/eq-shell/pull/1692) fix(security): scope quote status/note writes to created_by
+- Merged: eq-shell [#1690](https://github.com/eq-solutions/eq-shell/pull/1690) fix(security): thread tenant_role_overrides denials into the
+- Merged: eq-shell [#1687](https://github.com/eq-solutions/eq-shell/pull/1687) feat(migrate): --exclude flag for bootstrap, skip genuinely-
+- Merged: eq-shell [#1685](https://github.com/eq-solutions/eq-shell/pull/1685) fix(staff): readable conversation viewer + attach source doc
+- Merged: eq-shell [#1684](https://github.com/eq-solutions/eq-shell/pull/1684) feat(ci): let eq-field apply its own tenant migrations via t
+- Merged: eq-shell [#1683](https://github.com/eq-solutions/eq-shell/pull/1683) feat(staff): Resourcing in-place panel, readable conversatio
 
 ## ⚠ Needs you (15)
 
@@ -30,16 +30,16 @@ _2026-09-01 08:34 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-01.md](sessions/2026-09-01.md) · [failures.md](system/failures.md)
-- 🟠 **PR aging 7d** — eq-solves-service [#814](https://github.com/eq-solutions/eq-service/pull/814) "chore(deps): bump resend from 6.18.1 to 6.21.0"
-- 🟠 **PR aging 7d** — eq-solves-service [#813](https://github.com/eq-solutions/eq-service/pull/813) "chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22"
-- 🟠 **PR aging 7d** — eq-solves-service [#812](https://github.com/eq-solutions/eq-service/pull/812) "chore(deps): bump posthog-node from 5.46.1 to 5.49.2"
-- 🟠 **PR aging 7d** — eq-solves-service [#811](https://github.com/eq-solutions/eq-service/pull/811) "chore(deps-dev): bump vitest from 4.1.10 to 4.1.11"
-- 🟠 **PR aging 7d** — eq-solves-service [#810](https://github.com/eq-solutions/eq-service/pull/810) "chore(deps): bump the eq-design-system group across 1 directory with 2"
+- 🟠 **PR aging 8d** — eq-solves-service [#814](https://github.com/eq-solutions/eq-service/pull/814) "chore(deps): bump resend from 6.18.1 to 6.21.0"
+- 🟠 **PR aging 8d** — eq-solves-service [#813](https://github.com/eq-solutions/eq-service/pull/813) "chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22"
+- 🟠 **PR aging 8d** — eq-solves-service [#812](https://github.com/eq-solutions/eq-service/pull/812) "chore(deps): bump posthog-node from 5.46.1 to 5.49.2"
+- 🟠 **PR aging 8d** — eq-solves-service [#811](https://github.com/eq-solutions/eq-service/pull/811) "chore(deps-dev): bump vitest from 4.1.10 to 4.1.11"
+- 🟠 **PR aging 8d** — eq-solves-service [#810](https://github.com/eq-solutions/eq-service/pull/810) "chore(deps): bump the eq-design-system group across 1 directory with 2"
 - 🟠 **PR aging 11d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-30 · [failures.md](system/failures.md) F11
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (241)
+## 🙋 Waiting on you (242)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -55,22 +55,23 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — same gap as every scope in this arc (site/customer/multi-site all share it): no Shell session/credentials in this environment. Worth one real pass covering all three: push to 2+ sites directly, push to a customer, confirm one signoff + one signature covers the set in both cases, confirm per-site and whole-group certificate exports both render correctly. _(added 2026-08-30)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open the Register tab for a tenant with several signed documents, confirm names now match Staff, open one signer's evidence modal, confirm the signature image still loads (now on demand). _(added 2026-08-28)_
 - **eq-shell** · **"Merged, live" above means the code path exists — Gotenberg itself was never actually provisioned.** Checked live 2026-08-28/30: `GOTENBERG_URL` doesn't exist anywhere in eq-shell's Netlify env vars. Every conversion attempt (new upload or the backfill endpoint) silently degrades to `pdf_status='failed'` — confirmed against real data: of 18 pre-pipeline Office documents on ehow, 0 have ever reached `pdf_status='ready'`. Self-hosted on Fly.io per the PR's own recorded decisions (private networking, always-warm); `flyctl` is installed locally but not authenticated, needs Royce's `flyctl auth login` at minimum. Royce's explicit call 2026-08-28: defer — only 2 of the 18 stuck documents actually have signoffs assigned (the rest are unassigned templates nobody's opening), and the one that mattered (Environmental Management Plan) has a zero-infra manual workaround (export to PDF, re-upload as a new version — skips Gotenberg entirely since an already-PDF upload never calls it). Revisit if this starts happening often enough to justify the infra spend. _(added 2026-08-28, reconfirmed 2026-08-30)_
-_…and 229 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 230 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 6 | 0d |
+| eq-shell | ✓ success | 4d ago | 8 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 11d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ✓ success | 13d ago | 0 | — |
+| eq-solves-intake | ✓ success | 14d ago | 0 | — |
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-01 | eq-shell | [#1713](https://github.com/eq-solutions/eq-shell/pull/1713) feat(staff): ratings rollup on Resourcing + weakness_improvement  |
 | 2026-09-01 | eq-shell | [#1712](https://github.com/eq-solutions/eq-shell/pull/1712) feat(admin): show outstanding invites on the Users list |
 | 2026-09-01 | eq-shell | [#1711](https://github.com/eq-solutions/eq-shell/pull/1711) fix(security): scope attachments reads to creator for staff_conve |
 | 2026-09-01 | eq-shell | [#1709](https://github.com/eq-solutions/eq-shell/pull/1709) fix(invites): dedupe user_invites row in create-worker-invite.ts |
@@ -85,12 +86,11 @@ _…and 229 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | 2026-09-01 | eq-solves-service | [#823](https://github.com/eq-solutions/eq-service/pull/823) fix(migrations): add missing report_show_* columns to the 00001 f |
 | 2026-09-01 | eq-field | [#872](https://github.com/eq-solutions/eq-field/pull/872) v3.5.633 — FIX: 8 lazy-tab-script dependency gaps + permanent CI  |
 | 2026-09-01 | eq-field | [#871](https://github.com/eq-solutions/eq-field/pull/871) test(migrations): CI gate for eq_enforce_function_privacy grant l |
-| 2026-09-01 | eq-field | [#869](https://github.com/eq-solutions/eq-field/pull/869) docs(claude-md): add eq_enforce_function_privacy trigger gotcha |
 _Showing 15 of 99 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (252 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (253 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (58 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (195 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (97 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -98,7 +98,7 @@ _Showing 15 of 99 · full record in [sessions/](sessions/)_
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (29 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (31 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (173 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
@@ -130,10 +130,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 201 | 23 / 6 | 0 | 4 |
+| [eq-context](eq/pending/eq-context.md) | 203 | 25 / 6 | 0 | 4 |
 | [cross-repo](eq/pending/cross-repo.md) | 888 | 129 / 44 | 0 | 61 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 483 | 92 / 13 | 2 | 54 |
+| [SKS](sks/pending.md) | 488 | 92 / 14 | 2 | 54 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 509 | 43 / 3 | 0 | 8 |
 
@@ -180,4 +180,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 08:34 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 08:48 UTC._
