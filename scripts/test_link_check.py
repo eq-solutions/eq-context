@@ -9,7 +9,7 @@ import os
 import sys
 import tempfile
 
-from link_check import check_file, find_md_files, internal_targets
+from link_check import check_file, find_md_files, internal_targets, _strip_code
 
 
 def check(name, got, want):
@@ -54,6 +54,41 @@ def main():
         "multiple links on one line are all captured",
         list(internal_targets("[a](x.md) and [b](y.md)")),
         ["x.md", "y.md"],
+    )
+    # Found 2026-09-01: a session log narrating a past fix quoted the old
+    # broken path verbatim, correctly wrapped in backticks -- the regex
+    # can't distinguish that from a real link on bracket/paren shape alone.
+    f += check(
+        "a link-shaped string inside a code span is NOT a real link",
+        list(internal_targets("Fixed `[x](../../wrong.md)` -> `../right.md`")),
+        [],
+    )
+    f += check(
+        "a real link survives even when OTHER text on the same line has a code span",
+        list(internal_targets("See `some/code.py` and [a real link](x.md) too")),
+        ["x.md"],
+    )
+    f += check(
+        "a link-shaped string inside a fenced code block is NOT a real link",
+        list(internal_targets("```\n[x](../../wrong.md)\n```")),
+        [],
+    )
+
+    # --- _strip_code: the code-span/fence stripping itself -----------------
+    f += check(
+        "inline code span is blanked, surrounding text untouched",
+        _strip_code("before `code here` after"),
+        "before   after",
+    )
+    f += check(
+        "a fenced block spanning multiple lines is fully blanked",
+        _strip_code("before\n```\nline one\nline two\n```\nafter"),
+        "before\n \nafter",
+    )
+    f += check(
+        "an unterminated code span (odd backtick count) is left alone, not swallowed",
+        _strip_code("some `unterminated text with no closing backtick"),
+        "some `unterminated text with no closing backtick",
     )
 
     # --- check_file: resolution against a real directory layout -----------

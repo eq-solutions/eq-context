@@ -55,6 +55,7 @@ jobs:
           python test_scheduled_workflow_health.py
           python test_pending_queue_health.py
           python test_pending_dupes.py
+          python test_pulse_flips.py
 
       - name: Generate digest.md
         env:

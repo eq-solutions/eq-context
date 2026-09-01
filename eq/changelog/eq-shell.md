@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-01 (PR #1722, MERGED, LIVE — phone-OTP login now distinguishes "pending approval" from "no account")
+- Royce hit this live testing Cards signup → Shell login himself: phone code verified fine, but `shell-login-phone-otp.ts` blocked sign-in because his Cards signup's real tenant membership hadn't been approved yet (`cards-approve-staff.ts`, landed ~4 min later) — only the inactive `__personal__` placeholder tenant existed at that instant. The generic "we couldn't find an account for that mobile" copy made a legitimate, still-processing signup read as a failed code.
+- `shell-login-phone-otp.ts`'s blocked-login response now sends `error:'pending-approval'` on that specific path (identity found, no active tenant yet); `LoginPage.tsx` shows distinct copy for it, leaving the existing two-cause message (unclaimed invite / dropped `?tenant=` link) untouched.
+- `tsc -b --force`/eslint clean on both files. Not click-tested live — needs a real Cards signup mid-approval-queue to reproduce.
+- Squash-merged `d91a88b1` on Royce's "merge it". Confirmed genuinely published (not just merged) via the Netlify deploy record for that exact commit — `published_at` 10:36:08Z, ~11 min after merge, no errors.
+
 ## 2026-09-01 (PR #1710, MERGED, LIVE — shell-join-tenant.ts rate limiting)
 - `shell-join-tenant.ts` (self-serve `/join?tenant=` endpoint Cards calls after phone-OTP verify) had no rate limiting anywhere, unlike its `shell-login-phone-otp.ts` sibling. Added the same `check_and_increment_rate_limit`/`clear_rate_limit` pattern (5 attempts/15min, keyed `join-tenant::<phone>`, 429+`Retry-After`, cleared on both success paths). Live-confirmed on jvkn both RPCs are `service_role`-only.
 - Also fixed this file's `ip` derivation (was a spoofable `x-forwarded-for` header read, now `ctx.ip` like the sibling) and extended `_shared/login-audit.ts`'s `LoginDoor` union with `'join-tenant'` so this door's lockouts join the existing cross-door `login.rate_limited` alert.

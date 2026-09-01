@@ -43,6 +43,24 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+_FENCED_CODE_RE = re.compile(r"```.*?```", re.DOTALL)
+_CODE_SPAN_RE = re.compile(r"`[^`\n]*`")
+
+
+def _strip_code(text):
+    """Remove fenced code blocks and inline code spans before link-scanning.
+
+    Found 2026-09-01: a session log narrating a past broken-link fix quoted
+    the old, bad path verbatim as an illustration -- correctly wrapped in
+    backticks so it reads as literal text, e.g. `` `[x](../../wrong.md)` ``.
+    The plain bracket/paren regex can't tell that from a real link, so it
+    flagged prose about a fix as a new broken link. Markdown's own escape
+    hatch for "this is text, not a link" is the code span; honouring it
+    belongs in the scanner, not in every future session avoiding the syntax.
+    """
+    text = _FENCED_CODE_RE.sub(" ", text)
+    text = _CODE_SPAN_RE.sub(" ", text)
+    return text
 
 
 def find_md_files(root):
@@ -68,7 +86,7 @@ def internal_targets(text):
     like an internal .md reference -- external URLs, mailto:, and anchors-only
     links are excluded. Anchor fragments are stripped (resolution is by file,
     not by heading)."""
-    for m in LINK_RE.finditer(text):
+    for m in LINK_RE.finditer(_strip_code(text)):
         target = m.group(1).split("#", 1)[0].strip()
         if not target:
             continue

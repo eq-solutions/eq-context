@@ -70,7 +70,8 @@ its pure logic separable — that is the convention, not an accident.
 | `security_audit.py` | Cross-project Supabase security-advisor sweep. Needs `SUPABASE_ACCESS_TOKEN`; no-ops cleanly without it. |
 | `rls_probe.py` | The public-key data-leak test — proves an anon key returns zero rows where it should. |
 | `check_shared_object_drift.py` | Diffs the live `pg_get_viewdef`/`pg_get_functiondef` of every object in `eq/identity/shared-db-objects.json` against a checked-in snapshot. Needs `SUPABASE_ACCESS_TOKEN`; no-ops cleanly without it. `--update-snapshot` rebaselines after a reviewed, intentional change. |
-| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_dedupe_pending_archive.py` · `test_clean_zombie_live_sections.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` · `test_shared_object_drift.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
+| `pulse_promotion_guard.py` | F5's kept promotion-guard rule: fails a PR that hand-edits a Product Pulse (F4) row in `suite-state.md` — only the nightly bot's own direct push may write one. PR-context only. |
+| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_dedupe_pending_archive.py` · `test_clean_zombie_live_sections.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` · `test_shared_object_drift.py` · `test_pulse_promotion_guard.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
 
 ## `.github/scripts/` — generators
 
@@ -80,13 +81,14 @@ each one needs an eviction story; `refresh_suite_state.py` had none until
 
 | File | What it does |
 |---|---|
-| `refresh_digest.py` | Generates `digest.md` — the push-style "what needs your attention" view, including the **Needs you** block the session gate reads. |
-| `refresh_suite_state.py` | Refreshes `suite-state.md` from live systems; evicts Key Decisions past the 30 most recent. |
+| `refresh_digest.py` | Generates `digest.md` — the push-style "what needs your attention" view, including the **Needs you** block the session gate reads. Since 2026-09-01, also surfaces any Product Pulse (F4) zero↔nonzero flip written by `refresh_suite_state.py`'s prior run. |
+| `refresh_suite_state.py` | Refreshes `suite-state.md` from live systems; evicts Key Decisions past the 30 most recent. Since 2026-09-01: computes the Product Pulse section (F4) — 4 public-schema 7d signals + flip detection; gave the Field Data Plane section a self-healing heading/anchor after its old one silently stopped matching anything for three weeks; entire body now runs under `if __name__ == "__main__":` so its pure functions are safely importable for tests. |
 | `guard_ratchet.py` | The self-improving loop — opens one issue when a guard is overdue. Propose-only; never edits a rung. |
 | `fix_frontmatter.py` | One-shot backfill for missing frontmatter keys. Historical. |
-| `test_pending_queue_health.py` · `test_scheduled_workflow_health.py` · `test_pending_dupes.py` | Unit tests for `refresh_digest.py`'s pure logic — queue health/scheduled-workflow counting, and possible-duplicate-pending detection. |
+| `test_pending_queue_health.py` · `test_scheduled_workflow_health.py` · `test_pending_dupes.py` · `test_pulse_flips.py` | Unit tests for `refresh_digest.py`'s pure logic — queue health/scheduled-workflow counting, possible-duplicate-pending detection, and Product Pulse flip surfacing. |
+| `test_pulse_flip_marker.py` · `test_field_block.py` | Unit tests for `refresh_suite_state.py`'s pure logic — F4 Product Pulse zero↔nonzero flip detection, and the Field Data Plane section's render + self-healing anchor (guards the 2026-08-16→09-01 silent-freeze bug). |
 
-## `.github/workflows/` — 23 workflows
+## `.github/workflows/` — 24 workflows
 
 **Gates** (block a bad merge):
 

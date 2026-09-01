@@ -35,6 +35,20 @@ jobs:
 
       - run: pip install requests
 
+      - name: Test the pulse generator's pure logic
+        working-directory: .github/scripts
+        # No env needed -- test_pulse_flip_marker.py stubs the 3 required
+        # vars itself via os.environ.setdefault() before importing.
+        run: python test_pulse_flip_marker.py
+
+      - name: Test the field-data-plane generator's pure logic
+        working-directory: .github/scripts
+        # Guards the exact bug found 2026-09-01: a stripped heading made the
+        # Field Data Plane table's refresh silently no-op every night from
+        # 2026-08-16 on, with no exception and no log line. See
+        # splice_field_block()'s docstring in refresh_suite_state.py.
+        run: python test_field_block.py
+
       - name: Refresh suite-state.md
         env:
           SUPABASE_URL:              https://ehowgjardagevnrluult.supabase.co

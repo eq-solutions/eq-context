@@ -562,6 +562,30 @@ def worktree_stale_count(registry_path="system/worktree-registry.md"):
     return count
 
 
+def pulse_flips(path="suite-state.md"):
+    """Product Pulse rows (F4) that flipped zero<->nonzero on the run that just
+    committed suite-state.md, 2 hours before this workflow -- suite-state-refresh.yml
+    runs at 10:00 UTC, this one at 12:00 UTC, so the flip markers it wrote are
+    already on `main` by the time this reads the checkout. Transition-detection
+    only, per F4's own lesson: a raw signal value is never itself an alert here,
+    only a crossing is. Returns [row_label, ...] for whatever flipped.
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            content = f.read()
+    except FileNotFoundError:
+        return []
+    m = re.search(r"## Product Pulse.*?\n\n(.*?)\n\n", content, flags=re.DOTALL)
+    if not m:
+        return []
+    flipped = []
+    for line in m.group(1).splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) >= 3 and "FLIPPED" in cells[2]:
+            flipped.append(cells[0])
+    return flipped
+
+
 def security_open_critical(path="ops/security-register.md"):
     """P0/P1 findings still genuinely open in the security register.
 
@@ -933,6 +957,11 @@ def build():
         s = "s" if n_stale_wt > 1 else ""
         attention.append(("🟡", f"**{n_stale_wt} stale worktree{s}** need cleanup — "
                                  f"[worktree-registry.md](system/worktree-registry.md)"))
+
+    for row in pulse_flips():
+        attention.append(("🟠", f"**Product signal flipped** — {row} crossed zero↔nonzero "
+                                 f"overnight · [suite-state.md](suite-state.md) Product Pulse · "
+                                 f"[failures.md](system/failures.md) F4"))
 
     # Deploys (only when a Netlify token is wired)
     deploy_rows = []

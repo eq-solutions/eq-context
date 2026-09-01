@@ -204,11 +204,22 @@ done items) is recorded in `sessions/2026-07-12.md` and
 - [~] **Product pulse — DROPPED.** Premise was the false F4 alarm. Revive only if a goal needs it.
 - [ ] **Courier (P5) — PARKED**, not dropped. Manual `git checkout main && git pull` suffices.
 - [ ] **Chat** — GitHub connector on + fresh session to read corrected main (hygiene).
-- [ ] **P2+P3 — product pulse (lean, build-next)** — nightly workflow: ~6 live `verify: sql`
-  signals (checks created/completed, non-Royce writes excl. `source='system'`, prestarts/
-  toolbox/audits, active users) + goal-expiry check + morning push on zero↔nonzero flips.
-  **One promotion guard kept:** an agent may not mark its own claim `verified`. **Dropped:** the
-  general typed `claims.yml` system (duplicated the pulse). (2026-07-12)
+- [ ] **P2+P3 — product pulse: 3 items left.** Core signals (prestarts / toolbox talks /
+  site audits / non-`system` writes, 7d, with zero↔nonzero flip detection — not raw
+  thresholds) shipped 2026-09-01: `suite-state.md` Product Pulse section, `digest.md`
+  Needs You surfacing, and the one kept promotion guard (`scripts/pulse_promotion_guard.py`
+  — an agent/PR may not assert its own signal value). General typed `claims.yml` stays
+  dropped (2026-07-12 — duplicated the pulse). Execution record: `sessions/2026-09-01.md`;
+  full phase detail: `system/substrate-plan-v2.md` Phase 3. Remaining:
+  1. **"Checks created/completed" signal** — needs a windowed RPC on
+     `service.maintenance_checks` (current RPC only returns an all-time total) — a
+     live-ehow schema change, Royce's explicit go required.
+  2. **"Active users" signal** — not an RPC gap: `service.profiles.last_login_at` is
+     0-of-5 populated because Shell SSO never writes it. Needs an eq-shell
+     instrumentation fix first, not a pulse-side change.
+  3. **Morning push** — signals currently reach `digest.md`'s Needs You (pull, next
+     session gate), not the originally-specified proactive chat message. Needs Royce's
+     call on cadence/channel before building.
 - [ ] **P5 — courier install** — Beelink-native scheduled git sync, eq-context/main only
   (approved `ops/decisions.md` 2026-07-12); gate reports courier age. (2026-07-12)
 - [ ] **Deferred (P4 hygiene)** — `memory-coverage.yml`; consolidate workflows 17→≤8;

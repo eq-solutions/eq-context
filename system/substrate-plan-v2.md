@@ -3,10 +3,10 @@ title: The Notebook That Tells the Truth — Substrate Plan v2
 owner: royce (pending confirmation — this file is `asserted` until he adopts it)
 type: asserted
 asserted_on: 2026-07-12
-last_updated: 2026-07-20
+last_updated: 2026-09-01
 scope: Proposed programme to make the EQ substrate self-verifying — facts close against the live DB, guards against escaped failures, goals against Royce
 read_priority: standard
-expires_on: 2026-08-12
+expires_on: 2026-10-01
 verify: human
 supersedes: system/substrate-a-plus-plan.md
 status: draft
@@ -107,6 +107,25 @@ One machine-owned file, `system/claims.yml`. Every load-bearing claim:
 ---
 
 ## Phase 3 — Pulse: watch the product, push the truth *(1 agent-day)*
+
+**Note (2026-09-01):** shipped in the leaner shape `ops/pending.md`'s "P2+P3 —
+product pulse (lean, build-next)" entry already called for on 2026-07-12 —
+a `suite-state.md` section + `refresh_suite_state.py` logic, not `verify: sql`
+claims in a ledger, since Phase 2's general `claims.yml` was dropped the same
+day ("duplicated the pulse"). Live: `prestarts_7d`, `toolbox_talks_7d`,
+`site_audits_7d`, and `nonsystem_writes_7d` (adapted to the live schema —
+`audit_log.who != 'system'`, not `source='system'` as first written below;
+`source_app` is only ever NULL/`"quotes"` live), each with zero↔nonzero flip
+detection surfaced into `digest.md`'s **Needs you**, plus the one kept
+promotion guard (`scripts/pulse_promotion_guard.py` — an agent/PR may not
+assert its own signal value). **Still blocked, not built:** "checks
+created/completed" needs a windowed RPC on `service.maintenance_checks` (a
+live-ehow schema change — Royce's go required, not assumed); "active users"
+has zero real data behind it (`service.profiles.last_login_at` 0-of-5
+populated, Shell SSO never writes it — same gap this phase already flagged
+below). **Still not built:** the "morning push" delivery this phase
+describes — signals currently reach `digest.md`'s Needs you (pull, via the
+next session gate), not a proactive chat message.
 
 Product signals become `verify: sql` claims in the same ledger, refreshed by the same nightly run — F4's fix inherits Phase 2's machinery for free:
 
