@@ -22,7 +22,7 @@ os.environ.setdefault("SUPABASE_URL", "http://test.invalid")
 os.environ.setdefault("SUPABASE_SERVICE_ROLE_KEY", "test")
 os.environ.setdefault("GH_TOKEN", "test")
 
-from refresh_suite_state import pulse_flip_marker, render_pulse_rows
+from refresh_suite_state import pulse_flip_marker, render_pulse_rows, parse_content_range_count
 
 passed = failed = 0
 
@@ -68,6 +68,16 @@ check(
     render_pulse_rows(spec, {"a": 1}, {"a": 1, "b": 2}),
     [("a", "Signal A", 1, ""), ("b", "Signal B", 2, "")],
 )
+
+# ── parse_content_range_count ──
+# Found 2026-09-01, first live run after this section shipped: the
+# select=count() aggregate this used to send got PGRST123 "Use of aggregate
+# functions is not allowed" -- disabled at the PostgREST config level on this
+# project, not a syntax mistake. Replaced with the header-based count
+# PostgREST has always supported, unrelated to that setting.
+check("a normal ranged response", parse_content_range_count("0-24/42"), 42)
+check("an empty result set", parse_content_range_count("*/0"), 0)
+check("a single-row response", parse_content_range_count("0-0/1"), 1)
 
 print(f"\n{passed} passed, {failed} failed")
 if failed:

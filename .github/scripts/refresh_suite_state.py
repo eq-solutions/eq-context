@@ -76,27 +76,44 @@ def render_pulse_rows(pulse_rows_spec, prev_pulse, pulse):
     ]
 
 
+def parse_content_range_count(header_value):
+    """Total count from a PostgREST `Content-Range` response header
+    ('0-24/42' or '*/0'). Pure function, no I/O -- see test_field_block.py."""
+    return int(header_value.rsplit("/", 1)[-1])
+
+
 def fetch_pulse_signal(table, window_days, exclude_system_who=False):
     """Row count in `table` (public schema only -- service.*/app_data.* aren't
     PostgREST-exposed, see fetch_counts()'s docstring) created in the last
     `window_days`. Used for F4's product-pulse signals: public-schema tables
-    only, direct REST, no RPC needed."""
+    only, direct REST, no RPC needed.
+
+    Found 2026-09-01, first live run after this section shipped: the
+    aggregate `select=count()` form this used to send 400s on this project
+    with PGRST123 "Use of aggregate functions is not allowed" -- Supabase's
+    `db-aggregates-enabled` PostgREST setting is off here, and nothing in
+    local testing could have caught it (unit tests exercise pure logic only,
+    by design; this is the one genuinely untested I/O edge in the whole
+    section). Switched to the header-based count PostgREST has supported
+    since its earliest versions -- HEAD + `Prefer: count=exact`, total parsed
+    from `Content-Range` -- which doesn't depend on that setting at all.
+    """
     since = (datetime.now(timezone.utc) - timedelta(days=window_days)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    params = {"select": "count()", "created_at": f"gte.{since}"}
+    params = {"created_at": f"gte.{since}"}
     if exclude_system_who:
         params["who"] = "neq.system"
-    resp = requests.get(
+    resp = requests.head(
         f"{SUPABASE_URL}/rest/v1/{table}",
         headers={
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Accept": "application/vnd.pgrst.object+json",
+            "Prefer": "count=exact",
         },
         params=params,
         timeout=15,
     )
     resp.raise_for_status()
-    return resp.json()["count"]
+    return parse_content_range_count(resp.headers["content-range"])
 
 
 def fetch_maintenance_checks_pulse():
