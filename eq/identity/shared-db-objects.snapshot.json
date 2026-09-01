@@ -72,6 +72,20 @@
       "kind": "function",
       "sha256": "9701a8b36480dfcec2633d1ab7d966298521bee15e374acc5af4697cf251a9bf",
       "preview": "CREATE OR REPLACE FUNCTION app_data.field_job_numbers_src()\n RETURNS TABLE(id text, number text, job_number text, description text, client character varying, site_name character varying, status text, notes text, active boolean, org_id uuid, source text)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'app_data', 'public', 'pg_temp'\nAS $function$\n  with ops as (\n    -- One row per job nu"
+    },
+    "app_data.field_managers": {
+      "schema": "app_data",
+      "name": "field_managers",
+      "kind": "view",
+      "sha256": "7b9c568379940c150bd9525464062bd77ca5e0e3444a89649cbdd18369a70ea0",
+      "preview": "SELECT staff_id AS id,\n    tenant_id,\n    COALESCE(preferred_name, ((first_name::text || ' '::text) || last_name::text)::character varying) AS name,\n    COALESCE(supervisor_category, employment_type) AS category,\n    phone,\n    email,\n    active IS NOT TRUE AS archived,\n    created_at,\n    updated_at,\n    supervisor_role AS role,\n    digest_opt_in\n   FROM app_data.staff\n  WHERE active IS NOT FALSE"
+    },
+    "app_data.field_managers_digest_iu": {
+      "schema": "app_data",
+      "name": "field_managers_digest_iu",
+      "kind": "function",
+      "sha256": "ff7f882b0a1bb47feccf14caebcdcd075426c672b5719d736cfec5fc8b69c308",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_managers_digest_iu()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nBEGIN\n  UPDATE app_data.staff\n     SET digest_opt_in = NEW.digest_opt_in, updated_at = now()\n   WHERE staff_id = OLD.id;\n  RETURN NEW;\nEND $function$"
     }
   }
 }
