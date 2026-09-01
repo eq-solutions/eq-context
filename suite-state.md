@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-01)
 
 **eq-field:**
+- #871 test(migrations): CI gate for eq_enforce_function_privacy grant loss
 - #869 docs(claude-md): add eq_enforce_function_privacy trigger gotcha
 
 **eq-service:**
