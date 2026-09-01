@@ -9,7 +9,7 @@ read_priority: standard
 expires_on: 2026-10-01
 verify: human
 supersedes: system/substrate-a-plus-plan.md
-status: draft — Phase 2 dropped and Phase 3 partially shipped (see notes below); Phases 4/5 still parked, not adopted
+status: draft
 ---
 
 # The Notebook That Tells the Truth
