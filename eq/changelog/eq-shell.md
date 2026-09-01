@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-01 (EQ Ops mobile job-detail Home button — added, then fixed for real)
+- Mobile job-detail overlay in EQ Ops had no way back to the app's home page — the panel renders full-screen above the persistent home bar. Added a Home button reusing the existing `homeHref` pattern. eq-shell [PR #1705](https://github.com/eq-solutions/eq-shell/pull/1705), squash-merged `cc3f7f64`.
+- Live-testing that fix found the button changed the URL but didn't actually close the panel: an app-wide same-origin link interceptor routes the click through the client router, but the module's `view`/`detailId` state is seeded once from the URL on mount and never re-syncs. The same bug already affected the pre-existing desktop Home button. Both now reset state directly instead of relying on the interceptor's navigation. eq-shell [PR #1707](https://github.com/eq-solutions/eq-shell/pull/1707), squash-merged `10614804`.
+- Live-verified on both mobile and desktop after deploy — panel genuinely closes and returns to the clean Ops board, not just a URL change.
+
 ## 2026-09-01 (Supervisor's default quote visibility narrowed to own-only)
 - `quotes.view_all` dropped from Supervisor's default grant (`@eq-solutions/roles` v2.7.7) — manager-only now. Checked live before building: only 2 of SKS's 12 Supervisors have ever created a quote, one unaffected by the change, one already a closed duplicate-account case.
 - `/decide` pass run before building given this touches a live production default.
