@@ -102,9 +102,9 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 74 | ✓ 74 |
 | Directory | app_data.field_sites | 57 | ✓ 57 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,860 | ✓ 1,860 |
-| Operational | app_data.field_timesheets | 214 | ✓ 214 |
-| Safety | public.prestarts | 227 | ✓ 227 |
+| Operational | app_data.field_schedule | 1,894 | ✓ 1,894 |
+| Operational | app_data.field_timesheets | 223 | ✓ 223 |
+| Safety | public.prestarts | 230 | ✓ 230 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -119,7 +119,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 1 |  |
-| Prestarts created | 19 |  |
+| Prestarts created | 18 |  |
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
