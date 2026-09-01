@@ -333,3 +333,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: Sentry sweep — CanvasKit context-loss crash, upstream Flutter bug (2026-09-02)
+- [ ] **Sentry EQ-CARDS-1M (`LateInitializationError` on WebGL context loss)** — confirmed genuine Flutter engine defect via the actual pinned engine source (3.44.8): `_handledContextLostEvent` is `late` but only ever assigned by a test-only method, so a real browser context-loss event throws before any null-check runs. Not eq-cards' own code (single on-screen CanvasKit surface, no manual Canvas use, OCR is server-side on web). Fixed upstream in Flutter 3.47.0+ (currently 3.47.2) but not backported to 3.44.x. Bumping to 3.47.2 was tested empirically and works (459/459 tests pass) but regresses `flutter analyze` from clean to 4 new issues plus 2 unrelated auto-rewritten config files — too much unrelated scope for a one-off Sentry fix. Recommend folding the `flutter-version` bump (3.44.8 → 3.47.2+) into the next scheduled eq-cards Flutter SDK upgrade, along with the 3 lint fixes the bump surfaces. _(added 2026-09-02)_
+
+---
+

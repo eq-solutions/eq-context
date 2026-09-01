@@ -1417,4 +1417,12 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 ---
 
+## eq-shell: Sentry sweep — auth-stall root cause fixed, 3 data findings need a decision (2026-09-02)
+- [x] **eq-shell [PR #1736](https://github.com/eq-solutions/eq-shell/pull/1736)**: root-caused and fixed the 7-week-old `auth-stall: verify-timeout` / `auth-stall: session-spinner-timeout` pair (EQ-SHELL-T/V, 26+15 Sentry occurrences since 2026-07-14, confirmed the same incident via shared trace_ids). `verify-shell-session.ts` fires 11 Supabase reads concurrently via `Promise.allSettled`; 4 are documented best-effort but `allSettled` waits for every promise to fully settle regardless of status, so a merely-slow (not failing) query still held the whole batch open against the client's 15s deadline. Fixed with a bounded `withDeadline()` wrapper (6s ceiling) around just those 4 reads; the 7 auth-gating reads are untouched. Tests added, 482/482 pass, lint clean, build verified. **Not merged** — auth-adjacent, needs Royce's explicit review + approval before merge (merge deploys this repo within minutes).
+- [ ] **2 dangling `app_data.staff.cards_worker_id` pointers on ehow** (Sentry EQ-SHELL-14) — both trace to real, short-lived (4-10 min) labour-hire duplicate/test staff rows created 2026-08-20, already deactivated, no live impact today. Nulling the 2 stale pointers is a data-cleanup call, not made here. _(added 2026-09-02)_
+- [ ] **1 org_membership genuinely worth a look** (Sentry EQ-SHELL-1V) — of 14 flagged "non-member" memberships, 12 trace cleanly to the documented 2026-08-23 baseline; the 2 real new ones are user `5f260d63` (0 licences) and user `365e58ba` (**2 licences still visible on an active grant** — the operationally relevant one). Whether account deactivation should auto-revoke `org_membership` is a process question. _(added 2026-09-02)_
+- [ ] **2 unclaimed worker invites past grace period** (Sentry EQ-SHELL-1W) — invite `fc318823…` (created 07-30) and `84342181…` (created 08-26), both still within their window, 0 stranded credentials. Purely informational; surfaced for Royce to personally follow up if desired. _(added 2026-09-02)_
+
+Everything else in this sweep (EQ-SHELL-1T/1Y/1R/1X/1Q) confirmed working-as-designed or already fixed by same-day prior PR #1724 — no action needed. Full detail in each Sentry issue's own resolved-comment and `sessions/2026-09-02.md`.
+
 ---
