@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #866 docs: correct 20260901 migration header — it is now applied
 
 **eq-service:**
-- #823 fix(migrations): add missing report_show_* columns to the 00001 fixture
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
