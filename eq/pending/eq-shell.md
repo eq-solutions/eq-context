@@ -14,12 +14,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: two trial accounts hard-deleted (Don Milmlow, Jordan A. Sample) — root cause found, purge-endpoint gap flagged (2026-09-01)
-*Royce asked why he couldn't permanently delete a trial account ("Don Milmlow"). Root-caused live: `delete-user.ts`'s hard-delete refuses when the login still has an active `app_data.staff`/`public.workers` link on any tenant — by design, but with no endpoint to clear the link. Confirmed via AskUserQuestion: purge the linked employment/worker records too (not just unlink), and the same for a second placeholder account spotted in the same sweep, Jordan A. Sample (`contact@eq.solutions`).*
 
-- [x] **Don Milmlow** (`donmilmlow@gmail.com`) — already archived; zero blocking-table hits, but an active SKS `app_data.staff` row (no dependents) plus a linked Cards `public.workers` row (1 `worker_invites` dependent). Deleted the staff row, the invite, the worker row, then replicated `delete-user.ts`'s own steps by hand: `user.hard_deleted` audit row, `auth.users` delete (cascades), `shell_control.users` delete. Verified zero rows remaining across all four tables.
-- [x] **Jordan A. Sample** (`contact@eq.solutions`) — still active, needed archiving first: flipped `active=false`, wrote `user.deactivated` audit row, called `eq_revoke_auth_sessions` (cleared 3 live sessions / 59 refresh tokens — this one was actually in use). Staff row had 1 `leave_requests` + 2 `licences` dependents; worker row had 1 `worker_invites` dependent. Same deletion + hard-delete sequence as above, same full verification.
-- [x] **Mapped the full FK graph for both blockers** via `information_schema` rather than guessing — `app_data.staff` (ehow) has 20 possible referrer tables, `public.workers` (jvkn) has 7. Recorded in the `delete-user-blocked-by-staff-worker-link` Claude memory note so the next trial-account request doesn't re-derive it.
-- [ ] **The actual gap — no endpoint clears a staff/worker link — is still open.** Flagged as a follow-up (add a purge-employment-records step to `delete-user.ts` itself instead of hand-run SQL); Royce started it as `task_377c3404` in a separate session, running independently, not yet reported back as of this close. _(added 2026-09-01)_
 - [ ] **Any other trial accounts Royce meant by "a few"** — only these two were identified/confirmed this session, via a recency sweep of the "sks" tenant's users, not a full audit. If more exist, they'll hit the identical wall. _(added 2026-09-01)_
 
 ---

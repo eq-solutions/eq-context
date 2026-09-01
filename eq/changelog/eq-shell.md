@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-01 (PR #1708, MERGED, LIVE — delete-user.ts staff/worker link block now resolvable)
+- **`delete-user.ts`'s hard-delete had no way to clear its own staff/worker-link block** other than hand-written SQL (done earlier the same day for two trial accounts, Don Milmlow + Jordan A. Sample). New `purge_employment_records: true` body flag walks the FK graph server-side instead.
+- Deletes only rows unambiguously owned by the target (checkins, leave, licences, timesheets, apprentice profile, rostered shifts, HR conversation notes, feedback, reviews) plus their linked Cards `workers` identity. Never touches a row where the target is merely an attributed actor on someone/something else's record (who raised an asset defect, who supervised another person's shift) — those stay a reported blocker. No hardcoded list for that side: the final `staff`-row delete either succeeds or surfaces Postgres's own FK-violation message naming what's left.
+- Live FK graph re-verified via `pg_constraint` against both tenant planes rather than reused from the same-day manual-purge memory note — found 3 more real referrers on ehow the memory missed (`feedback_entries`/`quarterly_reviews`/`skills_ratings`), and confirmed zaap genuinely diverges from ehow (no `team_members`/`team_supervisors`/`quarterly_reviews`; has its own `tender_nominations.staff_id`).
+- `AdminEditUser.tsx` surfaces the new option only once a plain delete attempt has actually 409'd on the staff link — not shown up front.
+- `pnpm run build`/`eslint`/full test suite (477 tests, 5 new) all clean. Not click-tested live — no Shell session/credentials in this environment.
+- Squash-merged (`d5503203`), confirmed live via the Netlify deploy record for that exact commit (`published_at` 05:02:23Z, `deploy_time: 357s`).
+
 ## 2026-09-01 (EQ Ops mobile job-detail Home button — added, then fixed for real)
 - Mobile job-detail overlay in EQ Ops had no way back to the app's home page — the panel renders full-screen above the persistent home bar. Added a Home button reusing the existing `homeHref` pattern. eq-shell [PR #1705](https://github.com/eq-solutions/eq-shell/pull/1705), squash-merged `cc3f7f64`.
 - Live-testing that fix found the button changed the URL but didn't actually close the panel: an app-wide same-origin link interceptor routes the click through the client router, but the module's `view`/`detailId` state is seeded once from the URL on mount and never re-syncs. The same bug already affected the pre-existing desktop Home button. Both now reset state directly instead of relying on the interceptor's navigation. eq-shell [PR #1707](https://github.com/eq-solutions/eq-shell/pull/1707), squash-merged `10614804`.
