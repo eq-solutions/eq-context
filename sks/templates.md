@@ -1,7 +1,7 @@
 ---
 title: SKS — Document Templates
 owner: Royce Milmlow
-last_updated: 2026-08-24
+last_updated: 2026-09-01
 scope: Standard templates and document formats for SKS work
 read_priority: reference
 status: live
@@ -190,3 +190,56 @@ merged into a single print-ready PDF, ordered by tag, for one print job.
 **First use (Rev C):** A2 RPP Expansion, Job 17806, Equinix, GF-COLO2 — 8
 instances (A2-PDU-43A/B through 46A/B) fed from A2-UDB-08A/B, CB-A through
 CB-D populated, CB-E/F spare.
+
+---
+
+## SKS Uniform Order Template
+
+**Added 2026-08-28, simplified 2026-08-29.** Spreadsheet (.xlsx) template for
+standard-issue uniform orders — one row per person. Built in a Chat session
+from Sharon Maroni's "Uniforms" email (26 Aug 2026) and its attached Stay Safe
+Wholesale catalogue (`SKS - Stay Safe Uniform.pdf`, SKS's supplier account).
+
+**When to use:** any new-starter uniform order, or a bulk/roster uniform run.
+
+**Fields (per row):** Name · Size · Role (single dropdown, e.g. "Electrical –
+Site") · Division and Title (auto, derived from Role) · Standard Issue Kit
+(auto) · Est. Cost (auto) · Date Ordered · Ordered By · Notes.
+
+**Structure (3 working tabs + notes):**
+- `Uniform Order Form` — the fillable register. Pick Name/Size/Role; every
+  other column auto-fills.
+- `Role Definitions` — one row per of the 9 roles (3 Divisions × 3 Titles).
+  Each role is defined as up to 5 (SKU, Qty) pairs — the SKU is picked from a
+  dropdown sourced off the catalogue tab, not typed free text. Kit description
+  and Est. Cost are formulas that look each SKU up in the catalogue, so they
+  can't drift out of sync with it.
+- `Standard Issue Catalogue` — the single place item data (SKU, Description,
+  Colour, W/S Price) lives. Both other tabs reference it by SKU; editing a
+  price or description here updates the whole workbook. Apparel-only lines
+  copied from the Stay Safe PDF — generic PPE consumables (gloves, masks,
+  ear protection, glasses, sunscreen, shoe covers) omitted, issued separately
+  per task.
+- `Notes & Assumptions` — stated fact vs Claude's inference, spelled out
+  explicitly.
+
+**Confirmed facts (per Sharon's email, 26 Aug 2026):**
+- Recruitment's standard New Employee uniform order is Shirts x5, Jumpers x1
+  — applied as the default issue quantity across all three Title tiers.
+- All SKUs/prices/colours in the Standard Issue Catalogue tab are copied
+  directly from the attached Stay Safe PDF.
+
+**Open / unconfirmed — flag for Royce before wider rollout:** the Stay Safe
+catalogue has no per-division SKU split or colourway, so this draft's 9 roles
+map item choice to **Title only** (Site/Management/Office); Division
+(Electrical/Comms/AV) currently only drives a suggested embroidery tag and
+reporting field, not a different kit. Needs Sharon/Royce to confirm whether
+Division should actually change colour/garment/embroidery — if so, edit the
+SKU/Qty pairs directly in `Role Definitions`.
+
+**Brand colour used:** Navy #203060 (Quote Template v3 value) — not the
+#1F335C used on ITC-EL-0006; the two-navy-values ambiguity already flagged
+elsewhere in this file is unresolved, not addressed by this template.
+
+**First use:** drafted 2026-08-28, simplified 2026-08-29 in response to Royce's
+"make this simpler" — not yet issued to staff.
