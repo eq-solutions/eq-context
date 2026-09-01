@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,26 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: My Schedule compliance card mislabeled a viewed teammate's gap as "Your profile" — FIXED, merged, live (2026-09-02)
+*Royce shared two My Schedule screenshots (Harry Barton selected vs. himself) and asked whether "Your profile needs Photo id" showing while Harry was selected meant the gap was his or Harry's.*
+
+- [x] **Root cause confirmed and fixed**: the My Schedule name picker isn't restricted to your own name — only apprentices are locked to it — so a supervisor routinely lands on someone else's schedule, but `_myComplianceCard()` hardcoded "Your profile" regardless of who was selected. Now compares the selected person against the logged-in session name and names them explicitly ("`<Name>`'s profile needs...") when it isn't the viewer. eq-field [PR #880](https://github.com/eq-solutions/eq-field/pull/880) (v3.5.641).
+- [x] **Verified via an isolated Node harness** (real source, stubbed globals) reproducing the exact reported scenario — confirmed it now reads "Harry Barton's profile needs Photo ID" instead of "Your profile needs Photo id." Full test suite (36/36), lint (0 errors), bundle-drift, and cache-buster checks all clean.
+- [ ] **Not click-tested through the full authenticated UI by a person** — confirmed this time against the real Netlify deploy preview itself, not just the local sandbox: both `eq` and `sks` are Core-only, so the PIN gate refuses outright everywhere, real preview included. Worth a real pass: sign in through Core, open My Schedule, switch the picker to a teammate with a missing credential, confirm the card names them, not "Your". _(added 2026-09-02)_
+- [ ] **Separate finding, needs an owner**: while rebasing this PR onto a moved `main`, found that an already-merged eq-field commit (`0e7d3956`, PR #878, v3.5.640) contains a fabricated incident in both its commit message and its `docs/reflection-log.md` entry — a detailed "prior compliance-card fix + version collision" narrative that never happened (no such commit exists anywhere in history; the real pre-fix code was still live, unchanged, until this PR). Told Royce directly in-session; not corrected in the published commit (would mean rewriting merged `main` history). Worth a decision on whether this becomes a new `failures.md` entry or evidence for an existing one — shaped like F4 (a claim about state that ages into a lie) except this claim was never true to begin with, not one that merely drifted. _(added 2026-09-02)_
+
+---
+
+## eq-field: Apprentice profile self-service — real year on create, self-editable site — FIXED, merged, live (2026-09-02)
+*Continuation of the "Jordan A. Sample" apprentice walkthrough (see the 2026-08-30/31 section further down this file). Royce flipped Jordan's Shell employment type to Apprentice, then reported the just-created Field profile showed 1st year against Shell's real "year 2", and asked for apprentices to be able to set their own current site.*
+
+- [x] **Self-created apprentice profiles were server-force-setting year_level to 1 regardless of the real value already on the person's staff record.** `netlify/functions/apprentice-write.js`'s create-profile action now seeds it from the caller's own `field_people` row, falling back to 1 only when genuinely unknown. Current site opened up as self-editable on both create and edit (was manager-only) — only the apprentice knows where they're working day to day; year/start date/notes stay supervisor-only. `tests/apprentice-write-scoping.test.js` updated to match (29/29). [PR #879](https://github.com/eq-solutions/eq-field/pull/879) (v3.5.639), merged and confirmed live on `field.eq.solutions/sw.js`.
+- [ ] **`current_site` is now a second, unreconciled place someone's "current site" can live** — separate from both the day-by-day Roster/Schedule assignment and the more detailed `rotations` table (still manager-only). Letting the apprentice self-edit it can drift from what the roster actually has them on today; nothing cross-checks the two. Built as asked, not resolved — worth a look if it causes confusion in practice. _(added 2026-09-02)_
+- [ ] **Not click-tested live by a person** — same standing sandbox limitation as every entry in this file. Worth a real pass: as an apprentice, "Set Up My Profile" and "Edit My Goals" both show an enabled site dropdown with year/start date/notes greyed out; a manager's create/edit flow unchanged. _(added 2026-09-02)_
+- [ ] **This repo's own CLAUDE.md is stale on the 'eq' tenant's canonical model** — it still describes `eq`'s canonical tables as `public.people`/`timesheets`/`leave_requests` directly on zaap. Live-queried zaap this session: that table doesn't exist any more — zaap has fully migrated to the same `app_data.staff` + `field_people`/`field_people_directory`/`field_people_removed` view model already documented for ehow/sks. Needs a CLAUDE.md correction, not a code fix. _(added 2026-09-02)_
 
 ---
 
