@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-01 08:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-01 08:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-01 07:57 UTC → 2026-09-01 08:13 UTC)
+## Since last refresh (2026-09-01 08:13 UTC → 2026-09-01 08:28 UTC)
 
-- Merged: eq-shell [#1711](https://github.com/eq-solutions/eq-shell/pull/1711) fix(security): scope attachments reads to creator for staff_
-- Merged: eq-shell [#1701](https://github.com/eq-solutions/eq-shell/pull/1701) fix: add field_job_numbers_src to SHARED_REGISTRY_FUNCTIONS
-- Merged: eq-shell [#1693](https://github.com/eq-solutions/eq-shell/pull/1693) fix(security): thread tenant_role_overrides denials into the
-- Merged: eq-shell [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called di
-- Merged: eq-shell [#1689](https://github.com/eq-solutions/eq-shell/pull/1689) feat(permissions): quotes.view_all now grantable per-person 
-- Merged: eq-shell [#1688](https://github.com/eq-solutions/eq-shell/pull/1688) fix(records): not-allowed page for direct nav to a denied en
-- Merged: eq-shell [#1686](https://github.com/eq-solutions/eq-shell/pull/1686) fix(security): tenant_role_overrides denials were silently i
-- Merged: eq-shell [#1682](https://github.com/eq-solutions/eq-shell/pull/1682) fix(auth): active-account re-check on 11 endpoints missing i
+- Merged: eq-shell [#1712](https://github.com/eq-solutions/eq-shell/pull/1712) feat(admin): show outstanding invites on the Users list
+- Merged: eq-shell [#1694](https://github.com/eq-solutions/eq-shell/pull/1694) fix(security): thread tenant_role_overrides denials into Quo
+- Merged: eq-shell [#1692](https://github.com/eq-solutions/eq-shell/pull/1692) fix(security): scope quote status/note writes to created_by
+- Merged: eq-shell [#1690](https://github.com/eq-solutions/eq-shell/pull/1690) fix(security): thread tenant_role_overrides denials into the
+- Merged: eq-shell [#1687](https://github.com/eq-solutions/eq-shell/pull/1687) feat(migrate): --exclude flag for bootstrap, skip genuinely-
+- Merged: eq-shell [#1685](https://github.com/eq-solutions/eq-shell/pull/1685) fix(staff): readable conversation viewer + attach source doc
+- Merged: eq-shell [#1684](https://github.com/eq-solutions/eq-shell/pull/1684) feat(ci): let eq-field apply its own tenant migrations via t
+- Merged: eq-shell [#1683](https://github.com/eq-solutions/eq-shell/pull/1683) feat(staff): Resourcing in-place panel, readable conversatio
 
 ## ⚠ Needs you (15)
 
@@ -61,9 +61,9 @@ _…and 230 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 7 | 0d |
+| eq-shell | ✓ success | 0d ago | 6 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 11d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 13d ago | 0 | — |
 
@@ -71,6 +71,7 @@ _…and 230 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-01 | eq-shell | [#1712](https://github.com/eq-solutions/eq-shell/pull/1712) feat(admin): show outstanding invites on the Users list |
 | 2026-09-01 | eq-shell | [#1711](https://github.com/eq-solutions/eq-shell/pull/1711) fix(security): scope attachments reads to creator for staff_conve |
 | 2026-09-01 | eq-shell | [#1709](https://github.com/eq-solutions/eq-shell/pull/1709) fix(invites): dedupe user_invites row in create-worker-invite.ts |
 | 2026-09-01 | eq-shell | [#1708](https://github.com/eq-solutions/eq-shell/pull/1708) feat(admin): purge_employment_records flag on delete-user.ts clea |
@@ -85,7 +86,6 @@ _…and 230 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | 2026-09-01 | eq-field | [#871](https://github.com/eq-solutions/eq-field/pull/871) test(migrations): CI gate for eq_enforce_function_privacy grant l |
 | 2026-09-01 | eq-field | [#869](https://github.com/eq-solutions/eq-field/pull/869) docs(claude-md): add eq_enforce_function_privacy trigger gotcha |
 | 2026-09-01 | eq-field | [#870](https://github.com/eq-solutions/eq-field/pull/870) v3.5.632 — FIX: safety forms "Pull from roster" date-resolution b |
-| 2026-09-01 | eq-field | [#868](https://github.com/eq-solutions/eq-field/pull/868) v3.5.631 — FEATURE: TAFE Holidays staleness alert on Dashboard |
 _Showing 15 of 99 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -180,4 +180,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 08:13 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 08:28 UTC._
