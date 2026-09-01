@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-08-31
+last_updated: 2026-09-01
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2400,7 +2400,7 @@ a bug rather than just deleting the line.
 
 **From:** eq-roles + eq-shell + eq-solves-service: PM Calendar digest switched from a hardcoded group ID to a real, grantable permission — built, released, live (2026-08-18)
 
-- [ ] **Not clicked through live by a person** — the corrected recipient count (20, see above) is verified directly against the live database, not by watching a real digest email send; sending stays paused until Royce reviews the list and flips `SUPERVISOR_DIGEST_PAUSED` off (tracked in [eq/pending/eq-solves-service.md](eq-solves-service.md), the actionable Netlify-settings item lives there). _(added 2026-08-18)_
+- [ ] **Not clicked through live by a person** — the corrected recipient count (20, see above) is verified directly against the live database, not by watching a real digest email send; sending stays paused until Royce reviews the list and flips `SUPERVISOR_DIGEST_PAUSED` off (tracked in [eq/pending/eq-solves-service.md](pending/eq-solves-service.md), the actionable Netlify-settings item lives there). _(added 2026-08-18)_
 
 ---
 
