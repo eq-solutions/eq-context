@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-01 (PR #1709, MERGED, LIVE — create-worker-invite.ts no longer creates duplicate Shell invites)
+- `create-worker-invite.ts` unconditionally inserted a new `shell_control.user_invites` row whenever an email was present, with no check against an existing unaccepted invite for that email — `invite-user.ts` already had that check, this function never did. Confirmed live (Ian Marston/SKS): inviting the same person via "+ Invite user" then "Add workers" produced two independent, unreconciled rows.
+- Now looks up the existing row and refreshes it in place instead of inserting a second one. Deliberately overwrites more than `invite-user.ts`'s own refresh (role/entitlements/phone/has_field_access/worker_id, not just token/expiry) — `worker_id` specifically has to land on whichever row survives, since `accept-invite.ts`'s identity-link + credential-promotion step only fires when it's set.
+- `tsc -b --force`/`eslint` clean; not click-tested live (no Shell session/credentials in this environment). Live schema for `shell_control.user_invites` verified on jvkn before building.
+- Squash-merged `a3f8e0e5` on Royce's "merge when safe" (waited for CI green + `mergeStateStatus: CLEAN` first — no forced/admin override, branch protection here has no required review). Confirmed genuinely published via the Netlify deploy record for that exact commit (`published_at` 08:02:09Z, 285s build) on Royce's explicit follow-up ask to confirm it's live on core.eq.solutions.
+
 ## 2026-09-01 (PR #1708, MERGED, LIVE — delete-user.ts staff/worker link block now resolvable)
 - **`delete-user.ts`'s hard-delete had no way to clear its own staff/worker-link block** other than hand-written SQL (done earlier the same day for two trial accounts, Don Milmlow + Jordan A. Sample). New `purge_employment_records: true` body flag walks the FK graph server-side instead.
 - Deletes only rows unambiguously owned by the target (checkins, leave, licences, timesheets, apprentice profile, rostered shifts, HR conversation notes, feedback, reviews) plus their linked Cards `workers` identity. Never touches a row where the target is merely an attributed actor on someone/something else's record (who raised an asset defect, who supervised another person's shift) — those stay a reported blocker. No hardcoded list for that side: the final `staff`-row delete either succeeds or surfaces Postgres's own FK-violation message naming what's left.
