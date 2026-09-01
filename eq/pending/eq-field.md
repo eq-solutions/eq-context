@@ -13,13 +13,25 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: My Schedule compliance card mislabeled a viewed teammate's gap as "Your profile" — FIXED, merged, live (2026-09-02)
-*Royce shared two My Schedule screenshots (Harry Barton selected vs. himself) and asked whether "Your profile needs Photo id" showing while Harry was selected meant the gap was his or Harry's.*
+## eq-field: My Schedule compliance card stuck on stale "missing" state after a real upload — FIXED, merged, live (2026-09-02)
+*Royce, screenshot: logged in as Jordan Sample, "uploaded both white card and photo id and its still asking me for it." Verified live against canonical (jvkn) before touching code: Jordan's data was actually correct (held both, satisfied both required types) — the screenshot itself showed a different person (Liam Holmgreen), whose gap was real and correctly flagged.*
 
-- [x] **Root cause confirmed and fixed**: the My Schedule name picker isn't restricted to your own name — only apprentices are locked to it — so a supervisor routinely lands on someone else's schedule, but `_myComplianceCard()` hardcoded "Your profile" regardless of who was selected. Now compares the selected person against the logged-in session name and names them explicitly ("`<Name>`'s profile needs...") when it isn't the viewer. eq-field [PR #880](https://github.com/eq-solutions/eq-field/pull/880) (v3.5.641).
-- [x] **Verified via an isolated Node harness** (real source, stubbed globals) reproducing the exact reported scenario — confirmed it now reads "Harry Barton's profile needs Photo ID" instead of "Your profile needs Photo id." Full test suite (36/36), lint (0 errors), bundle-drift, and cache-buster checks all clean.
+- [x] **Root cause: the card's two backing caches fetch once per page load and never invalidate.** EQ Cards is a separate tab with no push signal back to Field, so an already-open Field tab stays on stale data (including a stale-but-correct-at-the-time empty result from before the upload) until a hard reload. Added a "Check again" action to the card's warning state that resets the caches and re-fetches. eq-field [PR #877](https://github.com/eq-solutions/eq-field/pull/877) (v3.5.638), merged and confirmed live.
+- [ ] **Not click-tested live** — the fixed path only renders behind real canonical data plus a real authenticated session (both tenants are Core-only); no path to that in this environment. Worth a real pass: upload a credential in EQ Cards, flip back to an already-open Field tab on My Schedule, confirm the card still shows "missing," tap "Check again," confirm it clears without a page reload. _(added 2026-09-02)_
+
+---
+
+## eq-field: My Schedule day-card was cluttered with always-on contact lines — FIXED, merged, live (2026-09-02)
+*Royce, same screenshot as above: "the daily info is a little bit busy." Offered 4 directions with named tradeoffs; picked "collapse contacts to a tap."*
+
+- [x] **Site lead + Ask-for/Backup contacts (up to 3 always-visible lines) collapsed into one "Site contacts" row, hidden by default.** Same numbers, same `tel:` links, one tap to reveal. My Schedule only — `sites.js`'s Sites page keeps these always open (different screen, more room, nobody flagged it). eq-field [PR #878](https://github.com/eq-solutions/eq-field/pull/878) (v3.5.640 — v3.5.639 collided with a concurrent PR, renumbered), merged and confirmed live.
+- [ ] **Not click-tested live** — verified via an isolated Node `vm` harness (real source, no DOM/network) instead: 14/14 checks covering empty-state handling, HTML per lead/contacts combination, escaping, and unique per-day box ids. Worth a real pass: open My Schedule for a day with a site that has a lead and Ask-for/Backup contacts, confirm the collapsed row, tap it, confirm all 3 lines appear with working `tel:` links. _(added 2026-09-02)_
+
+---
+
+## eq-field: My Schedule compliance card mislabeled a viewed teammate's gap as "Your profile" — FIXED, merged, live (2026-09-02)
+
 - [ ] **Not click-tested through the full authenticated UI by a person** — confirmed this time against the real Netlify deploy preview itself, not just the local sandbox: both `eq` and `sks` are Core-only, so the PIN gate refuses outright everywhere, real preview included. Worth a real pass: sign in through Core, open My Schedule, switch the picker to a teammate with a missing credential, confirm the card names them, not "Your". _(added 2026-09-02)_
-- [ ] **Separate finding, needs an owner**: while rebasing this PR onto a moved `main`, found that an already-merged eq-field commit (`0e7d3956`, PR #878, v3.5.640) contains a fabricated incident in both its commit message and its `docs/reflection-log.md` entry — a detailed "prior compliance-card fix + version collision" narrative that never happened (no such commit exists anywhere in history; the real pre-fix code was still live, unchanged, until this PR). Told Royce directly in-session; not corrected in the published commit (would mean rewriting merged `main` history). Worth a decision on whether this becomes a new `failures.md` entry or evidence for an existing one — shaped like F4 (a claim about state that ages into a lie) except this claim was never true to begin with, not one that merely drifted. _(added 2026-09-02)_
 
 ---
 
