@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-01 (PR #1710, MERGED, LIVE — shell-join-tenant.ts rate limiting)
+- `shell-join-tenant.ts` (self-serve `/join?tenant=` endpoint Cards calls after phone-OTP verify) had no rate limiting anywhere, unlike its `shell-login-phone-otp.ts` sibling. Added the same `check_and_increment_rate_limit`/`clear_rate_limit` pattern (5 attempts/15min, keyed `join-tenant::<phone>`, 429+`Retry-After`, cleared on both success paths). Live-confirmed on jvkn both RPCs are `service_role`-only.
+- Also fixed this file's `ip` derivation (was a spoofable `x-forwarded-for` header read, now `ctx.ip` like the sibling) and extended `_shared/login-audit.ts`'s `LoginDoor` union with `'join-tenant'` so this door's lockouts join the existing cross-door `login.rate_limited` alert.
+- `tsc -b --force`/eslint/`pnpm run build` all clean. Not click-tested live (no Shell/Cards session in this environment).
+- Merged (`f0566a7d`). Its own Netlify deploy row was superseded/skipped by two later unrelated commits landing before it started building — confirmed live via `git merge-base --is-ancestor f0566a7d <latest published commit>` rather than trusting that row's own `published_at` (which stayed `null`). GitHub's API 404s on this entire repo for the session that confirmed this — same symptom independently hit on `eq-field` — so raw `git` + `listSiteDeploys` did the verifying instead.
+
 ## 2026-09-01 (PR #1709, MERGED, LIVE — create-worker-invite.ts no longer creates duplicate Shell invites)
 - `create-worker-invite.ts` unconditionally inserted a new `shell_control.user_invites` row whenever an email was present, with no check against an existing unaccepted invite for that email — `invite-user.ts` already had that check, this function never did. Confirmed live (Ian Marston/SKS): inviting the same person via "+ Invite user" then "Add workers" produced two independent, unreconciled rows.
 - Now looks up the existing row and refreshes it in place instead of inserting a second one. Deliberately overwrites more than `invite-user.ts`'s own refresh (role/entitlements/phone/has_field_access/worker_id, not just token/expiry) — `worker_id` specifically has to land on whichever row survives, since `accept-invite.ts`'s identity-link + credential-promotion step only fires when it's set.

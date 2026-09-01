@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: shell-join-tenant.ts rate limiting, merged + live (2026-09-01)
+
+- [ ] **Not click-tested live** — no Shell/Cards session available in this environment. Worth a real pass: hit `/join?tenant=<slug>` 6× rapidly with the same phone and confirm the 6th returns 429 with `Retry-After`, then confirm a genuine join still succeeds after the window (or immediately for a different phone). _(added 2026-09-01)_
+
+---
+
+## eq-shell: pending-invites list doesn't know about accounts made via a different door (2026-09-01)
+*Found while checking whether Ian Marston (the original "couldn't log in" report) had actually gotten in — he had, but via Cards' phone-OTP self-join (`shell-join-tenant.ts`), not either of his two email invites. Both invite rows are still `accepted_at: null` and now will be forever: `list-user-invites.ts` (PR #1712) only filters on `accepted_at IS NULL`, with no idea an account might already exist through a different path. Ran `/decide`: ship the display-side filter now, defer source-side reconciliation as a separate call — `shell-join-tenant.ts`'s already been touched twice today, and the filter alone fully closes the pain actually observed.*
+
+- [ ] **`list-user-invites.ts` query-time filter** — exclude any invite row whose email already matches an active `shell_control.users` row. Spawned as `task_112fd131`, running as of this close, not yet merged. _(added 2026-09-01)_
+- [ ] **Source-side reconciliation, deliberately deferred, not spawned** — whichever door creates an account (`shell-join-tenant.ts` today, potentially others) should close out a matching `user_invites` row at creation time, not just hide it from one list. 3rd distinct "the invite system doesn't reconcile across its own doors" finding today (see the create-worker-invite.ts dedupe fix, already shipped) — worth a deliberate look as its own thing, not another same-day bolt-on. _(added 2026-09-01)_
+
+---
+
 ## eq-shell: Pending-invites tab on the Users list, merged (2026-09-01)
 *An admin had no way to see that an invite was still sitting unaccepted — `eq_list_tenant_users` only returns accepted `shell_control.users` rows, so an invite created by `invite-user.ts`/`create-worker-invite.ts` and never accepted had no visible row anywhere on `/admin/users`. Found investigating a report that an invited SKS user "couldn't sign in."*
 
