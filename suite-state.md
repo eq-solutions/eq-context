@@ -72,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1736 fix(auth): bound verify-shell-session's best-effort reads with a deadline
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
@@ -86,7 +87,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -105,7 +106,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 74 | ✓ 74 |
 | Directory | app_data.field_sites | 57 | ✓ 57 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,900 | ✓ 1,900 |
+| Operational | app_data.field_schedule | 1,929 | ✓ 1,929 |
 | Operational | app_data.field_timesheets | 223 | ✓ 223 |
 | Safety | public.prestarts | 230 | ✓ 230 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |

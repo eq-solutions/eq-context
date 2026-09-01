@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Resourcing overview — KPI tiles, per-team rollup, training-plan surfaced (2026-09-02)
+*Continuation of the Resourcing/conversations thread (2026-08-30, 2026-09-01 below). Royce asked for a critique of the Resourcing page, then to build both the "overall dashboard with metrics" option and the top item from the "what would the best teams do" list. [PR #1733](https://github.com/eq-solutions/eq-shell/pull/1733), merged and confirmed live via the Netlify deploy record for that exact commit.*
+
+- [x] **KPI tile row above the roster table** — active people, new starters, overdue, and a new **can't-assess** bucket for the 46 people with no start date on file. The overdue check has always silently excluded anyone missing a start date (see the 2026-08-30 section below) — this makes that exclusion visible instead of letting it hide inside a clean-looking "17 overdue" number. Doesn't fix the root cause (start_date capture, still open below), just stops it being invisible on this page.
+- [x] **Per-team rollup** (overdue / can't-assess / avg tenure / training-overdue) added, computed client-side from data the page already fetches — no new query, no schema change.
+- [x] **`training_plan` surfaced in the roster view for the first time** — it's been sitting fully structured (activity, goal, owner, target date, status) inside dev-review answers since the ratings-rollup work (2026-09-01 section below), entirely unused until now.
+- [ ] **Open policy question, not decided this session**: the training tile (and any future engagement/ratings rollup) reads from `answers`, which stays creator-only redacted server-side — so as built it can only ever reflect the viewing manager's own logged reviews, never a real team-wide count. Labelled honestly ("from reviews you've logged") rather than changing that redaction unilaterally. If a genuinely team-wide version is wanted later, needs a deliberate call: label every such tile personal-scope for good, or aggregate-and-anonymize (e.g. "6 of 9 answered check-ins this quarter were positive," no attribution). _(added 2026-09-02)_
+- [ ] **Not click-tested live** — verified via `pnpm exec tsc -b --force` and `eslint` (both clean) plus an independent merge-readiness audit before merging. This machine's Node 24 breaks `vite build`/`netlify dev` for this repo (pre-existing, unrelated to this change), so no live click-through was possible. Worth a real pass: KPI numbers match the table's own counts, per-team rows sum to the roster totals, mobile view unchanged. _(added 2026-09-02)_
+
+---
+
 ## eq-shell: `AdminSelfJoinLinks` confirmed live and used, but only for SKS — no code changed here (2026-09-02)
 *Shell-side note only. Full context (a CEO-demo onboarding kit for eq-cards) lives in `eq/pending/eq-cards.md`'s 2026-09-02 entry — this is the standalone fact worth having discoverable from this repo's own backlog too.*
 
