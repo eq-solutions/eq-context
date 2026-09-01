@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Link an existing site from EQ Ops + duplicate-site-name warning, merged live (2026-09-01)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
+
+---
+
+## eq-shell: GitHub MCP connector can't see this repo (falls back to `gh` CLI) (2026-09-01)
+
+- [ ] **`mcp__d2708d72…` (the GitHub MCP server) 404s on every `eq-solutions/eq-shell` call** (`list_pull_requests`, `create_pull_request`) despite `get_me` succeeding against a real, valid account — looks like the token/App installation backing that MCP connector just isn't scoped to this repo. `gh` CLI (separately authenticated, `repo`+`workflow` scopes) works fine and was used instead for PR #1703. Not investigated further — worth a look if it keeps happening, since global CLAUDE.md prefers MCP over scripts for GitHub. _(added 2026-09-01)_
+
+---
+
 ## eq-shell: Field tenant-migration governed pipeline — built + reconciled, dispatch held (2026-08-30)
 *Royce, from the session-close card's own "Next" suggestion: "Bring Field's database changes onto the same safety pipeline — same fix already done for EQ Cards; Field still makes changes by hand." Scope confirmed via AskUserQuestion: build the mechanism in both repos and reconcile every unmatched migration file — explicitly hold any live bootstrap/dispatch for a separate go.*
 
