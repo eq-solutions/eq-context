@@ -9,6 +9,12 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-09-02 (PR #341 MERGED — pdfrx_engine bumped to 0.4.7, fixes local `flutter test` compile failure)
+- `flutter test` couldn't compile any widget test locally on Windows — pdfrx_engine 0.4.5's `pdf_file_cache.dart` had a real null-safety bug (bare nullable access inside an inner `async` closure) that only compiled by accident under a Dart ≤3.12 soundness bug ([dart-lang/sdk#62889](https://github.com/dart-lang/sdk/issues/62889)); Dart 3.13 closed that hole and correctly started rejecting it.
+- Bumped the transitive `pdfrx_engine` lockfile entry only, `0.4.5 → 0.4.7` (fixed upstream in 0.4.6) — no `pubspec.yaml` change. Reverted 6 unrelated transitive package bumps and an `analysis_options.yaml` auto-migration that pub's solver/Flutter tooling pull in on any resolve in this repo right now, to keep the diff scoped.
+- Verified: both originally-failing test files compile and pass. [PR #341](https://github.com/eq-solutions/eq-cards/pull/341), CI green, squash-merged (`679e8a2`) on explicit "merge".
+- CI itself doesn't hit this (still pinned to Flutter 3.44.8/Dart 3.12.2) — this fix also heads off a future CI break once that pin moves past Dart 3.13.
+
 ## 2026-09-02 (PR #340 MERGED + LIVE — Wallet Export button label)
 - The Wallet screen's icon-only "Export" button (download icon, tooltip only, no visible text) now shows a visible "Export" label, matching the existing "Add" button in the same app bar — flagged by Royce from a screen recording as the one thing that needed a look.
 - `IconButton` → `TextButton.icon`, same style as the adjacent Add button. [PR #340](https://github.com/eq-solutions/eq-cards/pull/340), squash-merged (`6e6f667`) on explicit "commit, push, open PR."
