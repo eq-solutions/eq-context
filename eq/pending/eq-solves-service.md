@@ -25,6 +25,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: PR #821's other spawned follow-up — ConfirmDialog focus-trap adoption still open (2026-09-01)
+*`task_3b858742` (above) and `task_51c64ed0` were spawned together, same PR #821 build. `task_3b858742` shipped as #822; this one — checked directly against live GitHub/pending state at this close, not left as an assumption — has no PR and no other trace anywhere. Genuinely still open, not just slow to report.*
+
+- [ ] **Adopt `useFocusTrap` in `ConfirmDialogModal` (`components/ui/ConfirmDialog.tsx`, ~lines 100-168).** The hook (`lib/hooks/useFocusTrap.ts`, built in #821 for `Modal`/`SlidePanel`) only supports focusing the first focusable element on open — `ConfirmDialog` wants a specific one (Cancel or Confirm), so this needs a small API extension first, not a drop-in call. _(added 2026-08-31, confirmed still open 2026-09-01)_
+
+---
+
 ## eq-solves-service: 4-axis service review → full P0/P1 sprint built and shipped live, including a critical cross-tenant leak found and closed (2026-08-31)
 
 - [ ] **Retire the legacy `shell-sso` / `/auth/shell-bridge` path — needs Royce's explicit sign-off, it's an auth change.** Still live per CLAUDE.md (provisioning only inert because of a missing column). _(added 2026-08-31)_
