@@ -108,7 +108,24 @@ _If this file is >48h old, the cron is broken._
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
+---
 
+## Product Pulse (as of 2026-09-01)
+_7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
+crossing since the last run, not a raw count. Machine-generated only; see
+`system/failures.md` F4._
+
+| Signal | Value (7d) | Flip? |
+|--------|-----------:|-------|
+| Maintenance checks created | 0 |  |
+| Maintenance checks completed | 1 |  |
+| Prestarts created | 21 |  |
+| Toolbox talks created | 1 |  |
+| Site audits created | 0 |  |
+| Non-system writes (`audit_log`) | 0 |  |
+| Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified 2026-09-01) — see `ops/pending.md` |
+
+_No flips this run._
 ---
 
 ## Architecture: What Owns What
