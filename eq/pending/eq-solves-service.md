@@ -13,9 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: /defects list was going stale after auto-created/resolved defects — found, fixed, merged, deployed live (PR #822, 2026-09-01)
+*Follow-up task filed by PR #821's own review while narrowing `revalidateMaintenanceSurfaces()` — "defect-count freshness on 2 maintenance actions... `task_3b858742`" — picked up and closed directly here rather than left as a dangling chip.*
+
+- `updateCheckItemAction`/`updateCheckItemResultAction` write `maintenance_check_items.result`, which fires the live `fn_check_item_to_defect` trigger to auto-create/resolve a `defects` row on every fail/un-fail transition — neither action revalidated `/defects`, so the list page could serve stale data until an unrelated action happened to bust it or a hard reload occurred. Fixed with `revalidatePath('/defects')`, matching the pattern already used by the file's other defect-mutating actions.
+- Verified live before fixing, not just from the migration file: `service.maintenance_check_items`/`service.defects` are views over `app_data.*` (migration 0147, June canonicalization) — the auto-defect trigger is still correctly attached to the real `app_data.maintenance_check_items` base table, firing end-to-end through the view's INSTEAD OF trigger.
+- Merged (landed in the same fast-forward as PR #821 — closes the "P2 items from the review" bullet from the entry below) and confirmed published live via Netlify's deploy record (state `ready`, matched to the exact merge commit) within ~2 minutes of merge.
+
+**Deferred:**
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment to actually fail a check item and watch `/defects` update without a hard reload. Confidence is otherwise high: it's a copy of an already-working pattern used 3 other times in the same file. _(added 2026-09-01)_
+
+---
+
 ## eq-solves-service: 4-axis service review → full P0/P1 sprint built and shipped live, including a critical cross-tenant leak found and closed (2026-08-31)
 
-- [ ] P2 items from the review, no urgency: pin `search_path` on `service.tg_maintenance_checks_iud`; narrow `revalidateMaintenanceSurfaces()`'s blast radius on the per-checklist-item save path; give Data Quality a per-row worklist instead of aggregate counts; fix 5 isolated dashboard gradients; consolidate `ExportButton`/`CsvExportButton`. _(added 2026-08-31)_
 - [ ] **Retire the legacy `shell-sso` / `/auth/shell-bridge` path — needs Royce's explicit sign-off, it's an auth change.** Still live per CLAUDE.md (provisioning only inert because of a missing column). _(added 2026-08-31)_
 - [ ] **Live authenticated UX click-through never done.** This worktree had no `.env.local`; copying the working credentials from the main checkout was correctly blocked by the permission classifier as a credentials-file action. The UX rating (6/10) is built on a full source-level consistency audit, not hands-on interaction — worth a real pass once a session has working dev credentials. _(added 2026-08-31)_
 - [ ] **Relay 2 live ERROR-level advisor findings to whoever owns them — not this repo's fix.** `app_data.field_managers` / `field_people_directory` are SECURITY DEFINER views with no migration in eq-solves-service; they belong to Field or Shell's canonical schema. _(added 2026-08-31)_
@@ -34,7 +45,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-solves-service: PR #619 turned out to have 3 migration-number collisions, not 1 — all fixed (PR #806, merged + live 2026-08-23)
 *Started as a routine fix for the one known `0192` collision breaking `Integration tests (Supabase local)` CI on every PR to this repo. Fixing it exposed a second, previously-masked collision at `0193` (the bootstrap aborts at the first duplicate-key error, so it never reached the second) — and a full-repo sweep for any OTHER duplicate found a third, unrelated one at `0203`.*
 
-- [ ] **CI still fails on this job** — after all 3 renames, bootstrap gets further than ever but now fails on an unrelated, pre-existing bug: `0197_report_settings_per_tier.sql` references a column that doesn't exist yet at that point in a fresh migration sequence. Matches this workspace's own documented rule that this specific CI job is a known pre-existing failure, not a merge blocker (`tsc + next build` is the real gate) — left as-is, not investigated further. _(added 2026-08-23)_
+- [~] **Root cause now fully diagnosed (2026-09-01), fix in progress.** `0197_report_settings_per_tier.sql` does `UPDATE service.tenant_settings SET report_show_cover_page_summary = report_show_cover_page, ...` assuming `service.tenant_settings` already has the legacy `report_show_cover_page` column — but that column was only ever added to `public.tenant_settings` (migration `0015`), a different schema. Confirmed reproducing on `main`'s own latest commit, not tied to any specific PR. Production is unaffected (verified live: `service.tenant_settings` on ehow already has both the legacy and new columns — whatever real historical path built it there isn't reproduced by a from-scratch migration replay). Filed as `task_8369a579`; Royce started it running independently in a separate session, not yet reported back as of this close. _(added 2026-08-23, root-caused 2026-09-01)_
 
 ## eq-solves-service: automated tests added for the compliance-reports page, merged, live (2026-08-21)
 *Continuing the same day's push to get real automated test coverage across the app, one page at a time (maintenance checks, then ACB/NSX/RCD testing pages, now Reports). Built in its own isolated copy of the repo rather than the shared one, since the shared one was busy with another session's database work at the time.*
