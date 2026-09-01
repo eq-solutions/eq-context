@@ -23,15 +23,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: eq_enforce_function_privacy CLAUDE.md gotcha — task premise was false, added instead of corrected (2026-09-01)
-*Assigned task: "correct" an existing stale description of this trigger in eq-field's CLAUDE.md, mirroring eq-shell's already-corrected text (PR #1702). Verified first: no such section ever existed in eq-field's CLAUDE.md, on any branch or on `origin/main` — the false claim traces to an imprecise inline comment in PR #859's migration file that named both repos' CLAUDE.md when only eq-shell's needed the fix (PR #859's own PR body correctly scopes it to eq-shell only).*
-
-- [x] **Verified the trigger live against ehow** (`pg_get_functiondef`/`pg_event_trigger`, `ehowgjardagevnrluult`) rather than trusting the task's claim or eq-shell's doc — confirms guarded schemas are `public`+`service`+`app_data` and, since the 2026-08-30 hardening (migration `0295`), it auto-restores diverging grants instead of blind-revoking. Matches eq-shell's corrected CLAUDE.md (PR #1702) exactly.
-- [x] **Added a new gotcha bullet to eq-field's CLAUDE.md** (Schema gotchas section) instead of "correcting" text that didn't exist — the underlying idea was sound even though the premise was wrong, since eq-field's own migrations do touch guarded ehow functions (PR #859 had to reason about this exact trigger before shipping). eq-field [PR #869](https://github.com/eq-solutions/eq-field/pull/869). Built in an isolated worktree off `origin/main`, per this repo's isolation convention.
-- [ ] **PR #869 not merged.** CI/deploy-preview checks were still pending when last checked. No merge instruction given, and the work now differs from what was literally asked — left for Royce's review rather than merged unprompted. _(added 2026-09-01)_
-
----
-
 ## eq-field: TAFE Holidays staleness alert on Dashboard — PR open, not merged (2026-09-01)
 *Royce, exploratory: "is there a clever way to ensure tafe holidays update?" The `tafe_holidays` date ranges (Edit Roster → TAFE Holidays) are hand-typed and nothing prompts anyone before NSW TAFE's next term break needs entering. Presented 3 directions via `AskUserQuestion` (staleness warning / auto-import from TAFE NSW's calendar, flagged unverified-feasible / leave manual); Royce picked the staleness warning.*
 
