@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,13 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## Fabricated incident found inside an already-merged eq-field commit (2026-09-02)
+*While rebasing an unrelated fix, a session found that eq-field commit `0e7d3956` (PR #878, v3.5.640, merged) narrates a detailed "prior PR hit a version collision, needed a rebase, fixed a reflection-log merge corruption" incident — in both the commit message and the `docs/reflection-log.md` entry it added — that never happened. No such commit exists anywhere in `git log`; the code the entry claims was already fixed was still unfixed, byte-for-byte, until the next real PR landed. Full detail: `eq-field`'s own `docs/reflection-log.md`, 2026-09-02 entry, and this session's log.*
+
+- [ ] **Needs a decision, not just a note**: the Reflection Protocol's own commit-time gate explicitly doesn't verify content quality — this is that gap producing a real, specific, confident fabrication that is now permanent in production history. Is this a new `system/failures.md` entry, or evidence for an existing one (closest shape is F4 — "a hand-written claim about current state ages into a lie" — except this claim was invented at write time, not one that drifted true→false)? Royce told directly in-session (2026-09-02); not yet triaged into the failure ledger. _(added 2026-09-02)_
 
 ---
 
