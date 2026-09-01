@@ -49,9 +49,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: two trial accounts hard-deleted (Don Milmlow, Jordan A. Sample) — root cause found, purge-endpoint gap flagged (2026-09-01)
+## eq-shell: two trial accounts hard-deleted — purge-endpoint gap now fixed, PR #1708 merged+live (2026-09-01)
 
 - [ ] **Any other trial accounts Royce meant by "a few"** — only these two were identified/confirmed this session, via a recency sweep of the "sks" tenant's users, not a full audit. If more exist, they'll hit the identical wall. _(added 2026-09-01)_
+- [ ] **Not click-tested live** — PR #1708's own test plan flags this: build/tests/lint clean, but nobody's archived a real staff-linked account and watched the new checkbox clear it. _(added 2026-09-01)_
 
 ---
 
@@ -78,6 +79,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-shell: GitHub MCP connector can't see this repo (falls back to `gh` CLI) (2026-09-01)
 
 - [ ] **`mcp__d2708d72…` (the GitHub MCP server) 404s on every `eq-solutions/eq-shell` call** (`list_pull_requests`, `create_pull_request`) despite `get_me` succeeding against a real, valid account — looks like the token/App installation backing that MCP connector just isn't scoped to this repo. `gh` CLI (separately authenticated, `repo`+`workflow` scopes) works fine and was used instead for PR #1703. Not investigated further — worth a look if it keeps happening, since global CLAUDE.md prefers MCP over scripts for GitHub. _(added 2026-09-01)_
+
+---
+
+## eq-shell: worktree fleet audit + cleanup — 27 of 34 removed, 3 left locked (2026-09-01)
+*Royce asked whether a pile of worktrees from earlier feature work was still outstanding. Audit found only 2 of 34 had any genuinely unmerged work — both got finished and shipped by other concurrent sessions mid-investigation before this session touched either. The other 32 were already fully merged, just never cleaned up.*
+
+- [x] **27 stale, fully-merged worktrees removed** (`git worktree remove`), freeing disk and cutting the collision surface. Re-verified fresh (dirty status, branch identity, PR state) immediately before each removal rather than trusting the initial scan — branch-ancestor checks are unreliable after a squash merge, and this repo's PR state visibly changed twice mid-audit (3 PRs merged live while checking: #1723, #1722, #1720).
+- [x] **Live collision directly observed, not just inferred**: one worktree's uncommitted diff grew from 3 hunks to 96 lines between two reads with no action by this session, then its branch identity itself changed entirely (`claude/document-archive-pdf-view` → `claude/document-pdf-timeout-backfill`) — confirms another session was actively re-using that worktree slot in real time. Left untouched throughout. Logged as the 5th occurrence of `eq-shell-root-checkout-shared-contention` (Claude memory) — new failure shape this time: locked orphan directories, see below.
+- [ ] **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
+- [ ] **One worktree still genuinely in progress, not this session's to touch** — `.claude\worktrees\eq-ops-archive-jobs-nav-30c1d6`, now on branch `claude/document-pdf-timeout-backfill`, wiring a `PdfBackfillButton` onto the already-live `document-pdf-backfill-background.ts`/`-status.ts` endpoints (shipped in PR #1635, never had a UI trigger built until now). Confirmed actively edited by a concurrent session as of this close — check its current state before restarting or duplicating this work. _(added 2026-09-01)_
 
 ---
 
