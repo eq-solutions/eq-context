@@ -2431,3 +2431,8 @@ Note (2026-08-20): #1465/#1467/#1468/#1469/#1470/#1472 are covered at the top of
 - Confirmed live for Ian Marston (SKS): 2 unaccepted invite rows alongside an active, logged-in `users` row — exactly the case this closes.
 - Display-only, read-only, scope locked by an earlier same-day `/decide` — no changes to `shell-join-tenant.ts`, no write/reconciliation logic (deferred separately in `eq/pending/eq-shell.md`).
 - `tsc -b --force`, `eslint`, `pnpm run build` clean; all 9 PR checks green. Squash-merged (`16bf4cc4`). **Confirmed live**: `16bf4cc4`'s own deploy was still building when a concurrent merge's deploy (`d91a88b1`) reached `published_at`; confirmed `16bf4cc4` is an ancestor of `d91a88b1` before calling it live.
+
+## 2026-09-02 (PR #1727, MERGED, LIVE)
+- `LicenceReviewModal` (staff roster add/re-review) and `LabourHireLicenceReviewModal` could only step forward through a licence review — a mis-click on "Sighted" (e.g. a double-click landing on the next card) had no recovery. Added a back chevron next to the "Licence X of Y" / "Document X of Y" header, shown once past the first card, that steps back one card and drops its recorded decision so it can be redone.
+- Purely additive client-side state (reuses the existing `onUpdate` session callback) — no schema, endpoint, or auth-path changes.
+- `tsc -b tsconfig.app.json --force` and `eslint` clean. Squash-merged (`a533958f`). Confirmed live via the production deploy record for that exact commit (`published_at` set, `state: ready`) rather than the merge alone. Not click-tested live by a person — same Node-24 `netlify dev` gap as other recent entries.
