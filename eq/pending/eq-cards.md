@@ -13,6 +13,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: Wallet screen's Export button had no visible label — fixed, merged, deployed live (2026-09-02)
+*Royce flagged it from a screen recording: "1 thing needs a look" was the icon-only download/export button in the Wallet app bar — no visible text, just a tooltip nobody sees on a phone. Same pattern already fixed for the adjacent "Add" button; applied the identical fix.*
+
+- [x] `IconButton` (icon-only, tooltip "Export") → `TextButton.icon` with a visible "Export" label, mirroring the existing "Add" button in the same app bar — [PR #340](https://github.com/eq-solutions/eq-cards/pull/340), squash-merged (`6e6f667`).
+- [x] Deployed live via `workflow_dispatch` → Netlify, verified against Netlify's own deploy record (`state: ready`, `published_at` set, flagged as the *current* deploy) — not just the Action's own green checkmark.
+
+**Deferred:**
+- [ ] **Not click-tested live** — the Wallet screen sits behind phone-OTP sign-in; no credentials available in this environment. Verified via `flutter analyze` (clean) and a successful `flutter build web` instead. _(added 2026-09-02)_
+- [ ] **Unrelated bug found while verifying, not fixed this session**: `flutter test` can't compile locally on Windows — a null-safety bug in the pinned `pdfrx_engine` 0.4.5 package, reproduced on two unrelated test files, confirmed unrelated to any pubspec change made this session. Flagged as background task `task_1310e6b1`; Royce has already started it running in a separate session. _(added 2026-09-02)_
+
+**Notes:**
+- Claude Code's auto-mode classifier blocked triggering the deploy workflow directly (`gh workflow run deploy.yml`) — Royce triggered it himself via the Actions UI instead. Same class of classifier wall this file documents elsewhere for direct DB/merge/push actions — worth expecting on any eq-cards deploy attempted from a session rather than assuming it goes straight through.
+- `flutter analyze`/`flutter build web` both silently ran `pub get` and auto-edited `analysis_options.yaml` as side effects — reverted both each time to keep the shipped diff scoped to just the one intended file.
+
+---
+
 ## eq-cards: product-polish audit → 3 rounds, 4 PRs, all shipped/merged/deployed live (2026-08-30 → 08-31)
 
 - [ ] **Correction, found at close: `worker_house` was never actually given test coverage, contradicting round 3's own "every feature folder now has real coverage, zero exceptions" claim.** Verified directly (`test/features/worker_house/` doesn't exist; every other `lib/features/*` folder now has a matching `test/features/*` one). The round-2 fix to `worker_credentials_notifier.dart` (refresh() capability) itself has no test either. The scorecard artifact's "zero exceptions" line has been corrected to name this gap rather than left standing. _(added 2026-09-01)_

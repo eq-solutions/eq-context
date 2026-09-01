@@ -1,13 +1,19 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-08-31
+last_updated: 2026-09-02
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-09-02 (PR #340 MERGED + LIVE — Wallet Export button label)
+- The Wallet screen's icon-only "Export" button (download icon, tooltip only, no visible text) now shows a visible "Export" label, matching the existing "Add" button in the same app bar — flagged by Royce from a screen recording as the one thing that needed a look.
+- `IconButton` → `TextButton.icon`, same style as the adjacent Add button. [PR #340](https://github.com/eq-solutions/eq-cards/pull/340), squash-merged (`6e6f667`) on explicit "commit, push, open PR."
+- Deployed live via `workflow_dispatch` → Netlify (Royce triggered it himself — Claude Code's auto-mode classifier blocked doing it directly from the session) — confirmed via Netlify's own deploy record (`state: ready`, `published_at` set, flagged as the current deploy), not just the Action's green checkmark.
+- Unrelated, found while verifying: `flutter test` can't compile locally on Windows (pinned `pdfrx_engine` 0.4.5 null-safety bug, reproduces on any test file) — pre-existing, not caused by this change. Flagged as background task `task_1310e6b1`, already running in a separate session.
 
 ## 2026-08-31 (PR #336/#337/#339 MERGED + LIVE — white-on-sky button text failed WCAG AA; new skyAA token, 27 instances fixed, deployed)
 - `EqButtonVariant.primary`/`.hero` — the shared component behind the app's main CTA buttons — rendered white text on `EqColours.sky` at ~2.69:1, failing WCAG AA even at the relaxed 3:1 large-text/UI-component floor. Added `EqColors.skyAA` (`#267DA6`, ~4.60:1 — clears the full 4.5:1 bar at every text size the app uses) after Royce reviewed a rendered comparison against `deep`/`ink`/the status quo.
