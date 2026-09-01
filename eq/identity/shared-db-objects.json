@@ -27,6 +27,18 @@
       "name": "field_job_numbers_src",
       "kind": "function",
       "note": "Rewritten 4x by eq-shell's Ops/Quotes pipeline before eq-field noticed (2026-08-26, reconciled PR #796). Was already added to both eq-field's and eq-shell's own hand-maintained arrays; this is its first appearance in a live-diffed check."
+    },
+    {
+      "schema": "app_data",
+      "name": "field_managers",
+      "kind": "view",
+      "note": "Not in this registry until 2026-09-01 despite eq-field independently rebuilding it 3x since eq-shell created it (0055) — most recently (20260827) a deliberate security_invoker=false + inline tenant_id-filter exception fixing a SEC-33 collision (migration 0256/PR #1510) that had silently zeroed this view out for every non-manager caller for ~6 days. No confirmed dual-pipeline collision yet (unlike field_people/field_job_numbers_src), but the same structural risk: a future eq-shell RLS touch could revert the exception with no visibility into why it's there."
+    },
+    {
+      "schema": "app_data",
+      "name": "field_managers_digest_iu",
+      "kind": "function",
+      "note": "INSTEAD OF UPDATE trigger behind field_managers's one writable column (digest_opt_in). eq-field-authored (20260630), SECURITY DEFINER, unchanged since creation; tracked alongside field_managers since both are edited from the same migrations."
     }
   ],
   "candidates_not_yet_decided": [
