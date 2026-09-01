@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-01 10:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-01 11:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-01 10:42 UTC → 2026-09-01 10:44 UTC)
+## Since last refresh (2026-09-01 10:44 UTC → 2026-09-01 11:09 UTC)
 
-- Merged: eq-shell [#1724](https://github.com/eq-solutions/eq-shell/pull/1724) fix(documents): labour_hire role label, PDF conversion timeo
-- Merged: eq-shell [#1705](https://github.com/eq-solutions/eq-shell/pull/1705) fix(quotes): add Home link to mobile job-detail overlay in E
-- Merged: eq-shell [#1704](https://github.com/eq-solutions/eq-shell/pull/1704) fix(permissions): narrow Supervisor's default quote visibili
-- Merged: eq-shell [#1703](https://github.com/eq-solutions/eq-shell/pull/1703) feat(quotes): link an existing site from EQ Ops, warn on lik
-- Merged: eq-shell [#1701](https://github.com/eq-solutions/eq-shell/pull/1701) fix: add field_job_numbers_src to SHARED_REGISTRY_FUNCTIONS
-- Merged: eq-shell [#1693](https://github.com/eq-solutions/eq-shell/pull/1693) fix(security): thread tenant_role_overrides denials into the
-- Merged: eq-shell [#1690](https://github.com/eq-solutions/eq-shell/pull/1690) fix(security): thread tenant_role_overrides denials into the
-- Merged: eq-shell [#1688](https://github.com/eq-solutions/eq-shell/pull/1688) fix(records): not-allowed page for direct nav to a denied en
+- Merged: eq-shell [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view
+- Merged: eq-shell [#1709](https://github.com/eq-solutions/eq-shell/pull/1709) fix(invites): dedupe user_invites row in create-worker-invit
+- Merged: eq-shell [#1708](https://github.com/eq-solutions/eq-shell/pull/1708) feat(admin): purge_employment_records flag on delete-user.ts
+- Merged: eq-shell [#1707](https://github.com/eq-solutions/eq-shell/pull/1707) fix(quotes): make the EQ Ops Home button actually reset stat
+- Merged: eq-shell [#1706](https://github.com/eq-solutions/eq-shell/pull/1706) feat(crm): auto-link new contacts to the site Contacts is fi
+- Merged: eq-shell [#1702](https://github.com/eq-solutions/eq-shell/pull/1702) docs: correct eq_enforce_function_privacy scope + behavior p
+- Merged: eq-shell [#1700](https://github.com/eq-solutions/eq-shell/pull/1700) fix(crm): compute customer Field/Service status from owned s
+- Merged: eq-shell [#1694](https://github.com/eq-solutions/eq-shell/pull/1694) fix(security): thread tenant_role_overrides denials into Quo
 
 ## ⚠ Needs you (15)
 
@@ -35,14 +35,15 @@ _2026-09-01 10:44 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 8d** — eq-solves-service [#812](https://github.com/eq-solutions/eq-service/pull/812) "chore(deps): bump posthog-node from 5.46.1 to 5.49.2"
 - 🟠 **PR aging 8d** — eq-solves-service [#811](https://github.com/eq-solutions/eq-service/pull/811) "chore(deps-dev): bump vitest from 4.1.10 to 4.1.11"
 - 🟠 **PR aging 8d** — eq-solves-service [#810](https://github.com/eq-solutions/eq-service/pull/810) "chore(deps): bump the eq-design-system group across 1 directory with 2"
-- 🟠 **PR aging 11d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
+- 🟠 **PR aging 12d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-30 · [failures.md](system/failures.md) F11
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (249)
+## 🙋 Waiting on you (250)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — verified via `tsc -b --force` + `eslint` only (both clean). Reproducing the actual pending-approval message needs a real Cards signup mid-approval-queue, not something drivable from this environment. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell/Cards session available in this environment. Worth a real pass: hit `/join?tenant=<slug>` 6× rapidly with the same phone and confirm the 6th returns 429 with `Retry-After`, then confirm a genuine join still succeeds after the window (or immediately for a different phone). _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open `/admin/users`, switch to Pending, confirm it renders real outstanding invites for a tenant that has some. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
@@ -54,15 +55,14 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, the full test suite, and a merge-readiness audit reproducing the production build end-to-end. Worth a real pass: approve a Cards application with a start date set and confirm it lands; add someone via Shell's "Add to roster" with a start date and confirm it lands; confirm the Resourcing page's new count and filter tab work. _(added 2026-08-30)_
 - **eq-shell** · **PR #1675 (Cards-approve dedup fix) not click-tested live** — `findExistingStaff()`'s active-only matching bug (this section's earlier entry) is now fixed and merged, but no real end-to-end test: deactivate a Cards worker's staff row, re-approve a second application for the same person, confirm reactivation instead of a duplicate. No Cards/Shell browser session available in this environment. _(added 2026-08-30)_
 - **eq-shell** · **Not click-tested live by a person** — verified via live SQL + deploy-state checks, not by opening the Edit Site modal itself. Worth a real pass on Equinix SY5: confirm Ask for/Backup show Matthew Miller/Scott Hotson, try the inline "+ Add new contact" flow, save, reopen, confirm it stuck. _(added 2026-08-30)_
-- **eq-shell** · **SEC-67's env-var half still needs Royce** — 4 confirmed-dead Netlify env vars (`FIELD_SUPABASE_URL`/`_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`/`_ANON_KEY`), zero code references, ready to delete — blocked by Claude Code's own classifier on unattended env-var writes. Commands in `sessions/2026-08-30.md`. _(added 2026-08-30)_
-_…and 237 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 238 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 5 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 11d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 12d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 1d ago | 0 | — |
 | eq-solves-intake | ✓ success | 14d ago | 0 | — |
@@ -85,6 +85,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-01 | eq-shell | [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view |
 | 2026-09-01 | eq-shell | [#1724](https://github.com/eq-solutions/eq-shell/pull/1724) fix(documents): labour_hire role label, PDF conversion timeout he |
 | 2026-09-01 | eq-shell | [#1721](https://github.com/eq-solutions/eq-shell/pull/1721) fix(lint): scope react-refresh/only-export-components off Netlify |
 | 2026-09-01 | eq-shell | [#1723](https://github.com/eq-solutions/eq-shell/pull/1723) fix(react-hooks): clear remaining set-state-in-effect debt (22 fi |
@@ -99,14 +100,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-01 | eq-shell | [#1714](https://github.com/eq-solutions/eq-shell/pull/1714) fix(admin): clear react-hooks/set-state-in-effect on worker-invit |
 | 2026-09-01 | eq-shell | [#1713](https://github.com/eq-solutions/eq-shell/pull/1713) feat(staff): ratings rollup on Resourcing + weakness_improvement  |
 | 2026-09-01 | eq-shell | [#1712](https://github.com/eq-solutions/eq-shell/pull/1712) feat(admin): show outstanding invites on the Users list |
-| 2026-09-01 | eq-shell | [#1711](https://github.com/eq-solutions/eq-shell/pull/1711) fix(security): scope attachments reads to creator for staff_conve |
-_Showing 15 of 99 · full record in [sessions/](sessions/)_
+_Showing 15 of 98 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (261 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (262 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (58 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (197 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (198 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (97 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -136,9 +136,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1381 | 190 / 77 | 36 | 67 |
+| [eq-shell](eq/pending/eq-shell.md) | 1388 | 190 / 78 | 36 | 67 |
 | [eq-cards](eq/pending/eq-cards.md) | 315 | 44 / 16 | 12 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1097 | 146 / 61 | 31 | 33 |
+| [eq-field](eq/pending/eq-field.md) | 1104 | 147 / 61 | 31 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 510 | 75 / 23 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -149,7 +149,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 488 | 92 / 14 | 2 | 54 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 509 | 43 / 3 | 0 | 8 |
+| [OPS](ops/pending.md) | 525 | 43 / 3 | 0 | 8 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 10:44 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 11:09 UTC._
