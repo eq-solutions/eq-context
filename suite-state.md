@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-01)
 
+**eq-field:**
+- #875 v3.5.636 — Incident alert recipients: pick exact people, not just category
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -69,8 +72,9 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1724 fix(documents): labour_hire role label, PDF conversion timeout headroom, backfill button
+- #1723 fix(react-hooks): clear remaining set-state-in-effect debt (22 files)
 - #1721 fix(lint): scope react-refresh/only-export-components off Netlify Functions
-- #1720 fix(admin): exclude already-registered users from list-user-invites
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
