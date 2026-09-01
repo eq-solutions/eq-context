@@ -27,9 +27,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: server-side lint noise fixed — react-refresh/jsx-a11y on the two PDF renderers (2026-09-01)
+## eq-shell: sign-off certificate redesign — tenant logo, shorter title, content hash removed, merged + live (2026-09-01)
+*Royce attached a generated sign-off certificate PDF and asked for three fixes: an 8-site document's title repeated every site code and wrapped across two lines, a raw content-hash row had no end-user value, and the page carried no tenant branding. Also asked for standalone-certificate and certificate-as-cover-page downloads — both turned out to already exist (PR #1716), nothing to build there. PR #1719: title now collapses to "N sites" past 3 (the SITES detail row still lists them all), content_hash removed end-to-end (interface + data assembly + render, not just hidden), tenant logo pulled live per-tenant from `organisations.branding.gateLogo` via the same path the Cards compliance export already proved out, plus a new sign-off summary pill. Merged `bde97be9`, published to core.eq.solutions 2026-09-01 10:19 UTC (confirmed via `published_at`, not just deploy-record existence).*
 
-- [ ] **PR #1721 not yet merged** — holding for Royce's explicit go per the standing merge-is-the-deploy rule. _(added 2026-09-01)_
+- [ ] **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, and by actually rendering sample PDFs from the code with mock data (4 variants: with/without logo, all-signed, small site-set) and visually inspecting them — not a live authenticated download. Worth a real pass: open the Register tab for a tenant with an uploaded document logo, pull a multi-site certificate, confirm logo/title/pill render as expected in a real download. _(added 2026-09-01)_
+- [ ] **"Download with document" will 409 on this exact SWMS `.docx`** — Gotenberg still isn't provisioned (`GOTENBERG_URL` unset, Royce's own 2026-08-28/30 deferral, unrelated to this session) — flagging again since today's task specifically touched this download path. _(added 2026-09-01)_
+
+Also found and fixed in passing: this worktree's `node_modules` was missing `pdf-lib` (stale install, unrelated to the feature — `pnpm install` fixed it), and both PDF-renderer files (`document-certificate-pdf.tsx`, `quote-pdf.tsx`) were failing a Fast-Refresh lint rule that doesn't apply to server-side code — spawned as a follow-up task, merged separately as PR #1721 (see archive).
 
 ---
 

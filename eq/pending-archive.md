@@ -16,6 +16,12 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: server-side lint noise fixed — react-refresh/jsx-a11y on the two PDF renderers (2026-09-01) (fully closed 2026-09-01)
+
+- [x] **PR #1721 merged** — `document-certificate-pdf.tsx` and `quote-pdf.tsx` were failing `react-refresh/only-export-components` (a Fast-Refresh rule that doesn't apply to server-side Netlify Functions) plus two dead `jsx-a11y/alt-text` disable-comments referencing a plugin never registered in `eslint.config.js`. Scoped the rule off `netlify/functions/**` and dropped the dead comments. Merged 2026-09-01 10:37 UTC.
+
+---
+
 ## eq-field: Apprentices list still showed everyone despite v3.5.517's fix — root cause was a boot-order race, not the scoping logic; plus 4 nav permission-scope gaps found in the same live review (2026-08-19) (fully closed 2026-08-31)
 *Royce logged in as a real SKS apprentice ("Jordan A. Sample") to check the earlier v3.5.517-519 scoping fix and found it hadn't actually worked: still saw the full company roster, plus flagged Timesheets ("can an apprentice even use this?") and a wrong Safety submenu ("should see prestarts, toolboxes and test equipment").*
 

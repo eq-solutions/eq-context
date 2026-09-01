@@ -9,6 +9,14 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-01 (PR #1719, MERGED, LIVE — sign-off certificate redesign: tenant logo, shorter title, content hash removed)
+- Royce attached a generated sign-off certificate PDF: an 8-site document's title repeated every site code and wrapped across two lines, a raw content-hash row had no end-user value, and the page carried no tenant branding. Also asked about standalone-certificate and certificate-as-cover-page downloads — both turned out to already exist (PR #1716), nothing to build there.
+- `document-certificate-pdf.tsx`: title collapses to "N sites" past 3 sites (the SITES detail row still lists them all); `content_hash` removed end-to-end, not just hidden; tenant logo pulled live per-tenant from `organisations.branding.gateLogo` via the same path the Cards compliance export already proved out; new overall sign-off summary pill next to the logo.
+- `push-document-audience.ts`: new `resolveCertLogo()`, best-effort/fail-safe, reading the control-plane `organisations` table the certificate handler didn't previously have a route to.
+- `tsc -b --force`/eslint clean; verified by actually rendering 4 sample PDF variants from the code and visually inspecting them. Not click-tested live by a person.
+- Squash-merged `bde97be9` on Royce's "merge". Confirmed genuinely published via the Netlify deploy record for that exact commit — `published_at` 10:19:36Z, 6m7s build, no errors.
+- Follow-up (PR #1721, also merged 10:37 UTC): scoped `react-refresh/only-export-components` off `netlify/functions/**` — a Fast-Refresh rule that doesn't apply to server-side code, found firing on both PDF-renderer files — and dropped two dead `jsx-a11y/alt-text` disable-comments referencing a plugin never registered in `eslint.config.js`.
+
 ## 2026-09-01 (PR #1722, MERGED, LIVE — phone-OTP login now distinguishes "pending approval" from "no account")
 - Royce hit this live testing Cards signup → Shell login himself: phone code verified fine, but `shell-login-phone-otp.ts` blocked sign-in because his Cards signup's real tenant membership hadn't been approved yet (`cards-approve-staff.ts`, landed ~4 min later) — only the inactive `__personal__` placeholder tenant existed at that instant. The generic "we couldn't find an account for that mobile" copy made a legitimate, still-processing signup read as a failed code.
 - `shell-login-phone-otp.ts`'s blocked-login response now sends `error:'pending-approval'` on that specific path (identity found, no active tenant yet); `LoginPage.tsx` shows distinct copy for it, leaving the existing two-cause message (unclaimed invite / dropped `?tenant=` link) untouched.
