@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-01)
 
+**eq-field:**
+- #872 v3.5.633 — FIX: 8 lazy-tab-script dependency gaps + permanent CI guard
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -69,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1712 feat(admin): show outstanding invites on the Users list
 - #1710 fix(auth): rate-limit shell-join-tenant.ts, matching its login sibling
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
