@@ -13,6 +13,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: TAFE Holidays staleness alert on Dashboard — PR open, not merged (2026-09-01)
+*Royce, exploratory: "is there a clever way to ensure tafe holidays update?" The `tafe_holidays` date ranges (Edit Roster → TAFE Holidays) are hand-typed and nothing prompts anyone before NSW TAFE's next term break needs entering. Presented 3 directions via `AskUserQuestion` (staleness warning / auto-import from TAFE NSW's calendar, flagged unverified-feasible / leave manual); Royce picked the staleness warning.*
+
+- [x] **Manager-only Dashboard card warns when the furthest configured TAFE holiday end-date is under 45 days out, or nothing's configured at all** — same "warn before it lapses" shape as the existing licence-expiry alert. Gated on at least one apprentice having a nominated TAFE day (`applyTafeDayForWeek()`'s own predicate) so a site with none never sees a permanent, unresolvable nag — caught and fixed before shipping, not left as a known gap. `#dashboard-tafe-holidays-stale`, `renderTafeHolidaysStaleAlert()`/`getTafeHolidaysStaleness()` (`scripts/dashboard.js`). Verified via 6 fixture states driven through the real function in a live browser tab (not-loaded / empty+no-apprentice / empty+apprentice / 10-days-out / 200-days-out / 5-days-past), all correct.
+- [x] **Confirmed live on ehow that the underlying save mechanism actually works** — Royce asked directly. `app_config.tafe_holidays` holds 4 real ranges through Jul 2027, correctly-shaped JSON; RLS has real INSERT/UPDATE/DELETE policies gated on `eq_role IN ('manager','supervisor')` plus a tenant-scoped ALL policy — not just grants with nothing behind them. Side effect of this exact data: the new staleness card won't fire for SKS for a long while, since the real furthest date is far past the 45-day window — expected, not a bug.
+- [ ] **eq-field [PR #868](https://github.com/eq-solutions/eq-field/pull/868) — CI green (Tests+lint, both drift checks, deploy preview all pass), NOT merged.** `main` moved again after push; now `mergeable: CONFLICTING` — needs a rebase before it can merge. No "merge" instruction given this session. _(added 2026-09-01)_
+- [ ] **The 45-day threshold is a judgment call, not backed by verified NSW TAFE term-length data** — said so plainly in the CHANGES banner and PR body rather than presented as researched. Royce's call whether it needs tuning once he's seen it in practice. _(added 2026-09-01)_
+- [ ] **Not click-tested live by a person** — no SKS/Core credentials in this environment. Worth a real pass once merged: a manager opens Dashboard and sees (or correctly doesn't see) the card depending on real coverage. _(added 2026-09-01)_
+
+---
+
 ## eq-field: roster/timesheets staff-name map 400ing for every non-manager, wider silent bug for managers found + fixed (2026-09-01)
 *Royce reported the Edit Roster grid going blank after a refresh, attaching his own browser console log — traced to a single 400 rather than guessed at.*
 
