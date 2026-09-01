@@ -13,6 +13,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: safety forms "Pull from roster" date-resolution bug — FIXED, merged, live (2026-09-01)
+*Royce reported directly: "pulling from roster for the safety forms (prestarts, toolboxes etc) doesnt work - it says something about could not resolve from todays date."*
+
+- [x] **Root cause**: `getWeekForDate()` (defined only in `leave.js`) was called unguarded from 4 call sites across `toolbox.js`/`diary.js`/`site-reports.js` (×2) — but the `site-reports`/`prestart`/`toolbox`/`diary`/`safety` lazy-load tab buckets (`lazy-loader.js`) never load `leave.js`. A session opening a safety form without Leave already visited that session hit the `typeof getWeekForDate === 'function'` guard as false, and got a toast blaming the date when the real gap was a missing script. Same latent-lazy-dependency class this file has hit and fixed repeatedly before (tafe.js/jobnumbers.js/teams.js gaps).
+- [x] **Fixed**: all 4 call sites now self-heal via `EQ_LAZY.loadTabScripts('leave')` before computing the week/day key. eq-field [PR #870](https://github.com/eq-solutions/eq-field/pull/870) (v3.5.632). CI green, deploy preview smoke-tested (confirmed the real served bytes carried the fix), squash-merged `8126888a`, confirmed live via `field.eq.solutions/sw.js`.
+- [ ] **Not click-tested through the full authenticated UI by a person** — no Core/SKS session or credentials in this environment; the deploy preview's own login redirects to "Sign in through Core" for any code path. Worth a real pass: open Prestart or Toolbox fresh (no prior Leave tab visit that session) and confirm "Pull from today's roster" now works on the first try. _(added 2026-09-01)_
+- [ ] **Sweep for more of the same bug class** — spawned as background task `task_9a1a710d`: a systematic check of every lazy-loaded cross-module call against `TAB_SCRIPTS` for the same silent-degrade or unguarded-ReferenceError shape, rather than finding them one bug report at a time. _(added 2026-09-01)_
+
+---
+
 ## eq-field: eq_enforce_function_privacy CLAUDE.md gotcha — task premise was false, added instead of corrected (2026-09-01)
 *Assigned task: "correct" an existing stale description of this trigger in eq-field's CLAUDE.md, mirroring eq-shell's already-corrected text (PR #1702). Verified first: no such section ever existed in eq-field's CLAUDE.md, on any branch or on `origin/main` — the false claim traces to an imprecise inline comment in PR #859's migration file that named both repos' CLAUDE.md when only eq-shell's needed the fix (PR #859's own PR body correctly scopes it to eq-shell only).*
 
