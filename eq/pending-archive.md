@@ -6767,3 +6767,146 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 - [x] **Built the CI gate the doc only documented as missing**: `tests/migration-function-grant-guard.test.js` ports eq-shell's `check-function-grants.mjs` logic (walk migration history, require a same-file GRANT/REVOKE when replacing a function that had a broader grant) to this repo's scan-everything-plus-grandfather convention. Run ungrandfathered against real history first — found 2 genuine pre-existing violations (`20260831_field_permission_denials_enforce.sql`, and PR #859's own `20260901_field_permission_denials_role_bypass_fix.sql`), neither a live incident (both already confirmed live via `has_function_privilege` that the auto-restore trigger caught them correctly) — grandfathered rather than retroactively editing an already-applied migration file. eq-field [PR #871](https://github.com/eq-solutions/eq-field/pull/871), merged.
 - [x] **Diagnosed and fixed a real GitHub Actions anomaly**: PR #871 (originally stacked on #869's branch, since it edited a line #869 itself introduced) never got a `github-actions` check-suite created — confirmed at the Checks API level, not just `gh pr checks` lag. Two standard remedies (a fresh push, then closing+reopening the PR) both failed to trigger it; rebasing the branch directly onto `main` after #869 merged (de-stacking) fixed it immediately — a real check-suite appeared and passed straight away. Worth knowing before attempting another stacked PR in this repo.
 - [x] **Both PRs merged** on Royce's explicit "merge #869 first" / "merge" instructions, in that order. #869 needed a rebase first — a real append-only conflict in `docs/reflection-log.md` against 2 concurrently-merged PRs (#868/#870), resolved by keeping both sessions' entries plus this one, in order (the same conflict shape this file's own history shows recurring). #871 needed a second rebase after #869 landed (the de-stacking fix above). Worktrees + local branches cleaned up after both merges.
+
+## eq-shell: site "Ask for"/"Backup" contacts — canonical conversion shipped, migrations dispatched + verified live (2026-08-29/30) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+- [x] **`primary_contact_name/phone` + `secondary_contact_name/phone` on `app_data.sites` replaced with 2 more `contact_site_links` roles** (`ask_for`, `backup`), same mechanism as the existing `site_contact` role. Edit Site modal (Customers + EQ Ops) now shows 2 ContactPicker dropdowns instead of 4 text boxes, each with an inline "+ Add new contact." `app_data.field_sites` (eq-field's read view) repointed to resolve via the same join — column names/order unchanged, confirmed eq-field needs no code changes. eq-shell [PR #1669](https://github.com/eq-solutions/eq-shell/pull/1669), merged 2026-08-29.
+- [x] **Found and fixed along the way**: `contact_site_links`'s unique constraint was `(contact_id, site_id)` — no `role`. With 2 more roles, the same person holding two roles at one site (e.g. `site_contact` + `ask_for`) would have silently overwritten the first link. Widened to `(contact_id, site_id, role)` (migration 0293), plus the 3 other call sites that upsert against this table.
+- [x] **Both migrations dispatched + verified live.** `0291_field_sites_internal_contacts_via_links.sql` and `0293_contact_site_links_role_composite_unique.sql` merged "drafted only, not dispatched" (One Pipe gate) — the session that built them crashed before getting Royce's go. Dispatched via `tenant-migrate.yml` 2026-08-30 01:04 UTC (triggering actor: Milmlow), applying cleanly to both `eq` (zaap) and `sks` (ehow) in <15s combined. A follow-on crash-recovery session re-verified from scratch against live systems rather than trusting the crashed session's "still needs your go" state: `app_data.field_sites` on ehow resolves Equinix SY5 → Matthew Miller (ask_for) / Scott Hotson (backup); the unique constraint is confirmed `(contact_id, site_id, role)`; role counts show the expected 1 `ask_for` + 1 `backup` backfilled row; production deploy on `core.eq.solutions` confirmed serving a commit 2 ahead of the PR's merge.
+
+---
+
+## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Worker invite role never reached workers.role — Labour Hire/Apprentice/Subcontractor invites landed as Direct — built, merged, live (2026-08-26) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Permissions/nav audit — Supervisor's audit.view grant fixed, "Preview a person" made honest, is_platform_admin grants now governed (2026-08-25) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page edit resent every field on every save — PR open, blocked on unrelated CI (2026-08-25) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page now shows who hasn't signed in to Shell yet, with a filter — built, merged, live (2026-08-20) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: QR/join-code Cards signups notified nobody — admins now get the same email + roster badge the in-app connect flow already had (2026-08-18) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control gets a real ring visual + tab strip; roster now exposes real permissions instead of raw groups (2026-08-18) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control page redesigned — searchable diffed drawer for Base permissions, unified Field permissions view — both shipped, live (2026-08-17) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: dropped "custodian" wording from Plant & Equipment, now shows the assigned person's phone/email instead (2026-08-23) (rotated 2026-09-01 — open items remain in eq-shell.md)
+
+
+---
