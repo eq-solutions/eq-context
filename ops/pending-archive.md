@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-09-01
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -421,5 +421,14 @@ before any test runs. Found while confirming a SEC-50 CI failure was unrelated t
 fix (it was) — this collision is real and pre-existing, breaking the `Integration tests
 (Supabase local)` CI job on every PR to this repo, not just the one that surfaced it.
 - [x] **Rename one of the two `0192_*.sql` migrations to a free version number** — renamed the later-arriving file (`0192_reconcile_rls_introspection_service_schema.sql`, PR #619) to `0228`, fixed its two internal self-references. eq-service [PR #806](https://github.com/eq-solutions/eq-service/pull/806). _(added 2026-08-23, resolved same day)_
+
+---
+
+## Infrastructure — Live Blockers (rotated 2026-09-01)
+
+- [x] **OAuth GitHub MCP connector** — **[CLOSED 2026-09-01 — superseded, confirmed live.** This symptom (consent-screen loop blocking the org-picker, connector unable to connect at all) is no longer occurring. Three independent checks agree: `eq/`/`ops/`/`sks/chat-gateway.md` re-verified live 2026-08-24 and again 2026-09-01 that the connector authorizes and reads correctly (which rules out a loop still blocking the org-picker step); Royce confirmed directly today the connector currently connects with no loop. The live gap today is a different, already-tracked issue — writes 403 (`anthropics/claude-ai-mcp#822`, an upstream GitHub-connector bug, not a fixable grant on our end; this item's own suggested fix of revoke/reconnect is explicitly confirmed NOT to help that issue). See `eq/pending-archive.md`'s 2026-08-24 entry and `eq/pending/eq-context.md` for the live-tracked write-403 gap.]**
+  consent-screen auto-login loop blocks org-picker flow for `claude.ai` chat. Cowork writes are unblocked via PATs (2026-04-19); this item only gates the chat surface. Fix: revoke prior OAuth grant at `github.com/settings/applications`, sign out, reconnect from Claude desktop. **As of 2026-07-03 this gates the connector-first Chat bootstrap (`CHAT-PROMPT.md`)** — until the connector connects cleanly, Chat has no self-serve substrate path.
+- [x] **Restart the held Chat session on the new bootstrap** — **[CLOSED 2026-09-01 — moot.** Tied to the now-resolved loop above and one specific stuck 2026-07-03 thread the item itself already said "can be abandoned." The connector-based Chat bootstrap this bullet describes verifying is now in routine, active use — `eq/`/`ops/`/`sks/chat-gateway.md` (read_priority: critical, actively maintained, last touched today) exist specifically to support ongoing Chat sessions using exactly this connector path.]**
+  enable/verify the GitHub connector on claude.ai, then open a **fresh** chat with `CHAT-PROMPT.md` pasted (connector tools don't load mid-session). The 2026-07-03 Chat thread that was stuck on the fetch wall can be abandoned — its held "substrate fix" was this same issue, closed by PR #59. **(Royce manual step.)** _(added 2026-07-03)_
 
 ---
