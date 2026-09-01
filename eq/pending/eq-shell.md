@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,13 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: `AdminSelfJoinLinks` confirmed live and used, but only for SKS — no code changed here (2026-09-02)
+*Shell-side note only. Full context (a CEO-demo onboarding kit for eq-cards) lives in `eq/pending/eq-cards.md`'s 2026-09-02 entry — this is the standalone fact worth having discoverable from this repo's own backlog too.*
+
+- [x] **Confirmed `AdminSelfJoinLinks.tsx` (`/:tenantSlug/admin/workers/join-links`) is real, mature, and in active use** — per-role QR/link, reusable at scale, expiry + approval-required toggle. Checked the live table, not just the code: `shell_control.self_join_codes` on jvkn has 8 real codes, actively created through 2026-08-26, all for `sks`. **None for `eq`** — not a bug, just never used for that tenant yet.
 
 ---
 

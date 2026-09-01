@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-31
+last_updated: 2026-09-02
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -44,7 +44,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: live-meeting onboarding kit built for a CEO/executive demo — self-signup verified, EQ Solutions demo org enabled, sprint spun off two real gaps (2026-08-30)
+## eq-cards: live-meeting onboarding kit built for a CEO/executive demo — self-signup verified, EQ Solutions demo org enabled, sprint spun off two real gaps (2026-08-30 → 09-02)
 *Asked for a simple onboarding tool, redirected twice by Royce toward what it actually needed to be: a laminated card + live demo for an in-person executive meeting, walking scan → apply → live approval → Field/Service visibility. Verified every claim against live code and the live DB before building anything, catching a dead feature and a phone-binding constraint along the way.*
 
 - [x] **Confirmed self-signup (any phone, no invite) is the right mechanism**, not the admin-generated per-worker invite this session first proposed — invites are phone-bound by design (migration `0124`, a real security fix closing a colleague-invite-theft path), which doesn't fit "hand a laminated card to a room of strangers." Self-signup's built-in onboarding already prompts scan-a-licence → pick-a-company with zero new code needed.
@@ -53,13 +53,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] **Found a real, live, user-facing bug while researching the above, and it's now fully closed**: the Profile tab's manager/supervisor-only "Worker join QR" (captioned "Share this QR at induction") pointed at `/join?tenant=…`, a route that didn't exist anywhere — not in `app_router.dart`/`routes.dart`, not in `web/_redirects`. Spawned as background task `task_63219c0e`; Royce ran it in a separate session, which resolved it the same day — git archaeology there traced it to [PR #248](https://github.com/eq-solutions/eq-cards/pull/248) (2026-08-15) already having deleted the route's whole backend and named Shell's role-tagged self-join QR as the real replacement, just missing this one leftover card. Removed outright rather than rebuilt, [PR #329](https://github.com/eq-solutions/eq-cards/pull/329), merged, deploy-verified live. Full write-up, including the worktree cleanup, already archived to `eq/pending-archive.md` by that session — nothing left open on this thread.
 - [x] **Three artifacts published for the live meeting** (not code — Claude Artifacts, referenced by URL in this session's chat history, not duplicated into substrate): a laminated print-and-scan card (front: 3-step instructions; back: a clearly-marked sample licence for the OCR demo), a suite-wide "EQ End to End" marketing one-pager (Cards/Shell/Field/Service, content pulled from each repo's own docs, not guessed), and a presenter-only timed run sheet with the four things that actually trip up a live demo (Field's roster needing a manual sync tap; Prestart's roster-pull not finding an unrostered fresh worker; skip the hazards checklist to avoid an extra confirm dialog; approve the leave request yourself to close the loop on stage).
 - [x] **Sprint spun off two gaps found while building the above, steelmanned before planning**: shipped the Prestart/roster-pull fix (see `eq/pending/eq-field.md`, 2026-08-30) after checking it properly first; Field's realtime roster push was costed (not guessed) and explicitly deferred — that repo hand-rolls the Phoenix channel protocol with no SDK, and every existing channel needed its own base-table mapping and merge function, with real history of going silently inert when that mapping's wrong. Not a config toggle; held out rather than forced through.
+- [x] **Fourth artifact published, 2026-09-02: "EQ Sample ID Sheet"** — a double-sided A4, one per table rather than per person, with 6 different sample credentials (White Card, Driver Licence, First Aid, Working at Heights, Forklift, EWP) so a room of attendees isn't all scanning the identical fake identity. Same front-side instructions/company link as the laminated card.
+- [x] **Investigated Royce's "QR codes for whatever role, via add workers" ask before building anything, 2026-09-02 — it already exists, live and mature.** eq-shell's `AdminSelfJoinLinks.tsx` (`/:tenantSlug/admin/workers/join-links`, linked directly from Worker Invites) generates a per-role QR (all 6 roles), reusable by any number of people — not single-use — with its own expiry and an approval-required toggle, plus regenerate/deactivate/delete lifecycle management. Confirmed via the live table (`shell_control.self_join_codes` on jvkn), not assumed from the code alone: 8 real codes, actively created and used through 2026-08-26 — all for the `sks` tenant. **Zero for `eq`** — the feature has simply never been pointed at this tenant, nothing broken or missing to build.
 
 **Deferred:**
 - [ ] **Self-serve tenant provisioning doesn't collect tier/modules upfront** — the provision-link form (eq-shell's `AdminTenantsPage.tsx`) only takes org name/phone/email; tier and modules get set afterward via a separate Edit step. Real gap, wrong sprint — three-tenants-ever doesn't justify the slot right now. _(added 2026-08-30)_
+- [ ] **Whether to generate a real EQ self-join link/QR for the meeting, swapped in for the Sample ID Sheet's generic search-and-apply flow** — asked Royce directly; no answer yet as of this close. `AdminSelfJoinLinks.tsx` is ready to use as-is — pick a role/label/expiry and click Create, a 30-second admin action whenever he wants it done. _(added 2026-09-02)_
 
 **Notes:**
 - A third live DB write this session (the Prestart fix's two view migrations, tracked under `eq/pending/eq-field.md`) hit the identical auto-mode classifier wall as the `accepts_applications` flip — three for three, consistent, not a fluke. Royce can loosen it via a Bash permission rule if this keeps recurring; not done by default.
 - GitHub MCP 404'd on eq-field specifically (separate repo-access gap from this session's eq-field work) — `gh` CLI used throughout for that repo's PR/merge work.
+- The `AdminSelfJoinLinks` finding came from querying the live `self_join_codes` table directly rather than trusting the component's own code/comments at face value — same verify-before-recommending discipline as the rest of this thread; the code alone would have said "this exists" but not "and it's actually been used, just never for this tenant."
 
 ---
 
