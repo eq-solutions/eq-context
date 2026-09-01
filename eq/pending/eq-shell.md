@@ -13,6 +13,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: server-side lint noise fixed — react-refresh/jsx-a11y on the two PDF renderers (2026-09-01)
+
+- [ ] **PR #1721 not yet merged** — holding for Royce's explicit go per the standing merge-is-the-deploy rule. _(added 2026-09-01)_
+
+---
+
 ## eq-shell: shell-join-tenant.ts rate limiting, merged + live (2026-09-01)
 
 - [ ] **Not click-tested live** — no Shell/Cards session available in this environment. Worth a real pass: hit `/join?tenant=<slug>` 6× rapidly with the same phone and confirm the 6th returns 429 with `Retry-After`, then confirm a genuine join still succeeds after the window (or immediately for a different phone). _(added 2026-09-01)_
