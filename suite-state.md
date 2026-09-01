@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-01)
 
+**eq-field:**
+- #878 v3.5.639 — My Schedule day-card: collapse site contacts behind a tap
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -69,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1731 fix(cards): backfill shell_control.users.email for phone-OTP self-joins
 - #1729 fix(admin): eq_list_tenant_users no longer hides phone-only accounts
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
