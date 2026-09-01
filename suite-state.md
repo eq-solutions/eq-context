@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-01)
 
 **eq-field:**
-- #866 docs: correct 20260901 migration header — it is now applied
+- #868 v3.5.631 — FEATURE: TAFE Holidays staleness alert on Dashboard
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
