@@ -2378,7 +2378,8 @@ Note (2026-08-20): #1465/#1467/#1468/#1469/#1470/#1472 are covered at the top of
 - Display only, per scope — no resend/cancel wired up.
 - `tsc -b --force` clean, `eslint` clean on both touched files. Squash-merged (`571e6730`). Not click-tested live — no Shell session/credentials in this environment.
 
-## 2026-09-01 (PR #1714 + #1715, MERGED)
+## 2026-09-01 (PR #1714 + #1715, MERGED, LIVE)
 - 2 more instances of the repo-wide pre-existing `react-hooks/set-state-in-effect` debt cleared: `AdminWorkerInvites.tsx` and `AdminUserList.tsx` both called a state-setter synchronously at the top of their mount-time fetch effect. Fixed by deferring the fetch a tick via `queueMicrotask`, the same pattern already established and merged in #1504/#1583.
 - Spawned as a follow-up chip from the #1712 work above (pre-existing, unrelated to that PR, non-blocking since `ci.yml` keeps lint advisory pending the wider sweep); run by Royce in a separate session.
-- `eslint` exit 0 on both files. Squash-merged (`3b377cf3`, `d15bd975`).
+- `eslint` exit 0 on both files. Squash-merged (`3b377cf3`, `d15bd975`). **Confirmed live**: `3b377cf3`'s own deploy record was superseded/skipped (normal — a later commit landed before it started building), but it's a git ancestor of `d15bd975`, whose production deploy reached `state:"ready"`, `published_at: 2026-09-01T09:00:35Z` (confirmed via a 20s-interval `listSiteDeploys` poll). Both fixes are live.
+- Same session also found the root eq-shell checkout sitting on a stale, already-merged branch (`claude/entity-view-gate-crm-read-rpcs`, matching merged PR #1691) with 5 unrelated uncommitted files on top — cross-checking against `eq/pending/eq-shell.md`, those 5 files exactly match the already-shipped PR #1700 (customer Field/Service status cascade), suggesting stale leftover rather than at-risk work. Spawned as `task_dd896272`; Royce ran it in a separate session, which has since ended with the checkout back to clean (detached HEAD, no uncommitted files, branch gone locally + remotely) — consistent with that read, though not independently confirmed against that session's own transcript.
