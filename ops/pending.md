@@ -204,22 +204,27 @@ done items) is recorded in `sessions/2026-07-12.md` and
 - [~] **Product pulse — DROPPED.** Premise was the false F4 alarm. Revive only if a goal needs it.
 - [ ] **Courier (P5) — PARKED**, not dropped. Manual `git checkout main && git pull` suffices.
 - [ ] **Chat** — GitHub connector on + fresh session to read corrected main (hygiene).
-- [ ] **P2+P3 — product pulse: 3 items left.** Core signals (prestarts / toolbox talks /
-  site audits / non-`system` writes, 7d, with zero↔nonzero flip detection — not raw
-  thresholds) shipped 2026-09-01: `suite-state.md` Product Pulse section, `digest.md`
-  Needs You surfacing, and the one kept promotion guard (`scripts/pulse_promotion_guard.py`
-  — an agent/PR may not assert its own signal value). General typed `claims.yml` stays
-  dropped (2026-07-12 — duplicated the pulse). Execution record: `sessions/2026-09-01.md`;
-  full phase detail: `system/substrate-plan-v2.md` Phase 3. Remaining:
-  1. **"Checks created/completed" signal** — needs a windowed RPC on
-     `service.maintenance_checks` (current RPC only returns an all-time total) — a
-     live-ehow schema change, Royce's explicit go required.
-  2. **"Active users" signal** — not an RPC gap: `service.profiles.last_login_at` is
+- [ ] **P2+P3 — product pulse: 1 item left.** 6 signals live 2026-09-01: maintenance
+  checks created/completed, prestarts, toolbox talks, site audits, non-`system` writes
+  — all 7d, all with zero↔nonzero flip detection (not raw thresholds) — in
+  `suite-state.md`'s Product Pulse section, surfaced into `digest.md`'s Needs You, plus
+  the one kept promotion guard (`scripts/pulse_promotion_guard.py` — an agent/PR may not
+  assert its own signal value). Checks created/completed needed a windowed RPC on
+  `service.maintenance_checks` (ehow migration `maintenance_checks_pulse_rpc`,
+  EXECUTE granted service_role/postgres only) — Royce approved the schema change via
+  `AskUserQuestion` 2026-09-01, applied and advisor-clean same day. First live read
+  (2026-09-01): 0 created, **1 completed** in the trailing 7d — the first real completed
+  check this substrate has ever seen; won't itself register as a flip on its first
+  appearance (no prior row to cross from), so it's recorded here instead. General typed
+  `claims.yml` stays dropped (2026-07-12 — duplicated the pulse). Execution record:
+  `sessions/2026-09-01.md`; full phase detail: `system/substrate-plan-v2.md` Phase 3.
+  Remaining:
+  1. **"Active users" signal** — not an RPC gap: `service.profiles.last_login_at` is
      0-of-5 populated because Shell SSO never writes it. Needs an eq-shell
      instrumentation fix first, not a pulse-side change.
-  3. **Morning push** — signals currently reach `digest.md`'s Needs You (pull, next
-     session gate), not the originally-specified proactive chat message. Needs Royce's
-     call on cadence/channel before building.
+  - **Morning push — Royce's call 2026-09-01: leave as pull for now.** `digest.md`'s
+    Needs You already surfaces flips at every session start; revisit a proactive push
+    once there's a real flip to react to.
 - [ ] **P5 — courier install** — Beelink-native scheduled git sync, eq-context/main only
   (approved `ops/decisions.md` 2026-07-12); gate reports courier age. (2026-07-12)
 - [ ] **Deferred (P4 hygiene)** — `memory-coverage.yml`; consolidate workflows 17→≤8;

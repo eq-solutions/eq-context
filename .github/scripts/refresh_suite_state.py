@@ -99,6 +99,27 @@ def fetch_pulse_signal(table, window_days, exclude_system_who=False):
     return resp.json()["count"]
 
 
+def fetch_maintenance_checks_pulse():
+    """{'created_7d': N, 'completed_7d': N} via the maintenance_checks_pulse()
+    RPC (ehow, applied 2026-09-01, Royce's go per this repo's non-negotiables
+    on schema changes). service.maintenance_checks isn't PostgREST-exposed
+    (see fetch_counts()'s docstring), so this needs a dedicated RPC rather
+    than fetch_pulse_signal()'s direct-table REST call -- same reason
+    field_canonical_health() exists for the Field Data Plane section."""
+    resp = requests.post(
+        f"{SUPABASE_URL}/rest/v1/rpc/maintenance_checks_pulse",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
 def render_field_block(fc, today):
     """Markdown for the Field Data Plane section from a field_canonical_health()
     payload. Every line flush-left -- 4+ leading spaces reads as an indented code
@@ -324,6 +345,8 @@ if __name__ == "__main__":
     # None (not 0) means "no prior row" -- e.g. this section's first-ever run --
     # which must never itself read as a flip.
     PULSE_ROWS = [
+        ("checks_created_7d", "Maintenance checks created"),
+        ("checks_completed_7d", "Maintenance checks completed"),
         ("prestarts_7d", "Prestarts created"),
         ("toolbox_talks_7d", "Toolbox talks created"),
         ("site_audits_7d", "Site audits created"),
@@ -543,22 +566,26 @@ if __name__ == "__main__":
     # mark its own claim verified. md-health.yml's pulse-promotion-guard check
     # enforces that on every PR; direct pushes here are always this same bot.
     #
-    # Two signals from the original plan (system/substrate-plan-v2.md P3) are
-    # deliberately NOT computed:
-    #   - "maintenance checks completed/created (1d/7d/all-time)" needs a windowed
-    #     RPC against service.maintenance_checks -- that schema isn't PostgREST-
-    #     exposed (see fetch_counts()'s docstring), and the existing
-    #     suite_state_counts() RPC only returns an all-time total. Adding a
-    #     windowed RPC is a live-ehow schema change, which needs Royce's explicit
-    #     go per this repo's own non-negotiables -- not assumed here.
-    #   - "active users, 7d" needs service.profiles.last_login_at, which is 0-of-5
-    #     populated (verified live 2026-09-01, unchanged since the 2026-07-12
-    #     design doc already flagged it "unmeasurable"). Reporting a signal with
-    #     zero real data behind it would be exactly the kind of over-read this
-    #     guard exists to prevent -- so it's reported as blocked, not as a false 0.
+    # One signal from the original plan (system/substrate-plan-v2.md P3) is
+    # deliberately NOT computed: "active users, 7d" needs
+    # service.profiles.last_login_at, which is 0-of-5 populated (verified live
+    # 2026-09-01, unchanged since the 2026-07-12 design doc already flagged it
+    # "unmeasurable"). Reporting a signal with zero real data behind it would
+    # be exactly the kind of over-read this guard exists to prevent -- so it's
+    # reported as blocked, not as a false 0.
+    #
+    # "Maintenance checks created/completed" WAS blocked the same way (needed
+    # a windowed RPC against service.maintenance_checks, which isn't
+    # PostgREST-exposed -- see fetch_counts()'s docstring) until Royce
+    # approved the schema change 2026-09-01; see maintenance_checks_pulse()
+    # (ehow migration `maintenance_checks_pulse_rpc`, EXECUTE granted to
+    # service_role/postgres only, matching suite_state_counts()'s own grants).
     print("Computing product pulse signals (7d)...")
     try:
+        checks_pulse = fetch_maintenance_checks_pulse()
         pulse = {
+            "checks_created_7d": checks_pulse["created_7d"],
+            "checks_completed_7d": checks_pulse["completed_7d"],
             "prestarts_7d": fetch_pulse_signal("prestarts", 7),
             "toolbox_talks_7d": fetch_pulse_signal("toolbox_talks", 7),
             "site_audits_7d": fetch_pulse_signal("site_audits", 7),
@@ -580,7 +607,6 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
 {pulse_rows}
-| Maintenance checks created/completed | blocked | needs a windowed RPC on `service.maintenance_checks` — Royce's go required (live schema change), see `ops/pending.md` |
 | Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified {TODAY}) — see `ops/pending.md` |
 
 {"⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**" if any_flip else "_No flips this run._"}"""

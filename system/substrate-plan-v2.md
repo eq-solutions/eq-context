@@ -112,20 +112,26 @@ One machine-owned file, `system/claims.yml`. Every load-bearing claim:
 product pulse (lean, build-next)" entry already called for on 2026-07-12 —
 a `suite-state.md` section + `refresh_suite_state.py` logic, not `verify: sql`
 claims in a ledger, since Phase 2's general `claims.yml` was dropped the same
-day ("duplicated the pulse"). Live: `prestarts_7d`, `toolbox_talks_7d`,
-`site_audits_7d`, and `nonsystem_writes_7d` (adapted to the live schema —
-`audit_log.who != 'system'`, not `source='system'` as first written below;
-`source_app` is only ever NULL/`"quotes"` live), each with zero↔nonzero flip
-detection surfaced into `digest.md`'s **Needs you**, plus the one kept
-promotion guard (`scripts/pulse_promotion_guard.py` — an agent/PR may not
-assert its own signal value). **Still blocked, not built:** "checks
-created/completed" needs a windowed RPC on `service.maintenance_checks` (a
-live-ehow schema change — Royce's go required, not assumed); "active users"
-has zero real data behind it (`service.profiles.last_login_at` 0-of-5
-populated, Shell SSO never writes it — same gap this phase already flagged
-below). **Still not built:** the "morning push" delivery this phase
-describes — signals currently reach `digest.md`'s Needs you (pull, via the
-next session gate), not a proactive chat message.
+day ("duplicated the pulse"). Live: `checks_created_7d`, `checks_completed_7d`,
+`prestarts_7d`, `toolbox_talks_7d`, `site_audits_7d`, and `nonsystem_writes_7d`
+(adapted to the live schema — `audit_log.who != 'system'`, not
+`source='system'` as first written below; `source_app` is only ever
+NULL/`"quotes"` live), each with zero↔nonzero flip detection surfaced into
+`digest.md`'s **Needs you**, plus the one kept promotion guard
+(`scripts/pulse_promotion_guard.py` — an agent/PR may not assert its own
+signal value). "Checks created/completed" needed a windowed RPC on
+`service.maintenance_checks` — Royce approved the live-ehow schema change via
+`AskUserQuestion` 2026-09-01 (migration `maintenance_checks_pulse_rpc`,
+EXECUTE granted `service_role`/`postgres` only, matching `suite_state_counts()`'s
+own grants; advisor-clean). First live read: 0 created, 1 completed in the
+trailing 7d. **Still blocked, not built:** "active users" has zero real data
+behind it (`service.profiles.last_login_at` 0-of-5 populated, Shell SSO never
+writes it — same gap this phase already flagged below; needs an eq-shell
+instrumentation fix, not a pulse-side change). **Deliberately not built:**
+the "morning push" delivery this phase describes — Royce's call via
+`AskUserQuestion` 2026-09-01 was to leave signals reaching `digest.md`'s
+Needs you (pull, via the next session gate) for now, revisiting a proactive
+chat push once there's a real flip to react to.
 
 Product signals become `verify: sql` claims in the same ledger, refreshed by the same nightly run — F4's fix inherits Phase 2's machinery for free:
 
