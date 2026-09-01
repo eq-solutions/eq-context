@@ -6737,3 +6737,11 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 - [x] **`/decide` pass run before building** (full six-step output, given this touches a live production default) -- recommendation: ship it. Royce confirmed.
 - [x] **eq-roles [PR #33](https://github.com/eq-solutions/eq-roles/pull/33) (v2.7.7)**: `quotes.view_all` dropped from Supervisor's default grant, manager-only now. `npm test` 110/110. Merged, tagged `v2.7.7`.
 - [x] **eq-shell [PR #1704](https://github.com/eq-solutions/eq-shell/pull/1704)**: pure pin bump to v2.7.7 -- `src/modules/quotes/permissions.ts` was already a pure re-export from the earlier promotion, so no source changes needed. `pnpm run build` + full test suite (470/472, 2 pre-existing skips) + drift guard clean. CI green including deploy preview. Merged (squash `5847e2a4`) on Royce's explicit "merge".
+
+---
+
+## eq-field: cache-buster pre-push hook CRLF false-positive fixed (2026-09-01)
+*Found in passing while pushing an unrelated fix (the tenant_role_overrides role-bypass work, `eq/pending/eq-field.md`) — the day-old `.githooks/pre-push` cache-buster check false-positived on `styles/tokens.css`, a file that hadn't changed. Spawned as a background task rather than fixed inline, since it was a different bug in different tooling.*
+
+- [x] **Root cause**: `scripts/check-cache-busters.mjs` compared `git show <base>:<path>` (LF-normalized, from the git object) against `readFileSync(path)` (the actual working-tree file, CRLF-converted on any Windows checkout with `core.autocrlf=true`) — an apples-to-oranges byte comparison that would false-positive on any tagged file, for any Windows contributor, regardless of whether it actually changed.
+- [x] **Fixed**: eq-field [PR #861](https://github.com/eq-solutions/eq-field/pull/861) normalizes line endings before comparing. Merged. Confirmed working the same session: a later unrelated push through this same hook (from a fresh Windows checkout) hit zero false positives, no bypass needed.
