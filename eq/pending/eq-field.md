@@ -25,9 +25,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: incident alert recipients — Executive-category only, not everyone, merged, live (2026-09-01)
+## eq-field: incident alert recipients — per-person control + archived contacts excluded, merged, live (2026-09-01)
 
-- [ ] **Not click-tested through the full authenticated UI by a person** — same standing sandbox limitation as everything else today. Worth a real pass: open Manage → Email Templates, toggle a category and confirm it saves; submit a High-severity or Incident-type report and confirm only the configured categories get emailed (this also closes out the "does the email even arrive" question from the section above, now that the recipient set is deliberate). _(added 2026-09-01)_
+- [ ] **Not click-tested through the full authenticated UI by a person** — same standing sandbox limitation as everything else today. Worth a real pass: open Manage → Email Templates, check/uncheck a few Supervision contacts in the recipient list, confirm the saved selection persists on reload; submit a High-severity or Incident-type report and confirm only the checked people get emailed, and that an archived contact never does even if still checked from before. _(added 2026-09-01)_
+
+---
+
+## eq-field/eq-context: field_managers not in the shared-object drift registry (2026-09-01)
+*Found auditing the incident-alert-recipients work: `app_data.field_managers` (view) and `field_managers_digest_iu` (trigger function) on ehow can be fully replaced by either eq-field's hand-applied migrations or eq-shell's governed pipeline — same risk shape as the 3 confirmed prior incidents in `IDENTITY-MODEL.md` §3.3.3 — but neither object is actually registered, so the nightly `check_shared_object_drift.py` doesn't protect them.*
+
+- [~] **Register both objects in `eq/identity/shared-db-objects.json`** — spawned as `task_1e2c8b07`, Royce started it running in a separate local session 2026-09-01, in progress, not yet reported back.
 
 ---
 
