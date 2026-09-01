@@ -75,6 +75,18 @@ jobs:
       - name: Duplicate sessions — self-test
         run: python scripts/test_duplicate_sessions.py
 
+      # F5's one kept promotion-guard rule (ops/pending.md, 2026-07-12): an
+      # agent/PR may not assert its own Product Pulse value (F4) -- only the
+      # nightly bot's direct push may. Meaningless on a plain push (the bot
+      # never opens a PR, and a merge-to-main was already checked at PR time)
+      # so it only runs in the pull_request context, against the PR's real base.
+      - name: Pulse promotion guard — self-test
+        run: python scripts/test_pulse_promotion_guard.py
+
+      - name: Pulse promotion guard
+        if: github.event_name == 'pull_request'
+        run: python scripts/pulse_promotion_guard.py "${{ github.event.pull_request.base.sha }}"
+
       - name: Run MD health checks
         run: |
           set -euo pipefail
