@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-01 (Supervisor's default quote visibility narrowed to own-only)
+- `quotes.view_all` dropped from Supervisor's default grant (`@eq-solutions/roles` v2.7.7) — manager-only now. Checked live before building: only 2 of SKS's 12 Supervisors have ever created a quote, one unaffected by the change, one already a closed duplicate-account case.
+- `/decide` pass run before building given this touches a live production default.
+- eq-shell [PR #1704](https://github.com/eq-solutions/eq-shell/pull/1704), merged `5847e2a4` on explicit "merge". Deploy triggered within 1s of merge; publish not independently reconfirmed by session close.
+
 ## 2026-09-01 (link an existing site from EQ Ops; duplicate-site-name warning)
 - EQ Ops Quote Details Site field gained a "Link existing site" button (searches every site in the tenant, not just the customer's own list) alongside the existing New site/Edit site — reuses `LinkSiteModal`/`site_customer_links`, previously wired only into the Customers page (PR #1582).
 - `AddSiteModal` (both EQ Ops and Customers) now warns when a typed name loosely matches a site already on file for that customer, before allowing a new one to be created.
