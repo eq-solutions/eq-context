@@ -44,9 +44,7 @@ Also found and fixed in passing: this worktree's `node_modules` was missing `pdf
 ---
 
 ## eq-shell: pending-invites list doesn't know about accounts made via a different door (2026-09-01)
-*Found while checking whether Ian Marston (the original "couldn't log in" report) had actually gotten in — he had, but via Cards' phone-OTP self-join (`shell-join-tenant.ts`), not either of his two email invites. Both invite rows are still `accepted_at: null` and now will be forever: `list-user-invites.ts` (PR #1712) only filters on `accepted_at IS NULL`, with no idea an account might already exist through a different path. Ran `/decide`: ship the display-side filter now, defer source-side reconciliation as a separate call — `shell-join-tenant.ts`'s already been touched twice today, and the filter alone fully closes the pain actually observed.*
 
-- [ ] **`list-user-invites.ts` query-time filter** — exclude any invite row whose email already matches an active `shell_control.users` row. Spawned as `task_112fd131`, running as of this close, not yet merged. _(added 2026-09-01)_
 - [ ] **Source-side reconciliation, deliberately deferred, not spawned** — whichever door creates an account (`shell-join-tenant.ts` today, potentially others) should close out a matching `user_invites` row at creation time, not just hide it from one list. 3rd distinct "the invite system doesn't reconcile across its own doors" finding today (see the create-worker-invite.ts dedupe fix, already shipped) — worth a deliberate look as its own thing, not another same-day bolt-on. _(added 2026-09-01)_
 
 ---

@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -2425,3 +2425,9 @@ Note (2026-08-20): #1465/#1467/#1468/#1469/#1470/#1472 are covered at the top of
 - `react-refresh/only-export-components` was failing `npx eslint .` on `document-certificate-pdf.tsx` and `quote-pdf.tsx` — both server-side `@react-pdf/renderer` modules run inside Netlify Functions, never processed by Vite/Fast Refresh, so the rule was pure noise there. Added a `netlify/functions/**/*.{ts,tsx}` files-scoped override in `eslint.config.js` turning it off for server-only function code.
 - Also removed 2 stale `eslint-disable-next-line jsx-a11y/alt-text` comments on those same 2 files — `eslint-plugin-jsx-a11y` was never installed in this repo at all, so the disable directives themselves were the ones erroring ("Definition for rule ... was not found"), isolated to exactly these 2 files.
 - `npx eslint` on both files: 4 errors → 0. Confirmed from the live `ci.yml` that lint runs `continue-on-error: true` (advisory pending existing lint-debt cleanup) — this was never actually CI-blocking. Held unmerged pending Royce's go, since merging eq-shell's `main` is the production deploy trigger.
+
+## 2026-09-01 (PR #1720, MERGED, LIVE)
+- `list-user-invites.ts` now excludes any outstanding invite whose email already has a live `shell_control.users` account — previously these showed as "pending" forever once someone joined through a different door (e.g. Cards' phone-OTP self-join via `shell-join-tenant.ts`, which never touches `user_invites`). Mirrors the file's existing `invited_by` resolution pattern: one extra batch query against `users`, no join.
+- Confirmed live for Ian Marston (SKS): 2 unaccepted invite rows alongside an active, logged-in `users` row — exactly the case this closes.
+- Display-only, read-only, scope locked by an earlier same-day `/decide` — no changes to `shell-join-tenant.ts`, no write/reconciliation logic (deferred separately in `eq/pending/eq-shell.md`).
+- `tsc -b --force`, `eslint`, `pnpm run build` clean; all 9 PR checks green. Squash-merged (`16bf4cc4`). **Confirmed live**: `16bf4cc4`'s own deploy was still building when a concurrent merge's deploy (`d91a88b1`) reached `published_at`; confirmed `16bf4cc4` is an ancestor of `d91a88b1` before calling it live.
