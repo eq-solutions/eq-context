@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-01)
 
+**eq-field:**
+- #866 docs: correct 20260901 migration header — it is now applied
+
 **eq-service:**
 - #823 fix(migrations): add missing report_show_* columns to the 00001 fixture
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -70,7 +73,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1705 fix(quotes): add Home link to mobile job-detail overlay in EQ Ops
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
