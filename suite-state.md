@@ -34,14 +34,14 @@ _If this file is >48h old, the cron is broken._
 **urjh (`urjhmkhbgaxrofurpbgc`): DELETED 2026-06-22**
 
 | Entity | Count | Schema |
-|--------|-------|--------|
-| Sites | 209 | app_data.sites |
-| Customers | 39 | app_data.customers |
-| Assets | 2,842 | app_data.assets |
-| Tenants | 1 (SKS Technologies) | service.tenants |
-| Users | 5 | service.tenant_members |
-| Maintenance checks | 37 | service.maintenance_checks |
-| Defects | 3 | service.defects |
+    |--------|-------|--------|
+    | Sites | 209 | app_data.sites |
+    | Customers | 39 | app_data.customers |
+    | Assets | 2,842 | app_data.assets |
+    | Tenants | 1 (SKS Technologies) | service.tenants |
+    | Users | 5 | service.tenant_members |
+    | Maintenance checks | 37 | service.maintenance_checks |
+    | Defects | 3 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
 **Demo tenant ID:** `a0000000-0000-0000-0000-000000000001`
@@ -79,32 +79,33 @@ _If this file is >48h old, the cron is broken._
 
 ## System Health (as of 2026-09-01)
 
-**CI on main:**
+    **CI on main:**
 
-| Repo | Status |
-|------|--------|
-| eq-service | ✓ success |
+    | Repo | Status |
+    |------|--------|
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
-**Deploys:**
-_NETLIFY_TOKEN not set — deploy status unavailable_
+    **Deploys:**
+    _NETLIFY_TOKEN not set — deploy status unavailable_
 
-**Migrations:** eq-service has 245 (latest: 0239) applied
+    **Migrations:** eq-service has 245 (latest: 0239) applied
 
 ---
 
+## Field Data Plane — SKS tenant (as of 2026-09-01)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 83 | ✓ 83 |
-| Directory | app_data.field_sites | 53 | ✓ 53 |
-| Directory | app_data.field_managers | 21 | ✓ 21 |
-| Operational | app_data.field_schedule | 1,310 | ✓ 1,310 |
-| Operational | app_data.field_timesheets | 138 | ✓ 138 |
-| Safety | public.prestarts | 35 | ✓ 35 |
-| Safety | public.toolbox_talks | 1 | ✓ 1 |
+| Directory | app_data.field_people | 74 | ✓ 74 |
+| Directory | app_data.field_sites | 57 | ✓ 57 |
+| Directory | app_data.field_managers | 0 | ⚠ no data yet |
+| Operational | app_data.field_schedule | 1,860 | ✓ 1,860 |
+| Operational | app_data.field_timesheets | 214 | ✓ 214 |
+| Safety | public.prestarts | 227 | ✓ 227 |
+| Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 
