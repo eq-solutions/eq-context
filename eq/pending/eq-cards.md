@@ -13,6 +13,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: local `flutter test` couldn't compile on any file — pdfrx_engine null-safety bug root-caused, fixed, merged (2026-09-02)
+*Flagged by an earlier session (2026-09-02, Wallet Export button work) as background task `task_1310e6b1` — `flutter test` failed to compile on this Windows dev machine, not just the file under test, reproduced on two unrelated files.*
+
+- [x] Root cause: `pdfrx_engine` 0.4.5's `pdf_file_cache.dart` has a real null-safety bug — an inner `async` closure (`read: (buffer, position, size) async {...}`) uses bare `cache.blockSize`/`cache.read(...)` on a variable only promoted non-null in the *outer* scope; Dart never carries promotion into a captured closure. It only ever compiled by accident: Dart ≤3.12 had its own soundness bug ([dart-lang/sdk#62889](https://github.com/dart-lang/sdk/issues/62889)) that let the bad promotion leak into the closure anyway. Dart 3.13 fixed that hole, correctly exposing pdfrx_engine's bug. eq-cards' CI is still pinned to Flutter 3.44.8/Dart 3.12.2, so it doesn't hit this; any local toolchain on Dart 3.13+ does.
+- [x] Fixed by bumping the transitive `pdfrx_engine` lockfile entry only, `0.4.5 → 0.4.7` (fixed upstream in 0.4.6) — no `pubspec.yaml` change. Confirmed (two different techniques) that pub's solver currently drags 6 unrelated transitive packages (matcher/meta/test/test_api/test_core/vector_math) into *any* pub resolution in this repo right now, regardless of scoping approach — none required by pdfrx_engine 0.4.7's own constraints (checked directly) — reverted by hand so the shipped diff is exactly the one lockfile entry.
+- [x] Verified: both originally-failing files compile and pass (`licence_card_test.dart` 8/8, `licences_list_screen_test.dart` 9/9). [PR #341](https://github.com/eq-solutions/eq-cards/pull/341), CI green (5/5 checks, including the actual `flutter analyze` + `flutter test` job), squash-merged (`679e8a2`) on explicit "merge".
+
+**Deferred:**
+- [ ] **`analysis_options.yaml` auto-migrates on every single `flutter` invocation in this repo right now** (adds `build/**`/`android/**`/`ios/**`/`web/**` to excludes) — hit and reverted independently by at least 2 sessions today (this one and the Wallet Export session just below, per its own notes). Accepting the SDK's suggested change once, deliberately, would remove this recurring friction for good — not done here (out of scope for a dependency-version fix), flagging since it's now a repeated cost. _(added 2026-09-02)_
+
+**Notes:**
+- This also heads off a future CI break: once eq-cards' Flutter pin eventually moves past Dart 3.13 (it will, the same way it already moved 3.41.9→3.44.8 for an unrelated constraint), CI would hit this exact failure too unless pdfrx_engine had already been bumped by then.
+- Resolves the deferred item flagged in the Wallet Export section directly below (`task_1310e6b1`) — ticked off there.
+
+---
+
 ## eq-cards: Wallet screen's Export button had no visible label — fixed, merged, deployed live (2026-09-02)
 *Royce flagged it from a screen recording: "1 thing needs a look" was the icon-only download/export button in the Wallet app bar — no visible text, just a tooltip nobody sees on a phone. Same pattern already fixed for the adjacent "Add" button; applied the identical fix.*
 
@@ -21,7 +37,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Not click-tested live** — the Wallet screen sits behind phone-OTP sign-in; no credentials available in this environment. Verified via `flutter analyze` (clean) and a successful `flutter build web` instead. _(added 2026-09-02)_
-- [ ] **Unrelated bug found while verifying, not fixed this session**: `flutter test` can't compile locally on Windows — a null-safety bug in the pinned `pdfrx_engine` 0.4.5 package, reproduced on two unrelated test files, confirmed unrelated to any pubspec change made this session. Flagged as background task `task_1310e6b1`; Royce has already started it running in a separate session. _(added 2026-09-02)_
+- [x] **Unrelated bug found while verifying — now fixed.** `flutter test` couldn't compile locally on Windows (pinned `pdfrx_engine` 0.4.5 null-safety bug). Root-caused and fixed in a separate session — see the pdfrx_engine section above. _(added 2026-09-02, resolved 2026-09-02)_
 
 **Notes:**
 - Claude Code's auto-mode classifier blocked triggering the deploy workflow directly (`gh workflow run deploy.yml`) — Royce triggered it himself via the Actions UI instead. Same class of classifier wall this file documents elsewhere for direct DB/merge/push actions — worth expecting on any eq-cards deploy attempted from a session rather than assuming it goes straight through.
