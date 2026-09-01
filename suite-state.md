@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-01)
 
-**eq-cards:**
-- #341 fix(deps): bump pdfrx_engine to 0.4.7
-
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
@@ -73,7 +70,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1729 fix(admin): eq_list_tenant_users no longer hides phone-only accounts
-- #1728 fix(admin): exclude deactivated users from Access Control pickers
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
