@@ -2371,3 +2371,14 @@ Note (2026-08-20): #1465/#1467/#1468/#1469/#1470/#1472 are covered at the top of
 - Verified live via `pg_get_functiondef` against jvkn/zaap/ehow directly (not inferred from any file) before rewriting the section. Rewrote it to state current per-plane scope/behavior, flagged that jvkn's 2026-08-25 upgrade has no migration file anywhere in the repo (live-only), and kept the eq-cards `#0111` incident as history, correctly time-boxed to the pre-hardening trigger.
 - Also fixed `scripts/check-function-grants.mjs`'s header comment + failure-message text, which repeated the identical stale "will silently strip" claim — enforcement logic (still requires an explicit trailing `GRANT`) left unchanged, since it's real defense-in-depth for the one residual edge case (a function's grants collapsing to exactly the schema default).
 - Squash-merged (`eb5a510d`), confirmed live via Netlify deploy record — `commit_ref` match, `context: production`, `state: ready`, `published_at` set (~6 min build-to-publish).
+
+## 2026-09-01 (PR #1712, MERGED)
+- **`eq_list_tenant_users` only returns accepted `shell_control.users` rows, so an invite created by `invite-user.ts`/`invite-users-batch.ts`/`create-worker-invite.ts` and never accepted had no visible row anywhere on `/admin/users`.** Found investigating a report that an invited SKS user "couldn't sign in" — the admin had no way to see the invite was still sitting unaccepted.
+- Added a **Pending** tab to `AdminUserList.tsx` (email, role, invited-by, invited-when, worker-linked vs. direct, pending/expired status) via a new read-only `netlify/functions/list-user-invites.ts`. Uses the existing service-role `getServiceClient()` (already defaults to `shell_control`, already used by `invite-user.ts`/`create-worker-invite.ts` for this exact table) — no new jvkn RPC or schema change. Confirmed live that `shell_control.user_invites` has RLS enabled with no `authenticated` policy, matching why `eq_list_tenant_users` itself needed to be a SECURITY DEFINER RPC.
+- Display only, per scope — no resend/cancel wired up.
+- `tsc -b --force` clean, `eslint` clean on both touched files. Squash-merged (`571e6730`). Not click-tested live — no Shell session/credentials in this environment.
+
+## 2026-09-01 (PR #1714 + #1715, MERGED)
+- 2 more instances of the repo-wide pre-existing `react-hooks/set-state-in-effect` debt cleared: `AdminWorkerInvites.tsx` and `AdminUserList.tsx` both called a state-setter synchronously at the top of their mount-time fetch effect. Fixed by deferring the fetch a tick via `queueMicrotask`, the same pattern already established and merged in #1504/#1583.
+- Spawned as a follow-up chip from the #1712 work above (pre-existing, unrelated to that PR, non-blocking since `ci.yml` keeps lint advisory pending the wider sweep); run by Royce in a separate session.
+- `eslint` exit 0 on both files. Squash-merged (`3b377cf3`, `d15bd975`).

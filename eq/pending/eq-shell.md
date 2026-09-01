@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Pending-invites tab on the Users list, merged (2026-09-01)
+*An admin had no way to see that an invite was still sitting unaccepted — `eq_list_tenant_users` only returns accepted `shell_control.users` rows, so an invite created by `invite-user.ts`/`create-worker-invite.ts` and never accepted had no visible row anywhere on `/admin/users`. Found investigating a report that an invited SKS user "couldn't sign in."*
+
+- [x] Added a **Pending** tab (email, role, invited-by, invited-when, worker-linked vs. direct, pending/expired) via a new read-only `list-user-invites.ts` function — reuses the existing service-role access pattern `invite-user.ts` already has, no jvkn RPC or schema change needed. eq-shell [PR #1712](https://github.com/eq-solutions/eq-shell/pull/1712), merged (squash `571e6730`).
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open `/admin/users`, switch to Pending, confirm it renders real outstanding invites for a tenant that has some. _(added 2026-09-01)_
+- Also confirmed live and closed out this session: `task_533933eb` (create-worker-invite.ts's user_invites dedup gap) was already fixed and merged as [PR #1709](https://github.com/eq-solutions/eq-shell/pull/1709) by a concurrent session — a memory file claiming "PR open, not merged" was corrected.
+
+---
+
 ## eq-shell: two trial accounts hard-deleted (Don Milmlow, Jordan A. Sample) — root cause found, purge-endpoint gap flagged (2026-09-01)
 
 - [ ] **Any other trial accounts Royce meant by "a few"** — only these two were identified/confirmed this session, via a recency sweep of the "sks" tenant's users, not a full audit. If more exist, they'll hit the identical wall. _(added 2026-09-01)_
@@ -616,6 +625,7 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 **Deferred:**
 - [ ] **Live click-through not done** — confirm on core.eq.solutions that Field/Service/Cards still pre-warm within 2.5s, switching between them stays fast, and a first-navigation-before-prewarm still mounts instantly with no flash. Needs a real authenticated session, off-limits for me to do myself. _(added 2026-08-03)_
 - [ ] **Repo-wide `pnpm lint` now shows 990 pre-existing errors + 472 warnings (2026-08-16), up from 438 errors on 2026-08-03** — same `react-hooks/set-state-in-effect` rule dominates. Re-checked live this session: `ci.yml` still deliberately keeps lint advisory (`continue-on-error: true`), but that decision was made 2026-06-30 for a *different* debt (~1,200 raw-hex colour violations, since cleaned up and promoted to blocking separately) — the comment there is stale, it still cites the old reason. Also checked and can't confirm this entry's "react-hooks v7 upgrade" claim: `eslint-plugin-react-hooks` has been pinned to `^7.1.1` since the very first scaffold commit per full package.json history — no version-string change ever recorded in this repo. Either that upgrade happened somewhere this check can't see, or the original note was a plausible-sounding guess that stuck; flagging rather than silently overwriting one claim with the other. Separately confirmed: none of `eslint-plugin-react-hooks`'s rules declare autofix support (checked the installed package's dist source directly) — the "N fixable with --fix" the CLI reports comes from other rules, not this one, so this specific debt has zero mechanical shortcut and needs the same manual, one-at-a-time treatment PR #1204's unused-vars sweep used. Worth a dedicated session before it doubles again. _(added 2026-08-03, updated 2026-08-16)_
+  **Update 2026-09-01:** 2 more instances fixed and merged as standalone PRs (eq-shell#1714 `AdminWorkerInvites.tsx` → `3b377cf3`, eq-shell#1715 `AdminUserList.tsx` → `d15bd975`), using the established `queueMicrotask` wrapper from #1504.
 
 ## eq-shell: no-restricted-syntax hex-colour cleanup — 8 fixed, PR #1201 (2026-08-03)
 
