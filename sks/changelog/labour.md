@@ -1,13 +1,18 @@
 ---
 title: Changelog — SKS Labour
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-09-01
 scope: Append-only history of changes to the SKS Labour scheduling app
 read_priority: reference
 status: live
 ---
 
 # Changelog — SKS Labour
+
+## [2026-09-01] Login screen: "moved to core.eq.solutions" notice (v3.10.112, PR #79, merged, live)
+**Built by:** assistant + Royce Milmlow
+- **v3.10.112 (PR [#79](https://github.com/eq-solutions/sks-nsw-labour/pull/79), commit `940d952`, squash-merged `4c7dc70`, deploy `6a96858f` confirmed `ready`/`published_at` set)** — Added a tenant-scoped ("sks" only) notice at the top of the login gate: plain "this app is no longer being updated," a link to `core.eq.solutions/sks/field`, and click-to-call/email fallback to Royce (0432 944 014 / royce.milmlow@sks.com.au). Same mechanism as the existing `gateDisclaimer` (`TENANT_BRANDING.sks`), new `gateMoveNoticeHtml` field rendered via `innerHTML` since it needs a real link. Login/PIN flow untouched; EQ/demo tenant unaffected. Royce: "as long as its very obvious this website is no longer being updated" — drove the amber warning treatment over a softer nudge. Verified live in browser (both tenants) before shipping, and against the Netlify deploy record (not just the merge) after.
+- Same session found, via live SQL join on both `nspbmirochztcjijmcrx` and `ehowgjardagevnrluult`, that the EQ Field roster divergence flagged 2026-08-14 (see `sks/pending.md`) is still active and has grown to include timesheets — this login notice now sends people toward that diverging, thinner copy. Not resolved here; tracked in pending.md.
 
 ## [2026-08-04] Safety records 200-row cap fixed (v3.10.109, PR #76, merged, live)
 **Built by:** assistant
