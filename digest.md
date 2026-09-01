@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-01 22:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-01 22:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-01 21:58 UTC → 2026-09-01 22:26 UTC)
+## Since last refresh (2026-09-01 22:26 UTC → 2026-09-01 22:59 UTC)
 
-- Merged: eq-shell [#1737](https://github.com/eq-solutions/eq-shell/pull/1737) fix(auth): disable TOTP login challenge for already-enrolled
-- Merged: eq-shell [#1719](https://github.com/eq-solutions/eq-shell/pull/1719) feat(documents): tenant logo, shorter title, drop content ha
-- Merged: eq-shell [#1717](https://github.com/eq-solutions/eq-shell/pull/1717) feat(staff): edit and close/reopen a logged conversation ent
-- Merged: eq-shell [#1716](https://github.com/eq-solutions/eq-shell/pull/1716) Documents: customisable types, cert+document download, Goten
-- Merged: eq-shell [#1715](https://github.com/eq-solutions/eq-shell/pull/1715) fix(admin): clear react-hooks/set-state-in-effect on Users l
-- Merged: eq-shell [#1712](https://github.com/eq-solutions/eq-shell/pull/1712) feat(admin): show outstanding invites on the Users list
-- Merged: eq-shell [#1711](https://github.com/eq-solutions/eq-shell/pull/1711) fix(security): scope attachments reads to creator for staff_
-- Merged: eq-shell [#1710](https://github.com/eq-solutions/eq-shell/pull/1710) fix(auth): rate-limit shell-join-tenant.ts, matching its log
+- Merged: eq-shell [#1738](https://github.com/eq-solutions/eq-shell/pull/1738) feat(documents): bulk-select documents on Register, push to 
+- Merged: eq-shell [#1720](https://github.com/eq-solutions/eq-shell/pull/1720) fix(admin): exclude already-registered users from list-user-
+- Merged: eq-shell [#1718](https://github.com/eq-solutions/eq-shell/pull/1718) feat(documents): list archived documents on the Register; pr
+- Merged: eq-shell [#1714](https://github.com/eq-solutions/eq-shell/pull/1714) fix(admin): clear react-hooks/set-state-in-effect on worker-
+- Merged: eq-shell [#1713](https://github.com/eq-solutions/eq-shell/pull/1713) feat(staff): ratings rollup on Resourcing + weakness_improve
+- Merged: eq-shell [#1709](https://github.com/eq-solutions/eq-shell/pull/1709) fix(invites): dedupe user_invites row in create-worker-invit
+- Merged: eq-shell [#1708](https://github.com/eq-solutions/eq-shell/pull/1708) feat(admin): purge_employment_records flag on delete-user.ts
+- Merged: eq-field [#880](https://github.com/eq-solutions/eq-field/pull/880) v3.5.641 — FIX: My Schedule compliance card mislabeled a tea
 
 ## ⚠ Needs you (15)
 
@@ -39,7 +39,7 @@ _2026-09-01 22:26 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 - 🟠 **Cron failing** — `shared-object-drift.yml` 1 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (258)
+## 🙋 Waiting on you (260)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -55,13 +55,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Migration 0298 needs Royce to dispatch it** — see above, command included. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — same environment limitation as most of this session's other work (no Shell credentials); `netlify dev` also produced no output at all this time, which may just be the existing known Node-version flakiness rather than a new distinct failure. Verify via each PR's deploy preview or live: Resourcing's two new rating columns render "No ratings yet"; a Check-in entry shows the new weakness-improvement question; Edit pre-fills every field correctly and saves in place; the close/reopen icon toggles the "Open" tag. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live by a person** — every PR this session verified via `pnpm run build`/`eslint`/`pnpm run test`/live DB queries only, never an actual signed-in click-through. Worth a real pass: upload a document, assign/change its category from each of the 3 tabs, create a new reference-only category via the new toggle, confirm the routing actually changes. _(added 2026-08-30)_
-_…and 246 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 248 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 6 | 1d |
+| eq-shell | ✓ success | 0d ago | 7 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 12d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -71,6 +71,7 @@ _…and 246 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-01 | eq-shell | [#1738](https://github.com/eq-solutions/eq-shell/pull/1738) feat(documents): bulk-select documents on Register, push to a sha |
 | 2026-09-01 | eq-shell | [#1737](https://github.com/eq-solutions/eq-shell/pull/1737) fix(auth): disable TOTP login challenge for already-enrolled user |
 | 2026-09-01 | eq-shell | [#1735](https://github.com/eq-solutions/eq-shell/pull/1735) fix(auth): disable forced TOTP enrollment mandate for now |
 | 2026-09-01 | eq-shell | [#1734](https://github.com/eq-solutions/eq-shell/pull/1734) fix(auth): reject deactivated accounts on the self-service tenant |
@@ -85,14 +86,13 @@ _…and 246 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | 2026-09-01 | eq-shell | [#1724](https://github.com/eq-solutions/eq-shell/pull/1724) fix(documents): labour_hire role label, PDF conversion timeout he |
 | 2026-09-01 | eq-shell | [#1721](https://github.com/eq-solutions/eq-shell/pull/1721) fix(lint): scope react-refresh/only-export-components off Netlify |
 | 2026-09-01 | eq-shell | [#1723](https://github.com/eq-solutions/eq-shell/pull/1723) fix(react-hooks): clear remaining set-state-in-effect debt (22 fi |
-| 2026-09-01 | eq-shell | [#1722](https://github.com/eq-solutions/eq-shell/pull/1722) fix(auth): distinguish pending-approval from no-account on phone- |
 _Showing 15 of 91 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (272 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (62 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (203 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (205 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (97 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -123,8 +123,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1439 | 195 / 83 | 45 | 67 |
-| [eq-cards](eq/pending/eq-cards.md) | 340 | 47 / 17 | 16 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1124 | 150 / 63 | 34 | 33 |
+| [eq-cards](eq/pending/eq-cards.md) | 356 | 47 / 17 | 20 | 6 |
+| [eq-field](eq/pending/eq-field.md) | 1136 | 149 / 65 | 34 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 510 | 75 / 23 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -180,4 +180,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 22:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 22:59 UTC._
