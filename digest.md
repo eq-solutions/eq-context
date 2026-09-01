@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-01 09:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-01 10:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-01 09:45 UTC → 2026-09-01 09:53 UTC)
+## Since last refresh (2026-09-01 09:53 UTC → 2026-09-01 10:13 UTC)
 
-- Merged: eq-shell [#1718](https://github.com/eq-solutions/eq-shell/pull/1718) feat(documents): list archived documents on the Register; pr
-- Merged: eq-shell [#1702](https://github.com/eq-solutions/eq-shell/pull/1702) docs: correct eq_enforce_function_privacy scope + behavior p
-- Merged: eq-shell [#1694](https://github.com/eq-solutions/eq-shell/pull/1694) fix(security): thread tenant_role_overrides denials into Quo
-- Merged: eq-shell [#1692](https://github.com/eq-solutions/eq-shell/pull/1692) fix(security): scope quote status/note writes to created_by
-- Merged: eq-shell [#1690](https://github.com/eq-solutions/eq-shell/pull/1690) fix(security): thread tenant_role_overrides denials into the
-- Merged: eq-shell [#1687](https://github.com/eq-solutions/eq-shell/pull/1687) feat(migrate): --exclude flag for bootstrap, skip genuinely-
-- Merged: eq-shell [#1685](https://github.com/eq-solutions/eq-shell/pull/1685) fix(staff): readable conversation viewer + attach source doc
-- Merged: eq-shell [#1684](https://github.com/eq-solutions/eq-shell/pull/1684) feat(ci): let eq-field apply its own tenant migrations via t
+- Merged: eq-shell [#1719](https://github.com/eq-solutions/eq-shell/pull/1719) feat(documents): tenant logo, shorter title, drop content ha
+- Merged: eq-shell [#1704](https://github.com/eq-solutions/eq-shell/pull/1704) fix(permissions): narrow Supervisor's default quote visibili
+- Merged: eq-shell [#1703](https://github.com/eq-solutions/eq-shell/pull/1703) feat(quotes): link an existing site from EQ Ops, warn on lik
+- Merged: eq-shell [#1701](https://github.com/eq-solutions/eq-shell/pull/1701) fix: add field_job_numbers_src to SHARED_REGISTRY_FUNCTIONS
+- Merged: eq-shell [#1693](https://github.com/eq-solutions/eq-shell/pull/1693) fix(security): thread tenant_role_overrides denials into the
+- Merged: eq-shell [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called di
+- Merged: eq-shell [#1689](https://github.com/eq-solutions/eq-shell/pull/1689) feat(permissions): quotes.view_all now grantable per-person 
+- Merged: eq-shell [#1688](https://github.com/eq-solutions/eq-shell/pull/1688) fix(records): not-allowed page for direct nav to a denied en
 
 ## ⚠ Needs you (15)
 
@@ -39,10 +39,11 @@ _2026-09-01 09:53 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-30 · [failures.md](system/failures.md) F11
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (246)
+## 🙋 Waiting on you (248)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — no Shell/Cards session available in this environment. Worth a real pass: hit `/join?tenant=<slug>` 6× rapidly with the same phone and confirm the 6th returns 429 with `Retry-After`, then confirm a genuine join still succeeds after the window (or immediately for a different phone). _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open `/admin/users`, switch to Pending, confirm it renders real outstanding invites for a tenant that has some. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
@@ -54,14 +55,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live by a person** — verified via live SQL + deploy-state checks, not by opening the Edit Site modal itself. Worth a real pass on Equinix SY5: confirm Ask for/Backup show Matthew Miller/Scott Hotson, try the inline "+ Add new contact" flow, save, reopen, confirm it stuck. _(added 2026-08-30)_
 - **eq-shell** · **SEC-67's env-var half still needs Royce** — 4 confirmed-dead Netlify env vars (`FIELD_SUPABASE_URL`/`_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`/`_ANON_KEY`), zero code references, ready to delete — blocked by Claude Code's own classifier on unattended env-var writes. Commands in `sessions/2026-08-30.md`. _(added 2026-08-30)_
 - **eq-shell** · **SEC-57 — Royce decided "revoke `grok-by-xai`" (2026-08-30), but it can't be done via API.** Confirmed live: `DELETE /orgs/eq-solutions/installations/{id}` doesn't exist (404); `DELETE /app/installations/{id}` needs the app's own JWT auth, not an org member's token (401). Uninstalling a GitHub App from an org is a GitHub-web-UI-only action for a human with org admin rights — Settings → GitHub Apps (or Installed GitHub Apps) → grok-by-xai → Uninstall. Still needs Royce to actually click it. _(added 2026-08-30)_
-- **eq-shell** · **Needs Royce's call, security-hardening scope**: SEC-3, SEC-18, SEC-19, SEC-63, SEC-65, SEC-24. Full detail in the sprint doc, not re-listed here. _(added 2026-08-28)_
-_…and 234 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 236 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 0d |
+| eq-shell | ✓ success | 0d ago | 7 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 11d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -85,6 +85,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-01 | eq-shell | [#1719](https://github.com/eq-solutions/eq-shell/pull/1719) feat(documents): tenant logo, shorter title, drop content hash on |
 | 2026-09-01 | eq-shell | [#1718](https://github.com/eq-solutions/eq-shell/pull/1718) feat(documents): list archived documents on the Register; prefer  |
 | 2026-09-01 | eq-shell | [#1717](https://github.com/eq-solutions/eq-shell/pull/1717) feat(staff): edit and close/reopen a logged conversation entry |
 | 2026-09-01 | eq-shell | [#1716](https://github.com/eq-solutions/eq-shell/pull/1716) Documents: customisable types, cert+document download, Gotenberg  |
@@ -99,14 +100,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-01 | eq-shell | [#1707](https://github.com/eq-solutions/eq-shell/pull/1707) fix(quotes): make the EQ Ops Home button actually reset state, no |
 | 2026-09-01 | eq-shell | [#1706](https://github.com/eq-solutions/eq-shell/pull/1706) feat(crm): auto-link new contacts to the site Contacts is filtere |
 | 2026-09-01 | eq-shell | [#1705](https://github.com/eq-solutions/eq-shell/pull/1705) fix(quotes): add Home link to mobile job-detail overlay in EQ Ops |
-| 2026-09-01 | eq-shell | [#1700](https://github.com/eq-solutions/eq-shell/pull/1700) fix(crm): compute customer Field/Service status from owned sites |
 _Showing 15 of 99 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (257 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (260 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (58 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (196 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (197 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (97 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -136,9 +136,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1361 | 187 / 76 | 36 | 67 |
+| [eq-shell](eq/pending/eq-shell.md) | 1375 | 189 / 77 | 36 | 67 |
 | [eq-cards](eq/pending/eq-cards.md) | 315 | 44 / 16 | 12 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1096 | 147 / 60 | 34 | 33 |
+| [eq-field](eq/pending/eq-field.md) | 1097 | 146 / 61 | 31 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 510 | 75 / 23 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 09:53 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 10:13 UTC._
