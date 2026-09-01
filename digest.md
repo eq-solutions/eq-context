@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-01 02:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-01 02:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-01 02:27 UTC → 2026-09-01 02:33 UTC)
+## Since last refresh (2026-09-01 02:33 UTC → 2026-09-01 02:53 UTC)
 
-- Merged: eq-shell [#1691](https://github.com/eq-solutions/eq-shell/pull/1691) fix(security): entity.view gate on 5 CRM read RPCs called di
-- Merged: eq-shell [#1689](https://github.com/eq-solutions/eq-shell/pull/1689) feat(permissions): quotes.view_all now grantable per-person 
-- Merged: eq-shell [#1686](https://github.com/eq-solutions/eq-shell/pull/1686) fix(security): tenant_role_overrides denials were silently i
-- Merged: eq-shell [#1682](https://github.com/eq-solutions/eq-shell/pull/1682) fix(auth): active-account re-check on 11 endpoints missing i
-- Merged: eq-shell [#1681](https://github.com/eq-solutions/eq-shell/pull/1681) fix(security): quotes RPCs had no server-side permission che
-- Merged: eq-shell [#1680](https://github.com/eq-solutions/eq-shell/pull/1680) fix(security): upgrade zaap/ehow's function-privacy trigger,
-- Merged: eq-shell [#1678](https://github.com/eq-solutions/eq-shell/pull/1678) fix(security): close eq_revoke_session's group-permission bl
-- Merged: eq-shell [#1676](https://github.com/eq-solutions/eq-shell/pull/1676) fix(sites): QuotesCustomers' Edit Site panel writes contact_
+- Merged: eq-shell [#1687](https://github.com/eq-solutions/eq-shell/pull/1687) feat(migrate): --exclude flag for bootstrap, skip genuinely-
+- Merged: eq-shell [#1685](https://github.com/eq-solutions/eq-shell/pull/1685) fix(staff): readable conversation viewer + attach source doc
+- Merged: eq-shell [#1684](https://github.com/eq-solutions/eq-shell/pull/1684) feat(ci): let eq-field apply its own tenant migrations via t
+- Merged: eq-shell [#1683](https://github.com/eq-solutions/eq-shell/pull/1683) feat(staff): Resourcing in-place panel, readable conversatio
+- Merged: eq-shell [#1679](https://github.com/eq-solutions/eq-shell/pull/1679) fix(auth): phone-dedup misses accounts whose phone lives on 
+- Merged: eq-shell [#1677](https://github.com/eq-solutions/eq-shell/pull/1677) fix(staff): Resourcing Name column search/filter matches not
+- Merged: eq-shell [#1675](https://github.com/eq-solutions/eq-shell/pull/1675) fix(staff): reactivate a matching inactive stub on Cards app
+- Merged: eq-shell [#1674](https://github.com/eq-solutions/eq-shell/pull/1674) feat(staff): start_date capture + Resourcing gap indicator
 
 ## ⚠ Needs you (15)
 
@@ -89,6 +89,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-01 | eq-shell | [#1704](https://github.com/eq-solutions/eq-shell/pull/1704) fix(permissions): narrow Supervisor's default quote visibility to |
 | 2026-09-01 | eq-shell | [#1703](https://github.com/eq-solutions/eq-shell/pull/1703) feat(quotes): link an existing site from EQ Ops, warn on likely-d |
 | 2026-09-01 | eq-shell | [#1702](https://github.com/eq-solutions/eq-shell/pull/1702) docs: correct eq_enforce_function_privacy scope + behavior per pl |
+| 2026-09-01 | eq-field | [#864](https://github.com/eq-solutions/eq-field/pull/864) v3.5.630 — FIX: Weekly Roster site dropdown could stick on "All S |
 | 2026-09-01 | eq-field | [#859](https://github.com/eq-solutions/eq-field/pull/859) fix(security): role-default bypasses tenant_role_overrides deny-c |
 | 2026-09-01 | eq-field | [#863](https://github.com/eq-solutions/eq-field/pull/863) v3.5.629 — FIX: Edit Roster site dropdown showed no sites -> fold |
 | 2026-09-01 | eq-field | [#862](https://github.com/eq-solutions/eq-field/pull/862) v3.5.628 — Roster: future-start new hires no longer hidden |
@@ -99,14 +100,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-08-31 | eq-shell | [#1692](https://github.com/eq-solutions/eq-shell/pull/1692) fix(security): scope quote status/note writes to created_by |
 | 2026-08-31 | eq-shell | [#1688](https://github.com/eq-solutions/eq-shell/pull/1688) fix(records): not-allowed page for direct nav to a denied entity/ |
 | 2026-08-31 | eq-shell | [#1690](https://github.com/eq-solutions/eq-shell/pull/1690) fix(security): thread tenant_role_overrides denials into the Fiel |
-| 2026-08-31 | eq-solves-service | [#822](https://github.com/eq-solutions/eq-service/pull/822) fix(defects): revalidate /defects on check-item fail/un-fail |
 _Showing 15 of 97 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (249 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (57 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (186 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (187 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (96 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -138,7 +138,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1324 | 185 / 72 | 27 | 67 |
 | [eq-cards](eq/pending/eq-cards.md) | 314 | 43 / 16 | 12 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1060 | 142 / 55 | 28 | 33 |
+| [eq-field](eq/pending/eq-field.md) | 1057 | 143 / 55 | 25 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 489 | 74 / 22 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 02:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 02:53 UTC._
