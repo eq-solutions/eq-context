@@ -13,6 +13,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: phone-OTP login read as "no account" during a Cards signup's approval-pending window, now says so — merged + live (2026-09-01)
+*Royce tested Cards signup → Shell login himself and couldn't get the mobile code to work. Traced live against jvkn: the OTP had actually verified fine 6s earlier — Shell's login exchange blocked it because his Cards signup's real tenant membership hadn't been approved yet (`cards-approve-staff.ts`, landed ~4 min later into SKS Technologies); only the inactive `__personal__` placeholder existed at that instant. The generic "we couldn't find an account for that mobile" copy made a legitimate, still-processing signup read as a failed code. PR #1722: `shell-login-phone-otp.ts` now returns `error:'pending-approval'` on that specific blocked path, `LoginPage.tsx` shows distinct copy for it. Merged `d91a88b1`, published to core.eq.solutions 2026-09-01 10:36 UTC.*
+
+- [ ] **Not click-tested live** — verified via `tsc -b --force` + `eslint` only (both clean). Reproducing the actual pending-approval message needs a real Cards signup mid-approval-queue, not something drivable from this environment. _(added 2026-09-01)_
+
+---
+
 ## eq-shell: server-side lint noise fixed — react-refresh/jsx-a11y on the two PDF renderers (2026-09-01)
 
 - [ ] **PR #1721 not yet merged** — holding for Royce's explicit go per the standing merge-is-the-deploy rule. _(added 2026-09-01)_
