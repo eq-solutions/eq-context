@@ -9,6 +9,14 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-01 (PR #857 MERGED, no version bump — tooling: local pre-push guard for cache-buster drift)
+- The cache-buster-tag CI drift (a changed `scripts/*.js`/`styles/*.css` file whose own `?v=` tag in `index.html` didn't move) had been missed 6 times, twice more this same day (PRs #854/#856) despite the fix being documented in memory and applied once already earlier the same session — spawned `task_7499b5e4` to close the gap mechanically instead of relying on remembering to run the check.
+- Built `.githooks/pre-push`: fetches `origin/main`, runs `scripts/check-cache-busters.mjs --base origin/main` (the same script `cache-buster-drift.yml` runs in CI), blocks the push on drift. Escape hatch `EQ_SKIP_CACHE_BUSTER_CHECK=1 git push`, matching the existing `EQ_SKIP_BRIEF`/`EQ_SKIP_REFLECT` convention.
+- The task's framing assumed this could "mirror" an existing `.githooks`/`guard.js` already in the repo — that didn't exist. Verified `git config core.hooksPath` blank at every scope and zero tracked `guard.js`/`hooksPath` hits repo-wide first: eq-field's brief-gate/reflection-gate are global, per-machine Claude Code hooks (`~/.claude/hooks/guard.js`), not git-native, not inherited by a fresh clone. Built a real git-native hook instead.
+- Activation is `git config core.hooksPath .githooks`, confirmed live to be one command per *clone* (stored in the shared common `.git/config`), not per worktree — setting it once was immediately active for the shared root and every existing sibling worktree.
+- Verified three ways directly (clean pass, forced-drift block, bypass flag), then confirmed the hook fires through real git plumbing on the actual `git push` of the branch itself.
+- eq-field [PR #857](https://github.com/eq-solutions/eq-field/pull/857), squash-merged on Royce's explicit "merge it". No user-visible surface — nothing served to `field.eq.solutions` changed.
+
 ## 2026-09-01 (PR #863 MERGED + LIVE, v3.5.629 — FIX: Edit Roster site dropdown showed no sites -> folded into search)
 - Royce, screenshot of the just-shipped Edit Roster page (PR #860, same day): "Sites dropdown doesnt show any sites - can the search field just be for the whole roster (SY3 shows everyone at SY3)" — a bug report and his own proposed fix together.
 - Root cause — `getAllSiteCodes()` is defined in the lazy-loaded `roster.js`; `refreshPersonSelects()` (which populates the site select) is never re-triggered when the Editor tab is first opened, so a select populated before `roster.js` finished loading stayed stuck on "All Sites" with no self-heal in sight for that page.
