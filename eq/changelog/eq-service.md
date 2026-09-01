@@ -1,13 +1,19 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-09-02 (PR #826 MERGED + LIVE — dashboard map "API KEY REQUIRED" tiles fixed)
+- CartoDB gated its previously-anonymous basemap tile CDN behind an API key; unauthenticated requests to `basemaps.cartocdn.com` still return HTTP 200, but every tile is now a placeholder watermarked "API KEY REQUIRED" — confirmed live by fetching the tile URL directly, not inferred. An external dependency change, not a code regression.
+- Swapped `SiteMapLeaflet.tsx`'s basemap to Esri's keyless "World Light Gray Base" tile service (verified live, no key/account needed). Synced the CSP report-only host allowlist in `lib/security-headers.ts` + `public/_headers` to the new host.
+- `npm audit (high)` and `Integration tests (Supabase local)` CI checks failed on pre-existing, unrelated issues (a fresh browserslist advisory; the repo's already-documented flaky integration-test gap) — waived in the PR body; `tsc + next build`, the real gate, passed. Force-merged past branch protection on Royce's explicit confirmation.
+- Confirmed published live via Netlify's deploy record for the exact merge commit (`published_at` set, 96s build, no errors).
 
 ## 2026-09-01 (PR #821 MERGED + LIVE — P2 polish: search_path hardening, dashboard cleanup, ConfirmDialog folded into the shared focus-trap hook, revalidation narrowed, real Data Quality worklists)
 - `useFocusTrap` gained an optional `initialFocusRef` param so `ConfirmDialog`'s `ConfirmDialogModal` could adopt it — it focuses Cancel (destructive) or Confirm (otherwise) instead of the hook's default first-focusable-element, replacing ~60 duplicated lines. `Modal`/`SlidePanel`'s existing 2-arg calls are unaffected; `ConfirmDialog`'s public API is unchanged. Closes the gap `useFocusTrap`'s own extraction had explicitly left open ("ConfirmDialog... left alone here since this hook doesn't support a custom initial-focus target").
