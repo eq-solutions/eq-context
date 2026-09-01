@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-01 20:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-01 20:21 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-01 19:49 UTC → 2026-09-01 20:12 UTC)
+## Since last refresh (2026-09-01 20:12 UTC → 2026-09-01 20:21 UTC)
 
-- Merged: eq-shell [#1716](https://github.com/eq-solutions/eq-shell/pull/1716) Documents: customisable types, cert+document download, Goten
-- Merged: eq-shell [#1715](https://github.com/eq-solutions/eq-shell/pull/1715) fix(admin): clear react-hooks/set-state-in-effect on Users l
-- Merged: eq-shell [#1712](https://github.com/eq-solutions/eq-shell/pull/1712) feat(admin): show outstanding invites on the Users list
-- Merged: eq-shell [#1711](https://github.com/eq-solutions/eq-shell/pull/1711) fix(security): scope attachments reads to creator for staff_
-- Merged: eq-shell [#1710](https://github.com/eq-solutions/eq-shell/pull/1710) fix(auth): rate-limit shell-join-tenant.ts, matching its log
-- Merged: eq-shell [#1705](https://github.com/eq-solutions/eq-shell/pull/1705) fix(quotes): add Home link to mobile job-detail overlay in E
-- Merged: eq-shell [#1704](https://github.com/eq-solutions/eq-shell/pull/1704) fix(permissions): narrow Supervisor's default quote visibili
-- Merged: eq-shell [#1700](https://github.com/eq-solutions/eq-shell/pull/1700) fix(crm): compute customer Field/Service status from owned s
+- Merged: eq-shell [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resou
+- Merged: eq-shell [#1714](https://github.com/eq-solutions/eq-shell/pull/1714) fix(admin): clear react-hooks/set-state-in-effect on worker-
+- Merged: eq-shell [#1713](https://github.com/eq-solutions/eq-shell/pull/1713) feat(staff): ratings rollup on Resourcing + weakness_improve
+- Merged: eq-shell [#1709](https://github.com/eq-solutions/eq-shell/pull/1709) fix(invites): dedupe user_invites row in create-worker-invit
+- Merged: eq-shell [#1708](https://github.com/eq-solutions/eq-shell/pull/1708) feat(admin): purge_employment_records flag on delete-user.ts
+- Merged: eq-shell [#1707](https://github.com/eq-solutions/eq-shell/pull/1707) fix(quotes): make the EQ Ops Home button actually reset stat
+- Merged: eq-shell [#1706](https://github.com/eq-solutions/eq-shell/pull/1706) feat(crm): auto-link new contacts to the site Contacts is fi
+- Merged: eq-field [#880](https://github.com/eq-solutions/eq-field/pull/880) v3.5.641 — FIX: My Schedule compliance card mislabeled a tea
 
 ## ⚠ Needs you (15)
 
@@ -85,6 +85,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-01 | eq-shell | [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resourcing |
 | 2026-09-01 | eq-shell | [#1731](https://github.com/eq-solutions/eq-shell/pull/1731) fix(cards): backfill shell_control.users.email for phone-OTP self |
 | 2026-09-01 | eq-shell | [#1732](https://github.com/eq-solutions/eq-shell/pull/1732) fix(auth): enforce account-deactivation across grant/invite/appro |
 | 2026-09-01 | eq-shell | [#1730](https://github.com/eq-solutions/eq-shell/pull/1730) fix(admin): restore pin_set/pin_locked to eq_list_tenant_users |
@@ -99,7 +100,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-01 | eq-shell | [#1720](https://github.com/eq-solutions/eq-shell/pull/1720) fix(admin): exclude already-registered users from list-user-invit |
 | 2026-09-01 | eq-shell | [#1719](https://github.com/eq-solutions/eq-shell/pull/1719) feat(documents): tenant logo, shorter title, drop content hash on |
 | 2026-09-01 | eq-shell | [#1718](https://github.com/eq-solutions/eq-shell/pull/1718) feat(documents): list archived documents on the Register; prefer  |
-| 2026-09-01 | eq-shell | [#1717](https://github.com/eq-solutions/eq-shell/pull/1717) feat(staff): edit and close/reopen a logged conversation entry |
 _Showing 15 of 95 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 20:12 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-01 20:21 UTC._
