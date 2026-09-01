@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-31
+last_updated: 2026-09-01
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,14 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: role-default bypass in ehow's tenant_role_overrides deny-checks — fix built, NOT applied, PR has a conflict (2026-09-01)
+*Found verifying the tenant_role_overrides deny-arc end to end from the eq-shell side (the "apprentice-role permissions review" arc below). The 2026-08-31 migration (`20260831_field_permission_denials_enforce`, applied live to ehow) added deny-checks to 10 `app_data` functions + RLS policies, but each boolean was structured as `role_default OR (extra_perms grant AND NOT denied_perms)` — the deny only ever gated the extra_perms branch. A caller who already qualifies via the bare role-default branch (`eq_role IN ('manager','supervisor')`, sometimes just `= 'manager'`) never reaches the deny-check at all, so denying a Field-domain key for a manager/supervisor specifically was silently a no-op on all 13 affected objects. Spawned as `task_d9611f7d`; the fix itself was built in a separate session — full mechanism detail in Claude memory `tenant-role-overrides-denials-were-inert.md`, not re-derived here.*
+
+- [ ] **eq-field [PR #859](https://github.com/eq-solutions/eq-field/pull/859)** (`20260901_field_permission_denials_role_bypass_fix.sql`) — restructures all 13 objects (10 functions + 3 RLS policies; 2 of the originally-suspected 6 policies already had the correct shape live, from an undocumented source no PR or migration explains) so the deny applies uniformly regardless of which path would otherwise grant access. **Currently `mergeable: CONFLICTING`** as of 2026-09-01 — needs a rebase before it can merge. **Not applied to live ehow** — deliberately held pending Royce's explicit go, per this cluster's standing rule (nothing to live ehow without being asked). Zero live `tenant_role_overrides` rows target any of the 7 affected keys today, so this is a correctness fix ahead of demand, not an active leak. _(added 2026-09-01)_
+- [ ] **Origin of the 2 already-correct RLS policies is unexplained** — `labour_hire_companies_select`/`labour_hire_rates_select` already had the right deny-wins-over-both-paths shape live on ehow before PR #859 existed, with no PR or migration file accounting for it. Not blocking; worth a look if it matters later. _(added 2026-09-01)_
 
 ---
 
