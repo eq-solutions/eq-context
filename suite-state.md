@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-01)
 
 **eq-field:**
-- #868 v3.5.631 — FEATURE: TAFE Holidays staleness alert on Dashboard
+- #869 docs(claude-md): add eq_enforce_function_privacy trigger gotcha
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
