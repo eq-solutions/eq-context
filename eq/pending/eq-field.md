@@ -13,6 +13,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Calendar never showed weekend roster entries — FIXED, merged, live (2026-09-02)
+*Royce, live example: "CA1 is logged in for 7th November for Richard Simon and Brian but it doesnt show on the calendar." Confirmed live against ehow before touching code: Richard Brown, Simon Bramall, and Brian Griffin-Colls all have a real `app_data.field_schedule` row for CA1 (Equinix CA1) on Sat 7 Nov 2026 — correctly showing on the Roster tab, absent from Calendar.*
+
+- [x] **Root cause: `renderCalendar()`'s per-day data-build loop hard-skipped Saturday/Sunday entirely** (`if (dow >= 5) continue`), so a real weekend roster entry never reached `calDayData` at all — not a Roster/Calendar data-source mismatch, both read the same schedule data. That blanked the grid cell, the mobile agenda card, and the day-detail panel (which bails on a missing `calDayData[ds]`) for every weekend, tenant-wide, not just this date/these people. Every day of the month now builds and renders the same way; weekend cells keep their muted grey styling as a visual cue but are now clickable and show real data. eq-field [PR #882](https://github.com/eq-solutions/eq-field/pull/882) (v3.5.642), merged and confirmed live on `field.eq.solutions/sw.js`.
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file; re-verified fresh this session that even the `?tenant=demo` fixture gate now dead-ends at "Sign in through Core" after entering the code, so there's no sandbox path left to try. Worth a real pass: Calendar → November 2026 → the 7th, confirm the CA1 chip renders on both desktop grid and mobile agenda and that clicking it opens the day panel with all three names. _(added 2026-09-02)_
+
+---
+
+## eq-field: approved leave not appearing on Weekly Roster — investigated, no bug found (2026-09-02)
+*Royce: "approved holidays hit the weekly roster - Jack truslers didnt appear to." Investigated end-to-end against live ehow data plus the actual production overlay code (not a re-implementation) before concluding.*
+
+- [x] **Jack Trusler's approved leave record and the roster's approved-leave overlay logic (`roster-rules.js`/`leave-adapter.js`) both check out correct.** Ran the real production functions in Node against the exact live DB row: name match, the `approved`→`Approved` status normalization, and the date range all compute correctly, producing "A/L" for Fri 4 Sep and Mon 7 Sep 2026 as expected. No code change made.
+- [ ] **Likely explanation: the leave request was bulk-imported (`imported_from: nspb-leave-sync-2026-09-01`) from sks-nsw-labour the day before it was checked** — a stale/cached roster tab open since before the import is the probable cause, not a bug. Told Royce to hard-refresh; not confirmed whether that resolved it. _(added 2026-09-02)_
+- [ ] **If a refresh doesn't fix it: check crew-scoping.** `leave_requests` reads are crew-filtered for a supervisor without `field.view_all_crews`; if the person checking isn't a full manager and Jack isn't on their crew, his leave row would never be fetched at all. Not investigated further since Royce (Ops Manager) almost certainly has full-crew visibility himself. _(added 2026-09-02)_
+
+---
+
 ## eq-field: My Schedule compliance card stuck on stale "missing" state after a real upload — FIXED, merged, live (2026-09-02)
 *Royce, screenshot: logged in as Jordan Sample, "uploaded both white card and photo id and its still asking me for it." Verified live against canonical (jvkn) before touching code: Jordan's data was actually correct (held both, satisfied both required types) — the screenshot itself showed a different person (Liam Holmgreen), whose gap was real and correctly flagged.*
 
