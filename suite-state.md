@@ -72,6 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1736 fix(auth): bound verify-shell-session's best-effort reads with a deadline
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
@@ -87,7 +88,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? in_progress |
+    | eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
