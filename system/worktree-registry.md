@@ -116,6 +116,8 @@ If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-s
 
 `C:\Projects\eq-field\.claude\worktrees\supervisor-list-population-9e6715 (eq-field)` | `claude/roster-project-code-picker` (was `claude/multi-project-site-display-1483e9` / PR #822 when first logged — branch has since moved on) | found live during the same audit (owning session unknown) — clean tree | 2026-08-28 | **NOT TOUCHED** — still reads as live work closing the Field-side half of the `site_projects` wiring gap already on record (Core built the read+write UI, zero Field code consumed it originally).
 
+`C:\Projects\eq-shell-pending-invites (eq-shell)` | `claude/pending-user-invites-admin` (new branch off `origin/main`, includes merged PR #1709) | created this session after the root checkout (`C:\Projects\eq-shell`) was found mid-task on a different branch (`claude/entity-view-gate-crm-read-rpcs`) with another session's own uncommitted changes — moved out to avoid colliding with it, per [[eq-shell-root-checkout-shared-contention]] | 2026-09-01 | **ACTIVE** — read-only "Pending invites" tab on AdminUserList.tsx (new `list-user-invites.ts` function + AdminUserList.tsx edit). No schema/migration. Remove after merge.
+
 ## Recently pruned (2026-08-28, round 3 — 2 worktrees, Royce's explicit go, no PR to verify)
 
 Follow-on to round 2 immediately below: Royce asked for a sprint doc tracking that round's 2 unresolved "needs you" items (`sprint-2026-08-28-worktree-followups.md`), then answered both directly in the same session rather than leaving them parked. Neither had a PR to check — the round-2 method (gh pr list + squash-commit grep) doesn't apply here; this is a plain "asked, got an explicit go" removal instead:
