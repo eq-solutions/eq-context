@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: PostHog `$create_alias` spam from the 5-minute session poll — root-caused, fixed, merged live (2026-09-02)
+*A PostHog analytics review (not a filed bug) flagged 568 `$create_alias` events for 34 users in one day, concentrated on 4 admins (up to 115 each), recurring at an exact ~5-minute cadence for hours while a tab stayed parked on the same page. Asked to confirm the pattern was real before assuming a fix was needed, root-cause it, then fix if concrete.*
+
+- [x] **Root cause confirmed against source + the actual shipped `posthog-js@1.374.2` bytes, not docs**: `SessionProvider`'s pre-existing 5-minute background poll (`App.tsx`, exists to catch deactivation/role changes) calls `identifyUser()` on every tick regardless of whether anything actually changed; `identifyUser()` (`observability.ts`) unconditionally called `ph.alias(email)` every single time. `posthog-js`'s real `alias()` implementation has no de-dupe for repeat calls with the same pair — the old code comment claiming it was idempotent was simply wrong. Also checked `ph.identify()` and the adjacent `ph.group('tenant', ...)` call in the same function — both confirmed NOT part of the bug (both have real guards against repeat calls, verified in the actual SDK source, for exactly how Shell calls them). Ruled out: new anonymous distinct_id, SDK re-init, storage partitioning — none of those are actually happening; distinct_id stays stable, the multiple `$session_id`s in the report are just PostHog's normal per-tab rotation.
+- [x] **PR [#1745](https://github.com/eq-solutions/eq-shell/pull/1745)** — guards `ph.alias()` on a last-aliased-email check in `observability.ts`, cleared in `resetUser()` on logout. `tsc -b --force` + `eslint` clean. Squash-merged (`17afcbb7`), confirmed live via the Netlify deploy record for that exact commit (`published_at` set, `state: ready`, 6-minute build matching the documented 2-4s-trigger/minutes-to-publish pattern).
+- [ ] **Not click-tested live** — confirming the fix needs a live PostHog project plus a real session left open past two 5-minute poll ticks, watching PostHog's own activity feed for exactly one `$create_alias` instead of one per tick. _(added 2026-09-02)_
+
+---
+
 ## eq-shell: bulk-select documents on Register, push to a shared audience in one submit — merged, live, click-tested (2026-09-02)
 *Royce: "we want to be able to easily create a document that selects multiple documents, for user selected sites and then select by name or by team." Site + by-name/by-team audience selection already existed per document (`PushMoreModal`'s "Push to more people") — confirmed via `AskUserQuestion` this meant doing that same selection across several documents in one submit, and confirmed it belongs on Register (where signoff-required documents live), not Reference library (which already had unrelated bulk-select for category assignment, but its documents are defined as not needing signoff).*
 
