@@ -35,8 +35,8 @@ _If this file is >48h old, the cron is broken._
 
 | Entity | Count | Schema |
     |--------|-------|--------|
-    | Sites | 209 | app_data.sites |
-    | Customers | 39 | app_data.customers |
+    | Sites | 210 | app_data.sites |
+    | Customers | 40 | app_data.customers |
     | Assets | 2,842 | app_data.assets |
     | Tenants | 1 (SKS Technologies) | service.tenants |
     | Users | 5 | service.tenant_members |
@@ -87,7 +87,7 @@ _No open PRs_
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 73 | ✓ 73 |
-| Directory | app_data.field_sites | 57 | ✓ 57 |
+| Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 1,948 | ✓ 1,948 |
 | Operational | app_data.field_timesheets | 262 | ✓ 262 |
