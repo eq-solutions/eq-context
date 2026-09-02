@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-02)
 
 **eq-field:**
-- #897 v3.5.653 — Dashboard: Headcount tiles explain what they count
+- #898 v3.5.655 — FIX: a single network blip during sign-in could silently drop an already-signed-in tenant to anon/empty data
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
