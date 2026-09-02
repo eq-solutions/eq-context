@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-02 14:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-02 15:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-02 12:56 UTC → 2026-09-02 14:18 UTC)
+## Since last refresh (2026-09-02 14:18 UTC → 2026-09-02 15:50 UTC)
 
-- Merged: eq-shell [#1738](https://github.com/eq-solutions/eq-shell/pull/1738) feat(documents): bulk-select documents on Register, push to 
-- Merged: eq-shell [#1735](https://github.com/eq-solutions/eq-shell/pull/1735) fix(auth): disable forced TOTP enrollment mandate for now
-- Merged: eq-shell [#1731](https://github.com/eq-solutions/eq-shell/pull/1731) fix(cards): backfill shell_control.users.email for phone-OTP
-- Merged: eq-shell [#1730](https://github.com/eq-solutions/eq-shell/pull/1730) fix(admin): restore pin_set/pin_locked to eq_list_tenant_use
-- Merged: eq-shell [#1727](https://github.com/eq-solutions/eq-shell/pull/1727) fix(staff): add previous-licence navigation to review modals
-- Merged: eq-shell [#1726](https://github.com/eq-solutions/eq-shell/pull/1726) feat(documents): Unarchive action; move PDF backfill button 
-- Merged: eq-shell [#1724](https://github.com/eq-solutions/eq-shell/pull/1724) fix(documents): labour_hire role label, PDF conversion timeo
-- Merged: eq-shell [#1723](https://github.com/eq-solutions/eq-shell/pull/1723) fix(react-hooks): clear remaining set-state-in-effect debt (
+- Merged: eq-shell [#1740](https://github.com/eq-solutions/eq-shell/pull/1740) fix(admin): show a real reason when inviting a deactivated a
+- Merged: eq-shell [#1737](https://github.com/eq-solutions/eq-shell/pull/1737) fix(auth): disable TOTP login challenge for already-enrolled
+- Merged: eq-shell [#1734](https://github.com/eq-solutions/eq-shell/pull/1734) fix(auth): reject deactivated accounts on the self-service t
+- Merged: eq-shell [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resou
+- Merged: eq-shell [#1732](https://github.com/eq-solutions/eq-shell/pull/1732) fix(auth): enforce account-deactivation across grant/invite/
+- Merged: eq-shell [#1728](https://github.com/eq-solutions/eq-shell/pull/1728) fix(admin): exclude deactivated users from Access Control pi
+- Merged: eq-shell [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view
+- Merged: eq-shell [#1722](https://github.com/eq-solutions/eq-shell/pull/1722) fix(auth): distinguish pending-approval from no-account on p
 
 ## ⚠ Needs you (15)
 
@@ -39,10 +39,11 @@ _2026-09-02 14:18 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 13d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (273)
+## 🙋 Waiting on you (270)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: upload a new version of a document that already has real signers, confirm the version number bumps, the old signers show as needing to re-sign, "Push to the same N people" actually re-creates outstanding rows for them (and is a no-op, not a duplicate, if clicked/retried), and Version history lists every version with its own signed/outstanding count including one nobody's been pushed to yet. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — confirming the fix needs a live PostHog project plus a real session left open past two 5-minute poll ticks, watching PostHog's own activity feed for exactly one `$create_alias` instead of one per tick. _(added 2026-09-02)_
 - **eq-shell** · **Not click-tested live** — verified via `pnpm exec tsc -b --force` and `eslint` (both clean) plus an independent merge-readiness audit before merging. This machine's Node 24 breaks `vite build`/`netlify dev` for this repo (pre-existing, unrelated to this change), so no live click-through was possible. Worth a real pass: KPI numbers match the table's own counts, per-team rows sum to the roster totals, mobile view unchanged. _(added 2026-09-02)_
 - **eq-shell** · **Not click-tested live** — verified via `tsc -b --force` + `eslint` only (both clean). Reproducing the actual pending-approval message needs a real Cards signup mid-approval-queue, not something drivable from this environment. _(added 2026-09-01)_
@@ -54,14 +55,13 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
 - **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, an 8-angle automated review, and Netlify deploy-preview smoke tests; no Shell session/credentials in this environment. Worth a real pass covering both PRs (#1683, #1685): panel opens in place with a shareable `?open=` URL; a formal entry opens with full detail, rating deltas, and (where attached) a source document; saving without answering "happy and engaged" is blocked and scrolls to the field; engagement tags render with color; a person with no `start_date` is flagged "missing a start date" but NOT also "overdue"; a hollow historical review shows its summary and one "no structured answers" note instead of ~20 blank fields. _(added 2026-08-30)_
-- **eq-shell** · **Migration 0298 needs Royce to dispatch it** — see above, command included. _(added 2026-09-01)_
-_…and 261 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 258 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 6 | 1d |
+| eq-shell | ✓ success | 0d ago | 6 | 2d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 13d |
 | eq-field | ✓ success | 0d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -72,7 +72,7 @@ _…and 261 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 11 | 2026-09-02 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 9 | 2026-09-02 |
+| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 8 | 2026-09-02 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 5 | 2026-09-02 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 4 | 2026-09-02 |
 | eq-field | [ReferenceError: _renderRosterOverviewCard is not defined](https://eq-solutions.sentry.io/issues/144372461/) | 1 | 2026-09-02 |
@@ -104,7 +104,7 @@ _Showing 15 of 86 · full record in [sessions/](sessions/)_
 
 - **eq-shell** (275 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (228 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (225 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (98 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -134,9 +134,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1463 | 196 / 84 | 48 | 67 |
-| [eq-cards](eq/pending/eq-cards.md) | 374 | 48 / 17 | 24 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1214 | 162 / 73 | 44 | 33 |
+| [eq-shell](eq/pending/eq-shell.md) | 1441 | 196 / 84 | 28 | 67 |
+| [eq-cards](eq/pending/eq-cards.md) | 366 | 48 / 17 | 16 | 6 |
+| [eq-field](eq/pending/eq-field.md) | 1169 | 162 / 70 | 24 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -145,7 +145,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-context](eq/pending/eq-context.md) | 203 | 25 / 6 | 0 | 4 |
 | [cross-repo](eq/pending/cross-repo.md) | 888 | 129 / 44 | 0 | 61 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 493 | 92 / 15 | 2 | 54 |
+| [SKS](sks/pending.md) | 491 | 92 / 15 | 0 | 54 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 530 | 43 / 3 | 0 | 8 |
 
@@ -180,11 +180,11 @@ _Session logs mention a pattern matching a known failure below, dated after its 
 
 | Date | Session |
 |------|---------|
+| 2026-09-03 | [Document versioning: new-version upload, version history, confirm-then-push republish](sessions/2026-09-03.md) |
 | 2026-09-02 | [Live-meeting kit: sample ID sheet added, QR-at-scale question resolved by finding it already exists](sessions/2026-09-02.md) |
 | 2026-09-01 | [eq-solves-service: migration-governance review (task_38071324) closed — DB-first PR split adopted, --reconcile tooling shipped (PR #820)](sessions/2026-09-01.md) |
 | 2026-08-31 | [Removed staff's historical leave/timesheet rows fixed to show real names, not "(unknown)"](sessions/2026-08-31.md) |
 | 2026-08-30 | [SEC-35 merged, deployed, and dispatched live to both tenant planes](sessions/2026-08-30.md) |
-| 2026-08-29 | [eq-shell sprint request started, not finished before close](sessions/2026-08-29.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 14:18 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 15:50 UTC._
