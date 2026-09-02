@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-01 (nightly cron)_
+_Last verified: 2026-09-02 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,10 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-01)
-
-**eq-field:**
-- #881 v3.5.642 — Sentry sweep: 3 real bugs fixed
+## Open PRs (as of 2026-09-02)
 
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
@@ -82,7 +79,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-09-01)
+## System Health (as of 2026-09-02)
 
     **CI on main:**
 
@@ -101,7 +98,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-01)
+## Field Data Plane — SKS tenant (as of 2026-09-02)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 74 | ✓ 74 |
@@ -115,7 +112,7 @@ _If this file is >48h old, the cron is broken._
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-01)
+## Product Pulse (as of 2026-09-02)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
@@ -128,7 +125,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified 2026-09-01) — see `ops/pending.md` |
+| Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified 2026-09-02) — see `ops/pending.md` |
 
 _No flips this run._
 ---
