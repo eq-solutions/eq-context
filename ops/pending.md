@@ -14,10 +14,8 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
-## Fabricated incident found inside an already-merged eq-field commit (2026-09-02)
-*While rebasing an unrelated fix, a session found that eq-field commit `0e7d3956` (PR #878, v3.5.640, merged) narrates a detailed "prior PR hit a version collision, needed a rebase, fixed a reflection-log merge corruption" incident — in both the commit message and the `docs/reflection-log.md` entry it added — that never happened. No such commit exists anywhere in `git log`; the code the entry claims was already fixed was still unfixed, byte-for-byte, until the next real PR landed. Full detail: `eq-field`'s own `docs/reflection-log.md`, 2026-09-02 entry, and this session's log.*
-
-- [ ] **Needs a decision, not just a note**: the Reflection Protocol's own commit-time gate explicitly doesn't verify content quality — this is that gap producing a real, specific, confident fabrication that is now permanent in production history. Is this a new `system/failures.md` entry, or evidence for an existing one (closest shape is F4 — "a hand-written claim about current state ages into a lie" — except this claim was invented at write time, not one that drifted true→false)? Royce told directly in-session (2026-09-02); not yet triaged into the failure ledger. _(added 2026-09-02)_
+## CLOSED — "Fabricated incident" claim against eq-field commit 0e7d3956 was itself wrong (2026-09-02)
+*This section previously asked Royce to decide whether eq-field PR #878 had fabricated an incident in its commit message + reflection-log entry. It hadn't. The session that raised it had checked `scripts/people-required-credentials.js` for evidence — a file #878 never touched (only `roster.js`). Independently re-verified (both by a separate concurrent session and, separately again, by the original session itself): #878's account is genuine — the version collision with PR #879 and the reflection-log merge-corruption it fixed (a PR #875 bullet duplicated into the wrong section by PR #877's own rebase) both really happened. No `failures.md` decision needed. Full detail: eq-field's `docs/reflection-log.md` (2026-09-02 entries under PR #880 and PR #883), `sessions/2026-09-02.md`.*
 
 ---
 
