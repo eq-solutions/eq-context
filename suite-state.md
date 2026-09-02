@@ -70,7 +70,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1736 fix(auth): bound verify-shell-session's best-effort reads with a deadline
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
