@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,14 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: document versioning — new-version upload, version history, confirm-then-push republish, merged live (2026-09-02)
+*Continuation of the same-day Documents work below (Register redesign / Archive-Unarchive section). Royce, looking at the live Register page: "I love this feature but i feel like we have added to it and not optimised the process based on the realtime need and actions of our staff - can you show me how it all works." Walked through two diagrams of the actual current flow; the sharpest finding, verified against source before saying it out loud: a version-upload endpoint already existed end-to-end (`document-version-upload-init.ts`/`commit.ts` already accepted `document_id`, and the DB trigger already superseded old signoffs on publish) but nothing in the UI ever called it with one — every real revision had to become a disconnected new document with no shared signing history. Royce: "wire up the new version action - genius, this is exactly what happens in reality," then asked whether it would also show signing history across versions.*
+
+- [x] **PR [#1751](https://github.com/eq-solutions/eq-shell/pull/1751)** — Register menu gains "Upload new version" (reuses the existing `uploadDocumentVersion` with `document_id` set — no backend change needed for the upload half) and "Version history" (new `GET ?resource=version-history`, same `document_register` view/select as the main register fetch with the `is_current_version` filter dropped, scoped to one document instead). After a new version publishes, offers to push it to whoever had signed the previous version (new `POST ?resource=republish` — works directly from the prior version's real `document_signoffs` rows, including site/customer/site-set scope carry-forward; deliberately doesn't touch `document_audiences`, confirmed dead — see PR body). Confirm-then-push, not automatic — Royce's explicit call between three options put to him via `AskUserQuestion`. No schema changes. `tsc -b --force` + `eslint` clean, 480/482 tests pass (2 pre-existing skips). Squash-merged `e14b4be1`, live 2026-09-02 12:40 UTC (`deploy_time` 336s, confirmed via `published_at`/`state:ready` on the exact commit's own deploy record).
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: upload a new version of a document that already has real signers, confirm the version number bumps, the old signers show as needing to re-sign, "Push to the same N people" actually re-creates outstanding rows for them (and is a no-op, not a duplicate, if clicked/retried), and Version history lists every version with its own signed/outstanding count including one nobody's been pushed to yet. _(added 2026-09-03)_
 
 ---
 

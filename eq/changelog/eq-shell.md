@@ -1,13 +1,19 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-02 (PR #1751, MERGED, LIVE — document versioning: new-version upload, version history, confirm-then-push republish)
+- Royce, looking at the live Register page: "I love this feature but i feel like we have added to it and not optimised the process based on the realtime need and actions of our staff - can you show me how it all works." Two diagrams built from a fresh read of the live code surfaced the sharpest gap: a version-upload endpoint (`document-version-upload-init.ts`/`commit.ts`) already accepted `document_id` end-to-end, and the DB trigger already superseded old signoffs on publish, but nothing in the UI ever called it — every real revision had to become a disconnected new document with no shared signing history.
+- `push-document-audience.ts` gains two resources: `GET ?resource=version-history` (every version of one document, not just current — same `document_register` view/select as the main register fetch with the `is_current_version` filter dropped) and `POST ?resource=republish` (re-creates outstanding `document_signoffs` rows on the new version for everyone who had any row on the immediately-prior version, carrying forward site/customer/site-set scope from `document_signoff_sites`; works directly off the prior version's real signoff rows rather than `document_audiences`, confirmed dead — never joined into `document_register`, no read path anywhere in the repo).
+- `AdminDocumentUpload.tsx`: Register menu gains "Upload new version" (reuses the existing `uploadDocumentVersion` with `document_id` set) and "Version history"; a new `NewVersionModal` walks upload then a confirm-then-push step (not automatic — Royce's call via `AskUserQuestion`) showing how many people had signed the previous version.
+- No schema changes. `tsc -b --force` + `eslint` clean, 480/482 tests pass (2 pre-existing skips). Squash-merged `e14b4be1`, confirmed live via the deploy record's own `published_at`/`state:ready` — published 2026-09-02 12:40 UTC, `deploy_time` 336s.
 
 ## 2026-09-02 (PR #1745, MERGED, LIVE — stop ph.alias() spamming $create_alias every 5 minutes)
 - A PostHog analytics review (not a filed bug) flagged 568 `$create_alias` events for 34 users in one day, concentrated on 4 admins (up to 115 each), recurring at an exact ~5-minute cadence for hours. Root-caused against source and the actual shipped `posthog-js@1.374.2` bytes (not docs): `SessionProvider`'s pre-existing 5-minute background poll (`App.tsx`, exists to catch deactivation/role changes) calls `identifyUser()` on every tick regardless of whether anything changed; `identifyUser()` (`observability.ts`) unconditionally called `ph.alias(email)` every time. `posthog-js`'s real `alias()` has no de-dupe for repeat calls with the same pair — the removed code comment claiming it was idempotent was wrong.
