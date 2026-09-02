@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-02 12:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-02 12:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-02 11:57 UTC → 2026-09-02 12:25 UTC)
+## Since last refresh (2026-09-02 12:25 UTC → 2026-09-02 12:29 UTC)
 
-- Merged: eq-shell [#1740](https://github.com/eq-solutions/eq-shell/pull/1740) fix(admin): show a real reason when inviting a deactivated a
-- Merged: eq-shell [#1737](https://github.com/eq-solutions/eq-shell/pull/1737) fix(auth): disable TOTP login challenge for already-enrolled
-- Merged: eq-shell [#1734](https://github.com/eq-solutions/eq-shell/pull/1734) fix(auth): reject deactivated accounts on the self-service t
-- Merged: eq-shell [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resou
-- Merged: eq-shell [#1732](https://github.com/eq-solutions/eq-shell/pull/1732) fix(auth): enforce account-deactivation across grant/invite/
-- Merged: eq-shell [#1728](https://github.com/eq-solutions/eq-shell/pull/1728) fix(admin): exclude deactivated users from Access Control pi
-- Merged: eq-shell [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view
-- Merged: eq-shell [#1724](https://github.com/eq-solutions/eq-shell/pull/1724) fix(documents): labour_hire role label, PDF conversion timeo
+- Merged: eq-shell [#1750](https://github.com/eq-solutions/eq-shell/pull/1750) perf(prewarm): stagger eager iframe pre-warm — Field first, 
+- Merged: eq-shell [#1749](https://github.com/eq-solutions/eq-shell/pull/1749) perf: lazy-load Staff, Customers, and the two portal pages (
+- Merged: eq-shell [#1738](https://github.com/eq-solutions/eq-shell/pull/1738) feat(documents): bulk-select documents on Register, push to 
+- Merged: eq-shell [#1735](https://github.com/eq-solutions/eq-shell/pull/1735) fix(auth): disable forced TOTP enrollment mandate for now
+- Merged: eq-shell [#1731](https://github.com/eq-solutions/eq-shell/pull/1731) fix(cards): backfill shell_control.users.email for phone-OTP
+- Merged: eq-shell [#1730](https://github.com/eq-solutions/eq-shell/pull/1730) fix(admin): restore pin_set/pin_locked to eq_list_tenant_use
+- Merged: eq-shell [#1727](https://github.com/eq-solutions/eq-shell/pull/1727) fix(staff): add previous-licence navigation to review modals
+- Merged: eq-shell [#1726](https://github.com/eq-solutions/eq-shell/pull/1726) feat(documents): Unarchive action; move PDF backfill button 
 
 ## ⚠ Needs you (15)
 
@@ -61,9 +61,9 @@ _…and 257 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 8 | 1d |
+| eq-shell | ✓ success | 0d ago | 7 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 13d |
-| eq-field | ✓ success | -1d ago | 2 | 0d |
+| eq-field | ✓ success | 0d ago | 3 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -83,6 +83,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-02 | eq-shell | [#1750](https://github.com/eq-solutions/eq-shell/pull/1750) perf(prewarm): stagger eager iframe pre-warm — Field first, then  |
+| 2026-09-02 | eq-shell | [#1749](https://github.com/eq-solutions/eq-shell/pull/1749) perf: lazy-load Staff, Customers, and the two portal pages (Tier  |
 | 2026-09-02 | eq-shell | [#1748](https://github.com/eq-solutions/eq-shell/pull/1748) fix(customers): hide archived contacts from a customer's contact  |
 | 2026-09-02 | eq-shell | [#1747](https://github.com/eq-solutions/eq-shell/pull/1747) perf(token-exchange): parallelize sequential Supabase reads |
 | 2026-09-02 | eq-shell | [#1746](https://github.com/eq-solutions/eq-shell/pull/1746) fix(crm): extend the inactive-contact link guard to update_site/a |
@@ -96,8 +98,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-02 | eq-field | [#891](https://github.com/eq-solutions/eq-field/pull/891) v3.5.650 — Batch Fill: never write over someone's approved leave |
 | 2026-09-02 | eq-field | [#889](https://github.com/eq-solutions/eq-field/pull/889) v3.5.649 — PERF: Shell→Field boot — stop entitlements blocking ch |
 | 2026-09-02 | eq-field | [#888](https://github.com/eq-solutions/eq-field/pull/888) v3.5.648 — Edit Roster: show approved leave while editing |
-| 2026-09-02 | eq-field | [#887](https://github.com/eq-solutions/eq-field/pull/887) v3.5.647 -- FIX: Apprentices Quarterly Review modal unstyled and  |
-| 2026-09-02 | eq-field | [#886](https://github.com/eq-solutions/eq-field/pull/886) v3.5.646 — Roster/Editor/Contacts/Timesheets: scoped-view banner  |
 _Showing 15 of 86 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 12:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 12:29 UTC._
