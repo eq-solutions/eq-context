@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-02 11:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-02 12:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-02 11:49 UTC → 2026-09-02 11:57 UTC)
+## Since last refresh (2026-09-02 11:57 UTC → 2026-09-02 12:25 UTC)
 
-- Merged: eq-shell [#1738](https://github.com/eq-solutions/eq-shell/pull/1738) feat(documents): bulk-select documents on Register, push to 
-- Merged: eq-shell [#1735](https://github.com/eq-solutions/eq-shell/pull/1735) fix(auth): disable forced TOTP enrollment mandate for now
-- Merged: eq-shell [#1731](https://github.com/eq-solutions/eq-shell/pull/1731) fix(cards): backfill shell_control.users.email for phone-OTP
-- Merged: eq-shell [#1730](https://github.com/eq-solutions/eq-shell/pull/1730) fix(admin): restore pin_set/pin_locked to eq_list_tenant_use
-- Merged: eq-shell [#1727](https://github.com/eq-solutions/eq-shell/pull/1727) fix(staff): add previous-licence navigation to review modals
-- Merged: eq-shell [#1726](https://github.com/eq-solutions/eq-shell/pull/1726) feat(documents): Unarchive action; move PDF backfill button 
-- Merged: eq-shell [#1723](https://github.com/eq-solutions/eq-shell/pull/1723) fix(react-hooks): clear remaining set-state-in-effect debt (
-- Merged: eq-shell [#1722](https://github.com/eq-solutions/eq-shell/pull/1722) fix(auth): distinguish pending-approval from no-account on p
+- Merged: eq-shell [#1740](https://github.com/eq-solutions/eq-shell/pull/1740) fix(admin): show a real reason when inviting a deactivated a
+- Merged: eq-shell [#1737](https://github.com/eq-solutions/eq-shell/pull/1737) fix(auth): disable TOTP login challenge for already-enrolled
+- Merged: eq-shell [#1734](https://github.com/eq-solutions/eq-shell/pull/1734) fix(auth): reject deactivated accounts on the self-service t
+- Merged: eq-shell [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resou
+- Merged: eq-shell [#1732](https://github.com/eq-solutions/eq-shell/pull/1732) fix(auth): enforce account-deactivation across grant/invite/
+- Merged: eq-shell [#1728](https://github.com/eq-solutions/eq-shell/pull/1728) fix(admin): exclude deactivated users from Access Control pi
+- Merged: eq-shell [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view
+- Merged: eq-shell [#1724](https://github.com/eq-solutions/eq-shell/pull/1724) fix(documents): labour_hire role label, PDF conversion timeo
 
 ## ⚠ Needs you (15)
 
@@ -39,7 +39,7 @@ _2026-09-02 11:57 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 - 🟠 **Cron failing** — `shared-object-drift.yml` 1 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (267)
+## 🙋 Waiting on you (269)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -55,15 +55,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, an 8-angle automated review, and Netlify deploy-preview smoke tests; no Shell session/credentials in this environment. Worth a real pass covering both PRs (#1683, #1685): panel opens in place with a shareable `?open=` URL; a formal entry opens with full detail, rating deltas, and (where attached) a source document; saving without answering "happy and engaged" is blocked and scrolls to the field; engagement tags render with color; a person with no `start_date` is flagged "missing a start date" but NOT also "overdue"; a hollow historical review shows its summary and one "no structured answers" note instead of ~20 blank fields. _(added 2026-08-30)_
 - **eq-shell** · **Migration 0298 needs Royce to dispatch it** — see above, command included. _(added 2026-09-01)_
-_…and 255 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 257 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 6 | 1d |
+| eq-shell | ✓ success | 0d ago | 8 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 13d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | -1d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -91,20 +91,20 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-02 | eq-shell | [#1744](https://github.com/eq-solutions/eq-shell/pull/1744) fix(home): hoist Date.now() out of render for react-hooks/purity |
 | 2026-09-02 | eq-shell | [#1743](https://github.com/eq-solutions/eq-shell/pull/1743) fix(records): gate the Licences tab on field.view_licences |
 | 2026-09-02 | eq-shell | [#1736](https://github.com/eq-solutions/eq-shell/pull/1736) fix(auth): bound verify-shell-session's best-effort reads with a  |
+| 2026-09-02 | eq-field | [#894](https://github.com/eq-solutions/eq-field/pull/894) v3.5.652 — Edit Roster: "fill week" is now plain Enter, never ove |
 | 2026-09-02 | eq-field | [#892](https://github.com/eq-solutions/eq-field/pull/892) v3.5.650 -- Apprentices: journal sharing replaces Ask-for-Feedbac |
 | 2026-09-02 | eq-field | [#891](https://github.com/eq-solutions/eq-field/pull/891) v3.5.650 — Batch Fill: never write over someone's approved leave |
 | 2026-09-02 | eq-field | [#889](https://github.com/eq-solutions/eq-field/pull/889) v3.5.649 — PERF: Shell→Field boot — stop entitlements blocking ch |
 | 2026-09-02 | eq-field | [#888](https://github.com/eq-solutions/eq-field/pull/888) v3.5.648 — Edit Roster: show approved leave while editing |
 | 2026-09-02 | eq-field | [#887](https://github.com/eq-solutions/eq-field/pull/887) v3.5.647 -- FIX: Apprentices Quarterly Review modal unstyled and  |
 | 2026-09-02 | eq-field | [#886](https://github.com/eq-solutions/eq-field/pull/886) v3.5.646 — Roster/Editor/Contacts/Timesheets: scoped-view banner  |
-| 2026-09-02 | eq-field | [#885](https://github.com/eq-solutions/eq-field/pull/885) v3.5.645 — sync_degraded: surface crew-table failures alongside p |
 _Showing 15 of 86 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (274 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (210 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (217 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (98 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -136,7 +136,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1456 | 195 / 84 | 48 | 67 |
 | [eq-cards](eq/pending/eq-cards.md) | 374 | 48 / 17 | 24 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1160 | 152 / 67 | 36 | 33 |
+| [eq-field](eq/pending/eq-field.md) | 1184 | 157 / 69 | 41 | 33 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 11:57 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 12:25 UTC._
