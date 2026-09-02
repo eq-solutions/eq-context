@@ -1454,3 +1454,10 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 PR #1736 (auth-stall fix + 2 more bugs found on review) merged and live; the one operationally-relevant `org_membership` finding (Vinicius ZARA POLI, `365e58ba`, 2 licences on a grant that should've been revoked with his 2026-08-24 deactivation) was investigated and fixed on Royce's go-ahead — both his `org_memberships.status` and `user_tenant_memberships.active` rows corrected on jvkn. Full detail in `eq/changelog/eq-shell.md` and `sessions/2026-09-02.md`.
 
 ---
+
+## eq-shell: identify()/alias() spam every ~5 minutes — fixed (PR #1745, merged + live)
+*A PostHog review of eq-field/eq-shell traffic found Shell firing 568 `$create_alias` events in one day for just 34 users — 4 admins with hours-long open tabs accounted for two-thirds of it. Root cause: an intentional 5-minute session re-hydration poll (`App.tsx`) calls `identifyUser()` on every tick, which unconditionally called `ph.alias(email)` — `posthog-js`'s `alias()` has no de-dupe for repeat calls (verified against the actual shipped SDK bytes, not docs), unlike `identify()` which does. Not user-visible, not an identity-fragmentation bug (distinct_id never changed) — pure telemetry noise polluting the person-merge graph. Fixed with a last-aliased-email guard, ~17 lines. Confirmed live: fresh page loads after the fix are clean; the 2 heaviest pre-fix offenders kept ticking for ~1.5h post-deploy from tabs already open before it shipped — expected (stale in-memory bundle), not a flaw. Full detail: `eq/changelog/eq-shell.md`, `sessions/2026-09-02.md`.*
+
+- [ ] Nothing open — fix is live and self-verified. Logged for record only. _(added 2026-09-02)_
+
+---
