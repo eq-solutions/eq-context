@@ -60,6 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-02)
 
+**eq-field:**
+- #891 v3.5.650 — Batch Fill: never write over someone's approved leave
+- #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
+
 **eq-service:**
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
