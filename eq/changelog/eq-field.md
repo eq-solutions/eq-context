@@ -9,13 +9,13 @@ status: live
 
 # eq-field changelog
 
-## 2026-09-02 (PR #888 OPEN, not merged, v3.5.648 — Edit Roster now shows approved leave while editing)
+## 2026-09-02 (PR #888 MERGED, v3.5.648 — Edit Roster now shows approved leave while editing)
 - Follow-on from PR #886 below. Royce found Jessica Robinson's Friday cell on Edit Roster read as blank despite her genuine approved leave (2026-10-23→30) — typed a real site code onto it, then had to clear it once he learned she was on leave, and asked why Calendar/Weekly Roster kept showing the leave regardless.
 - Root cause: Edit Roster deliberately shows the raw schedule cell (`scripts/roster.js` `renderEditor()`), not the leave overlay Weekly Roster/Calendar use, so supervisors can actually see/edit what's stored. But leave hasn't been written into schedule cells since v3.5.281 (`leave_requests` is the single source of truth) — so the page's own "needs filling in" empty-cell check (`isOnLeaveAllWeek`, which tested those same raw cells) had been structurally dead ever since that architecture change, and a leave day got flagged exactly like a genuinely unrostered one.
 - Fix: `renderEditor()` now reuses `approvedLeaveCode()` — the same function Weekly Roster/Calendar already call — to suppress the false empty-cell nag and show a distinct, softer amber `.leave-cell` tint + the leave code as placeholder + a tooltip. Deliberately still visible even if a real value already sits on that day (the conflict case), so the signal doesn't disappear the moment someone types over it.
 - Verified via a headless Node `vm` sandbox running the real `roster.js`+`roster-rules.js` source against live-shaped data (Jessica's leave-covered days get the tint, her genuinely-unrostered pre-leave days still get the empty-cell nag, an unrelated person's real booking is untouched, a "conflict" cell keeps both signals with no double-classing). Full suite green (37/37).
 - Same investigation surfaced a 4th surface with the identical blind spot — **Batch Fill** (`scripts/batch.js` `applyBatch()`) has zero leave-awareness in its picker or its "skip existing" guard, arguably higher risk since it's a bulk write. Confirmed via direct code read; Royce: "enough" — not building this now, tracked in `eq/pending/eq-field.md`.
-- **CI green, deploy preview clean — NOT merged.** No merge instruction given this session.
+- Squash-merged on explicit "merge #888" (`ef0ff0b1`), confirmed live via `field.eq.solutions/sw.js` — instruction given shortly after this session's initial `/close`, merged as a same-session follow-up rather than deferred.
 
 ## 2026-09-02 (PR #886 MERGED, v3.5.646 — Team-filtered Roster/Editor/Contacts/Timesheets show a scoped-view banner)
 - Royce: "jessica robsinson leave shows on the calendar but not in the roster (October)." Verified live against ehow before touching code: Jessica Robinson is active, on-roster, a genuine member of `app_data.team_members` ("CT Team"), with a real approved leave request 2026-10-23→30.
