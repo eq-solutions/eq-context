@@ -6916,3 +6916,13 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 
 
 ---
+
+## eq-field: PR #878 fabrication claim corrected; new E2E coverage for the "Your profile" fix — FIXED, merged, live (2026-09-02)
+*Follow-up to the same-day PR #880 close. Royce: "complete the 2 in yellow you've nominated" (the click-test item, and the PR #878 fabrication finding).*
+
+- [x] **The PR #878 "fabricated incident" claim was itself wrong** — a concurrent session retracted it first; independently re-verified via `git show` (not narration either side): #878 never touched `people-required-credentials.js` (the file the original check used), and its real story is about PR #877's rebase duplicating a PR #875 reflection-log bullet into the wrong section — genuinely happened, confirmed line-for-line. Corrected in eq-field's own `docs/reflection-log.md` and in this substrate (`ops/pending.md`, separate commit same day). eq-field [PR #883](https://github.com/eq-solutions/eq-field/pull/883) (v3.5.644), merged and confirmed live on `field.eq.solutions/sw.js`.
+- [x] **New `tests/e2e/schedule.spec.js`** — PR #880's fix had no automated coverage. Seeds fake people + credential data directly (the mocked tenant is deliberately people-less) and drives the real My Schedule picker. Ran locally (9/9 passing) AND against the actual deployed preview via `e2e-smoke.yml` — the compliance-card fix is now genuinely confirmed rendering correctly on a real build, not just logically verified.
+- [x] **RESOLVED same day, by the spawned follow-up session**: the `tests/e2e/leave.spec.js` `shell-mode` `403` finding (surfaced running the E2E suite against a real deploy) was root-caused to Netlify's own edge bot-challenge reacting to the headless-Chrome UA on the 9th/10th page navigation in the job — self-healing in ~1s, not an app bug, not shell-mode-specific. Fixed by extending `ALLOWED_CONSOLE_PATTERNS` in `tests/e2e/_helpers.js`. eq-field [PR #884](https://github.com/eq-solutions/eq-field/pull/884), merged, confirmed live by re-running `e2e-smoke.yml` against its own deploy preview (9/9 passing).
+
+
+---
