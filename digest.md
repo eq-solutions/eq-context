@@ -8,38 +8,19 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-02 15:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-02 22:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-02 14:18 UTC → 2026-09-02 15:50 UTC)
-
-- Merged: eq-shell [#1740](https://github.com/eq-solutions/eq-shell/pull/1740) fix(admin): show a real reason when inviting a deactivated a
-- Merged: eq-shell [#1737](https://github.com/eq-solutions/eq-shell/pull/1737) fix(auth): disable TOTP login challenge for already-enrolled
-- Merged: eq-shell [#1734](https://github.com/eq-solutions/eq-shell/pull/1734) fix(auth): reject deactivated accounts on the self-service t
-- Merged: eq-shell [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resou
-- Merged: eq-shell [#1732](https://github.com/eq-solutions/eq-shell/pull/1732) fix(auth): enforce account-deactivation across grant/invite/
-- Merged: eq-shell [#1728](https://github.com/eq-solutions/eq-shell/pull/1728) fix(admin): exclude deactivated users from Access Control pi
-- Merged: eq-shell [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view
-- Merged: eq-shell [#1722](https://github.com/eq-solutions/eq-shell/pull/1722) fix(auth): distinguish pending-approval from no-account on p
-
-## ⚠ Needs you (15)
+## ⚠ Needs you (7)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
-- 🔴 **Cron failing** — `shared-object-drift.yml` 2 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-08-31.md](sessions/2026-08-31.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-01.md](sessions/2026-09-01.md) · [failures.md](system/failures.md)
-- 🟠 **PR aging 9d** — eq-solves-service [#814](https://github.com/eq-solutions/eq-service/pull/814) "chore(deps): bump resend from 6.18.1 to 6.21.0"
-- 🟠 **PR aging 9d** — eq-solves-service [#813](https://github.com/eq-solutions/eq-service/pull/813) "chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22"
-- 🟠 **PR aging 9d** — eq-solves-service [#812](https://github.com/eq-solutions/eq-service/pull/812) "chore(deps): bump posthog-node from 5.46.1 to 5.49.2"
-- 🟠 **PR aging 9d** — eq-solves-service [#811](https://github.com/eq-solutions/eq-service/pull/811) "chore(deps-dev): bump vitest from 4.1.10 to 4.1.11"
-- 🟠 **PR aging 9d** — eq-solves-service [#810](https://github.com/eq-solutions/eq-service/pull/810) "chore(deps): bump the eq-design-system group across 1 directory with 2"
-- 🟠 **PR aging 13d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
-- 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (270)
+## 🙋 Waiting on you (274)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -55,25 +36,27 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
 - **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, an 8-angle automated review, and Netlify deploy-preview smoke tests; no Shell session/credentials in this environment. Worth a real pass covering both PRs (#1683, #1685): panel opens in place with a shareable `?open=` URL; a formal entry opens with full detail, rating deltas, and (where attached) a source document; saving without answering "happy and engaged" is blocked and scrolls to the field; engagement tags render with color; a person with no `start_date` is flagged "missing a start date" but NOT also "overdue"; a hollow historical review shows its summary and one "no structured answers" note instead of ~20 blank fields. _(added 2026-08-30)_
-_…and 258 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 262 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 6 | 2d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 13d |
-| eq-field | ✓ success | 0d ago | 2 | 0d |
-| eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ✓ success | 0d ago | 0 | — |
+| eq-shell | ? unknown | ? | 0 | — |
+| eq-solves-service | ? unknown | ? | 0 | — |
+| eq-field | ? unknown | ? | 0 | — |
+| eq-cards | ? unknown | ? | 0 | — |
+| eq-solves-intake | ? unknown | ? | 0 | — |
 
 ## Live errors (Sentry)
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 11 | 2026-09-02 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 8 | 2026-09-02 |
-| eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 5 | 2026-09-02 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 12 | 2026-09-02 |
+| eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 11 | 2026-09-02 |
+| eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 10 | 2026-09-02 |
+| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 9 | 2026-09-02 |
+| eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-02 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 4 | 2026-09-02 |
 | eq-field | [ReferenceError: _renderRosterOverviewCard is not defined](https://eq-solutions.sentry.io/issues/144372461/) | 1 | 2026-09-02 |
 | eq-cards | [minified:B8: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 1 | 2026-09-02 |
@@ -81,31 +64,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 ## Recently built (last 7 days)
 
-| Merged | Repo | PR |
-|--------|------|----|
-| 2026-09-02 | eq-shell | [#1752](https://github.com/eq-solutions/eq-shell/pull/1752) fix(react-hooks): declare pickTenant before its use in FieldIfram |
-| 2026-09-02 | eq-shell | [#1751](https://github.com/eq-solutions/eq-shell/pull/1751) feat(documents): new-version upload, version history, confirm-the |
-| 2026-09-02 | eq-shell | [#1750](https://github.com/eq-solutions/eq-shell/pull/1750) perf(prewarm): stagger eager iframe pre-warm — Field first, then  |
-| 2026-09-02 | eq-shell | [#1749](https://github.com/eq-solutions/eq-shell/pull/1749) perf: lazy-load Staff, Customers, and the two portal pages (Tier  |
-| 2026-09-02 | eq-shell | [#1748](https://github.com/eq-solutions/eq-shell/pull/1748) fix(customers): hide archived contacts from a customer's contact  |
-| 2026-09-02 | eq-shell | [#1747](https://github.com/eq-solutions/eq-shell/pull/1747) perf(token-exchange): parallelize sequential Supabase reads |
-| 2026-09-02 | eq-shell | [#1746](https://github.com/eq-solutions/eq-shell/pull/1746) fix(crm): extend the inactive-contact link guard to update_site/a |
-| 2026-09-02 | eq-shell | [#1742](https://github.com/eq-solutions/eq-shell/pull/1742) fix(crm): reject linking an inactive contact to a site or custome |
-| 2026-09-02 | eq-shell | [#1745](https://github.com/eq-solutions/eq-shell/pull/1745) fix(observability): stop $create_alias spam from the 5-minute ses |
-| 2026-09-02 | eq-shell | [#1744](https://github.com/eq-solutions/eq-shell/pull/1744) fix(home): hoist Date.now() out of render for react-hooks/purity |
-| 2026-09-02 | eq-shell | [#1743](https://github.com/eq-solutions/eq-shell/pull/1743) fix(records): gate the Licences tab on field.view_licences |
-| 2026-09-02 | eq-shell | [#1736](https://github.com/eq-solutions/eq-shell/pull/1736) fix(auth): bound verify-shell-session's best-effort reads with a  |
-| 2026-09-02 | eq-field | [#899](https://github.com/eq-solutions/eq-field/pull/899) v3.5.657 — supabase.js decomposition: extract the JWT-carrier (PR |
-| 2026-09-02 | eq-field | [#898](https://github.com/eq-solutions/eq-field/pull/898) v3.5.655 — FIX: a single network blip during sign-in could silent |
-| 2026-09-02 | eq-field | [#897](https://github.com/eq-solutions/eq-field/pull/897) v3.5.653 — Dashboard: Headcount tiles explain what they count |
-_Showing 15 of 86 · full record in [sessions/](sessions/)_
+_No merges in the last 7 days._
 
 ## Pending (EQ)
 
-- **eq-shell** (275 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (225 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (98 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-shell** (280 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-field** (232 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-solves-service** (99 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -192,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 15:50 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 22:40 UTC._
