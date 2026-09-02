@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-09-02
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -454,5 +454,17 @@ output).*
 
 ## ehow RLS gap — 26 SKS tables were readable/writable cross-tenant, now closed (2026-08-23) (rotated 2026-08-26)
 *Fix landed on the eq-field side — see `ops/pending.md` (2026-08-23, "ehow (SKS canonical) hardcoded-org_id RLS sweep") for full detail. This entry is the SKS-side pointer.*
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-09-02 — open items remain in pending.md)
+
+
+---
+
+## HR folder audit — cross-referenced against live Shell data (2026-08-30) (rotated 2026-09-02 — open items remain in pending.md)
+
+- [x] Scott Hotson, Charlie Eyiam-Rowe, Bruno Vita Pedrosa, Alaa Alsalman — `start_date` backfilled from their signed Letters of Offer. Also fixed his name in the live table: was "Ali Alsalman", his letter and the contacts sheet both say Alaa.
+- [x] 27 historical performance reviews (2021-2026, 14 people) imported into `app_data.staff_conversations` — see eq-shell.md's Resourcing section for the live-verification detail.
 
 ---

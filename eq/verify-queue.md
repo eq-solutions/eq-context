@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2425,5 +2425,29 @@ a bug rather than just deleting the line.
 **From:** eq-field: Timesheets — day-cell clicks now fill the whole broken-up week too, not just the Fill Week button (2026-08-28)
 
 - [ ] **Not click-tested live by a real signed-in supervisor** — same standing sandbox limitation as most entries in this file; `?tenant=demo` resolves to the `eq` sandbox tenant (Core-only, standalone PIN gate confirmed a dead end live, matching this repo's own documented behaviour) and no SKS/Core credentials are reachable here. Verified instead via an isolated harness loading the real shipped file and calling the exact function the click handler invokes. Worth 2 minutes next time someone's signed in via Core with a person whose week is split by leave/TAFE. _(added 2026-08-28)_
+
+---
+
+**From:** eq-shell: Documents — customer-portfolio and ad-hoc multi-site scoped pushes, both merged live (2026-08-30)
+
+- [ ] **Not click-tested live** — same gap as every scope in this arc (site/customer/multi-site all share it): no Shell session/credentials in this environment. Worth one real pass covering all three: push to 2+ sites directly, push to a customer, confirm one signoff + one signature covers the set in both cases, confirm per-site and whole-group certificate exports both render correctly. _(added 2026-08-30)_
+
+---
+
+**From:** eq-field: Leave approver resolution — non-manager staff-map RLS gap (v3.5.615/616, 2026-08-30)
+
+- [ ] **Not click-tested live by a real non-manager SKS account** — same standing sandbox limitation as most entries in this file; verified instead via live DB-level JWT simulation (the actual mechanism the original bug depends on) plus console-level checks of the deployed function source against each deploy preview. _(added 2026-08-30)_
+
+---
+
+**From:** eq-field: Prestart Crew step now surfaces recently-approved workers not yet on today's roster (2026-08-30)
+
+- [ ] **Not click-tested live end-to-end** — the exact scenario (a `field_approved`, recently-approved, unrostered worker becoming selectable) wasn't exercised through the real UI; verified via the local test suite plus direct schema checks before and after the DB migrations landed. _(added 2026-08-30)_
+
+---
+
+**From:** eq-field: site "Ask for"/"Backup" contacts now resolve via eq-shell's canonical contact_site_links (2026-08-30)
+
+- [ ] **Still not click-tested live in the actual Field UI** (My Schedule / Sites pages) — only verified via direct SQL against `field_sites`. _(added 2026-08-30)_
 
 ---

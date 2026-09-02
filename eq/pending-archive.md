@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-02
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -6923,6 +6923,380 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 - [x] **The PR #878 "fabricated incident" claim was itself wrong** — a concurrent session retracted it first; independently re-verified via `git show` (not narration either side): #878 never touched `people-required-credentials.js` (the file the original check used), and its real story is about PR #877's rebase duplicating a PR #875 reflection-log bullet into the wrong section — genuinely happened, confirmed line-for-line. Corrected in eq-field's own `docs/reflection-log.md` and in this substrate (`ops/pending.md`, separate commit same day). eq-field [PR #883](https://github.com/eq-solutions/eq-field/pull/883) (v3.5.644), merged and confirmed live on `field.eq.solutions/sw.js`.
 - [x] **New `tests/e2e/schedule.spec.js`** — PR #880's fix had no automated coverage. Seeds fake people + credential data directly (the mocked tenant is deliberately people-less) and drives the real My Schedule picker. Ran locally (9/9 passing) AND against the actual deployed preview via `e2e-smoke.yml` — the compliance-card fix is now genuinely confirmed rendering correctly on a real build, not just logically verified.
 - [x] **RESOLVED same day, by the spawned follow-up session**: the `tests/e2e/leave.spec.js` `shell-mode` `403` finding (surfaced running the E2E suite against a real deploy) was root-caused to Netlify's own edge bot-challenge reacting to the headless-Chrome UA on the 9th/10th page navigation in the job — self-healing in ~1s, not an app bug, not shell-mode-specific. Fixed by extending `ALLOWED_CONSOLE_PATTERNS` in `tests/e2e/_helpers.js`. eq-field [PR #884](https://github.com/eq-solutions/eq-field/pull/884), merged, confirmed live by re-running `e2e-smoke.yml` against its own deploy preview (9/9 passing).
+
+
+---
+
+## eq-shell: Field tenant-migration governed pipeline — built + reconciled, dispatch held (2026-08-30) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+- [x] **Built**: `scripts/migrate-tenants.mjs` gained a `MIGRATIONS_DIR` env override and a tenant-aware `--bootstrap` mode (respects the existing plane-header scope guard, unlike the blunt jvkn-sibling bootstrap). New reusable `.github/workflows/tenant-migrate-apply.yml` mirrors the existing `jvkn-control-plane-apply.yml` pattern — two-repo checkout, same 3 secrets, no approval gate (same posture as the workflow it wraps). eq-shell [PR #1684](https://github.com/eq-solutions/eq-shell/pull/1684), **merged** (squash `824fe91f`), confirmed live via commit-ancestry against the production deploy.
+- [x] **eq-field's thin caller workflow built to match** — `.github/workflows/tenant-migrate-apply.yml`, mirrors eq-cards PR #330's shape exactly. eq-field [PR #846](https://github.com/eq-solutions/eq-field/pull/846) — **merged** (squash `8ab86d63`), confirmed live via commit-ancestry against the production deploy. Hit a real merge conflict first (3 other eq-field PRs landed on `docs/reflection-log.md` while this one was open) — resolved by rebase (append-only union, no logical conflict), re-verified CI green, then merged. Header still correctly states the 3 required secrets aren't provisioned and bootstrap must not run before reconciliation completes (reconciliation is done — see above — the secrets aren't).
+- [x] **All 14 unmatched eq-field migration files reconciled against live ehow/zaap — 10 confirmed live, 4 genuinely pending, 0 unclear.** 3 of the 10 are live only via a later, superseding migration — their own SQL would actively regress production if ever re-run (must be flagged "permanently retired," not just "applied," in any bootstrap tooling). Full breakdown in `sessions/2026-08-30.md` and the `field-migration-reconciliation-2026-08-30` Claude memory note.
+- [x] **`/decide` pass run on the 4 genuinely-pending files**: hold the ehow timesheets/leave write-scoping pair (`20260816_timesheets_leave_own_crew_write.sql` + `20260819_..._actor_identity.sql`). The zaap read-scoping file (`20260821_timesheets_leave_zaap_own_manager_read.sql`) has no stated blocker and could move independently, but zaap's `eq` tenant is believed non-live demo data, so it's lower priority — not independently re-verified this session.
+- [x] **Correction, same day, caught building the follow-up sprint**: the `/decide` pass above called the ehow blocker "eq-field PR #705, drafted, blocked" — wrong. Checked live via `gh pr view 705`: PR #705 **merged 2026-08-16**; it's the PR that originally shipped both write-scoping files this item is about, not a separate open gate. That framing came from a stale CLAUDE.md line ("drafted, blocked on...") never updated after the PR merged, trusted instead of checked. The real remaining blocker is what the migration file's own pre-flight check gates on: the unlinked-staff DATA count (36 unlinked workers + 6 unlinked supervisors of 110 total ehow actors, reconfirmed live 2026-08-30) — a data-readiness call for Royce, not a code review. See `eq/sprints/2026-08-30-field-pipeline-and-rls-sprint.md`.
+
+---
+
+## eq-shell: Resourcing rebuilt — in-place panel, readable conversation history, engagement fixes, RLS/dashboard leak closed (2026-08-30) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents to Sign — full redesign (load time + Type/Category unification), all merged live (2026-08-30) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+- [x] **Categories assignable on every document type, not just templates** — the upload/Register category picker only rendered for `doc_type === 'template'`; category assignment itself is generic server-side and always was, this was a frontend gate only. eq-shell [PR #1658](https://github.com/eq-solutions/eq-shell/pull/1658), merged, live (`76ba9dc1`).
+- [x] **Day 1 — page load fix**: Register and Reference Library tabs fired their fetches unconditionally on mount (the code's own comment said so outright), regardless of which tab was active — up to 4 parallel Netlify Function calls on every load, 2 of them for tabs nobody was looking at yet. Now gated on first tab visit, reusing each list's existing null-vs-array "loaded yet" signal instead of new state — a prior failed load still auto-retries on next visit, a successful one is never re-fetched by switching tabs away and back. eq-shell [PR #1664](https://github.com/eq-solutions/eq-shell/pull/1664), merged, live (`8b23066b`).
+- [x] **Day 2 — Category can now override Type's sign-off routing.** Whether a document skips push/sign-off entirely was purely `doc_type`-based (`NO_SIGNOFF_DOC_TYPES`, hardcoded, no admin UI, duplicated in 2 files). Added `document_categories.requires_signoff` (migration 0291, data-driven backfill — a category flips to `false` only if every document already filed under it is template/om, matching live data exactly, not hardcoded to today's specific category rows). Category wins when a document has one; falls back to `doc_type` otherwise — always backward-compatible since every pre-existing document was uncategorized. Extracted into a tested `src/lib/documentSignoff.ts` module (6 new unit tests) rather than left inline and unverifiable. Mirrored server-side in both `handleTemplates` (so a category-only no-signoff document doesn't vanish from *both* tabs — client excludes it from Register, old doc_type-only server filter would've also excluded it from Reference Library) and the POST push handler's existing doc_type guard (added after a real 2026-08-17 incident — a pushed signoff on a no-signoff type left an unresolvable reminder nagging someone forever; preserved that protection, didn't bypass it). Also fixed a stale comment on `handleRegister` claiming Templates derives from its query client-side — no longer true since `handleTemplates` was split into its own query, comment never updated to match. Schema: eq-shell [PR #1666](https://github.com/eq-solutions/eq-shell/pull/1666) (migration only, merged `7ecb5f1f`); app code: [PR #1668](https://github.com/eq-solutions/eq-shell/pull/1668) (merged `0825883a`, deliberately held until the migration was confirmed live on both planes). Migration applied via `tenant-migrate.yml` dispatch — Claude Code's own auto-mode classifier blocked doing this programmatically twice (writing the migration file, then dispatching the workflow), so Royce ran the dispatch himself directly in GitHub's UI. Confirmed live on both ehow and zaap: both existing categories (Comms, DB Schedules) correctly backfilled to `requires_signoff=false`.
+- [x] **Day 3 — category editor reachable from anywhere**: `requires_signoff` now editable via category create/rename (previously schema-only — a real gap found via a self-critique pass after Day 2 shipped: the new capability existed but Royce couldn't actually use it himself), plus inline "+ New category" and a relocated entry point so creating one no longer requires leaving Upload/Register for the Reference Library tab. eq-shell [PR #1673](https://github.com/eq-solutions/eq-shell/pull/1673), merged, live (`f3b587cb`).
+- [x] **Deliberately not done, named explicitly rather than silently skipped**: Type field itself not retired (still exists, still the fallback) — would need new categories seeded for SMP/ITC/Switchboard/Other first, a bigger separate decision. No visual indicator in the UI when a category is actively overriding what Type implies for a given document.
+- [x] **Royce reported the category dropdown taking ~10s to load on Upload & push — investigated live, confirmed not a bug.** `handleCategories` itself is two small queries against a couple dozen rows total, ruled out as the cause by direct code read. Matches serverless cold start exactly: tenant-routing caches per warm function instance (5-min TTL, confirmed in `_shared/tenant-routing.ts`), so only the first hit after any idle period pays the full resolve-plus-cold-boot cost. Royce confirmed the pattern live (slow only on first load after a while, fast immediately after) — not something Day 1-3 introduced or something worth fixing.
+
+---
+
+## eq-shell: start_date capture at review points + Resourcing visibility nudge, merged live (2026-08-30) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: site "Ask for"/"Backup" contacts — canonical conversion shipped, migrations dispatched + verified live (2026-08-29/30) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: field_sites.site_lead — stale free-text passthrough replaced with canonical contact link (2026-08-30) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+- [x] **Verified live before fixing, not hypothetical**: 9 real SKS sites (Equinix SY1–SY5, Equinix Head Office, St George Private Hospital, SY6, SY7) had `field_sites.site_lead`/`site_lead_phone` blank in EQ Field despite each having a correctly-linked contact via `app_data.contact_site_links` (`role='site_contact'`) — `site_lead` was still reading the old free-text `sites.site_contact_name`/`phone` columns, which `crm-write.ts`'s `update_site` unconditionally nulls on every save. Migration `0291` (PR #1669, merged earlier the same day) had already moved the sibling `ask_for`/`backup` fields onto the same canonical-link mechanism and even named `site_contact` as the correct-behaviour reference in its own header comment — but didn't touch `site_lead` itself.
+- [x] **Fixed**: migration `0294` (eq-shell [PR #1672](https://github.com/eq-solutions/eq-shell/pull/1672), squash `a4d578a1`) repoints `site_lead`/`site_lead_phone` to the same `contact_site_links` join, `role='site_contact'` — same DROP+CREATE+`security_invoker`+`GRANT` pattern as `0159`/`0278`/`0291` for this view. No eq-field changes needed (reads the view by column name) and no competing Field-side write path (`scripts/sites.js` blocks site saves outright for the `sks` tenant).
+- [x] Merged on Royce's "merge when say and deploy if neeed", dispatched via `tenant-migrate.yml` (Royce ran it directly — the workflow's own "no approval gate, applies immediately fleet-wide" design tripped Claude Code's own classifier). Applied cleanly to both `eq` and `sks`. Re-verified live post-apply: all 9 sites now show a real `site_lead` (and phone, where the linked contact has one on file).
+
+---
+
+## eq-shell: Documents — customer-portfolio and ad-hoc multi-site scoped pushes, both merged live (2026-08-30) (rotated 2026-09-02)
+*Direct continuation of the 2026-08-28 site-scoped push work below, same session. Royce: "I am thinking in reality it would be excellent to be able to select a customer and auto do all of the sites. Ultimately the user can sign it once and we could then export a sign off page for any of the sites in their portfolio." Then, after a live demo: "can yo pick multiple sites here?" → confirmed building it.*
+
+- [x] **Customer scope (migration 0289, PR #1660, `b5742803`)**: picking a customer auto-resolves every active site under it at push time (snapshotted, not live-tracked) and creates ONE signoff row covering the whole portfolio — sign once. New `document_signoff_sites` table records which sites a shared signoff covers; `document_register` gets `customer_id`/`customer_name`/`covered_sites`. Certificate/Register can export either the whole portfolio or any single covered site — the actual ask. Royce's call: re-pushing the same customer after a new site joins the portfolio silently extends the existing signoff's coverage rather than forcing a fresh sign.
+- [x] **Ad-hoc multi-site scope (migration 0292, PR #1670, `e76287d4`)**: Royce noticed the Site control was still single-select and asked directly whether multiple sites could be picked. Built as a third, orthogonal scope — hand-pick 2+ specific sites (not a whole customer) and sign once. Site picker became a checkbox list in both push forms. Identity for re-push dedup is a deterministic SHA-256 hash of the sorted/deduped site_ids (`computeSiteSetHash`), not an entity id — unlike a customer, an ad-hoc selection has no natural referent to "extend," so the exact same set re-pushed is idempotent and a different set is a genuinely new signoff. Reused `document_signoff_sites` unchanged — identical coverage-snapshot mechanism regardless of whether the set came from a customer or a hand-pick.
+- [x] **`document_signoffs`'s scope model is now 3-way exclusive**: unscoped, OR `site_id`, OR `customer_id`, OR `site_set_hash` — DB CHECK enforces at most one. `scope_key` (generated STORED coalesce-to-sentinel column, the real UNIQUE target) regenerated each time a new scope was added, same pattern `document_audiences.target_key` originated.
+- [x] **Bonus fix while in this code (PR #1670)**: the Register's site-filter dropdown was miscategorising customer- and site-set-scoped groups as "unscoped" (both have `site_id: null` — the filter only ever checked that one column). Now correctly listed under every site they cover.
+- [x] **Both PRs verified against eq-field's live consumer code before merging** (no eq-field changes needed either time): `document-signoffs.js`'s `list` action does `document_register?select=*&...`, so it picks up every new column automatically; `sign` operates on a specific `signoff_id`, never ambiguous. One pre-existing, still-harmless wrinkle documented but deliberately not touched (different repo, no current impact): the `view` action's `(version_id, signer_user_id)` lookup uses `.limit(1)` with no explicit order, now genuinely ambiguous when one person holds multiple signoff rows for the same version — currently harmless because `view` only returns the shared file path, which is scope-independent.
+- [x] **Both migrations dispatched against the PR branch and verified live on ehow + zaap before merging** (same "app code depends on the migration" reasoning as 0288) — `tenant-migrate.yml -f ref=<branch>`, confirmed via direct SQL (constraint defs, view compiles) before merge, matching the established sequencing.
+- [x] Both confirmed live via Netlify deploy state (`ready`) with `commit_ref` matching each merge commit exactly on `core.eq.solutions`.
+
+**Deferred:**
+
+---
+
+## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Worker invite role never reached workers.role — Labour Hire/Apprentice/Subcontractor invites landed as Direct — built, merged, live (2026-08-26) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Permissions/nav audit — Supervisor's audit.view grant fixed, "Preview a person" made honest, is_platform_admin grants now governed (2026-08-25) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page edit resent every field on every save — PR open, blocked on unrelated CI (2026-08-25) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page now shows who hasn't signed in to Shell yet, with a filter — built, merged, live (2026-08-20) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: QR/join-code Cards signups notified nobody — admins now get the same email + roster badge the in-app connect flow already had (2026-08-18) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control gets a real ring visual + tab strip; roster now exposes real permissions instead of raw groups (2026-08-18) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control page redesigned — searchable diffed drawer for Base permissions, unified Field permissions view — both shipped, live (2026-08-17) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: dropped "custodian" wording from Plant & Equipment, now shows the assigned person's phone/email instead (2026-08-23) (rotated 2026-09-02 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-cards: product-polish audit → 3 rounds, 4 PRs, all shipped/merged/deployed live (2026-08-30 → 08-31) (rotated 2026-09-02 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-cards: live-meeting onboarding kit built for a CEO/executive demo — self-signup verified, EQ Solutions demo org enabled, sprint spun off two real gaps (2026-08-30 → 09-02) (rotated 2026-09-02 — open items remain in eq-cards.md)
+
+- [x] **Confirmed self-signup (any phone, no invite) is the right mechanism**, not the admin-generated per-worker invite this session first proposed — invites are phone-bound by design (migration `0124`, a real security fix closing a colleague-invite-theft path), which doesn't fit "hand a laminated card to a room of strangers." Self-signup's built-in onboarding already prompts scan-a-licence → pick-a-company with zero new code needed.
+- [x] **`organisations.accepts_applications` flipped to `true` for the existing "EQ Solutions" org** (`a0000000-…001`, slug `eq`, already flagged `is_seed_demo=true` — Royce's own instinct to reuse it instead of creating a new org was correct, confirmed live) — the one flag needed for it to show up in Cards' "Connect to a company" search. Applied by Royce directly after hitting the same Claude Code auto-mode classifier wall as later DB writes this session; verified live from this session afterward.
+- [x] **Confirmed the full cross-app propagation live, not assumed**: an approved self-signup application writes `app_data.staff` synchronously (before the approval click's own response returns) on the tenant's own dedicated data-plane project — `zaap` for EQ, `ehow` for SKS, both confirmed against the live `shell_control.tenant_routing` table, not inferred from naming. EQ Service reads the same row live through a `security_invoker` view (`service.staff`, migration `0161`) — no sync delay on either side.
+- [x] **Found a real, live, user-facing bug while researching the above, and it's now fully closed**: the Profile tab's manager/supervisor-only "Worker join QR" (captioned "Share this QR at induction") pointed at `/join?tenant=…`, a route that didn't exist anywhere — not in `app_router.dart`/`routes.dart`, not in `web/_redirects`. Spawned as background task `task_63219c0e`; Royce ran it in a separate session, which resolved it the same day — git archaeology there traced it to [PR #248](https://github.com/eq-solutions/eq-cards/pull/248) (2026-08-15) already having deleted the route's whole backend and named Shell's role-tagged self-join QR as the real replacement, just missing this one leftover card. Removed outright rather than rebuilt, [PR #329](https://github.com/eq-solutions/eq-cards/pull/329), merged, deploy-verified live. Full write-up, including the worktree cleanup, already archived to `eq/pending-archive.md` by that session — nothing left open on this thread.
+- [x] **Three artifacts published for the live meeting** (not code — Claude Artifacts, referenced by URL in this session's chat history, not duplicated into substrate): a laminated print-and-scan card (front: 3-step instructions; back: a clearly-marked sample licence for the OCR demo), a suite-wide "EQ End to End" marketing one-pager (Cards/Shell/Field/Service, content pulled from each repo's own docs, not guessed), and a presenter-only timed run sheet with the four things that actually trip up a live demo (Field's roster needing a manual sync tap; Prestart's roster-pull not finding an unrostered fresh worker; skip the hazards checklist to avoid an extra confirm dialog; approve the leave request yourself to close the loop on stage).
+- [x] **Sprint spun off two gaps found while building the above, steelmanned before planning**: shipped the Prestart/roster-pull fix (see `eq/pending/eq-field.md`, 2026-08-30) after checking it properly first; Field's realtime roster push was costed (not guessed) and explicitly deferred — that repo hand-rolls the Phoenix channel protocol with no SDK, and every existing channel needed its own base-table mapping and merge function, with real history of going silently inert when that mapping's wrong. Not a config toggle; held out rather than forced through.
+- [x] **Fourth artifact published, 2026-09-02: "EQ Sample ID Sheet"** — a double-sided A4, one per table rather than per person, with 6 different sample credentials (White Card, Driver Licence, First Aid, Working at Heights, Forklift, EWP) so a room of attendees isn't all scanning the identical fake identity. Same front-side instructions/company link as the laminated card.
+- [x] **Investigated Royce's "QR codes for whatever role, via add workers" ask before building anything, 2026-09-02 — it already exists, live and mature.** eq-shell's `AdminSelfJoinLinks.tsx` (`/:tenantSlug/admin/workers/join-links`, linked directly from Worker Invites) generates a per-role QR (all 6 roles), reusable by any number of people — not single-use — with its own expiry and an approval-required toggle, plus regenerate/deactivate/delete lifecycle management. Confirmed via the live table (`shell_control.self_join_codes` on jvkn), not assumed from the code alone: 8 real codes, actively created and used through 2026-08-26 — all for the `sks` tenant. **Zero for `eq`** — the feature has simply never been pointed at this tenant, nothing broken or missing to build.
+
+---
+
+## eq-cards + eq-shell: `/auth/handoff` signup-blocker root-caused, fixed, merged, deployed live (2026-08-27) (rotated 2026-09-02 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-cards: role-assignment could hand someone suite-wide manager power with no audit trail — found, fixed, merged, live (2026-08-16) (rotated 2026-09-02 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-cards: Shell tenant auto-login bug root-caused and fixed — deployed live, needs your click-through (2026-08-04) (rotated 2026-09-02 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-field: apprentice-role permissions review — Dashboard scoped, 2 more live-found gaps fixed, 2 items escalated/blocked (2026-08-30/31) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+- [x] **Dashboard's org-wide widgets (headcount, Site Breakdown, Roster Gaps — 295 unfilled slots the day this was found) had zero role gating** — every role saw the identical org-wide operational view. New `dashboard.view_org_wide` permission key, manager+supervisor only (`permission-matrix.js` v2.8). eq-field [PR #843](https://github.com/eq-solutions/eq-field/pull/843) (v3.5.617), merged.
+- [x] **Safety nav (Prestarts/Toolboxes) entirely absent from the apprentice sidebar** — this is the same symptom flagged and left unresolved in the 2026-08-19 session (see `eq/pending-archive.md`, now fully closed). Root cause: `app-state.js`'s v3.5.172 "Apprentice portal" nav-strip force-hides `nav-group-safety` for every apprentice, predating apprentices ever being granted `reports.prestart`/`reports.toolbox` access (granted later, v2.6, 2026-08-24) — never revisited. Fixed: removed `nav-group-safety` from the strip list.
+- [x] **Apprentice Management showed every apprentice's card to an apprentice, not just their own** — a real cross-person data exposure (skills ratings, feedback counts, profile status), not just a missing feature. Royce screenshotted it directly and asked to restrict it. Existing self-scoping (v3.5.517) depended on a server round-trip whose own `session.tenant_slug === 'sks'` check silently missed Jordan's Shell-embedded token — fixed at the client with an `EQ_PERMS.myPersonId()` fallback, independent of that round-trip. Both nav and list fixes: eq-field [PR #847](https://github.com/eq-solutions/eq-field/pull/847) (v3.5.618), merged.
+- [x] **Near-miss, caught before merge, not shipped**: briefly believed `field_people_removed_iud()`'s restore path never stamped `activated_by`/`activated_at` and shipped a replacement built from a stale local file — without pulling the live function first. eq-shell had already fixed this exact bug via tenant-migrations 0271/0274 (2026-08-23/24), which also added `field.manage_people` role-gating the replacement silently dropped — a brief live security regression, caught by `tests/migration-shared-fn-guard.test.js` before push, reverted live within minutes. Migration file never merged. New feedback memory written (`feedback_verify_live_before_shared_fn_rewrite.md`, Claude's own memory system) — not an eq-context item, but worth knowing this class of mistake happened.
+- [x] **Correction, recorded so it isn't repeated**: earlier in this thread, Jordan's Shell login was reported as resolving to `employee`, not `apprentice`, based on `token-exchange.ts`'s generic/service-audience `session.role ?? user.role` path. Live evidence (the apprentice-portal nav-strip firing exactly as coded, the on-page profile reading "Apprentice") contradicts this for the Field-specific token — Field's `eq_role` claim resolves separately from whatever that generic path returns. Exact mechanism not traced; don't repeat the "employee" claim.
+
+---
+
+## eq-field: tenant-migration governed pipeline — caller workflow built, gated on eq-shell reconciliation (2026-08-30) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+- [x] **eq-field [PR #846](https://github.com/eq-solutions/eq-field/pull/846)** — thin `workflow_dispatch` caller into eq-shell's new reusable `tenant-migrate-apply.yml`, mirrors eq-cards PR #330. `docs/reflection-log.md` entry added in the same commit to satisfy this repo's reflection-gate hook. Rebased once to resolve a real conflict against 3 concurrently-merged PRs (#843/#847/#848, all touching the same append-only log), re-verified CI green, then **merged** (squash `8ab86d63`), confirmed live via commit-ancestry (`field.eq.solutions` deploy `commit_ref` matches exactly).
+- [x] **Correction, same day**: this item originally read "PR #705 (unlinked-staff problem) is now the direct blocker... worth re-weighing this PR's priority." Wrong — checked live via `gh pr view 705`: PR #705 **merged 2026-08-16** (`claude/p1-timesheet-leave-own-crew-rls`). It's the PR that originally shipped the read- and write-scoping migration files, not an open gate waiting on priority. There's no PR left to re-weigh.
+
+---
+
+## eq-field: Leave approver resolution — non-manager staff-map RLS gap (v3.5.615/616, 2026-08-30) (rotated 2026-09-02)
+
+- [x] **`app_data.sites`'s RLS posture confirmed once Supabase MCP reconnected**: it was never role-restricted the way `app_data.staff` was. Only policy touching SELECT is `sites_tenant_isolation` (`FOR ALL`, tenant-only, no role condition) — no narrower `staff_own_or_manager_read`-shaped policy exists for sites. Verified live: apprentice JWT and manager JWT both return the identical 53 rows, on both the raw table and `field_sites`. So v3.5.616 (the sites-fetch fix) was pre-emptive, not curative — a real structural cleanup, but not fixing a live bug the way v3.5.615 (the staff fix) was. No further action needed.
+
+---
+
+## eq-field: Map / Roster Overview tiles broken — CARTO required a key we don't have, swapped to OpenStreetMap, then a CSP gap blanked the tiles a second way (2026-08-30) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+- [x] **Both map views swapped to OpenStreetMap's standard tile server** (`tile.openstreetmap.org`), verified live (fetched a real tile, confirmed it renders actual map data, no key needed) before committing to it. Added the OSM attribution string neither file carried before — a pre-existing gap, since the CARTO tiles were shown completely unattributed. eq-field [PR #838](https://github.com/eq-solutions/eq-field/pull/838) (v3.5.608), squash-merged on explicit "safely merge" (pre-merge freshness/mergeable check done first), confirmed live via `field.eq.solutions/sw.js`.
+- [x] **Live click-through happened after all — and caught a real second bug.** Royce's own follow-up screenshot showed the CARTO watermark gone (confirming #838 deployed correctly) but every tile now blank white — the fix swapped the tile provider without ever updating CSP's `img-src` to allow the new `tile.openstreetmap.org` domain, so the browser was silently blocking every tile request. Own oversight, not a second provider failure — this repo's own `_headers` file literally documents the rule that got missed ("When adding a new external script, dependency or fetch target, add its origin here"). Fixed in both `netlify.toml` and `_headers`, verified directly against the LIVE served response header (`curl -I` on both the deploy preview and production) rather than a click-through — confirms `img-src` carries `tile.openstreetmap.org` with zero `cartocdn` remnant. eq-field [PR #840](https://github.com/eq-solutions/eq-field/pull/840) (v3.5.612), squash-merged on explicit "merge" (pre-merge freshness check done first), confirmed live via `field.eq.solutions/sw.js` + the production CSP header itself.
+
+---
+
+## eq-field: Cameron Tregoning's two mobile bug reports — Prestart create unreachable + roster warning leak, both fixed (2026-08-30) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+- [x] **Prestart/Toolbox create was invisible to every non-manager, on any device** (not actually mobile-specific) — "+ New prestart", "Copy last", and "+ New toolbox talk" still carried the manager-only `edit-only` CSS class from before a 2026-08-24 permission-matrix change opened `reports.prestart.create`/`reports.toolbox.create` to every Field role. Cameron had the permission but the button never rendered. Class removed; the existing `EQ_PERMS.can()` check inside each handler remains the real gate. `scripts/site-reports.js`, `scripts/toolbox.js`.
+- [x] **Roster/leave/timesheets warning toast leaked a raw internal UUID to every user** — the default warning sink for an orphaned `staff_id` called `showToast` unconditionally, though the code's own comment said the intent was "so a supervisor sees it." Now gated on `field.manage_roster`/`leave.approve`/`ts.approve` respectively; `console.warn` still fires for everyone. `scripts/roster-adapter.js`, `scripts/leave-adapter.js`, `scripts/timesheets-adapter.js`.
+- [x] Root-caused the reported `staff_id` live against ehow first: resolves to Anthony Hartley, an active/`field_approved` supervisor — data is correct now, so this was UI noise, not live data corruption.
+- [x] eq-field [PR #839](https://github.com/eq-solutions/eq-field/pull/839) (v3.5.610), squash-merged, live.
+- [x] **Royce's direct correction after #839 shipped: "that's not right, everyone should be able to complete a prestart."** #839 only fixed the button's *visibility* (removed the stale `edit-only` CSS class) but left the underlying `EQ_PERMS.can('reports.prestart.create'/'.submit')` / `reports.toolbox.*` checks in place inside `openPrestartForm()`, `copyLastPrestart()`, `submitPrestart()`, `openToolboxForm()`, `submitToolbox()`. Re-verified live that every Field role already holds those keys — the correction wasn't about a missing role, it was that a safety-critical action should never again depend on a permission check that can silently drift (exactly what had just happened once). Removed the checks entirely from all 5 call sites; `reopenPrestart()`/`reopenToolbox()` (reopening an already-submitted, signed-off record for correction — a separate, more sensitive action) deliberately left supervisor-gated, since that's not what Royce asked about. `tests/permission-enforcement-baseline.json` updated (2 keys added to `dead_keys` with a dated comment — a deliberate decision, not drift; the sibling `.submit` keys stay enforced via the reopen functions). eq-field [PR #841](https://github.com/eq-solutions/eq-field/pull/841) (v3.5.613), squash-merged, live — verified via a byte-level fetch of the deployed preview's served JS, not just a green CI run.
+
+---
+
+## eq-field: Prestart Crew step now surfaces recently-approved workers not yet on today's roster (2026-08-30) (rotated 2026-09-02)
+*Part of a broader EQ Cards → EQ Shell → EQ Field onboarding-gap sprint (steelmanned, then planned) — this is the one item actually shipped; a second candidate (Field realtime push for the people list) was costed and explicitly deferred, not built. Full context in `eq/pending/eq-cards.md` (2026-08-30 entry) — this is where it landed.*
+
+- [x] **Built**: a new "＋ Add recently approved" affordance next to the Prestart Briefing Crew step's existing "Pull from today's roster" — that pull only ever matched people with a schedule row for today, silently finding nobody for a worker approved same-day (first day, or a same-day EQ Cards → EQ Shell approval), with the only workaround being manual name entry. The new option fetches `field_approved` staff approved in the last 48h, excludes anyone already on today's roster or already in the crew, lists the rest as individual one-tap adds — deliberately not a blind bulk-add, since "recently approved" isn't the same claim as "working here today." `scripts/site-reports.js`.
+- [x] **DB half**: `app_data.field_people`/`field_people_directory` gained a passthrough `field_approved_at` column (was already on `app_data.staff`, written by eq-shell's `cards-approve-staff.ts`, never exposed through either Field-facing view) — applied and verified live on both `ehow` and `zaap`, `security_invoker` correct on both (`on`/`false` respectively). Two new migration files, both idempotent, self-verifying.
+- [x] **Real merge conflict found and resolved, not just merged through**: this branch and an unrelated, already-merged roster/site-alias PR had both independently claimed `v3.5.606`. Renumbered to `v3.5.607` (changelog entry, `APP_VERSION`, service-worker cache name, `app-state.js`'s own cache-buster tag) and re-ran `check-cache-busters.mjs` / `build-bundles.mjs --check` / the full 35-file test suite / eslint after resolving — all clean — before merging.
+- [x] eq-field [PR #834](https://github.com/eq-solutions/eq-field/pull/834) (v3.5.607), merged on Royce's explicit "merge", live (merge to `main` auto-deploys here).
+
+**Notes:**
+- Built by a background agent in its own dedicated worktree (`prestart-fresh-worker-fix-ba2585`), not the shared root or any of the 3+ other concurrent worktrees active in this repo at the time.
+- GitHub MCP (`mcp__d2708d72…`) 404'd on this repo throughout (same tool, same gap eq-cards.md's 2026-08-27 entry already noted for that repo) — `gh` CLI used instead.
+- Both DB migrations initially blocked by the Claude Code auto-mode classifier — same wall that blocked an `accepts_applications` flip on eq-canonical earlier this session (see eq-cards.md). Applied by Royce directly via the Supabase SQL editor after being handed the exact SQL, verified live from this session afterward.
+
+---
+
+## eq-field: site "Ask for"/"Backup" contacts now resolve via eq-shell's canonical contact_site_links (2026-08-30) (rotated 2026-09-02)
+*Field-side note only — no eq-field code changed. Full build + migration-dispatch detail in `eq/pending/eq-shell.md` (2026-08-29/30 entry) and `eq/changelog/eq-shell.md`.*
+
+- [x] **`app_data.field_sites` (what eq-field reads for My Schedule/Sites) now resolves Ask for/Backup via eq-shell's new `contact_site_links` roles** instead of the old free-text `sites` columns — repointed by eq-shell migration 0291, dispatched + verified live 2026-08-30. Verified directly: Equinix SY5 resolves to Matthew Miller (ask_for) / Scott Hotson (backup). Column names/order on the view are unchanged, so nothing in this repo needed touching.
+
+---
+
+## eq-field: Timesheets Fill Week + Approved column, plus the "OFF ≠ approved leave" display gap (2026-08-27) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: People save — dirty-field diffing, closes a live data-clobber bug (Zemi Asri, 2026-08-25) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: boot-perf — 3 of the 4 flagged scripts moved off the critical path, closes the 2026-07-28 audit item (2026-08-18) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Apprentices list showed the full company roster to any signed-in user, not just managers (2026-08-18) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: My Schedule cold-boot cache fallback, built from SKS NSW Labour usage data (2026-08-18) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: weekly digest — per-section on/off + custom intro (2026-08-18) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: sprint prep — desktop polish slice 1, Access-Model Phase 3 keys (2026-08-18) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Contacts screen skipped the rehire-rating prompt when archiving Labour Hire (2026-08-18) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Dashboard map → own page, Map hover shows names, cache-buster hotfix (2026-08-14) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Leave notification gaps closed, digest widened to 4 weeks, Email Templates pilot shipped (2026-08-14) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Teams — untick-to-remove silently didn't save, fixed (v3.5.621, PR #853, merged + live) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Weekly Roster — Roster Overview summary card removed from default view (v3.5.653, PR #896, merged + live) (rotated 2026-09-02 — open items remain in eq-field.md)
 
 
 ---

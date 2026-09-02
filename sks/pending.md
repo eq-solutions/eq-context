@@ -253,8 +253,6 @@ _Nothing pending — migrations 001–023 all applied._
 ## HR folder audit — cross-referenced against live Shell data (2026-08-30)
 *Royce pointed at `OneDrive - eq-power.com.au\HR` (letters of offer, 29 performance reviews, resumes, role docs, org chart, contacts sheet) and asked for a full audit + a plan to bring it into EQ Shell. Findings written up as an HTML report and delivered as a file (Artifact publish was blocked by the platform's own safety classifier — real names + salary data). Phase 1 (4 start-date backfills + a name fix) and Phase 2 (27 historical reviews imported into Resourcing) both executed and verified live this session.*
 
-- [x] Scott Hotson, Charlie Eyiam-Rowe, Bruno Vita Pedrosa, Alaa Alsalman — `start_date` backfilled from their signed Letters of Offer. Also fixed his name in the live table: was "Ali Alsalman", his letter and the contacts sheet both say Alaa.
-- [x] 27 historical performance reviews (2021-2026, 14 people) imported into `app_data.staff_conversations` — see eq-shell.md's Resourcing section for the live-verification detail.
 - [ ] **`EQ_Contacts.csv`'s own start-date for Alaa Alsalman disagrees with his actual signed letter** — CSV says 1 Jul 2026, the letter says 3 Aug 2026 (used for the backfill). The CSV itself wasn't corrected — worth fixing at the source if anyone still edits that file by hand.
 - [ ] **6 of the 14 people with imported review history have no `job_title` on file**: Richard Brown, Terry Su, Jessica Robinson, John Angangan, Brian Griffin-Colls, Phillip Krikellis.
 - [ ] **Duplicate people-rows in `app_data.staff`**: Nelson Sareto and Conor Horgan each have two `staff_id` rows (one active, one inactive). Worth a dedupe pass before any further bulk import lands on top of them.
