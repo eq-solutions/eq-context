@@ -103,7 +103,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 57 | ✓ 57 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,949 | ✓ 1,949 |
+| Operational | app_data.field_schedule | 1,948 | ✓ 1,948 |
 | Operational | app_data.field_timesheets | 255 | ✓ 255 |
 | Safety | public.prestarts | 230 | ✓ 230 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
