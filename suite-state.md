@@ -60,25 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-02)
 
-**eq-field:**
-- #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
-- #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
-
-**eq-service:**
-- #814 chore(deps): bump resend from 6.18.1 to 6.21.0
-- #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
-- #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
-- #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
-- #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
-- #791 fix(reports): make reissuing a report possible from the UI
-
-**eq-shell:**
-- #1739 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
-- #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
-- #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
-- #1696 chore(deps): bump @sentry/react from 10.53.1 to 10.71.0
-- #1695 chore(deps): bump papaparse and @types/papaparse
+_No open PRs_
 
 ---
 
@@ -88,16 +70,16 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
-| eq-shell | ✓ success |
-| eq-field | ✓ success |
-| eq-cards | ✓ success |
-| eq-solves-intake | ✓ success |
+    | eq-service | ? unknown |
+| eq-shell | ? unknown |
+| eq-field | ? unknown |
+| eq-cards | ? unknown |
+| eq-solves-intake | ? unknown |
 
     **Deploys:**
     _NETLIFY_TOKEN not set — deploy status unavailable_
 
-    **Migrations:** eq-service has 245 (latest: 0239) applied
+    **Migrations:** eq-service has 0 applied
 
 ---
 
@@ -108,8 +90,8 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_sites | 57 | ✓ 57 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 1,948 | ✓ 1,948 |
-| Operational | app_data.field_timesheets | 255 | ✓ 255 |
-| Safety | public.prestarts | 230 | ✓ 230 |
+| Operational | app_data.field_timesheets | 262 | ✓ 262 |
+| Safety | public.prestarts | 231 | ✓ 231 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -124,7 +106,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 1 |  |
-| Prestarts created | 18 |  |
+| Prestarts created | 16 |  |
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
