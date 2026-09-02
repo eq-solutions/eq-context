@@ -61,7 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-02)
 
 **eq-field:**
-- #891 v3.5.650 — Batch Fill: never write over someone's approved leave
+- #892 v3.5.650 -- Apprentices: journal sharing replaces Ask-for-Feedback
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
 **eq-service:**
