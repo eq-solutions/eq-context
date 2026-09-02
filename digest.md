@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-02 11:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-02 11:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-02 10:52 UTC → 2026-09-02 11:11 UTC)
+## Since last refresh (2026-09-02 11:11 UTC → 2026-09-02 11:40 UTC)
 
-- Merged: eq-shell [#1746](https://github.com/eq-solutions/eq-shell/pull/1746) fix(crm): extend the inactive-contact link guard to update_s
-- Merged: eq-shell [#1737](https://github.com/eq-solutions/eq-shell/pull/1737) fix(auth): disable TOTP login challenge for already-enrolled
-- Merged: eq-shell [#1734](https://github.com/eq-solutions/eq-shell/pull/1734) fix(auth): reject deactivated accounts on the self-service t
-- Merged: eq-shell [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resou
-- Merged: eq-shell [#1732](https://github.com/eq-solutions/eq-shell/pull/1732) fix(auth): enforce account-deactivation across grant/invite/
-- Merged: eq-shell [#1728](https://github.com/eq-solutions/eq-shell/pull/1728) fix(admin): exclude deactivated users from Access Control pi
-- Merged: eq-shell [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view
-- Merged: eq-shell [#1721](https://github.com/eq-solutions/eq-shell/pull/1721) fix(lint): scope react-refresh/only-export-components off Ne
+- Merged: eq-shell [#1748](https://github.com/eq-solutions/eq-shell/pull/1748) fix(customers): hide archived contacts from a customer's con
+- Merged: eq-shell [#1747](https://github.com/eq-solutions/eq-shell/pull/1747) perf(token-exchange): parallelize sequential Supabase reads
+- Merged: eq-shell [#1738](https://github.com/eq-solutions/eq-shell/pull/1738) feat(documents): bulk-select documents on Register, push to 
+- Merged: eq-shell [#1735](https://github.com/eq-solutions/eq-shell/pull/1735) fix(auth): disable forced TOTP enrollment mandate for now
+- Merged: eq-shell [#1731](https://github.com/eq-solutions/eq-shell/pull/1731) fix(cards): backfill shell_control.users.email for phone-OTP
+- Merged: eq-shell [#1730](https://github.com/eq-solutions/eq-shell/pull/1730) fix(admin): restore pin_set/pin_locked to eq_list_tenant_use
+- Merged: eq-shell [#1727](https://github.com/eq-solutions/eq-shell/pull/1727) fix(staff): add previous-licence navigation to review modals
+- Merged: eq-shell [#1726](https://github.com/eq-solutions/eq-shell/pull/1726) feat(documents): Unarchive action; move PDF backfill button 
 
 ## ⚠ Needs you (15)
 
@@ -61,9 +61,9 @@ _…and 255 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 7 | 1d |
+| eq-shell | ✓ success | 0d ago | 6 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 13d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 23d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -83,26 +83,26 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-02 | eq-shell | [#1748](https://github.com/eq-solutions/eq-shell/pull/1748) fix(customers): hide archived contacts from a customer's contact  |
+| 2026-09-02 | eq-shell | [#1747](https://github.com/eq-solutions/eq-shell/pull/1747) perf(token-exchange): parallelize sequential Supabase reads |
 | 2026-09-02 | eq-shell | [#1746](https://github.com/eq-solutions/eq-shell/pull/1746) fix(crm): extend the inactive-contact link guard to update_site/a |
 | 2026-09-02 | eq-shell | [#1742](https://github.com/eq-solutions/eq-shell/pull/1742) fix(crm): reject linking an inactive contact to a site or custome |
 | 2026-09-02 | eq-shell | [#1745](https://github.com/eq-solutions/eq-shell/pull/1745) fix(observability): stop $create_alias spam from the 5-minute ses |
 | 2026-09-02 | eq-shell | [#1744](https://github.com/eq-solutions/eq-shell/pull/1744) fix(home): hoist Date.now() out of render for react-hooks/purity |
 | 2026-09-02 | eq-shell | [#1743](https://github.com/eq-solutions/eq-shell/pull/1743) fix(records): gate the Licences tab on field.view_licences |
 | 2026-09-02 | eq-shell | [#1736](https://github.com/eq-solutions/eq-shell/pull/1736) fix(auth): bound verify-shell-session's best-effort reads with a  |
+| 2026-09-02 | eq-field | [#889](https://github.com/eq-solutions/eq-field/pull/889) v3.5.649 — PERF: Shell→Field boot — stop entitlements blocking ch |
 | 2026-09-02 | eq-field | [#888](https://github.com/eq-solutions/eq-field/pull/888) v3.5.648 — Edit Roster: show approved leave while editing |
 | 2026-09-02 | eq-field | [#887](https://github.com/eq-solutions/eq-field/pull/887) v3.5.647 -- FIX: Apprentices Quarterly Review modal unstyled and  |
 | 2026-09-02 | eq-field | [#886](https://github.com/eq-solutions/eq-field/pull/886) v3.5.646 — Roster/Editor/Contacts/Timesheets: scoped-view banner  |
 | 2026-09-02 | eq-field | [#885](https://github.com/eq-solutions/eq-field/pull/885) v3.5.645 — sync_degraded: surface crew-table failures alongside p |
 | 2026-09-02 | eq-field | [#884](https://github.com/eq-solutions/eq-field/pull/884) fix(e2e): allowlist Netlify's edge bot-challenge 403 in shell-mod |
 | 2026-09-02 | eq-field | [#883](https://github.com/eq-solutions/eq-field/pull/883) v3.5.644 — Correct false PR #878 claim; add E2E coverage for PR # |
-| 2026-09-02 | eq-field | [#881](https://github.com/eq-solutions/eq-field/pull/881) v3.5.642 — Sentry sweep: 3 real bugs fixed |
-| 2026-09-02 | eq-cards | [#342](https://github.com/eq-solutions/eq-cards/pull/342) fix(cards): resilient session refresh + consolidate wallet nudges |
-| 2026-09-01 | eq-shell | [#1740](https://github.com/eq-solutions/eq-shell/pull/1740) fix(admin): show a real reason when inviting a deactivated accoun |
-_Showing 15 of 87 · full record in [sessions/](sessions/)_
+_Showing 15 of 86 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (273 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (274 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (210 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (98 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 11:11 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 11:40 UTC._
