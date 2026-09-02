@@ -9,6 +9,14 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-02 (PR #891 OPEN, not merged, v3.5.650 — Batch Fill: never write over someone's approved leave)
+- Same root cause as PR #888 below, at bulk scale: leave never gets written into the raw schedule cell, so Batch Fill's picker and its own pre-existing "already has a value?" conflict check both had nothing to see.
+- Checked real usage before proposing a fix: `public.audit_log` shows 4 Batch Fill/Clear operations by Royce in the last month, 20–400 cells each — not rare. Cross-referencing those weeks against live `leave_requests`/`schedule_entries` found this had already happened: 4 people (Brett Kilpatrick, Marcus De La Fuente, Elliot Gross, Blake Reynolds) currently carry a real site code on a day they also hold approved RDO/Annual leave — live on `ehow` for this coming Friday (2026-09-04), not hypothetical.
+- Fix: `buildBatchPeopleList()` shows an "On leave" badge per person in the picker. `runBatchFill()`'s existing conflict-detection now also catches leave days and folds them into the same confirm dialog as information, not a choice. `applyBatch()` enforces the skip unconditionally for a fill — no override path in the UI, deliberately stricter than Edit Roster's tint-but-allow, since a bulk operation gives nobody per-cell visibility to catch a mistake themselves. A clear stays exempt — removing a real value off someone's leave day is the fix for a conflict, not a new risk.
+- Verified via a headless Node `vm` sandbox running the real `batch.js`+`roster.js`+`roster-rules.js` source against data shaped like the live incident — 4 scenarios, all matched expectations. Full suite green (37/37).
+- **CI green, deploy preview clean — NOT merged.** No merge instruction given this session.
+- Separately, not part of this PR: the 4 live mis-scheduled people above were flagged directly to Royce — needs a human check before Friday, not a code or DB fix.
+
 ## 2026-09-02 (PR #888 MERGED, v3.5.648 — Edit Roster now shows approved leave while editing)
 - Follow-on from PR #886 below. Royce found Jessica Robinson's Friday cell on Edit Roster read as blank despite her genuine approved leave (2026-10-23→30) — typed a real site code onto it, then had to clear it once he learned she was on leave, and asked why Calendar/Weekly Roster kept showing the leave regardless.
 - Root cause: Edit Roster deliberately shows the raw schedule cell (`scripts/roster.js` `renderEditor()`), not the leave overlay Weekly Roster/Calendar use, so supervisors can actually see/edit what's stored. But leave hasn't been written into schedule cells since v3.5.281 (`leave_requests` is the single source of truth) — so the page's own "needs filling in" empty-cell check (`isOnLeaveAllWeek`, which tested those same raw cells) had been structurally dead ever since that architecture change, and a leave day got flagged exactly like a genuinely unrostered one.
