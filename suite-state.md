@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-02)
 
 **eq-field:**
+- #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #893 v3.5.652 — FIX: Roster/Editor/Schedule could flash "wiped" while a week's data was still loading
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
@@ -73,8 +74,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1750 perf(prewarm): stagger eager iframe pre-warm — Field first, then Cards/Service
-- #1749 perf: lazy-load Staff, Customers, and the two portal pages (Tier 1)
+- #1751 feat(documents): new-version upload, version history, confirm-then-push republish
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
