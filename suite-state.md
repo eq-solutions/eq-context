@@ -84,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✗ failure |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -100,10 +100,10 @@ _If this file is >48h old, the cron is broken._
 ## Field Data Plane — SKS tenant (as of 2026-09-02)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 74 | ✓ 74 |
+| Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 57 | ✓ 57 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,929 | ✓ 1,929 |
+| Operational | app_data.field_schedule | 1,931 | ✓ 1,931 |
 | Operational | app_data.field_timesheets | 223 | ✓ 223 |
 | Safety | public.prestarts | 230 | ✓ 230 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
