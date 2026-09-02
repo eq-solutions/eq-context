@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-02 08:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-02 08:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-02 07:31 UTC → 2026-09-02 08:33 UTC)
+## Since last refresh (2026-09-02 08:33 UTC → 2026-09-02 08:40 UTC)
 
-- Merged: eq-shell [#1730](https://github.com/eq-solutions/eq-shell/pull/1730) fix(admin): restore pin_set/pin_locked to eq_list_tenant_use
-- Merged: eq-shell [#1727](https://github.com/eq-solutions/eq-shell/pull/1727) fix(staff): add previous-licence navigation to review modals
-- Merged: eq-shell [#1726](https://github.com/eq-solutions/eq-shell/pull/1726) feat(documents): Unarchive action; move PDF backfill button 
-- Merged: eq-shell [#1724](https://github.com/eq-solutions/eq-shell/pull/1724) fix(documents): labour_hire role label, PDF conversion timeo
-- Merged: eq-shell [#1723](https://github.com/eq-solutions/eq-shell/pull/1723) fix(react-hooks): clear remaining set-state-in-effect debt (
-- Merged: eq-shell [#1722](https://github.com/eq-solutions/eq-shell/pull/1722) fix(auth): distinguish pending-approval from no-account on p
-- Merged: eq-shell [#1719](https://github.com/eq-solutions/eq-shell/pull/1719) feat(documents): tenant logo, shorter title, drop content ha
-- Merged: eq-shell [#1717](https://github.com/eq-solutions/eq-shell/pull/1717) feat(staff): edit and close/reopen a logged conversation ent
+- Merged: eq-shell [#1732](https://github.com/eq-solutions/eq-shell/pull/1732) fix(auth): enforce account-deactivation across grant/invite/
+- Merged: eq-shell [#1728](https://github.com/eq-solutions/eq-shell/pull/1728) fix(admin): exclude deactivated users from Access Control pi
+- Merged: eq-shell [#1725](https://github.com/eq-solutions/eq-shell/pull/1725) feat(documents): progress-first Register signer view
+- Merged: eq-shell [#1721](https://github.com/eq-solutions/eq-shell/pull/1721) fix(lint): scope react-refresh/only-export-components off Ne
+- Merged: eq-shell [#1720](https://github.com/eq-solutions/eq-shell/pull/1720) fix(admin): exclude already-registered users from list-user-
+- Merged: eq-shell [#1718](https://github.com/eq-solutions/eq-shell/pull/1718) feat(documents): list archived documents on the Register; pr
+- Merged: eq-shell [#1716](https://github.com/eq-solutions/eq-shell/pull/1716) Documents: customisable types, cert+document download, Goten
+- Merged: eq-shell [#1715](https://github.com/eq-solutions/eq-shell/pull/1715) fix(admin): clear react-hooks/set-state-in-effect on Users l
 
 ## ⚠ Needs you (15)
 
@@ -63,7 +63,7 @@ _…and 254 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 7 | 1d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 12d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -87,6 +87,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-02 | eq-shell | [#1743](https://github.com/eq-solutions/eq-shell/pull/1743) fix(records): gate the Licences tab on field.view_licences |
 | 2026-09-02 | eq-shell | [#1742](https://github.com/eq-solutions/eq-shell/pull/1742) fix(crm): reject linking an inactive contact to a site or custome |
 | 2026-09-02 | eq-shell | [#1736](https://github.com/eq-solutions/eq-shell/pull/1736) fix(auth): bound verify-shell-session's best-effort reads with a  |
+| 2026-09-02 | eq-field | [#885](https://github.com/eq-solutions/eq-field/pull/885) v3.5.645 — sync_degraded: surface crew-table failures alongside p |
 | 2026-09-02 | eq-field | [#884](https://github.com/eq-solutions/eq-field/pull/884) fix(e2e): allowlist Netlify's edge bot-challenge 403 in shell-mod |
 | 2026-09-02 | eq-field | [#883](https://github.com/eq-solutions/eq-field/pull/883) v3.5.644 — Correct false PR #878 claim; add E2E coverage for PR # |
 | 2026-09-02 | eq-field | [#881](https://github.com/eq-solutions/eq-field/pull/881) v3.5.642 — Sentry sweep: 3 real bugs fixed |
@@ -97,12 +98,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-01 | eq-shell | [#1735](https://github.com/eq-solutions/eq-shell/pull/1735) fix(auth): disable forced TOTP enrollment mandate for now |
 | 2026-09-01 | eq-shell | [#1734](https://github.com/eq-solutions/eq-shell/pull/1734) fix(auth): reject deactivated accounts on the self-service tenant |
 | 2026-09-01 | eq-shell | [#1733](https://github.com/eq-solutions/eq-shell/pull/1733) feat(staff): overview KPI tiles and per-team rollup on Resourcing |
-| 2026-09-01 | eq-shell | [#1731](https://github.com/eq-solutions/eq-shell/pull/1731) fix(cards): backfill shell_control.users.email for phone-OTP self |
-_Showing 15 of 90 · full record in [sessions/](sessions/)_
+_Showing 15 of 89 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (273 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (272 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (62 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (209 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (98 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 08:33 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 08:40 UTC._
