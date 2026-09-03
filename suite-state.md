@@ -89,9 +89,9 @@ _No open PRs_
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,980 | ✓ 1,980 |
-| Operational | app_data.field_timesheets | 305 | ✓ 305 |
-| Safety | public.prestarts | 232 | ✓ 232 |
+| Operational | app_data.field_schedule | 1,983 | ✓ 1,983 |
+| Operational | app_data.field_timesheets | 319 | ✓ 319 |
+| Safety | public.prestarts | 233 | ✓ 233 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -106,7 +106,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 1 |  |
-| Prestarts created | 14 |  |
+| Prestarts created | 13 |  |
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
