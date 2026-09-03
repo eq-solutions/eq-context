@@ -1162,3 +1162,11 @@ Items when triggered:
 - [ ] **Not click-tested by anyone but Royce himself** — standing Core-only sandbox limitation blocked every attempt from this session (deploy preview, production root, even the demo tenant all redirect to "Sign in through Core"). Royce confirmed live post-merge; no automated click-through exists for this page. _(added 2026-09-02)_
 
 ---
+
+## eq-field: Shell→Field boot latency — entitlements/timeout fix (v3.5.649, PR #889, merged + live)
+*Royce, on SKS go-live day: "it logs in via shell, then field then it goes back to the core spinner... can we improve this?" Traced the full handoff live: Shell's overlay reappearing after a brief glimpse of Field is by design (stays up until Field posts 'accepted'), not a reload bug — but found a real inefficiency on the way there. `_loadCanonicalConfig()` awaited the canonical module_entitlements fetch before returning, delaying `window._eqOrgSlugReady()` — the signal that unblocks checkAccess()/verify-pin, the one call that actually clears Shell's overlay — even though entitlements isn't consumed until after the (separately, already-parallel) routing fetch too. Fixed by returning as soon as org resolves and handing back entitlements as a still-in-flight promise. Separately, `netlify/functions/tenant-config.js`'s two upstream fetches were both unbounded — live Sentry evidence the same day (EQ-FIELD-19, AbortError, real SKS tenant, several occurrences) showed this eating the client's whole 4s/7s retry budget; both now bounded (2.5s/1s). This investigation then expanded into eq-shell (see `eq-shell.md`, same date) once Sentry data showed the bigger number lived there. Full detail: `eq/changelog/eq-field.md`, `sessions/2026-09-02.md`.*
+
+- [ ] **Worth re-pulling Sentry's EQ-FIELD-19 occurrence rate over the next few days** — the tenant-config bound-timeout fix is a reliability/predictability fix (fails fast instead of hanging), not something provable from a single click-through. Confirm the abort pattern actually stops recurring. _(added 2026-09-02)_
+- [ ] **Not click-tested live** — boot-sequence timing sits behind Core-only auth, no session/credentials in this environment, a documented dead end to chase locally. Worth a real pass: sign in through Core into SKS Field and watch whether the "spinner → brief flash → spinner again" gap feels shorter. _(added 2026-09-02)_
+
+---
