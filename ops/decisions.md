@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-09-04
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -529,6 +529,14 @@ than one CRM export shape. SimPRO is the only one we have today.
 AroFlo / Xero / MYOB will surface edge cases. Acceptable — the
 pattern is sound; per-source quirks land as test fixtures as they
 appear.
+
+**Status check (2026-08-08, live-verified — not a reversal, Status stays Accepted):** The principle above still holds — dedupe belongs in the canonical layer, not per-app — but adoption never went past the one app it was designed against. A suite-wide audit (`sessions/2026-08-08.md`, folded into `eq/products.md`'s "EQ Intake — import/write-time engine" section on 2026-08-10) found:
+
+- **EQ Shell** — the only real consumer. The `/intake` "Bring Data In" screen runs the dedupe pipeline this entry describes, and Shell's own Contacts/Customers matcher was swapped for the shared `@eq/intake` one (eq-shell PR #1287) — same algorithm, proven identical by inspection. This is the one place the "apps read clean canonical data, they don't re-implement dedupe" goal actually shipped.
+- **EQ Service, EQ Field, EQ Cards** — each still runs its own bespoke matcher, and each is a deliberate, investigated decision, not neglect: Service's own Levenshtein short-code matcher (4 separate `exceljs` importers) solves a differently-shaped problem than Intake's Dice-coefficient name matcher — a migration was proposed (`eq-solves-service/docs/architecture/2026-05-19-shell-intake-integration.md`) and explicitly declined by Royce ("is there any value in changing what's working here?"); Field's hand-rolled exact-match CSV parser can't be swapped without a build step Field doesn't have; Cards' own OCR pipeline needs a capability Intake doesn't provide yet.
+- The companion implication below (EQ Quotes' data arriving pre-deduped once eq-canonical takes over) also didn't play out as written — EQ Quotes (Flask) was retired outright and replaced by EQ Ops, never migrated through this path.
+
+Don't re-propose the Service/Field/Cards migrations without a new concrete reason (a live bug, not architecture tidiness) — each was investigated and declined on its own merits, 2026-08-08. Current per-app state is kept live in `eq/products.md`; don't duplicate the detail here.
 
 ---
 
