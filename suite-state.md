@@ -130,7 +130,7 @@ _No flips this run._
 
 | Tool | Owner | Real usage | Everyone else |
 |------|-------|------------|----------------|
-| `@eq/intake` | eq-solves-intake | Shell only — `/intake` screen (Overview/To Do/Bring Data In/Ask) + Equipment → Certificate Import. Shell's own Contacts dedup reimplements Intake's fuzzy matcher instead of importing it. | Service (4 separate `exceljs` importers, own Levenshtein matcher, no ABN validation — migration proposed in Service's own `docs/architecture/2026-05-19-shell-intake-integration.md`, not executed), Field (hand-rolled CSV parser, exact-match only — no build step, can't consume the npm package), Cards (own OCR pipeline; a proposed swap to Intake was investigated and shelved — the needed Intake capability doesn't exist yet) |
+| `@eq/intake` | eq-solves-intake | Shell only — `/intake` screen (Overview/To Do/Bring Data In/Ask) + Equipment → Certificate Import + Contacts dedup (swapped from a private copy, PR #1287). | Service (4 separate `exceljs` importers, own Levenshtein matcher, no ABN validation — migration proposed in Service's own `docs/architecture/2026-05-19-shell-intake-integration.md`, not executed), Field (hand-rolled CSV parser, exact-match only — no build step, can't consume the npm package), Cards (own OCR pipeline; a proposed swap to Intake was investigated and shelved — the needed Intake capability doesn't exist yet) |
 
 ---
 
