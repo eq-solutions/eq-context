@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-02 23:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-03 01:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (7)
 
@@ -52,8 +52,8 @@ _…and 262 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 12 | 2026-09-02 |
 | eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 11 | 2026-09-02 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 11 | 2026-09-02 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 10 | 2026-09-02 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 9 | 2026-09-02 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-02 |
@@ -100,9 +100,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1441 | 196 / 84 | 28 | 67 |
+| [eq-shell](eq/pending/eq-shell.md) | 1441 | 196 / 84 | 28 | 68 |
 | [eq-cards](eq/pending/eq-cards.md) | 366 | 48 / 17 | 16 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1169 | 162 / 70 | 24 | 33 |
+| [eq-field](eq/pending/eq-field.md) | 1169 | 162 / 70 | 24 | 34 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -113,12 +113,13 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 491 | 92 / 15 | 0 | 54 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 530 | 43 / 3 | 0 | 8 |
+| [OPS](ops/pending.md) | 530 | 43 / 3 | 0 | 11 |
 
 ## Aging open items (45d+, unconfirmed)
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-19) · **Still open, not urgent:** the exact reason EQ Field was slow to load for that one person on 2026-07-19 is unconfirmed — likely just a poor connection, but couldn't fully rule out anything worse. Nothing else has reported it since. _(added 2026-07-19)_
 - **eq-shell** (2026-07-17) · **Deferred: who should get the weekly summary email?** Built and ready, just needs a recipient list from Royce before it's switched on. _(added 2026-07-17)_
 - **eq-shell** (2026-07-17) · **Declined for now (Royce's call): a personal calendar feed per crew member, and a weather warning near Microsoft dock dates.** Offered as options alongside the above; not built. _(added 2026-07-17)_
 - **eq-shell** (2026-07-16) · **Deferred: bigger first-load speedup** — breaking one large file into smaller pieces that only load when needed. Real win, but a bigger change that needs a hands-on check, not just automated tests. _(added 2026-07-19)_
@@ -133,8 +134,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-14) · **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
 - **eq-shell** (2026-07-14) · **Crew retry + Sentry watch** — have the crew reopen via a normal browser tab (their home-screen icon may hold stale code from the day's deploys); if anyone still freezes, the fix now self-tags the exact stall in Sentry (`verify-timeout` / `login-timeout` / `session-spinner-timeout` / `chunk-error`). _(added 2026-07-14)_
 - **eq-shell** (2026-07-14) · **Material-preset sanity check** — since materials presets now quote at Rate + markup, any entered as already-marked-up sell prices will read higher; worth a glance in the Rate library. _(added 2026-07-14, carried from #820)_
-- **eq-shell** (2026-07-14) · **Phone-smoke Comms + Ops mobile on a real device** — both deployed and content-verified, but not exercised through a real authenticated session (auth-gated; not reproducible in the sandbox). _(added 2026-07-14)_
-_…and 269 more — see each file's Queue health row above._
+_…and 274 more — see each file's Queue health row above._
 
 ## Possible recurring failures (unconfirmed)
 
@@ -158,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-02 23:16 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-03 01:12 UTC._
