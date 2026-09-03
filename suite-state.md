@@ -89,7 +89,7 @@ _No open PRs_
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,948 | ✓ 1,948 |
+| Operational | app_data.field_schedule | 1,976 | ✓ 1,976 |
 | Operational | app_data.field_timesheets | 262 | ✓ 262 |
 | Safety | public.prestarts | 231 | ✓ 231 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
