@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-04
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -430,5 +430,12 @@ fix (it was) — this collision is real and pre-existing, breaking the `Integrat
   consent-screen auto-login loop blocks org-picker flow for `claude.ai` chat. Cowork writes are unblocked via PATs (2026-04-19); this item only gates the chat surface. Fix: revoke prior OAuth grant at `github.com/settings/applications`, sign out, reconnect from Claude desktop. **As of 2026-07-03 this gates the connector-first Chat bootstrap (`CHAT-PROMPT.md`)** — until the connector connects cleanly, Chat has no self-serve substrate path.
 - [x] **Restart the held Chat session on the new bootstrap** — **[CLOSED 2026-09-01 — moot.** Tied to the now-resolved loop above and one specific stuck 2026-07-03 thread the item itself already said "can be abandoned." The connector-based Chat bootstrap this bullet describes verifying is now in routine, active use — `eq/`/`ops/`/`sks/chat-gateway.md` (read_priority: critical, actively maintained, last touched today) exist specifically to support ongoing Chat sessions using exactly this connector path.]**
   enable/verify the GitHub connector on claude.ai, then open a **fresh** chat with `CHAT-PROMPT.md` pasted (connector tools don't load mid-session). The 2026-07-03 Chat thread that was stuck on the fetch wall can be abandoned — its held "substrate fix" was this same issue, closed by PR #59. **(Royce manual step.)** _(added 2026-07-03)_
+
+---
+
+## Cross-repo seam-map citation + 2026-05-19 dedupe ADR corrected; a third drift found in passing (2026-09-04, rotated 2026-09-04)
+*Royce asked for a docs-accuracy check on two specific citations: the umbrella `C:\Projects\CLAUDE.md`'s "Cross-repo seam map" section cited an archived file as a current authority, and `ops/decisions.md`'s 2026-05-19 "Dedupe Is Intake's Job, Not Per-App" ADR read as suite-wide fact with no pointer to the 2026-08-08 audit that found adoption stopped at eq-shell. Both verified against live `origin/main` (not the stale local checkout) and fixed — decisions.md via an isolated clone push, `cf75d2db`. Full detail: `sessions/2026-09-04.md`.*
+
+- [x] **`suite-state.md`'s "Import/write-time tooling" table had a third, unrelated drift**, found while researching the above — said Shell's Contacts dedup "reimplements Intake's fuzzy matcher instead of importing it," the opposite of the corrected `decisions.md` framing and of `eq/products.md`'s already-correct line. Spawned as background task `task_a96eac2e`; Royce started it in a separate session the same day, which fixed it and merged — [eq-context PR #200](https://github.com/eq-solutions/eq-context/pull/200), commit `9a3df2f3`.
 
 ---

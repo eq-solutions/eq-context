@@ -14,13 +14,6 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
-## Cross-repo seam-map citation + 2026-05-19 dedupe ADR corrected; a third drift found in passing (2026-09-04)
-*Royce asked for a docs-accuracy check on two specific citations: the umbrella `C:\Projects\CLAUDE.md`'s "Cross-repo seam map" section cited an archived file as a current authority, and `ops/decisions.md`'s 2026-05-19 "Dedupe Is Intake's Job, Not Per-App" ADR read as suite-wide fact with no pointer to the 2026-08-08 audit that found adoption stopped at eq-shell. Both verified against live `origin/main` (not the stale local checkout) and fixed this session — decisions.md via an isolated clone push, `cf75d2db`. Full detail: `sessions/2026-09-04.md`.*
-
-- [ ] **`suite-state.md`'s "Import/write-time tooling" table has a third, unrelated drift**, found while researching the above — still says Shell's Contacts dedup "reimplements Intake's fuzzy matcher instead of importing it," the opposite of the now-corrected `decisions.md` framing and of `eq/products.md`'s already-correct line (Shell imports the shared matcher since PR #1287). Out of scope for what was asked, so not fixed inline. Spawned as background task `task_a96eac2e`; Royce started it in a separate session, running independently, not yet reported back as of this close. _(added 2026-09-04)_
-
----
-
 ## CLOSED — "Fabricated incident" claim against eq-field commit 0e7d3956 was itself wrong (2026-09-02)
 *This section previously asked Royce to decide whether eq-field PR #878 had fabricated an incident in its commit message + reflection-log entry. It hadn't. The session that raised it had checked `scripts/people-required-credentials.js` for evidence — a file #878 never touched (only `roster.js`). Independently re-verified (both by a separate concurrent session and, separately again, by the original session itself): #878's account is genuine — the version collision with PR #879 and the reflection-log merge-corruption it fixed (a PR #875 bullet duplicated into the wrong section by PR #877's own rebase) both really happened. No `failures.md` decision needed. Full detail: eq-field's `docs/reflection-log.md` (2026-09-02 entries under PR #880 and PR #883), `sessions/2026-09-02.md`.*
 
