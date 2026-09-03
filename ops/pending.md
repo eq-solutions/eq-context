@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-04
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,13 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## Cross-repo seam-map citation + 2026-05-19 dedupe ADR corrected; a third drift found in passing (2026-09-04)
+*Royce asked for a docs-accuracy check on two specific citations: the umbrella `C:\Projects\CLAUDE.md`'s "Cross-repo seam map" section cited an archived file as a current authority, and `ops/decisions.md`'s 2026-05-19 "Dedupe Is Intake's Job, Not Per-App" ADR read as suite-wide fact with no pointer to the 2026-08-08 audit that found adoption stopped at eq-shell. Both verified against live `origin/main` (not the stale local checkout) and fixed this session — decisions.md via an isolated clone push, `cf75d2db`. Full detail: `sessions/2026-09-04.md`.*
+
+- [ ] **`suite-state.md`'s "Import/write-time tooling" table has a third, unrelated drift**, found while researching the above — still says Shell's Contacts dedup "reimplements Intake's fuzzy matcher instead of importing it," the opposite of the now-corrected `decisions.md` framing and of `eq/products.md`'s already-correct line (Shell imports the shared matcher since PR #1287). Out of scope for what was asked, so not fixed inline. Spawned as background task `task_a96eac2e`; Royce started it in a separate session, running independently, not yet reported back as of this close. _(added 2026-09-04)_
 
 ---
 
