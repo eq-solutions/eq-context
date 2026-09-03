@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -14,6 +14,12 @@ status: live
 - Second, independent narrowing found beyond the original report: `displayedQuotes` (feeds both list and board view) re-filters by `activeStages`, derived purely from `selectedTabs` regardless of search — fixing only the RPC call would have left this filter silently discarding the wider result set again.
 - `QuotesModule.tsx`: `loadQuotes()`'s `eq_list_quotes` call drops `p_stage` to null while `debouncedSearch` is non-empty; `activeStages` resolves to `[]` under the same condition (covers list and board together); notice added when this widens results beyond the visibly selected tab. No RPC/migration change.
 - `tsc -b --force` + `eslint` clean. Squash-merged `68de2e78`; Netlify build triggered 2s post-merge, not confirmed `published_at`/`state:ready` as of session close.
+
+## 2026-09-02 (PR #1752, MERGED, LIVE — react-hooks: fix pickTenant used-before-declared in FieldIframe)
+- `src/pages/FieldIframe.tsx`'s auto-select effect called `pickTenant` before its own `const` declaration six lines later — a real TDZ hazard (`react-hooks/immutability`: "Cannot access variable before it is declared"), working today only because the effect doesn't run synchronously at declaration time. Flagged as a companion to the ongoing react-hooks debt sweep (#1723/#1736/#1744); this file hadn't been touched yet.
+- Hoisted `pickTenant` above the effect as a `useCallback` (matching `recoverHandoff`'s existing pattern in the same file), deps `[session?.user.is_platform_admin, selectedTenant]`; added `pickTenant`/`selectedTenant` to the calling effect's own deps array (previously `[autoSlug]` only — a separate `exhaustive-deps` warning on the same lines). Fixing the ordering let ESLint's `react-hooks/set-state-in-effect` rule see through to `pickTenant`'s own synchronous `setState` calls for the first time (previously masked by the TDZ error short-circuiting analysis) — deferred the auto-select call a tick via `queueMicrotask`, the same established pattern as #1723. The manual `TenantPicker onPick={pickTenant}` click-handler path is untouched and stays synchronous.
+- `eslint`/`tsc -b --force` clean, all 9 CI checks green. Not click-tested live — no Shell session/credentials in this environment.
+- Squash-merged `6bbd1f3e` on Royce's explicit "merge it". Confirmed live via direct `commit_ref` match: the newest `state: "ready"`, `context: "production"` Netlify deploy for `core.eq.solutions` is exactly this commit, published 13:02:21Z (~6 min after merge).
 
 ## 2026-09-02 (PR #1751, MERGED, LIVE — document versioning: new-version upload, version history, confirm-then-push republish)
 - Royce, looking at the live Register page: "I love this feature but i feel like we have added to it and not optimised the process based on the realtime need and actions of our staff - can you show me how it all works." Two diagrams built from a fresh read of the live code surfaced the sharpest gap: a version-upload endpoint (`document-version-upload-init.ts`/`commit.ts`) already accepted `document_id` end-to-end, and the DB trigger already superseded old signoffs on publish, but nothing in the UI ever called it — every real revision had to become a disconnected new document with no shared signing history.
