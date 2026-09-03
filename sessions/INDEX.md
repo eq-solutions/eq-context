@@ -1,8 +1,9 @@
 # Session Index
-_145 logs · reverse-chronological · auto-generated_
+_146 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-09-04 | [eq-shell FieldIframe TDZ/lint fix (PR #1752) — merged, confirmed live](2026-09-04.md) |
 | 2026-09-03 | [Document versioning: new-version upload, version history, confirm-then-push republish](2026-09-03.md) |
 | 2026-09-02 | [Live-meeting kit: sample ID sheet added, QR-at-scale question resolved by finding it already exists](2026-09-02.md) |
 | 2026-09-01 | [eq-solves-service: migration-governance review (task_38071324) closed — DB-first PR split adopted, --reconcile tooling shipped (PR #820)](2026-09-01.md) |

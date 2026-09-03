@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-03 15:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-03 20:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (7)
 
@@ -18,12 +18,13 @@ _2026-09-03 15:40 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-08-31.md](sessions/2026-08-31.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
-- 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-01.md](sessions/2026-09-01.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (271)
+## 🙋 Waiting on you (274)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: upload a new version of a document that already has real signers, confirm the version number bumps, the old signers show as needing to re-sign, "Push to the same N people" actually re-creates outstanding rows for them (and is a no-op, not a duplicate, if clicked/retried), and Version history lists every version with its own signed/outstanding count including one nobody's been pushed to yet. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — confirming the fix needs a live PostHog project plus a real session left open past two 5-minute poll ticks, watching PostHog's own activity feed for exactly one `$create_alias` instead of one per tick. _(added 2026-09-02)_
 - **eq-shell** · **Not click-tested live** — verified via `pnpm exec tsc -b --force` and `eslint` (both clean) plus an independent merge-readiness audit before merging. This machine's Node 24 breaks `vite build`/`netlify dev` for this repo (pre-existing, unrelated to this change), so no live click-through was possible. Worth a real pass: KPI numbers match the table's own counts, per-team rows sum to the roster totals, mobile view unchanged. _(added 2026-09-02)_
@@ -35,8 +36,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
 - **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
-- **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, an 8-angle automated review, and Netlify deploy-preview smoke tests; no Shell session/credentials in this environment. Worth a real pass covering both PRs (#1683, #1685): panel opens in place with a shareable `?open=` URL; a formal entry opens with full detail, rating deltas, and (where attached) a source document; saving without answering "happy and engaged" is blocked and scrolls to the field; engagement tags render with color; a person with no `start_date` is flagged "missing a start date" but NOT also "overdue"; a hollow historical review shows its summary and one "no structured answers" note instead of ~20 blank fields. _(added 2026-08-30)_
-_…and 259 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 262 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -53,8 +53,8 @@ _…and 259 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 11 | 2026-09-02 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 11 | 2026-09-02 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 10 | 2026-09-02 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 10 | 2026-09-02 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 9 | 2026-09-02 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-02 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 4 | 2026-09-02 |
@@ -68,9 +68,9 @@ _No merges in the last 7 days._
 
 ## Pending (EQ)
 
-- **eq-shell** (279 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (285 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (230 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (232 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (99 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -100,9 +100,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1433 | 196 / 83 | 27 | 68 |
+| [eq-shell](eq/pending/eq-shell.md) | 1458 | 201 / 84 | 30 | 68 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1155 | 162 / 68 | 23 | 34 |
+| [eq-field](eq/pending/eq-field.md) | 1172 | 162 / 70 | 26 | 34 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 27 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -146,11 +146,11 @@ _Session logs mention a pattern matching a known failure below, dated after its 
 
 | Date | Session |
 |------|---------|
+| 2026-09-04 | [eq-shell FieldIframe TDZ/lint fix (PR #1752) — merged, confirmed live](sessions/2026-09-04.md) |
 | 2026-09-03 | [Document versioning: new-version upload, version history, confirm-then-push republish](sessions/2026-09-03.md) |
 | 2026-09-02 | [Live-meeting kit: sample ID sheet added, QR-at-scale question resolved by finding it already exists](sessions/2026-09-02.md) |
 | 2026-09-01 | [eq-solves-service: migration-governance review (task_38071324) closed — DB-first PR split adopted, --reconcile tooling shipped (PR #820)](sessions/2026-09-01.md) |
 | 2026-08-31 | [Removed staff's historical leave/timesheet rows fixed to show real names, not "(unknown)"](sessions/2026-08-31.md) |
-| 2026-08-30 | [SEC-35 merged, deployed, and dispatched live to both tenant planes](sessions/2026-08-30.md) |
 _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
@@ -158,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-03 15:40 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-03 20:54 UTC._
