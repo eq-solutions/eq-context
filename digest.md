@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-03 21:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-03 21:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (7)
 
@@ -52,8 +52,8 @@ _…and 262 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
+| eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 11 | 2026-09-03 |
 | eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 11 | 2026-09-02 |
-| eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 10 | 2026-09-02 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 10 | 2026-09-02 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 9 | 2026-09-02 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-02 |
@@ -158,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-03 21:08 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-03 21:30 UTC._
