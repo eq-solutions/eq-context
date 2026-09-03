@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2449,5 +2449,23 @@ a bug rather than just deleting the line.
 **From:** eq-field: site "Ask for"/"Backup" contacts now resolve via eq-shell's canonical contact_site_links (2026-08-30)
 
 - [ ] **Still not click-tested live in the actual Field UI** (My Schedule / Sites pages) — only verified via direct SQL against `field_sites`. _(added 2026-08-30)_
+
+---
+
+**From:** eq-shell: direct-URL nav to a denied Records/Staff page showed broken chrome instead of a clear message — PR #1688, merged, live (2026-08-31)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: sign in as a denied SKS apprentice, hit `/sks/staff` and `/sks/data/customer` directly, confirm "Not allowed" renders instead of broken chrome; confirm an allowed caller sees the page unchanged. _(added 2026-08-31)_
+
+---
+
+**From:** eq-field: removed staff's historical leave/timesheet rows showed "(unknown)" forever (2026-08-31)
+
+- [ ] **Not click-tested live** — no Field session/credentials in this environment. Worth a real pass: sign in as an SKS supervisor, open Leave, confirm Liam Brook-Jackson's row now shows his name instead of "(unknown)" and the warning toast no longer fires for it. eq-field [PR #848](https://github.com/eq-solutions/eq-field/pull/848) (v3.5.619), merged + live. _(added 2026-08-31)_
+
+---
+
+**From:** eq-field: site-reports RLS — prestart/toolbox_talks write gate fixed (2026-08-31)
+
+- [ ] **Not click-tested live by a real non-manager/supervisor SKS account** — no test credentials in this environment; verified instead via direct `pg_policies` before/after the fix, plus `get_advisors` (zero flags on any of the 6 tables). _(added 2026-08-31)_
 
 ---

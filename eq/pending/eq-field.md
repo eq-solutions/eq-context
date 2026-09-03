@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -200,15 +200,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Feature Toggles page — descriptions get concrete examples + mini-previews (2026-08-31)
 *Royce, screenshot of Manage → Feature Toggles: "who can see this" + "can we improve the descriptions, show examples of what each feature does." Access question answered first (manager/supervisor only via `field.manage_feature_toggles`, enforced at the nav item, the route guard, and the page's own render check — all three verified live in code) before touching anything.*
 
-- [x] **Each of the 3 toggles gets a one-line concrete example plus a small visual mock of the real control** — the credential gate's actual confirm-modal wording, and a mini roster-cell + dropdown styled from roster.js's real job/project-code pickers. Verified in an isolated harness loading the real shipped file (no live Field session available): mocks render correctly, and clicking inside one does NOT flip the real toggle — a real risk since the mocks sit inside the row's own `<label>` — while the row text and the checkbox itself still toggle normally. eq-field [PR #849](https://github.com/eq-solutions/eq-field/pull/849) (v3.5.620), squash-merged on explicit "merge" (pre-merge freshness checks done — collided twice on version number with concurrently-merging PRs #847/#848, rebased both times), confirmed live via `field.eq.solutions/sw.js`.
 - [ ] **Not click-tested live by a person** — no Core/Shell session in this environment (both tenants are Core-only; the standalone gate is dead — see this repo's own CLAUDE.md). Worth a real pass: open Manage → Feature Toggles as a supervisor, confirm the example text + mini-previews render under each row, confirm clicking inside a mini-preview doesn't flip that row's checkbox. _(added 2026-08-31)_
 - [ ] **Flagged, not actioned**: `field.manage_feature_toggles` is held by both manager AND supervisor by default, even though flipping any of these 3 switches is org-wide (changes what every other open tab/page sees on next reload) — same tier as routine "Manage" items like Email Templates. Royce's call whether to narrow to manager-only; a one-line change in `permission-matrix.js` if so. _(added 2026-08-31)_
-
----
-
-## eq-field: removed staff's historical leave/timesheet rows showed "(unknown)" forever (2026-08-31)
-
-- [ ] **Not click-tested live** — no Field session/credentials in this environment. Worth a real pass: sign in as an SKS supervisor, open Leave, confirm Liam Brook-Jackson's row now shows his name instead of "(unknown)" and the warning toast no longer fires for it. eq-field [PR #848](https://github.com/eq-solutions/eq-field/pull/848) (v3.5.619), merged + live. _(added 2026-08-31)_
 
 ---
 
@@ -1126,13 +1119,6 @@ Items when triggered:
 
 - [ ] **Not merged — needs Royce's review.** eq-field PR #851 (client + session-token + a NOT-APPLIED migration) and eq-shell PR #1690 (the companion JWT claim). Neither merges anything to production on its own; #851 is inert without #1690, and the migration inside #851 needs a separate explicit dispatch decision even after both PRs merge. _(added 2026-08-31)_
 - [ ] **14 `public.eq_*`/`eq__assert_*` Quotes/CRM RPC functions + 3 policies on ehow share the identical extra_perms-without-denied_perms gap, but are eq-shell's, not eq-field's** (confirmed via repo-wide grep — zero eq-field references). Spawned as `task_9f3eb7a8`, not built here — would extend eq-shell PR #1686's fix one layer deeper (the DB RPC layer, not just Shell's TS permission-resolution layer). _(added 2026-08-31)_
-
----
-
-## eq-field: site-reports RLS — prestart/toolbox_talks write gate fixed (2026-08-31)
-*Resolves the item flagged just above as `task_2517f0eb` (that write-up is trimmed per this file's archive rule now it's closed) — also corrected its timeline claim: the client/DB conflict was only reachable from 2026-08-30 (v3.5.610 fixed the CSS bug that had been hiding the "+ New" button), not since 2026-08-18 as first flagged. Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-31.md`.*
-
-- [ ] **Not click-tested live by a real non-manager/supervisor SKS account** — no test credentials in this environment; verified instead via direct `pg_policies` before/after the fix, plus `get_advisors` (zero flags on any of the 6 tables). _(added 2026-08-31)_
 
 ---
 

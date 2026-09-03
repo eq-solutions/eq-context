@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -75,12 +75,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-cards: white-on-sky button text failed WCAG AA everywhere it appeared — new skyAA token, 27 instances fixed across 3 PRs, deployed live (2026-08-31)
 *Flagged: `EqButtonVariant.primary`/`.hero` (the app's main shared button style) rendered white text on `EqColours.sky` at ~2.69:1 — fails WCAG AA even at the relaxed 3:1 large-text/UI-component floor, let alone the 4.5:1 normal-text bar. Computed the real contrast math for every candidate (sky/deep/skyAA/ink) against the actual text sizes EqButton and other call sites use, rendered a visual comparison, and let Royce pick the exact shade rather than silently swapping a component used on dozens of screens.*
 
-- [x] Added `EqColors.skyAA` (`#267DA6`, ~4.60:1 white-on-bg — clears AA at every text size the app uses, same blue hue family as sky/deep) to `eq_tokens.dart`/`eq_colours.dart`. Royce chose this over reusing `deep` (partial fix only, still short of 4.5:1 for normal-size text), switching to `ink` (loses the brand-blue identity), or documenting an exception (indefensible — sky fails even the 3:1 floor).
-- [x] `EqButtonVariant.primary`/`.hero` switched to `skyAA` — [PR #336](https://github.com/eq-solutions/eq-cards/pull/336).
-- [x] Found in passing while fixing the above: `connect_to_company_screen.dart`'s "Apply" button had the identical sky/white fail, missed by an earlier a11y sweep ([PR #313](https://github.com/eq-solutions/eq-cards/pull/313)) that fixed a `Radio` a few lines above it in the same file — fixed in the same PR.
-- [x] Broader sweep at Royce's request: 9 more `EqColours.sky`-as-button-background instances across auth/consent/licence-capture/admin screens (background task, folded into #336 via merge-conflict resolution against a same-day, independently-landed `main` PR that had also partially fixed the Apply button — see Notes).
-- [x] Second sweep: 14 more sky-contrast spots plus a `TextButtonTheme` default (bare `TextButton`s were inheriting Material's default blue instead of any EQ color) — [PR #339](https://github.com/eq-solutions/eq-cards/pull/339).
-- [x] Deployed live (`workflow_dispatch` → Netlify) and verified two ways: the Netlify API shows `state: ready` / `published_at` set (not just "uploaded"), and a live screenshot of `cards.eq.solutions`'s sign-in screen shows the new darker button.
 
 **Deferred:**
 - [ ] Not click-tested by a person with actual low vision or a screen reader — verified via computed contrast ratios, a rendered swatch comparison, downloaded golden PNGs, and a live screenshot, not a real assistive-tech session. _(added 2026-08-31)_

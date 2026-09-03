@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -7297,6 +7297,304 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 ---
 
 ## eq-field: Weekly Roster — Roster Overview summary card removed from default view (v3.5.653, PR #896, merged + live) (rotated 2026-09-02 — open items remain in eq-field.md)
+
+
+---
+
+## eq-shell: Resourcing rebuilt — in-place panel, readable conversation history, engagement fixes, RLS/dashboard leak closed (2026-08-30) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents to Sign — full redesign (load time + Type/Category unification), all merged live (2026-08-30) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: start_date capture at review points + Resourcing visibility nudge, merged live (2026-08-30) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: site "Ask for"/"Backup" contacts — canonical conversion shipped, migrations dispatched + verified live (2026-08-29/30) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Worker invite role never reached workers.role — Labour Hire/Apprentice/Subcontractor invites landed as Direct — built, merged, live (2026-08-26) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Permissions/nav audit — Supervisor's audit.view grant fixed, "Preview a person" made honest, is_platform_admin grants now governed (2026-08-25) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page edit resent every field on every save — PR open, blocked on unrelated CI (2026-08-25) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page now shows who hasn't signed in to Shell yet, with a filter — built, merged, live (2026-08-20) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: QR/join-code Cards signups notified nobody — admins now get the same email + roster badge the in-app connect flow already had (2026-08-18) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control gets a real ring visual + tab strip; roster now exposes real permissions instead of raw groups (2026-08-18) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control page redesigned — searchable diffed drawer for Base permissions, unified Field permissions view — both shipped, live (2026-08-17) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: dropped "custodian" wording from Plant & Equipment, now shows the assigned person's phone/email instead (2026-08-23) (rotated 2026-09-03 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: direct-URL nav to a denied Records/Staff page showed broken chrome instead of a clear message — PR #1688, merged, live (2026-08-31) (rotated 2026-09-03)
+*Deferred from PR #1686: nav links correctly hid for a denied caller, but hitting the URL directly still rendered the page's real chrome (search box, headers, filters) with the data fetch just failing or coming back empty.*
+
+- [x] **eq-shell [PR #1688](https://github.com/eq-solutions/eq-shell/pull/1688)**: `EntityBrowserPage.tsx`'s default export now picks the right permission per entity type before rendering (`entity.view` for customer/contact/site/asset, `field.view` for schedule/leave_request/team/prestart/toolbox_talk, `field.view_hours` for timesheet, `tender` stays ungated) — mirrors `entity-rows.ts`'s own CRM_ENTITIES/FIELD_ENTITIES/HOURS_GATED_ENTITIES split. `StaffPage.tsx` gained a `field.view` `<Gate>` wrapper around the renamed `StaffPageInner`, same pattern as Suppliers.tsx/LabourHireRates.tsx/ComplianceReport.tsx/gm-reports. Both render the existing "Not allowed" `eq-empty` block. `tsc -b --force`/`check:perms`/full test suite (468/470, 2 pre-existing skips)/`pnpm run build` all clean. Merged (squash `85ae80b4`), confirmed live via `published_at` (`2026-08-31T10:03:34Z`), not just the deploy record existing.
+
+---
+
+## eq-cards: product-polish audit → 3 rounds, 4 PRs, all shipped/merged/deployed live (2026-08-30 → 08-31) (rotated 2026-09-03 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-cards: white-on-sky button text failed WCAG AA everywhere it appeared — new skyAA token, 27 instances fixed across 3 PRs, deployed live (2026-08-31) (rotated 2026-09-03 — open items remain in eq-cards.md)
+
+- [x] Added `EqColors.skyAA` (`#267DA6`, ~4.60:1 white-on-bg — clears AA at every text size the app uses, same blue hue family as sky/deep) to `eq_tokens.dart`/`eq_colours.dart`. Royce chose this over reusing `deep` (partial fix only, still short of 4.5:1 for normal-size text), switching to `ink` (loses the brand-blue identity), or documenting an exception (indefensible — sky fails even the 3:1 floor).
+- [x] `EqButtonVariant.primary`/`.hero` switched to `skyAA` — [PR #336](https://github.com/eq-solutions/eq-cards/pull/336).
+- [x] Found in passing while fixing the above: `connect_to_company_screen.dart`'s "Apply" button had the identical sky/white fail, missed by an earlier a11y sweep ([PR #313](https://github.com/eq-solutions/eq-cards/pull/313)) that fixed a `Radio` a few lines above it in the same file — fixed in the same PR.
+- [x] Broader sweep at Royce's request: 9 more `EqColours.sky`-as-button-background instances across auth/consent/licence-capture/admin screens (background task, folded into #336 via merge-conflict resolution against a same-day, independently-landed `main` PR that had also partially fixed the Apply button — see Notes).
+- [x] Second sweep: 14 more sky-contrast spots plus a `TextButtonTheme` default (bare `TextButton`s were inheriting Material's default blue instead of any EQ color) — [PR #339](https://github.com/eq-solutions/eq-cards/pull/339).
+- [x] Deployed live (`workflow_dispatch` → Netlify) and verified two ways: the Netlify API shows `state: ready` / `published_at` set (not just "uploaded"), and a live screenshot of `cards.eq.solutions`'s sign-in screen shows the new darker button.
+
+---
+
+## eq-cards + eq-shell: `/auth/handoff` signup-blocker root-caused, fixed, merged, deployed live (2026-08-27) (rotated 2026-09-03 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-cards: role-assignment could hand someone suite-wide manager power with no audit trail — found, fixed, merged, live (2026-08-16) (rotated 2026-09-03 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-cards: Shell tenant auto-login bug root-caused and fixed — deployed live, needs your click-through (2026-08-04) (rotated 2026-09-03 — open items remain in eq-cards.md)
+
+
+---
+
+## eq-field: Feature Toggles page — descriptions get concrete examples + mini-previews (2026-08-31) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+- [x] **Each of the 3 toggles gets a one-line concrete example plus a small visual mock of the real control** — the credential gate's actual confirm-modal wording, and a mini roster-cell + dropdown styled from roster.js's real job/project-code pickers. Verified in an isolated harness loading the real shipped file (no live Field session available): mocks render correctly, and clicking inside one does NOT flip the real toggle — a real risk since the mocks sit inside the row's own `<label>` — while the row text and the checkbox itself still toggle normally. eq-field [PR #849](https://github.com/eq-solutions/eq-field/pull/849) (v3.5.620), squash-merged on explicit "merge" (pre-merge freshness checks done — collided twice on version number with concurrently-merging PRs #847/#848, rebased both times), confirmed live via `field.eq.solutions/sw.js`.
+
+---
+
+## eq-field: removed staff's historical leave/timesheet rows showed "(unknown)" forever (2026-08-31) (rotated 2026-09-03)
+
+---
+
+## eq-field: Cameron Tregoning's two mobile bug reports — Prestart create unreachable + roster warning leak, both fixed (2026-08-30) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Timesheets Fill Week + Approved column, plus the "OFF ≠ approved leave" display gap (2026-08-27) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: People save — dirty-field diffing, closes a live data-clobber bug (Zemi Asri, 2026-08-25) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: boot-perf — 3 of the 4 flagged scripts moved off the critical path, closes the 2026-07-28 audit item (2026-08-18) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Apprentices list showed the full company roster to any signed-in user, not just managers (2026-08-18) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: My Schedule cold-boot cache fallback, built from SKS NSW Labour usage data (2026-08-18) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: weekly digest — per-section on/off + custom intro (2026-08-18) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: sprint prep — desktop polish slice 1, Access-Model Phase 3 keys (2026-08-18) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Contacts screen skipped the rehire-rating prompt when archiving Labour Hire (2026-08-18) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Dashboard map → own page, Map hover shows names, cache-buster hotfix (2026-08-14) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Leave notification gaps closed, digest widened to 4 weeks, Email Templates pilot shipped (2026-08-14) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: site-reports RLS — prestart/toolbox_talks write gate fixed (2026-08-31) (rotated 2026-09-03)
+*Resolves the item flagged just above as `task_2517f0eb` (that write-up is trimmed per this file's archive rule now it's closed) — also corrected its timeline claim: the client/DB conflict was only reachable from 2026-08-30 (v3.5.610 fixed the CSS bug that had been hiding the "+ New" button), not since 2026-08-18 as first flagged. Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-31.md`.*
+
+---
+
+## eq-field: Teams — untick-to-remove silently didn't save, fixed (v3.5.621, PR #853, merged + live) (rotated 2026-09-03 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Weekly Roster — Roster Overview summary card removed from default view (v3.5.653, PR #896, merged + live) (rotated 2026-09-03 — open items remain in eq-field.md)
 
 
 ---

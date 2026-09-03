@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-03
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -1414,14 +1414,6 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 - [ ] **Not click-tested live** — deploy previews sit on a different domain than `core.eq.solutions`, so the production session cookie doesn't carry over and entering credentials to get past login wasn't an option. Verified instead via `tsc -b --force` (clean), eslint (only the same 3 pre-existing errors #1514 already flagged, confirmed on lines this PR didn't touch), and the login page itself rendering correctly on the deploy preview (no build regression). Worth two minutes: group by Person, confirm no "custodian" text anywhere, and that phone/email actually show for an assigned item. _(added 2026-08-23)_
 - [ ] **Table cell and item-detail-drawer still show name only, no contact info** — the ask was specifically about the Person-group header view, so the table's "Assigned to" column and the drawer's "Assigned to" row weren't touched. Easy follow-up if Royce wants contact info there too. _(added 2026-08-23)_
-
----
-
-## eq-shell: direct-URL nav to a denied Records/Staff page showed broken chrome instead of a clear message — PR #1688, merged, live (2026-08-31)
-*Deferred from PR #1686: nav links correctly hid for a denied caller, but hitting the URL directly still rendered the page's real chrome (search box, headers, filters) with the data fetch just failing or coming back empty.*
-
-- [x] **eq-shell [PR #1688](https://github.com/eq-solutions/eq-shell/pull/1688)**: `EntityBrowserPage.tsx`'s default export now picks the right permission per entity type before rendering (`entity.view` for customer/contact/site/asset, `field.view` for schedule/leave_request/team/prestart/toolbox_talk, `field.view_hours` for timesheet, `tender` stays ungated) — mirrors `entity-rows.ts`'s own CRM_ENTITIES/FIELD_ENTITIES/HOURS_GATED_ENTITIES split. `StaffPage.tsx` gained a `field.view` `<Gate>` wrapper around the renamed `StaffPageInner`, same pattern as Suppliers.tsx/LabourHireRates.tsx/ComplianceReport.tsx/gm-reports. Both render the existing "Not allowed" `eq-empty` block. `tsc -b --force`/`check:perms`/full test suite (468/470, 2 pre-existing skips)/`pnpm run build` all clean. Merged (squash `85ae80b4`), confirmed live via `published_at` (`2026-08-31T10:03:34Z`), not just the deploy record existing.
-- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: sign in as a denied SKS apprentice, hit `/sks/staff` and `/sks/data/customer` directly, confirm "Not allowed" renders instead of broken chrome; confirm an allowed caller sees the page unchanged. _(added 2026-08-31)_
 
 ---
 
