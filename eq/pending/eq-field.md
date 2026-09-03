@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: supabase.js decomposition — extracted the JWT-carrier — FIXED, merged, live (2026-09-02)
+*eq-field PR #898 (v3.5.656, same day) had bumped `scripts/supabase.js`'s file-size ratchet ceiling 1550→1600 to land an unrelated retry fix, explicitly flagging the JWT-carrier as the clean extraction candidate it was deferring. This closes that flag.*
+
+- [x] **`_mintDataJwt`/`_getDataJwt`/`_getDataActorId` + their own state moved verbatim into new file `scripts/supabase-jwt-carrier.js`.** `_actorIdEverSeen`/`_actorDropReported` (the 2026-08-26 Mark Brame audit-attribution flags) stay declared in `supabase.js` exactly where they were, referenced from the new file as a bare cross-file global — same mechanism this codebase already uses everywhere else, deliberately not restructured for zero functional benefit on security-adjacent code. `supabase.js`: 1,549 → 1,479 lines; ceiling kept at 1,600 for real headroom rather than dropped to the 1,500 default. PR #898's own retry fix merged mid-task and was ported into the new file rather than lost. eq-field [PR #899](https://github.com/eq-solutions/eq-field/pull/899) (v3.5.657), merged, confirmed live (`field.eq.solutions/sw.js` shows v3.5.657; Netlify deploy record for the merge commit shows `state: ready`/`published_at` set).
+- [x] **`tests/lazy-tab-script-guard.test.js` caught a real bug before it shipped** — the new file initially had no `<script>` tag in `index.html`, so it would never have loaded in a real browser and JWT minting would have silently broken for both tenants. Fixed before merging.
+- [x] **Full suite 38/38 green, lint/cache-buster/bundle checks clean.** Not click-tested live — standing Core-only sandbox limitation; no user-visible surface either way (identical runtime behavior by design).
+
+---
+
 ## eq-field: Roster/Editor/Schedule could look "wiped" during a slow data load — FIXED, merged, live (2026-09-02)
 *Royce, live on Core+SKS: "we filled this in this morning - where did it go" on Edit Roster, then again on a different week moments later — a cell visibly re-populated mid-conversation, matching his own instinct ("I think this happened previously... is it a connectivity thing?"). Confirmed nothing was ever lost: this was a rendering race, not a write-path bug.*
 
