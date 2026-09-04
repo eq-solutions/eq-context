@@ -16,6 +16,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-field: dead "Shell staff auto-mode" block removed — decided, built, merged, live (2026-09-05) (fully closed 2026-09-05)
+*A pre-written finding handed off at session start: index.html's v3.5.138 block read a sessionStorage key that looked like it might never have been set. Checked for duplicate work first (worktree list, full branch list, peer session transcripts) — clean, no live collision.*
+
+- [x] **Root-caused, not assumed: dead the day it shipped, not broken by a later rename.** `git log -S` across every branch, all history, found the bare `eq_role` sessionStorage key this block read was never once written anywhere in this repo. The same commit (`1ff0309d`, v3.5.138) both introduced the feature and is the only commit that ever touched it. The real key (`eq_shell_role`) and real in-memory role source (`window.EQ_SESSION.app_metadata.eq_role`) already existed and were correctly used elsewhere (`auth-shell-handoff.js` #561, `permissions.js`).
+- [x] **Found a sibling dead path to the same feature, already deliberately left dead by a prior session.** index.html's own changelog documented `auth-staff-ts-gate.js`'s `checkStaffTsLogin()` as unreachable behind the Core-only gate. Presented revive-vs-delete-vs-hold via `AskUserQuestion`, with that precedent and the WorkerHome-in-Shell supersession context; Royce chose delete.
+- [x] **Real merge-time conflict, resolved properly rather than forced through.** `main` had moved by the time "merge" was said: [PR #917](https://github.com/eq-solutions/eq-field/pull/917) (Royce co-authored) had independently found the identical dead-key bug while fixing this exact block's fire-and-forget `initStaffTsApp()` call, and explicitly punted the keep-or-delete decision as "its own task, not this change's scope" — this closes that task. Rebased onto `origin/main`, took the delete side entirely on the real `initApp()` conflict, renumbered past #917's version claim (both branches' version-stamp files had auto-merged silently to the same number with no conflict flagged), re-verified, force-pushed, squash-merged.
+- [x] **eq-field [PR #919](https://github.com/eq-solutions/eq-field/pull/919) (v3.5.676), merged and confirmed live** — `field.eq.solutions/sw.js` serves v3.5.676. Verified without live click-testing (standing Core-only sandbox limitation, same as every eq-field entry in this file): `check-cache-busters.mjs` clean, `node --check` on the exact edited script block, a local boot test (title + graceful error UI render correctly, no new console errors). Nothing to click-test either way — the removed block never rendered anything different, live or not. Full technical detail: `eq/changelog/eq-field.md` (2026-09-05 entry), `sessions/2026-09-05.md`.
+
+---
+
 ## eq-shell: server-side lint noise fixed — react-refresh/jsx-a11y on the two PDF renderers (2026-09-01) (fully closed 2026-09-01)
 
 - [x] **PR #1721 merged** — `document-certificate-pdf.tsx` and `quote-pdf.tsx` were failing `react-refresh/only-export-components` (a Fast-Refresh rule that doesn't apply to server-side Netlify Functions) plus two dead `jsx-a11y/alt-text` disable-comments referencing a plugin never registered in `eslint.config.js`. Scoped the rule off `netlify/functions/**` and dropped the dead comments. Merged 2026-09-01 10:37 UTC.
