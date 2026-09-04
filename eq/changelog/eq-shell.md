@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
@@ -14,6 +14,7 @@ status: live
 - During that test, caught a `rendered` handoff step in the console that hadn't been built by this session — traced to [eq-shell PR #1765](https://github.com/eq-solutions/eq-shell/pull/1765) (`d5ee79a5`), which had already merged and gone live (published 2026-09-04T20:50:44Z): EQ Field now posts its own `rendered` signal once `initApp()` settles, and Shell's post-accepted draw check gates on that instead of the iframe's `load` event — the durable fix flagged in the 2026-09-04 entry as spun off to a separate task (`task_043e28eb`), done same day. The live test independently observed a real `rendered` event fire during a normal (non-stalled) load, confirming it's working on real traffic.
 - Also found [eq-shell PR #1764](https://github.com/eq-solutions/eq-shell/pull/1764) (`d434a407`) had merged, bounding the remaining 7 of `verify-shell-session.ts`'s 11 reads that #1736 left unbounded — the root cause identified for EQ-SHELL-T/V. Confirmed live on request (published 2026-09-04T21:01:17Z, `verify-shell-session` still answering correctly post-deploy). Not yet confirmed to have stopped EQ-SHELL-T/V recurring — needs a few days against Sentry, tracked as a new pending item to check back 2026-09-08.
 - Full detail: `eq/pending/eq-shell.md` (2026-09-04/05 entry, updated), `sessions/2026-09-05.md`.
+- **Addendum, same session:** the EQ Field-side half of this fix is [eq-field PR #917](https://github.com/eq-solutions/eq-field/pull/917) (v3.5.675) — Field's `initApp()` boot caller now posts `{ kind: 'rendered' }` once it settles, or `{ kind: 'render-failed', detail }` if it throws, with `caps: ['rendered']` on every handoff message so Shell can tell a build that sends the signal from an older one still served out of a stale service-worker cache. Full mechanics in `eq/changelog/eq-field.md`. #917 also flagged (didn't fix) a dead "Shell staff auto-mode" branch found in the same file — removed separately as [eq-field PR #919](https://github.com/eq-solutions/eq-field/pull/919) (v3.5.676), its own full write-up also in `eq/changelog/eq-field.md`.
 
 ## 2026-09-05 (Sentry EQ-SHELL-Z follow-up — Collin Toohey's duplicate identity fully deleted, not just deactivated)
 - The 2026-08-02 fix (`shell_control.audit_log` 4186) deactivated stub account `38859cae` + its tenant membership but left the duplicate `public.workers` row `bf26e8c4` in place, assessed "harmless, no staff_id link." Re-verified live 2026-09-05: still zero references anywhere across jvkn/ehow/zaap — but `auth.sessions` showed a new session minted on the stub 2026-09-04T02:18:07, 20s after a normal session on Collin's real account, same device/IP. The 2026-08-07 `handle_phone_dedup`/`link_pending_invites` trigger fix (PR #1270/#1272/#1273) prevents a *new* duplicate row on a future collision but doesn't stop this *already-existing* dormant account from still authenticating in parallel with the real one.
