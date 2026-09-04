@@ -44,6 +44,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-shell: security register reconciled — 2 items still open + SEC-73 ticked, all with PRs up (2026-09-04)
 
 - [ ] **SEC-71 — 2FA off for everyone by hard-coded constants (P1, deliberate).** `_shared/totp.ts:33` + `_shared/token.ts:638`, #1735/#1737, Royce's 2026-09-01 call. Review date decided 2026-09-04: **2026-12-04** (`/decide` pass) — on eq-context [PR #204](https://github.com/eq-solutions/eq-context/pull/204), open, needs merge. When it comes back: env flag not constant, platform admins first, mobile enrolment fixed before workers. _(added 2026-09-04)_
+- [ ] **SEC-74 — `resolvePrincipal()` fails open on `tenant_role_overrides` across ~124 functions (P2, deliberate).** Same root cause as SEC-72, left out of that fix and its follow-ups ([#1762](https://github.com/eq-solutions/eq-shell/pull/1762)/[#1767](https://github.com/eq-solutions/eq-shell/pull/1767)/[#1768](https://github.com/eq-solutions/eq-shell/pull/1768)) on purpose. Royce's 2026-09-05 call, made after the trade-off was presented directly: leave as-is — fixing it broadly risks turning a narrow, rarely-hit gap into tenant-wide 403s during a transient database blip, since most of those functions are low-traffic and rarely hold a warm cached-denials tier. Review_by 2026-12-05. Full reasoning in `ops/security-register.md` SEC-74. _(added 2026-09-05)_
 
 ---
 
