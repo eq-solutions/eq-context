@@ -8,13 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 22:42 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
-
-## Since last refresh (2026-09-04 22:35 UTC → 2026-09-04 22:42 UTC)
-
-- Merged: eq-solves-intake [#122](https://github.com/eq-solutions/eq-solves-intake/pull/122) fix(intake-demo): land on the real product screen by default
-- Merged: eq-solves-intake [#121](https://github.com/eq-solutions/eq-solves-intake/pull/121) fix(intake-demo): clear remaining react-hooks/set-state-in-e
-- ⚠ Needs you: 8 → 12 (new items)
+_2026-09-04 22:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (12)
 
@@ -116,7 +110,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1414 | 199 / 78 | 27 | 69 |
+| [eq-shell](eq/pending/eq-shell.md) | 1407 | 199 / 78 | 21 | 69 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1234 | 168 / 71 | 36 | 39 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 496 | 75 / 22 | 0 | 30 |
@@ -174,4 +168,4 @@ _[sessions/](sessions/) · 5 shown_
 ? Inconclusive — the honesty check did not complete this run.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 22:42 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 22:48 UTC._
