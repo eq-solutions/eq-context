@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-03 (PR #1755, MERGED, LIVE — Tier 2: lazy-load CardsIframe and ServiceIframe)
+- Completes the Shell→Field load-time investigation's 5-PR set (#1747/#1749/#1750/#1752/#1755). Deliberately deferred on 2026-09-02 — smaller payoff than Tier 1, more to get subtly wrong since both components render outside the shared `<Suspense>` via the pre-warm "iframe keeper" block rather than through `<Routes>`. Re-scoped and built once the real post-fix Sentry numbers came back better than expected (`/sks/field` pageload avg 10.7s→3.27s, -69%) — Royce chose to finish the set anyway with the honest heads-up that the remaining win was small.
+- `CardsIframe`/`ServiceIframe` converted from eager default-export imports to `lazy()`; each keeper's render call site gets its own `<Suspense>` (confirmed via grep neither is imported anywhere else in `src/`, no fan-out). A `<Suspense>` fallback rendering while `visibility:hidden` (the pre-warm case) is simply invisible — no behavior change there.
+- Real measured result: `CardsIframe` (2.84kB/1.41kB gzip) and `ServiceIframe` (6.20kB/2.31kB gzip) now build as their own chunks; main entry chunk 70.99kB/19.58kB gzip (post-Tier-1) → 69.99kB/19.35kB gzip. Small, as expected going in.
+- `pnpm run build` clean, `pnpm test` 480/482 (2 pre-existing skips), `eslint` clean. Squash-merged `a3508c60`, confirmed live — `state:ready`, `published_at` set 2026-09-03 21:14 UTC.
+
 ## 2026-09-03 (PR #1754, MERGED — quotes search no longer silently scoped to the active pipeline tab)
 - `eq_list_quotes` ANDs `p_stage` and `p_search` server-side (confirmed live against ehow, migration 0300), and `selectedTabs` defaults to `in-progress` only with no saved tab preference — a search hit sitting in another stage (draft, submitted, etc.) read as "not found" with no indication why. Reported via Matt Miller (SKS manager), unable to find draft quotes SKS-17964/18000/18001 while on the default "In Progress" tab.
 - Second, independent narrowing found beyond the original report: `displayedQuotes` (feeds both list and board view) re-filters by `activeStages`, derived purely from `selectedTabs` regardless of search — fixing only the RPC call would have left this filter silently discarding the wider result set again.

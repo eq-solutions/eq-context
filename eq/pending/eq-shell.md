@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -1441,18 +1441,9 @@ PR #1736 (auth-stall fix + 2 more bugs found on review) merged and live; the one
 
 ---
 
-## eq-shell: Shell→Field load-time investigation — token-exchange parallelized, Tier-1 bundle split, staged iframe pre-warm (PRs #1747/#1749/#1750, all merged + live)
-*Continuation of the eq-field boot-latency fix (`eq-field.md`, same date) — Sentry showed the single biggest number in the whole investigation was eq-shell's own `token-exchange` function, averaging 2.65s (p95 5.25s) over a 7-day baseline, not just SKS go-live day. Three fixes landed in sequence, each on Royce's explicit go:*
-*1. **token-exchange.ts (#1747)** — was awaiting ~7 sequential Supabase reads one at a time (user → tenant → module-entitlement → branding → worker → perms). Collapsed to 2 concurrent batches (`Promise.allSettled` for the 4 independent gating/branding reads, `Promise.all` + `withDeadline` for the 3 best-effort reads) — same fix shape as `verify-shell-session`'s own #888/#1736 parallelization from earlier the same day. No gating check's logic, order, or status code changed.*
-*2. **Tier-1 lazy-loading (#1749)** — a follow-up Sentry pageload-trace pull found the main app bundle (not yet route-split, unlike the 26 admin/ops pages already lazy) taking 1.5-3.5s to load. `StaffPage`/`CustomersPage`/`QuotePortal`/`LabourHirePortal` converted to `React.lazy()`. Real measured result: main entry chunk 165.83→70.99 kB raw (-57%), 45.94→19.58 kB gzip (-57%).*
-*3. **Staged iframe pre-warm (#1750)** — a real pageload trace showed Shell eagerly pre-warming Field, Cards, AND Service simultaneously 2.5s after login (by design, for fast subsequent nav) — one `/sks/field` load triggered two token-exchange calls and a Cards OTP mint at once. Royce: "field is going to be the main thing people use, service and cards not so much... stagger a prewarm to focus on field and then if that finishes we prioritise another section." Field still warms on the same 2.5s trigger; Cards/Service now wait for a derived `cardsServiceReady` (Field settled, OR not enabled for this tenant/user, OR a 20s safety cap) instead of firing at the same instant.*
-*Full detail: `eq/changelog/eq-shell.md`, `sessions/2026-09-02.md`.*
+## eq-shell: Shell→Field load-time investigation — token-exchange parallelized, Tier-1+2 bundle split, staged iframe pre-warm (PRs #1747/#1749/#1750/#1752/#1755, all merged + live)
 
-- [ ] **Re-pull Sentry's `token-exchange` p50/p95/avg and the `/sks/field` pageload average a day or two out** — the real, honest way to confirm these fixes actually moved the numbers. Neither repo has before/after instrumentation beyond Sentry's own aggregates. _(added 2026-09-02)_
-- [ ] **Tier 2 lazy-loading (CardsIframe/ServiceIframe) — scoped, not built.** Deliberately deferred: both render outside the normal `<Suspense>` flow via the pre-warm "iframe keeper" mechanism, driven by effect/state timing — needs new boundaries and dedicated QA of the pre-warm interaction, smaller payoff than Tier 1, more to get subtly wrong. _(added 2026-09-02)_
 - [ ] **`isModuleEnabledForTenant()`'s 2 sequential internal queries — real additional win, not pursued.** Shared helper, 12+ call sites — collapsing to 1 query is a bigger, separate change than this session's scope. _(added 2026-09-02)_
 - [ ] **`_shared/supabase.ts` imports the full `@supabase/supabase-js` SDK** (heavier cold start than eq-field's deliberate plain-`fetch()` functions) — shared by 13+ other Netlify functions, cross-cutting, not touched. _(added 2026-09-02)_
-- [x] `pickTenant` TDZ lint error in `FieldIframe.tsx` — found while working here, spawned as a background task, fixed and merged same day (PR #1752, live). See `eq/changelog/eq-shell.md`. _(added 2026-09-02, closed 2026-09-02)_
-- [ ] **The original ~4.6s gap in Shell's pageload average was never fully explained** — TLS setup (~1.6s) + token-exchange (~2s) + the pre-split main bundle (1.5-3.5s) only accounted for about 6.1s of the 10.7s average. The bundle split and staged pre-warm likely close some of this (less bundle weight, less concurrent competition) but neither was purpose-built to explain the remaining gap — worth a fresh trace pull once the dust settles to see what, if anything, is still unaccounted for. _(added 2026-09-02)_
 
 ---
