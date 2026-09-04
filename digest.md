@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 22:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 23:00 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (12)
 
@@ -25,7 +25,7 @@ _2026-09-04 22:51 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (272)
+## 🙋 Waiting on you (273)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -41,7 +41,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live by a person** — every PR this session verified via `pnpm run build`/`eslint`/`pnpm run test`/live DB queries only, never an actual signed-in click-through. Worth a real pass: upload a document, assign/change its category from each of the 3 tabs, create a new reference-only category via the new toggle, confirm the routing actually changes. _(added 2026-08-30)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, the full test suite, and a merge-readiness audit reproducing the production build end-to-end. Worth a real pass: approve a Cards application with a start date set and confirm it lands; add someone via Shell's "Add to roster" with a start date and confirm it lands; confirm the Resourcing page's new count and filter tab work. _(added 2026-08-30)_
 - **eq-shell** · **PR #1675 (Cards-approve dedup fix) not click-tested live** — `findExistingStaff()`'s active-only matching bug (this section's earlier entry) is now fixed and merged, but no real end-to-end test: deactivate a Cards worker's staff row, re-approve a second application for the same person, confirm reactivation instead of a duplicate. No Cards/Shell browser session available in this environment. _(added 2026-08-30)_
-_…and 260 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 261 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -78,10 +78,10 @@ _2 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (275 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (274 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (97 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (102 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -110,10 +110,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1407 | 199 / 78 | 21 | 69 |
+| [eq-shell](eq/pending/eq-shell.md) | 1416 | 199 / 77 | 19 | 69 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1234 | 168 / 71 | 36 | 39 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 496 | 75 / 22 | 0 | 30 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 513 | 78 / 24 | 0 | 30 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 162 | 14 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
@@ -168,4 +168,4 @@ _[sessions/](sessions/) · 5 shown_
 ? Inconclusive — the honesty check did not complete this run.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 22:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 23:00 UTC._
