@@ -14,6 +14,15 @@ SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 GH_TOKEN     = os.environ["GH_TOKEN"]
 NETLIFY_TOKEN = os.environ.get("NETLIFY_TOKEN", "")
+# Supabase Management API personal access token (sbp_...), the same secret
+# security-audit.yml and check_shared_object_drift.py already use. Optional:
+# without it the active-users pulse row renders as 'unavailable'.
+SUPABASE_ACCESS_TOKEN = os.environ.get("SUPABASE_ACCESS_TOKEN", "")
+JVKN_REF = "jvknxcmbtrfnxfrwfimn"   # eq-canonical, the control plane Shell signs in against
+MGMT_API = "https://api.supabase.com/v1/projects"
+# api.supabase.com sits behind Cloudflare, which 403s the default urllib/requests
+# User-Agent ("error code: 1010") — same fix as scripts/security_audit.py.
+MGMT_USER_AGENT = "eq-context-suite-state (+https://github.com/eq-solutions/eq-context)"
 TODAY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 REPOS = ["eq-service", "eq-shell", "eq-field", "eq-cards", "eq-solves-intake"]
@@ -135,6 +144,50 @@ def fetch_maintenance_checks_pulse():
     )
     resp.raise_for_status()
     return resp.json()
+
+
+def fetch_active_users_7d():
+    """Shell accounts that signed in during the last 7 days, read from the
+    control plane: jvkn `shell_control.users.last_login_at` (kept current by
+    eq-shell's 'Shell login timestamp sync' scheduled workflow).
+
+    Until 2026-09-04 this row was hard-coded as "blocked" because the design
+    pointed it at `service.profiles.last_login_at` on ehow -- a column Shell
+    SSO never writes (0-of-5 rows, verified live 2026-09-01 and 2026-09-04).
+    The real number was on jvkn the whole time (46 of 85 accounts in the
+    go-live week); nothing here could reach jvkn because the only DB
+    credential in CI is ehow's service-role key. The Management API
+    (`POST /v1/projects/{ref}/database/query`, the same endpoint
+    scripts/check_shared_object_drift.py uses) gets there with the
+    SUPABASE_ACCESS_TOKEN secret this repo already holds -- no new credential.
+    Read-only SQL, a single count, no rows returned.
+
+    Returns an int, or None when the token is absent or the call fails.
+    None renders as 'unavailable' -- never a false 0 (F4)."""
+    if not SUPABASE_ACCESS_TOKEN:
+        print("  WARNING: SUPABASE_ACCESS_TOKEN not set -- active-users pulse row unavailable",
+              file=sys.stderr)
+        return None
+    sql = ("select count(*) as n from shell_control.users "
+           "where last_login_at >= now() - interval '7 days'")
+    try:
+        resp = requests.post(
+            f"{MGMT_API}/{JVKN_REF}/database/query",
+            headers={"Authorization": f"Bearer {SUPABASE_ACCESS_TOKEN}",
+                     "User-Agent": MGMT_USER_AGENT,
+                     "Content-Type": "application/json"},
+            json={"query": sql},
+            timeout=30,
+        )
+        if not resp.ok:
+            print(f"  WARNING: Supabase Management API {resp.status_code} on the jvkn "
+                  f"active-users query -- {resp.text[:200]}", file=sys.stderr)
+            return None
+        rows = resp.json()
+        return int(rows[0]["n"]) if rows else None
+    except Exception as e:
+        print(f"  WARNING: active-users pulse query failed: {e}", file=sys.stderr)
+        return None
 
 
 def render_field_block(fc, today):
@@ -368,6 +421,7 @@ if __name__ == "__main__":
         ("toolbox_talks_7d", "Toolbox talks created"),
         ("site_audits_7d", "Site audits created"),
         ("nonsystem_writes_7d", "Non-system writes (`audit_log`)"),
+        ("active_users_7d", "Active users (Shell sign-ins, jvkn)"),
     ]
     prev_pulse = {}
     for key, label in PULSE_ROWS:
@@ -583,13 +637,12 @@ if __name__ == "__main__":
     # mark its own claim verified. md-health.yml's pulse-promotion-guard check
     # enforces that on every PR; direct pushes here are always this same bot.
     #
-    # One signal from the original plan (system/substrate-plan-v2.md P3) is
-    # deliberately NOT computed: "active users, 7d" needs
-    # service.profiles.last_login_at, which is 0-of-5 populated (verified live
-    # 2026-09-01, unchanged since the 2026-07-12 design doc already flagged it
-    # "unmeasurable"). Reporting a signal with zero real data behind it would
-    # be exactly the kind of over-read this guard exists to prevent -- so it's
-    # reported as blocked, not as a false 0.
+    # "Active users, 7d" (system/substrate-plan-v2.md P3) was reported as a
+    # hard-coded "blocked" row until 2026-09-04 because the design pointed it
+    # at service.profiles.last_login_at on ehow, which Shell SSO never writes.
+    # The real signal lives on jvkn (shell_control.users.last_login_at) -- see
+    # fetch_active_users_7d(). Same F4 discipline: token absent or query failed
+    # renders as 'unavailable', never as a false 0.
     #
     # "Maintenance checks created/completed" WAS blocked the same way (needed
     # a windowed RPC against service.maintenance_checks, which isn't
@@ -607,6 +660,7 @@ if __name__ == "__main__":
             "toolbox_talks_7d": fetch_pulse_signal("toolbox_talks", 7),
             "site_audits_7d": fetch_pulse_signal("site_audits", 7),
             "nonsystem_writes_7d": fetch_pulse_signal("audit_log", 7, exclude_system_who=True),
+            "active_users_7d": fetch_active_users_7d(),
         }
         print(f"  pulse: {pulse}")
 
@@ -614,7 +668,8 @@ if __name__ == "__main__":
         any_flip = any(flip for _, _, _, flip in rendered)
 
         pulse_rows = "\n".join(
-            f"| {label} | {value} | {flip} |" for _, label, value, flip in rendered
+            f"| {label} | {'unavailable' if value is None else value} | {flip} |"
+            for _, label, value, flip in rendered
         )
         pulse_block = f"""## Product Pulse (as of {TODAY})
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
@@ -624,7 +679,6 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
 {pulse_rows}
-| Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified {TODAY}) — see `ops/pending.md` |
 
 {"⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**" if any_flip else "_No flips this run._"}"""
 

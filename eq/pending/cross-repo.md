@@ -1,13 +1,28 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-05
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
 ---
 
 # Cross-Repo — Pending
+
+---
+
+## eq-shell + eq-field + eq-context: EQ Core go-live week review — what no chip owns (2026-09-04)
+
+*Full review of the go-live week (Mon 31 Aug – Fri 4 Sep) published as an artifact — https://claude.ai/code/artifact/35d31742-59e5-49c5-839a-1877fc1ed35e — scored traffic 8, code 6, security 6, UI/UX 5, overall 6 out of 10. Headline: Shell accounts signing in 9 → 46 of 85, people in EQ Field via Core 58 → 106, SKS NSW Labour 50 → 24 with timesheet saves 618 → 153 while EQ Field went 10 → 669. Four engineering follow-ups were spun off as chips and started by Royce the same day: Field-panel stall (`task_7434eb43`), fail-closed denials (`task_b006ae9d`), CRM/purge/rate-limit fixes (`task_87f2c896`), register refresh (`task_ed155ebf` — landed as eq-context PR #201). The items below are what no chip owns; `sessions/2026-09-04.md` (r) has the narrative.*
+
+- [ ] **Royce to hand-check `core.eq.solutions/sks/field`** on a phone and a laptop, twice each — the Field panel rendered blank 4/4 times in his own signed-in session at 18:02–18:06 AEST (iframe mounted, correct `eq-field.netlify.app/?tenant=sks#…` src, white after 8/10/10/20 s, no spinner or fallback card; the tab stopped answering screenshots after the 20-s wait while the outer page stayed responsive). Sentry EQ-SHELL-T/V (`auth-stall`, culprit `/sks/field`) fired 3 more times after the #1736 fix (3 Sep 08:00, 4 Sep 11:02 and 12:17 AEST). 39 of the 50 people on Core that week went to `/sks/field`. Confirms or denies the P1 before more staff are onboarded. _(added 2026-09-04)_
+- [ ] **Royce's call on the 2FA posture** — off for everyone, platform admins included, since 1 Sep by hard-coded constants (`totp.ts:33` #1735, `token.ts:638` #1737), registered as SEC-71 via PR #201 with expiry "Royce to set". Options: off until a named date / back on for platform admins + managers first (`TOTP_ENFORCED_ROLES` at `totp.ts:17` is currently dead code) / back on for all. Re-enabling is a code deploy either way. _(added 2026-09-04)_
+- [ ] **Hide or relabel "Two-factor security" in the sidebar and `/settings/2fa` while 2FA is off** — the page says "You're already set up" and offers backup codes while no sign-in asks for a code; 3 people visited it in go-live week. Trivial eq-shell change, gated on the decision above. _(added 2026-09-04)_
+- [ ] **Home tile "— overdue for service" reads as missing data** — the card beside it says "Nothing overdue in Service"; show 0 or that copy. eq-shell, tiny. _(added 2026-09-04)_
+- [ ] **A second look on auth/security PRs before merge — needs your call** — 42 of the week's 89 eq-shell PRs merged within 10 minutes of opening (median 11.9 min), 0 recorded reviews, 16 security/auth PRs with no test change, ~1,600 lines of rewritten SQL function bodies with no automated test path. Even an asynchronous review of anything touching `netlify/functions/_shared/token.ts`, `totp.ts`, `permissions.ts` or `tenant-migrations/` would have caught the fail-open deadline and the four-slice denial rollout. _(added 2026-09-04)_
+- [ ] **Switch-off date for SKS NSW Labour — needs your call** — the go-live week shows retirement happening on its own (people −52%, page views −46%, timesheets −75%). SEC-1 (P0) closes the day it is off. _(added 2026-09-04)_
+- [ ] **Rollout data hygiene — watch, not fix** — memberships held by non-members rose 13 → 15 during the week (EQ-SHELL-1V), 27–32 workers never invited past grace (EQ-SHELL-X), 2–4 dangling `cards_worker_id` pointers (EQ-SHELL-14), and 46 of 74 staff (62%) have no `start_date`, which silently exempts them from Resourcing's overdue check. The Sentry monitors already cover the first three; the start-date capture decision is the 2026-08-30 eq-shell pending item, unchanged. _(added 2026-09-04)_
+- [ ] **PostHog cross-app identity still not unified** (deferred since `eq/go-live-runbook.md`, June) — "161 visitors" in the weekly digest is ~85 real accounts, and Field logs every page as `/`. Every project-wide PostHog number is an overcount until this is fixed; per-host HogQL over `$pageview` and jvkn `shell_control.users.last_login_at` are the honest sources meanwhile. _(added 2026-09-04)_
 
 ---
 

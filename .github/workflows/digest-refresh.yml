@@ -60,6 +60,10 @@ jobs:
       - name: Generate digest.md
         env:
           GH_TOKEN:           ${{ secrets.EQ_CONTEXT_PAT || secrets.GITHUB_TOKEN }}
+          # Read-only fallback when the PAT is set but dead (fine-grained PATs
+          # expire): covers eq-context itself + the public repos, and lets the
+          # script flag the rejection instead of rendering "unknown" everywhere.
+          GH_FALLBACK_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
           NETLIFY_TOKEN:      ${{ secrets.NETLIFY_TOKEN }}
           SENTRY_AUTH_TOKEN:  ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: python .github/scripts/refresh_digest.py
