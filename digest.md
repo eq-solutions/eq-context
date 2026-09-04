@@ -8,10 +8,11 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 02:05 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 04:13 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (8)
 
+- 🔴 **Substrate drift** — DRIFT: deploy EQ Service (https://service.eq.solutions): claimed LIVE but reality looks DEAD
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
@@ -20,7 +21,7 @@ _2026-09-04 02:05 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (274)
+## 🙋 Waiting on you (275)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -36,7 +37,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
 - **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
-_…and 262 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 263 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -53,10 +54,10 @@ _…and 262 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 2](https://eq-solutions.sentry.io/issues/138175643/) | 13 | 2026-09-03 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 12 | 2026-09-04 |
 | eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 12 | 2026-09-03 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 11 | 2026-09-04 |
+| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 11 | 2026-09-04 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 11 | 2026-09-03 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 10 | 2026-09-04 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-02 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 4 | 2026-09-02 |
 | eq-field | [ReferenceError: _renderRosterOverviewCard is not defined](https://eq-solutions.sentry.io/issues/144372461/) | 1 | 2026-09-02 |
@@ -70,7 +71,7 @@ _No merges in the last 7 days._
 
 - **eq-shell** (285 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (232 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (235 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (99 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -102,7 +103,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1458 | 201 / 84 | 30 | 70 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
-| [eq-field](eq/pending/eq-field.md) | 1172 | 162 / 70 | 26 | 39 |
+| [eq-field](eq/pending/eq-field.md) | 1190 | 164 / 71 | 31 | 39 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 30 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
@@ -155,7 +156,7 @@ _[sessions/](sessions/) · 5 shown_
 
 ## Substrate honesty
 
-? Inconclusive — the honesty check did not complete this run.
+✗ Drift detected — see **Needs you** above. Source: `scripts/substrate_honesty.py`.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 02:05 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 04:13 UTC._
