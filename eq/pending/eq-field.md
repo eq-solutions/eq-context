@@ -13,6 +13,38 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: supervisors now see every crew's Timesheets/Leave by default, not just their own — FIXED, merged, live (2026-09-04)
+*Royce, live: David Boyd (Supervisor/Leading Hand, member of "Amazon Syd 53" + "Vans" only) opened Timesheets and saw several people on other crews (CT Team, Equinix) render as empty "+Add" cells. Verified against ehow directly before touching anything — their hours were fully submitted the whole time (Dylan Lieu, Jessica Robinson, Marcus De La Fuente, Terry Su, Tara Demamiel all fully entered), just excluded from David's own crew-scoped read.*
+
+- [x] **Confirmed not a bug — v1.7's crew-scoping model (2026-07-22) working exactly as designed.** `field.view_all_crews` was manager-only; a supervisor's Timesheets/Leave reads are filtered (`crewFilterFragment`, `permissions.js`) to just the crews they run/belong to. David's crews don't include CT Team or Equinix, so those people's real, submitted hours were silently excluded from his fetch entirely — rendering as indistinguishable-from-"not done yet" empty cells.
+- [x] **Royce's call this session, reversing that 2026-07-22 default:** "supervisors need to be able to see all employees and filter by teams — our teams change dynamically, it's easier if they can see everyone." `permission-matrix.js` v2.9 adds `field.view_all_crews` to the `supervisor` role (was manager-only). No other logic changed — the existing manager-tier code path (unscoped fetch, team pills narrow the *display*) now applies to supervisors too. Per-person Shell overrides can still narrow an individual supervisor back down if ever needed.
+- [x] **`tests/crew-scoping.test.js` reworked, not weakened** — its ~34 existing tests all exercise the crew-scoping *algorithm* itself (team unions, fail-open, the pill override), which is unchanged; `reset()` now strips the new grant back out of the loaded matrix by default so those tests keep proving the algorithm works correctly for a supervisor who doesn't hold it (still reachable via a Shell override). 2 new tests confirm the grant itself against the real, unmodified matrix. 36/36 passing.
+- [x] eq-field [PR #910](https://github.com/eq-solutions/eq-field/pull/910) (v3.5.668 — renumbered from v3.5.667 on rebase, same collision-heavy day as every other PR below), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.668).
+- [ ] **Real privacy tradeoff, said plainly, not relitigated:** every SKS employee's timesheet hours AND leave-request details are now visible to every supervisor org-wide, not just their own crew's chain. Royce made the call explicitly, aware of the tradeoff — recorded here so it's on the record, not just in a commit message. _(added 2026-09-04)_
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: sign in as a supervisor (not a manager) and confirm Timesheets/Leave now show every crew, with the team pills still narrowing correctly. _(added 2026-09-04)_
+
+**Notes:**
+- Resolves the crew-scoping question this file itself flagged and deferred on 2026-09-02 (see "approved leave not appearing on Weekly Roster" below) — that entry's "if the person checking isn't a full manager, check crew-scoping" note can no longer explain a missing row for any supervisor going forward.
+- Same session also shipped My Schedule's "For Workbench" line (2 entries below) — diagnosing David's Timesheets report is what surfaced the crew-scoping gap in the first place.
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entry) and `sessions/2026-09-04.md`.
+
+---
+
+## eq-field: My Schedule's "For Workbench" line — shows the job number(s) AND hours actually logged in Timesheets, not just the planned roster job — FIXED, merged, live (2026-09-04)
+*Royce, from a screenshot: Cameron Tregoning's My Schedule showed no job number for any day, while his Timesheets grid (same week) showed real logged job numbers (28120, and a split day 28101/28165). Investigated before building: confirmed live these are two genuinely separate fields — My Schedule's job line was always the PLANNED job (a roster pin or a site's linked Project, `resolveCellJob()`), which most sites don't have configured; Timesheets' job number is freely typed at time of logging hours, with no link back to the roster at all.*
+
+- [x] **First pass (Royce's explicit ask): show Timesheets' actual logged job number(s) on My Schedule too, labelled "For Workbench"** so a worker can see what to key into the external payroll system without opening Timesheets. Additive — the existing planned-job line is untouched, a day with nothing logged shows nothing extra. New `loggedJobsForDisplay()` helper (`roster.js`) parses the same packed `"JOB:hrs|JOB:hrs"` grammar `timesheets.js` itself uses. eq-field [PR #903](https://github.com/eq-solutions/eq-field/pull/903) (v3.5.661), merged, live.
+- [x] **Second pass, same day (Royce: "We need to show the hours aswell for each day"):** a split day showed both job codes but not which hours went to which — still needed a trip into Timesheets to check. `loggedJobsForDisplay()` extended to also carry hours per job (single bare job reads the day-total field; a split day carries each segment's own hours inline, matching `timesheets.js`'s own parse exactly). Line now reads e.g. "🧾 For Workbench: 28101 (4h) · 28165 (4h)". eq-field [PR #907](https://github.com/eq-solutions/eq-field/pull/907) (v3.5.665 — renumbered from v3.5.663 on rebase), merged, live.
+- [x] **8 new tests** (`tests/schedule-workbench-job.test.js`) cover single-job, half-hour values, split days, the same-job-typed-twice-sums-its-hours edge case, and empty/malformed-segment cases.
+- [ ] **Known, deliberate limitation:** this line mirrors *whatever the worker already typed* into Timesheets — a mistyped job number or wrong hours there gets repeated back here too. It's a display mirror, not a validator. _(added 2026-09-04)_
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: open My Schedule for someone with a logged timesheet job (or a split day) and confirm the line renders correctly. _(added 2026-09-04)_
+
+**Notes:**
+- Diagnosing this feature request against a real user (David Boyd, Timesheets) is what led to the crew-scoping fix above, in the same session.
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entries) and `sessions/2026-09-04.md`.
+
+---
+
 ## eq-field: file-size ratchet convergence — roster.js + leave.js decomposed, 4 files still near-ceiling (2026-09-04)
 
 - [ ] **Merge decision on eq-field [PR #912](https://github.com/eq-solutions/eq-field/pull/912) (leave.js's new-request flow → `scripts/leave-submit.js`, v3.5.670) and [PR #913](https://github.com/eq-solutions/eq-field/pull/913) (roster.js's My Schedule render → `scripts/roster-my-schedule.js`, v3.5.671).** Both are pure file-size refactors — no functional change, confirmed via the full test suite plus `tests/lazy-tab-script-guard.test.js` specifically (built to catch exactly this bug class: a moved function becoming unreachable from some tab). CI green, deploy previews ready on both. Neither is click-tested live — standing Core-only sandbox limitation, same as every other entry in this file. Merging either is this repo's production deploy trigger. _(added 2026-09-04)_
@@ -136,11 +168,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-field: approved leave not appearing on Weekly Roster — investigated, no bug found (2026-09-02)
-*Royce: "approved holidays hit the weekly roster - Jack truslers didnt appear to." Investigated end-to-end against live ehow data plus the actual production overlay code (not a re-implementation) before concluding.*
 
-- [x] **Jack Trusler's approved leave record and the roster's approved-leave overlay logic (`roster-rules.js`/`leave-adapter.js`) both check out correct.** Ran the real production functions in Node against the exact live DB row: name match, the `approved`→`Approved` status normalization, and the date range all compute correctly, producing "A/L" for Fri 4 Sep and Mon 7 Sep 2026 as expected. No code change made.
 - [ ] **Likely explanation: the leave request was bulk-imported (`imported_from: nspb-leave-sync-2026-09-01`) from sks-nsw-labour the day before it was checked** — a stale/cached roster tab open since before the import is the probable cause, not a bug. Told Royce to hard-refresh; not confirmed whether that resolved it. _(added 2026-09-02)_
-- [ ] **If a refresh doesn't fix it: check crew-scoping.** `leave_requests` reads are crew-filtered for a supervisor without `field.view_all_crews`; if the person checking isn't a full manager and Jack isn't on their crew, his leave row would never be fetched at all. Not investigated further since Royce (Ops Manager) almost certainly has full-crew visibility himself. _(added 2026-09-02)_
+- [x] **Crew-scoping ruled out as a cause going forward, 2026-09-04.** eq-field PR #910 (v3.5.668) made `field.view_all_crews` the supervisor default (was manager-only) — see the crew-scoping entry above. Whether crew-scoping actually explained Jack's leave looking missing on 2026-09-02 is still unconfirmed either way, but it can't recur for this reason for any supervisor now.
 
 ---
 
