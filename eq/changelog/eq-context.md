@@ -1,11 +1,24 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-08-30
+last_updated: 2026-09-05
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
+
+## [2026-09-04] Nightly digest's dead-token blindness fixed; Product Pulse "active users" wired to jvkn
+
+**Built by:** Claude Code
+
+- **`digest.md` had been silently blind since ~2 Sep** — `? unknown` CI, 0 open PRs and "No merges in the last 7 days" for every repo, all false. Root cause: `EQ_CONTEXT_PAT` (a 30-day fine-grained token, set 2026-08-03) expired, and `refresh_digest.py`'s `gh_get()` swallowed every 401/403 into "unknown" with no trace. Second time a dead token has done this (first: 2026-07-21 → 08-03, 13 days).
+- **Fixed to degrade loudly and partially, not silently and totally:** `gh_get()` records every 401/403, warns to stderr, and retries once with the runner's own `GITHUB_TOKEN` (`GH_FALLBACK_TOKEN` — enough for eq-context itself and the public repos). A 🔴 "GitHub token rejected" item now leads Needs-you; Pulse CI cells read "token error" instead of "unknown"; "No merges in the last 7 days" becomes "unavailable — token rejected".
+- **Product Pulse's "Active users" row** was a hard-coded "blocked" pointing at `service.profiles.last_login_at` on ehow — a column Shell SSO never writes. New `fetch_active_users_7d()` reads the real signal, jvkn `shell_control.users.last_login_at`, via the Supabase Management API with the existing `SUPABASE_ACCESS_TOKEN` secret (no new credential; same endpoint `scripts/check_shared_object_drift.py` uses). Joins `PULSE_ROWS` so flip-detection covers it; `None` renders as "unavailable", never a false 0 (F4).
+- 73/73 generator unit tests green; both failure paths (bad token, bad Management API token) exercised live with invalid tokens before shipping.
+- eq-context [PR #202](https://github.com/eq-solutions/eq-context/pull/202) (`12a530f3`), merged 2026-09-04 22:41 UTC. **Verified live same night** via manual `workflow_dispatch` of both `suite-state-refresh.yml` and `digest-refresh.yml`: `suite-state.md` reads "Active users (Shell sign-ins, jvkn) | 48"; `digest.md` shows the token-rejected banner and "token error" cells exactly as designed.
+- Same PR re-verified `eq/active.md` against live systems (had gone stale since 2026-07-21) — closes the repo's own review-clock overdue count.
+- Found and corrected a same-session false alarm: mis-read `grep -c $'\r'` (which counts lines containing the letter *r* under this harness's POSIX-sh Bash tool, not carriage returns) as evidence the Write tool emits CRLF on Windows. It doesn't — a python byte count and `git diff --check` both confirmed clean LF. One wrong memory note was written and then deleted the same session; see `crlf-check-use-python-not-grep.md` in the personal memory index.
+- Companion work, same evening: published the EQ Core go-live-week review (traffic/code/security/UI-UX, scored 6/10 overall) and spawned 4 follow-up chips, all merged live on eq-shell by end of session (#1760, #1761, #1762, #1763, #1765, #1766) — full detail in `sessions/2026-09-05.md` and `eq/pending/cross-repo.md`.
 
 # Changelog — EQ Context Repo
 
