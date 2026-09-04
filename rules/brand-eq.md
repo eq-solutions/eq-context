@@ -49,10 +49,26 @@ Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
 | `--eq-ink` | `#1A1A2E` | Body text, dark sidebar — never pure black |
 | `--eq-grey` | `#666666` | Secondary text, labels, metadata |
 | `--eq-white` | `#FFFFFF` | Text on blue/ink surfaces |
+| `--eq-amber` | `#F59E0B` | Attention emphasis only — never success/error (status colours own that) |
+| `--eq-amber-deep` | `#B45309` | Amber hover / deeper amber |
+| `--eq-slate` | `#94A3B8` | Muted text / faint metadata on light surfaces |
+| `--eq-live` | `#38BDF8` | Live/sync indicator dot only |
+
+**Added 2026-09-05** — amber, amber-deep, slate, and live have existed in `@eq-solutions/tokens` since Direction D (2026-05-31) with no footprint in this file until now; not a value correction, just closing a documentation gap.
 
 ### Neutral scale
 
 `#F6F3EE` (gray-50) · `#EFEAE1` (gray-100) · `#E4DDD2` (gray-200, default border) · `#D4CCBE` (gray-300, input border) · `#9CA3AF` (gray-400) · `#6B7280` (gray-500) · `#4B5563` (gray-600)
+
+### Accent tokens (Direction D)
+
+Secondary warmth accent — eyebrows and section accents only. Brand decoration, never status. Keep it to ~5% of any screen.
+
+| Token | Hex | Use |
+|---|---|---|
+| `--eq-clay` | `#A8572B` | Accent — eyebrows, section accents |
+| `--eq-clay-deep` | `#8A4521` | Clay hover |
+| `--eq-clay-bg` | `#FBF1E9` | Clay tint surface |
 
 ### Status colours (never as brand)
 
@@ -168,6 +184,7 @@ Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
 ## 9. Hard Don'ts
 
 - **No new brand colours.** Do not invent accent or tint colours outside the token set.
+- **Clay is decoration, not status.** Eyebrows/section accents only, ~5% of a screen, brand-only — never success/warning/error.
 - **No recoloured logo.** Blue variant on dark → switch to white. No black variant.
 - **No drop shadows on static cards.** Floating UI only.
 - **No gradients as page backgrounds.** The only canonical gradient is the Service sign-in left panel: `linear-gradient(135deg, #1A1A2E 0%, #2986B4 100%)` with ~4% white-logo watermark.
