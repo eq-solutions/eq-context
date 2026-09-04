@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 20:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 20:31 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (8)
 
@@ -76,7 +76,7 @@ _No merges in the last 7 days._
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (31 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (30 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (173 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
@@ -108,7 +108,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 203 | 25 / 6 | 0 | 5 |
+| [eq-context](eq/pending/eq-context.md) | 204 | 24 / 6 | 2 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 888 | 129 / 44 | 0 | 64 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 486 | 92 / 14 | 0 | 55 |
@@ -158,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ? Inconclusive — the honesty check did not complete this run.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 20:15 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 20:31 UTC._
