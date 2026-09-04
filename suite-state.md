@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-03 (nightly cron)_
+_Last verified: 2026-09-04 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,13 +58,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-03)
+## Open PRs (as of 2026-09-04)
 
 _No open PRs_
 
 ---
 
-## System Health (as of 2026-09-03)
+## System Health (as of 2026-09-04)
 
     **CI on main:**
 
@@ -83,21 +83,21 @@ _No open PRs_
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-03)
+## Field Data Plane — SKS tenant (as of 2026-09-04)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,983 | ✓ 1,983 |
-| Operational | app_data.field_timesheets | 319 | ✓ 319 |
+| Operational | app_data.field_schedule | 1,974 | ✓ 1,974 |
+| Operational | app_data.field_timesheets | 310 | ✓ 310 |
 | Safety | public.prestarts | 233 | ✓ 233 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-03)
+## Product Pulse (as of 2026-09-04)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
@@ -105,14 +105,14 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
-| Maintenance checks completed | 1 |  |
+| Maintenance checks completed | 0 | ⚠ FLIPPED |
 | Prestarts created | 13 |  |
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified 2026-09-03) — see `ops/pending.md` |
+| Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified 2026-09-04) — see `ops/pending.md` |
 
-_No flips this run._
+⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**
 ---
 
 ## Architecture: What Owns What
