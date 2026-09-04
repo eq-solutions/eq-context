@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2467,5 +2467,77 @@ a bug rather than just deleting the line.
 **From:** eq-field: site-reports RLS — prestart/toolbox_talks write gate fixed (2026-08-31)
 
 - [ ] **Not click-tested live by a real non-manager/supervisor SKS account** — no test credentials in this environment; verified instead via direct `pg_policies` before/after the fix, plus `get_advisors` (zero flags on any of the 6 tables). _(added 2026-08-31)_
+
+---
+
+**From:** eq-shell: phone-OTP login read as "no account" during a Cards signup's approval-pending window, now says so — merged + live (2026-09-01)
+
+- [ ] **Not click-tested live** — verified via `tsc -b --force` + `eslint` only (both clean). Reproducing the actual pending-approval message needs a real Cards signup mid-approval-queue, not something drivable from this environment. _(added 2026-09-01)_
+
+---
+
+**From:** eq-shell: sign-off certificate redesign — tenant logo, shorter title, content hash removed, merged + live (2026-09-01)
+
+- [ ] **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, and by actually rendering sample PDFs from the code with mock data (4 variants: with/without logo, all-signed, small site-set) and visually inspecting them — not a live authenticated download. Worth a real pass: open the Register tab for a tenant with an uploaded document logo, pull a multi-site certificate, confirm logo/title/pill render as expected in a real download. _(added 2026-09-01)_
+
+---
+
+**From:** eq-shell: shell-join-tenant.ts rate limiting, merged + live (2026-09-01)
+
+- [ ] **Not click-tested live** — no Shell/Cards session available in this environment. Worth a real pass: hit `/join?tenant=<slug>` 6× rapidly with the same phone and confirm the 6th returns 429 with `Retry-After`, then confirm a genuine join still succeeds after the window (or immediately for a different phone). _(added 2026-09-01)_
+
+---
+
+**From:** eq-shell: Pending-invites tab on the Users list, merged (2026-09-01)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open `/admin/users`, switch to Pending, confirm it renders real outstanding invites for a tenant that has some. _(added 2026-09-01)_
+
+---
+
+**From:** eq-shell: Link an existing site from EQ Ops + duplicate-site-name warning, merged live (2026-09-01)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
+
+---
+
+**From:** eq-field: safety forms "Pull from roster" date-resolution bug — FIXED, merged, live (2026-09-01)
+
+- [ ] **Not click-tested through the full authenticated UI by a person** — no Core/SKS session or credentials in this environment; the deploy preview's own login redirects to "Sign in through Core" for any code path. Worth a real pass: open Prestart or Toolbox fresh (no prior Leave tab visit that session) and confirm "Pull from today's roster" now works on the first try. _(added 2026-09-01)_
+
+---
+
+**From:** eq-field: lazy-tab-script dependency sweep — 8 fixes shipped + permanent CI guard, merged, live (2026-09-01)
+
+- [ ] **Not click-tested through the full authenticated UI by a person** — same standing limitation as every entry in this file today (deploy preview's demo-tenant PIN gate is a documented Core-only dead end, unrelated to this change). Royce has exact button locations/labels for a real pass: sidebar "Add Person", topbar "↓ CSV", Audit Log modal's "↓ Export CSV", Data tab's "↓ Export Supervision CSV" (eq tenant only — nav-data is hidden for SKS), Trial Dashboard, Timesheets' "↓ By Job". _(added 2026-09-01)_
+
+---
+
+**From:** eq-field: incident alert recipients — per-person control + archived contacts excluded, merged, live (2026-09-01)
+
+- [ ] **Not click-tested through the full authenticated UI by a person** — same standing sandbox limitation as everything else today. Worth a real pass: open Manage → Email Templates, check/uncheck a few Supervision contacts in the recipient list, confirm the saved selection persists on reload; submit a High-severity or Incident-type report and confirm only the checked people get emailed, and that an archived contact never does even if still checked from before. _(added 2026-09-01)_
+
+---
+
+**From:** eq-field: roster/timesheets group classification silently null for managers + people_removed (2026-09-01)
+
+- [ ] **Not click-tested live** — no SKS/Core credentials in this environment. Worth a real pass: sign in as an SKS manager, confirm roster/timesheets group labels (Direct/Apprentice/Labour Hire) are populated again, not blank.
+
+---
+
+**From:** eq-field: Shell→Field boot latency — entitlements/timeout fix (v3.5.649, PR #889, merged + live)
+
+- [ ] **Not click-tested live** — boot-sequence timing sits behind Core-only auth, no session/credentials in this environment, a documented dead end to chase locally. Worth a real pass: sign in through Core into SKS Field and watch whether the "spinner → brief flash → spinner again" gap feels shorter. _(added 2026-09-02)_
+
+---
+
+**From:** eq-solves-service: ConfirmDialog folded into the shared focus-trap hook, plus search_path hardening, dashboard cleanup, a perf narrowing, and real Data Quality worklists (PR #821, 2026-09-01)
+
+- [ ] **Not click-tested live.** The worktree this was built in has no `.env.local`, so there's no way to reach an authenticated page and actually exercise ConfirmDialog's focus/Escape/Tab-cycle behavior, the Data Quality worklists, or the dashboard changes. Worth a real pass: open a destructive confirm (focus should land on Cancel) and a non-destructive one (focus on Confirm), Tab-cycle inside, Escape to cancel. _(added 2026-09-01)_
+
+---
+
+**From:** eq-solves-service: /defects list was going stale after auto-created/resolved defects — found, fixed, merged, deployed live (PR #822, 2026-09-01)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment to actually fail a check item and watch `/defects` update without a hard reload. Confidence is otherwise high: it's a copy of an already-working pattern used 3 other times in the same file. _(added 2026-09-01)_
 
 ---

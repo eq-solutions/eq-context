@@ -1,7 +1,7 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-04
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
@@ -13,11 +13,6 @@ status: live
 *Escalated the v3.10.112/.113 passive banners (login gate, Timesheets) into a blocking modal — same copy, must click "OK, got it" to continue, once per tab session. [sks-nsw-labour PR #81](https://github.com/eq-solutions/sks-nsw-labour/pull/81) (v3.10.114), squash-merged, confirmed live via Netlify's own deploy record for the merge commit.*
 
 - [ ] **Not click-tested with real Supabase data** — this environment has no network access to the SKS database, so verification (z-index stacking, backdrop-click protection, OK-button dismissal) ran with the login name picker and timesheet list empty. The logic doesn't depend on data volume, but worth a real click-through when convenient. _(added 2026-09-02)_
-
-## SKS Uniform Order Template added to `sks/templates.md` (2026-09-01)
-*A Chat-drafted patch (Sharon Maroni's "Uniforms" email + Stay Safe Wholesale catalogue), delivered via the chat-gateway Drive-relay mechanism and applied after live verification against `origin/main`. eq-context [PR #198](https://github.com/eq-solutions/eq-context/pull/198), squash-merged. See `eq/pending/eq-context.md`'s 2026-08-24 GitHub-connector entry for the mechanism-level findings this also surfaced.*
-
-- [ ] **Division→kit mapping is Title-only, not confirmed** — the Stay Safe catalogue has no per-division SKU split, so the template's 9 roles pick kit by Title (Site/Management/Office) only; Division (Electrical/Comms/AV) currently only drives a suggested embroidery tag. Needs Sharon/Royce to confirm whether Division should actually change colour/garment/embroidery before wider rollout. _(added 2026-09-01)_
 
 ## Edit Person "Birthday" (day+month) was silently unsaveable for 45 of 81 active SKS staff — root-caused + fixed live (2026-08-24)
 

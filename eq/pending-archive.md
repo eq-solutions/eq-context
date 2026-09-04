@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -7606,5 +7606,462 @@ eq-field [PR #789](https://github.com/eq-solutions/eq-field/pull/789) (v3.5.570)
 - [x] **EQ-FIELD-1F "`_renderRosterOverviewCard is not defined`" (Roster) — dead code, not a live bug.** Its only call site was removed in v3.5.653 (the Roster Overview summary card entry directly above this one) — Royce's own product call to stop showing the card by default. The function itself still exists in `roster-overview.js` (kept in case a lighter version is wanted later) but has zero call sites left, so this ReferenceError can no longer fire. Marked resolved in Sentry with a reason; no code change.
 - [x] **EQ-FIELD-16 "`TypeError: Failed to fetch`" (JWT mint) and EQ-FIELD-19 "`AbortError: Fetch is aborted`" (tenant routing) — both already fixed, confirmed quiet.** This closes the two threads `eq-field.md`'s "Roster/Editor/Schedule could look 'wiped'" and "Shell→Field boot latency" entries had left open (the `task_0fdf3a24` spin-off and the "worth re-pulling the occurrence rate" follow-up, both trimmed now that this closes them) — EQ-FIELD-16 was `task_0fdf3a24`'s own output, PR #898 (v3.5.656, retry+timeout on `_mintDataJwt`'s verify-pin fetch); EQ-FIELD-19 was mitigated by v3.5.659 (cache-first tenant-config routing). Both issues' own Sentry "Last Seen" timestamps predate their fix's release; neither recurred in the ~2 days since — re-pulled fresh this session, not assumed from the version numbers alone. Both marked resolved in Sentry with a reason; no code change needed for either.
 - [x] **Sentry MCP registered for this repo** (`.mcp.json`, `mcp.sentry.dev/mcp/eq-solutions/eq-field`) — didn't exist before this session; committed directly to main (Royce: "commit it") since it has zero effect on the deployed app (not read by Netlify or the app itself).
+
+---
+
+## eq-shell: phone-OTP login read as "no account" during a Cards signup's approval-pending window, now says so — merged + live (2026-09-01) (rotated 2026-09-04)
+*Royce tested Cards signup → Shell login himself and couldn't get the mobile code to work. Traced live against jvkn: the OTP had actually verified fine 6s earlier — Shell's login exchange blocked it because his Cards signup's real tenant membership hadn't been approved yet (`cards-approve-staff.ts`, landed ~4 min later into SKS Technologies); only the inactive `__personal__` placeholder existed at that instant. The generic "we couldn't find an account for that mobile" copy made a legitimate, still-processing signup read as a failed code. PR #1722: `shell-login-phone-otp.ts` now returns `error:'pending-approval'` on that specific blocked path, `LoginPage.tsx` shows distinct copy for it. Merged `d91a88b1`, published to core.eq.solutions 2026-09-01 10:36 UTC.*
+
+---
+
+## eq-shell: sign-off certificate redesign — tenant logo, shorter title, content hash removed, merged + live (2026-09-01) (rotated 2026-09-04)
+*Royce attached a generated sign-off certificate PDF and asked for three fixes: an 8-site document's title repeated every site code and wrapped across two lines, a raw content-hash row had no end-user value, and the page carried no tenant branding. Also asked for standalone-certificate and certificate-as-cover-page downloads — both turned out to already exist (PR #1716), nothing to build there. PR #1719: title now collapses to "N sites" past 3 (the SITES detail row still lists them all), content_hash removed end-to-end (interface + data assembly + render, not just hidden), tenant logo pulled live per-tenant from `organisations.branding.gateLogo` via the same path the Cards compliance export already proved out, plus a new sign-off summary pill. Merged `bde97be9`, published to core.eq.solutions 2026-09-01 10:19 UTC (confirmed via `published_at`, not just deploy-record existence).*
+
+- [x] **Correction 2026-09-02**: Gotenberg is now provisioned and live (stood up later the same day, see the Register-redesign section below) — the 3 SWMS documents this note was almost certainly about are confirmed `pdf_status: 'ready'`. Not re-verified that this exact certificate-with-document download path 409s cleanly for a still-unconverted file, but the blocking cause (no Gotenberg) is gone.
+
+Also found and fixed in passing: this worktree's `node_modules` was missing `pdf-lib` (stale install, unrelated to the feature — `pnpm install` fixed it), and both PDF-renderer files (`document-certificate-pdf.tsx`, `quote-pdf.tsx`) were failing a Fast-Refresh lint rule that doesn't apply to server-side code — spawned as a follow-up task, merged separately as PR #1721 (see archive).
+
+---
+
+## eq-shell: shell-join-tenant.ts rate limiting, merged + live (2026-09-01) (rotated 2026-09-04)
+
+---
+
+## eq-shell: Pending-invites tab on the Users list, merged (2026-09-01) (rotated 2026-09-04)
+*An admin had no way to see that an invite was still sitting unaccepted — `eq_list_tenant_users` only returns accepted `shell_control.users` rows, so an invite created by `invite-user.ts`/`create-worker-invite.ts` and never accepted had no visible row anywhere on `/admin/users`. Found investigating a report that an invited SKS user "couldn't sign in."*
+
+- [x] Added a **Pending** tab (email, role, invited-by, invited-when, worker-linked vs. direct, pending/expired) via a new read-only `list-user-invites.ts` function — reuses the existing service-role access pattern `invite-user.ts` already has, no jvkn RPC or schema change needed. eq-shell [PR #1712](https://github.com/eq-solutions/eq-shell/pull/1712), merged (squash `571e6730`).
+- Also confirmed live and closed out this session: `task_533933eb` (create-worker-invite.ts's user_invites dedup gap) was already fixed and merged as [PR #1709](https://github.com/eq-solutions/eq-shell/pull/1709) by a concurrent session — a memory file claiming "PR open, not merged" was corrected.
+
+---
+
+## eq-shell: two trial accounts hard-deleted — purge-endpoint gap now fixed, PR #1708 merged+live (2026-09-01) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: customer Field/Service status now computed from owned sites, merged (2026-09-01) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+- [x] **`crm-customers.ts` (list + detail) and `get-data-activation-status.ts`** now compute a customer's Field/Service status as "any owned, active site has it on" instead of reading the independently-stored `customers.field_enabled`/`service_enabled` column. Live-verified impact before building: ehow had 8 customers that would gain a Field tick (4 Service, 1 would lose one); zaap had 30 that would gain Field and 20 that would lose Service — confirms the old flag was actively misleading, not just theoretically.
+- [x] **`update-data-activation.ts`**: a `table:'customers'` write now cascades to every site that customer owns instead of writing the now-unread stored column.
+- [x] **`CustomersPage.tsx` / `AdminDataActivationPage.tsx`**: the customer-level toggle relabeled to reflect the cascade, disables (with a tooltip) when the customer owns zero sites, and "Apply to all sites" removed as redundant now the pill *is* the site rollup.
+- [x] **Mirrors eq-service's own already-shipped fix** for the identical problem (`0178_service_customers_site_driven.sql`, `service.customers` view) — same root cause, same site-driven fix shape, found and cited as precedent rather than re-derived from scratch.
+
+---
+
+## eq-shell: Link an existing site from EQ Ops + duplicate-site-name warning, merged live (2026-09-01) (rotated 2026-09-04)
+
+---
+
+## eq-shell: worktree fleet audit + cleanup — 27 of 34 removed, 3 left locked (2026-09-01) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+- [x] **27 stale, fully-merged worktrees removed** (`git worktree remove`), freeing disk and cutting the collision surface. Re-verified fresh (dirty status, branch identity, PR state) immediately before each removal rather than trusting the initial scan — branch-ancestor checks are unreliable after a squash merge, and this repo's PR state visibly changed twice mid-audit (3 PRs merged live while checking: #1723, #1722, #1720).
+- [x] **Live collision directly observed, not just inferred**: one worktree's uncommitted diff grew from 3 hunks to 96 lines between two reads with no action by this session, then its branch identity itself changed entirely (`claude/document-archive-pdf-view` → `claude/document-pdf-timeout-backfill`) — confirms another session was actively re-using that worktree slot in real time. Left untouched throughout. Logged as the 5th occurrence of `eq-shell-root-checkout-shared-contention` (Claude memory) — new failure shape this time: locked orphan directories, see below.
+
+---
+
+## eq-shell: Resourcing rebuilt — in-place panel, readable conversation history, engagement fixes, RLS/dashboard leak closed (2026-08-30) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: staff Conversations — feature audit, security fix, ratings rollup, edit/close UI, backfill to 25/27 (2026-09-01) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+- [x] **Security fix, merged — dispatched + applied on both planes 2026-09-01 09:03Z (corrected 2026-09-04, see end of item)**: `app_data.attachments`'s read policy was tenant-wide for every entity type, including `entity_type='staff_conversation'`, whose parent row is creator-only by Royce's own explicit instruction — any tenant member could enumerate every staff conversation's attached-document metadata directly, bypassing both the Netlify function's ownership check and the parent table's own RLS. Same shape of gap migration 0268 already fixed on the parent table's write side, never carried through to this child table. Migration `0298` (one RESTRICTIVE policy narrowing only `staff_conversation` rows; quote/job/site attachments untouched) — eq-shell [PR #1711](https://github.com/eq-solutions/eq-shell/pull/1711), merged. **Not yet dispatched** — Claude Code's own auto-mode classifier blocked triggering `workflow_dispatch` (same "no approval gate, applies immediately fleet-wide" design that's blocked prior sessions' dispatches). Royce needs to run it: `gh workflow run tenant-migrate.yml --repo eq-solutions/eq-shell --ref main`, or via the Actions tab. **Correction 2026-09-04: it WAS dispatched and applied — `0298_attachments_staff_conversation_creator_only.sql` is in `app_data._eq_migrations` on ehow (2026-09-01T09:03:28Z) and zaap (09:03:27Z), RESTRICTIVE policy present in `pg_policies` on both. Nothing left to run.**
+- [x] **Ratings rollup on the Resourcing dashboard** — two new columns (avg. technical rating, avg. values rating), computed server-side the same way `happy_engaged_latest` already is, same creator-only redaction. Confirmed live before building: 0 of 27 `staff_conversations` rows have ever carried a real numeric rating — ships ahead of adoption on Royce's explicit call, renders "No ratings yet" until someone logs a real Development Review with scores. eq-shell [PR #1713](https://github.com/eq-solutions/eq-shell/pull/1713), merged.
+- [x] **`weakness_improvement` Check-in field added** — "Do you understand how to improve on the weaknesses previously discussed?" is a real, recurring question on the paper form (ADMIN-DE-0005) with no matching field; was being folded into `weaknesses` as a workaround during backfill. Same PR #1713.
+- [x] **Edit + close/reopen on a logged conversation entry** — closes the "only way to fix a mistake is direct SQL" gap; real, not hypothetical (a wrong-row backfill write was caught and fixed by hand mid-session, see below). Reuses the existing Check-in/Dev-Review form components (new `unpackCheckIn`/`unpackDevReview` reverse the existing pack functions) rather than building new ones; `kind`/`formal_tier` intentionally left non-editable — changing which template a row was logged against after the fact would silently reinterpret already-saved fields under a different schema. Wires up `status`/`closed_at`/`closed_by`, which already existed in the schema and rendered an "Open" tag, but had no write path anywhere in the UI. eq-shell [PR #1717](https://github.com/eq-solutions/eq-shell/pull/1717), merged.
+- [x] **Audit self-correction, same session**: an early pass of this critique claimed there was no cross-person rollup/"tangible metrics" view — wrong. `StaffResourcingPage.tsx` (2026-08-30's own build) already covers review cadence, overdue-flagging, and engagement trends. Caught by actually reading the existing page before building a duplicate, not assumed from the earlier audit.
+- [x] **PDF backfill continued: 25 of 27 done and verified** (up from 0 real answers — every row previously held only the empty-skeleton default despite `has_answers`-style checks reading true). Methodology: `pdftotext -raw` as the primary source for any digital/typed PDF — a visual-only read was proven to silently drop text that overflowed a form field's visible box, caught when Royce asked "a lot of the answers seem cut off?" after the first 3-person pilot; several answers were materially incomplete, one field wrongly reported as complete when it wasn't. Visual read used only as fallback, for genuinely scanned/photographed pages. 3 documents (Terry Su ×2, Luke Wheeler Mar-2025) use a different, older paper form (`ADMIN-DE-0040`, an 18-trait rating grid) with no matching digital template — steelmanned building a third template, decided against it (thin/one-off usage: the one person who tried it reverted to the standard form 8 months later) in favor of capturing just the goals/comments text.
+- [x] **Migration 0298 needs Royce to dispatch it** — ~~see above, command included~~ **already applied on both planes 2026-09-01 09:03Z (verified 2026-09-04 via `app_data._eq_migrations` + `pg_policies`); nothing to run, ticked.** _(added 2026-09-01)_
+
+---
+
+## eq-shell: Documents to Sign — full redesign (load time + Type/Category unification), all merged live (2026-08-30) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: start_date capture at review points + Resourcing visibility nudge, merged live (2026-08-30) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: site "Ask for"/"Backup" contacts — canonical conversion shipped, migrations dispatched + verified live (2026-08-29/30) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Worker invite role never reached workers.role — Labour Hire/Apprentice/Subcontractor invites landed as Direct — built, merged, live (2026-08-26) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Permissions/nav audit — Supervisor's audit.view grant fixed, "Preview a person" made honest, is_platform_admin grants now governed (2026-08-25) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page edit resent every field on every save — PR open, blocked on unrelated CI (2026-08-25) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page now shows who hasn't signed in to Shell yet, with a filter — built, merged, live (2026-08-20) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: QR/join-code Cards signups notified nobody — admins now get the same email + roster badge the in-app connect flow already had (2026-08-18) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control gets a real ring visual + tab strip; roster now exposes real permissions instead of raw groups (2026-08-18) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Access Control page redesigned — searchable diffed drawer for Base permissions, unified Field permissions view — both shipped, live (2026-08-17) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## ⏩ Session close — 2026-06-05 (part b) — PostHog MCP + EQ Core go-live readiness (rotated 2026-09-04)
+
+**Done:**
+- **PostHog MCP connected** (claude.ai OAuth connector → `mcp.posthog.com`, EU, project 162632). Live-queried. *(Connector is mislabeled "Github" in the connector list — rename when convenient.)*
+- **Data read:** ~19 real sticky users (not the inflated 419 UUIDs), growing usage, flat retention tail. Auth surface most-exercised.
+- **Go-live readiness verified vs LIVE systems** → no structural blockers. Canonical DB healthy + RLS-clean + 0 ERROR advisors; auth/iframe-SSO engineered; anon RPCs audited (3 clear, 1 optional `claim_invite` null-guard).
+- **`eq/go-live-runbook.md`** written + committed — live-verified weekend runbook.
+
+**Go-live gates (weekend) — see `eq/go-live-runbook.md` §B:**
+- [x] 🟠 **MFA-bypass posture** — PIN-only Shell → Service single-factor; accept or gate behind mandatory Shell-TOTP **— decided 2026-09-01 in the opposite direction (recorded 2026-09-04): 2FA switched off for every role by hard-coded constants (#1735/#1737). Tracked as `ops/security-register.md` SEC-71; expiry: Royce to set.**
+
+**Deferred (spun off as post-launch tasks):**
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: dropped "custodian" wording from Plant & Equipment, now shows the assigned person's phone/email instead (2026-08-23) (rotated 2026-09-04 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-field: safety forms "Pull from roster" date-resolution bug — FIXED, merged, live (2026-09-01) (rotated 2026-09-04)
+
+---
+
+## eq-field: lazy-tab-script dependency sweep — 8 fixes shipped + permanent CI guard, merged, live (2026-09-01) (rotated 2026-09-04)
+
+---
+
+## eq-field: incident alert recipients — per-person control + archived contacts excluded, merged, live (2026-09-01) (rotated 2026-09-04)
+
+---
+
+## eq-field: TAFE Holidays staleness alert on Dashboard — PR open, not merged (2026-09-01) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+- [x] **Manager-only Dashboard card warns when the furthest configured TAFE holiday end-date is under 45 days out, or nothing's configured at all** — same "warn before it lapses" shape as the existing licence-expiry alert. Gated on at least one apprentice having a nominated TAFE day (`applyTafeDayForWeek()`'s own predicate) so a site with none never sees a permanent, unresolvable nag — caught and fixed before shipping, not left as a known gap. `#dashboard-tafe-holidays-stale`, `renderTafeHolidaysStaleAlert()`/`getTafeHolidaysStaleness()` (`scripts/dashboard.js`). Verified via 6 fixture states driven through the real function in a live browser tab (not-loaded / empty+no-apprentice / empty+apprentice / 10-days-out / 200-days-out / 5-days-past), all correct.
+- [x] **Confirmed live on ehow that the underlying save mechanism actually works** — Royce asked directly. `app_config.tafe_holidays` holds 4 real ranges through Jul 2027, correctly-shaped JSON; RLS has real INSERT/UPDATE/DELETE policies gated on `eq_role IN ('manager','supervisor')` plus a tenant-scoped ALL policy — not just grants with nothing behind them. Side effect of this exact data: the new staleness card won't fire for SKS for a long while, since the real furthest date is far past the 45-day window — expected, not a bug.
+
+---
+
+## eq-field: roster/timesheets staff-name map 400ing for every non-manager, wider silent bug for managers found + fixed (2026-09-01) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+- [x] **Root cause**: `_jwtPhysical()` (`scripts/supabase.js`) routes a non-manager's (supervisors included) GET of `people` to `field_people_directory` for the roster/timesheets staff-name map — that view renames `employment_type` to `"group"`, but the select fragment still asked for `employment_type`, 400ing the whole request. Live-broken since v3.5.615 (2026-08-30), ~2 days, every SKS supervisor and worker. eq-field [PR #855](https://github.com/eq-solutions/eq-field/pull/855) (v3.5.625 — renumbered twice from v3.5.623 over two live version collisions with concurrently-merging PRs #854/#856).
+- [x] **Wider, quieter bug found investigating the follow-up**: `field_people`/`field_people_removed` (the manager-routed views) had separately gained a real `group` column via an untracked eq-shell migration (2026-08-19), leaving `employment_type` a hardcoded `NULL` stub — so PR #855's fix (which only covered the non-manager branch) left every **manager's** group classification silently blank, 13 days, not caught because it failed silently rather than 400ing. Spawned as a follow-up task; fixed by widening the translation to the whole people family. eq-field [PR #858](https://github.com/eq-solutions/eq-field/pull/858) (v3.5.626) — full detail already in `eq/changelog/eq-field.md`.
+- [x] **Audit-trail gap closed**: the eq-shell migration that caused the above was untracked anywhere in eq-field. Documentation-only migration file recording it (no DDL — re-running eq-shell's own applied change from this repo would be the exact competing-pipeline mistake this repo's CLAUDE.md already warns against for `field_people_iud()`). Run via `/decide`. eq-field [PR #867](https://github.com/eq-solutions/eq-field/pull/867).
+
+---
+
+## eq-field: Weekly Roster "By Crew" gap chips + Edit Roster search/site field (2026-09-01) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: SKS NSW Labour safety records backfilled into EQ Field (2026-09-01) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+- [x] **178 prestarts + 5 toolbox talks copied into `ehow`'s `public.prestarts`/`toolbox_talks`** (source dates 2026-07-06 through 2026-08-31), deduped against EQ Field's own pre-existing 46/1 on normalized (site + date + subcontractor) — 29 already-covered rows correctly skipped, both systems had been recording the same window in parallel. Original nspb row IDs preserved as the new rows' IDs (free provenance trail; `ON CONFLICT DO NOTHING` makes a re-run safe). Embedded signature images and photo binaries deliberately stripped during the copy (a handful of source rows carried up to ~800KB of inline base64 each) — everything else (crew/attendee names, sign-off timestamps, hazards, works scope) carried over intact. Verified live post-copy: 224 prestarts (was 46), 6 toolbox talks (was 1).
+- [x] **`site_abbr` normalized for 59 of 79 originally-unresolved rows**, found by checking the actual rendering code (`safety.js`'s docx-export site lookup) rather than assuming: 13 "Arncliffe"-family → canonical `ARN` (already existed, just under the full word not the site code); 8 pure casing/whitespace variants (Syd60/Syd24/Sy5/Syd09/Syd29) → correct case; 38 "DR"/"Dr" → `SYD11` per Royce's direct correction ("Should be SYD11") — `SYD11`'s own `customer_name` field is literally "Digital Realty", missed by an initial name/abbr-only site search.
+- [x] **Simon Bramall (relayed via Royce) asked to reconcile future-dated sks-nsw-labour entries too — leave requests done, roster/schedule scoped but not executed.** Inventory found a prior one-time sync (`imported_from='nspb-phase3-2026-07-05'`) already covers most of the overlap — 983 `schedule_entries` + 29 `leave_requests` rows, out to late October — so most of what looked like matching data was literally the same imported rows, not independent double-entry. The real gap is only what nspb has added/changed *since* that snapshot; nothing has kept it in sync since. Site/person identity resolved for the future roster window (62/63 people; sites: `AIRTRUNK-SYD1` → `SYD1 - Airtrunnk`, `DRT` project code confirmed staying under `SYD10` per Royce, one remaining unmapped person — Jhon Jairo Velasquez Meneses). Leave: 4 genuinely new nspb requests inserted (Wayne Rowe RDO Pending Aug3–Sep6, Blake Reynolds RDO Approved Sep4, Jack Trusler annual Approved Sep4-7, Richard Brown RDO Pending Oct12), 3 leave-type mismatches corrected to match nspb's earlier original (Brett Kilpatrick/Todd Wilson → rdo, Maylin Ung → unpaid) — EQ Field's future leave count: 19 → 23. **Roster/schedule reconciliation (~500 future person-days, nspb's weekly-wide format vs EQ Field's per-day rows) was fully scoped but not executed** — Royce: "I think that's everything that matters moving forward" after leave closed out. Pick this up only if asked again; full scope (unpacking approach, dedup-vs-983-existing-rows, the schedule table's own dual leave-recording quirk) is in `sessions/2026-09-01.md`. _(closed 2026-09-01)_
+
+---
+
+## eq-field: roster/timesheets group classification silently null for managers + people_removed (2026-09-01) (rotated 2026-09-04)
+*Asked to investigate a "mirror-image" bug PR #855 flagged but didn't fix (3 call sites selecting `group` literally, assumed to 400 for managers on `field_people`). Live verification found the premise stale — eq-shell's own pipeline had already added a real `group` column to `field_people`/`field_people_removed` (migration `0249_field_people_view_parity.sql`, applied to ehow 2026-08-19, untracked in this repo's own ledger), alongside a hardcoded NULL `employment_type` stub. The 3 call sites already work fine today; a different, bigger bug was live in the same function instead.*
+
+- [x] **`_jwtPhysical()`'s `employment_type`->`group` translation widened to the whole `people`/`people_own`/`people_removed` family** (was directory-branch-only per PR #855) — a manager's own roster/timesheets staff-name map, and anyone viewing removed staff, had been silently getting blank group classifications since 2026-08-19 (13 days), not a 400, just missing data. eq-field [PR #858](https://github.com/eq-solutions/eq-field/pull/858) (v3.5.626), squash-merged on explicit "merge #858" (rebased once over concurrently-merged #857, re-verified version number/tests/lint post-rebase), confirmed live on `field.eq.solutions` via the actual Netlify deploy record (`commit_ref` match, `context: production`, `state: ready`) — not just the merge event.
+- [x] **Recurring root cause — closed same day.** This was the 3rd confirmed incident of eq-shell's tenant-migration pipeline silently changing a shared `app_data` object with zero visibility in eq-field's own migration ledger (2 prior incidents were `security_invoker` drift, migrations 0158/0164, caught by CI's narrower pattern-specific guard; this one was a column-shape change neither existing guard was scoped to catch). Spawned as a background task this session; the separate session it ran in built a generalized live-definition-diff check (`eq/identity/shared-db-objects.json` registry + snapshot, `scripts/check_shared_object_drift.py`, nightly+on-push CI in `.github/workflows/shared-object-drift.yml`) covering `field_people`/`field_people_removed` plus the existing function registry, updated `IDENTITY-MODEL.md` §3.3.3, and fixed a real registry disagreement found along the way (eq-shell's `SHARED_REGISTRY_FUNCTIONS` was missing `field_job_numbers_src`). Royce picked "generalized check only" over the fuller option set via `AskUserQuestion`, explicitly deferring the eq-shell notification hook and the ledger-unification cutover. Merged: eq-context [#196](https://github.com/eq-solutions/eq-context/pull/196), eq-shell [#1701](https://github.com/eq-solutions/eq-shell/pull/1701). Full write-up: `sessions/2026-09-01.md`.
+- **Correction (same close):** an earlier draft of this entry speculated PR #859 (the `tenant_role_overrides` deny-bypass fix, section above) traced back to this same migration 0249, based on a partial read of another session's mid-investigation transcript. That session's own finished write-up (visible above once this file's concurrent edits reconciled) shows the real root cause is unrelated — a different migration (`20260831_field_permission_denials_enforce`) with an OR-branch structuring bug, nothing to do with 0249. No connection between the two bugs; removed rather than left as a stale lead.
+
+---
+
+## eq-field: Feature Toggles page — descriptions get concrete examples + mini-previews (2026-08-31) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Cameron Tregoning's two mobile bug reports — Prestart create unreachable + roster warning leak, both fixed (2026-08-30) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Timesheets Fill Week + Approved column, plus the "OFF ≠ approved leave" display gap (2026-08-27) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: People save — dirty-field diffing, closes a live data-clobber bug (Zemi Asri, 2026-08-25) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: boot-perf — 3 of the 4 flagged scripts moved off the critical path, closes the 2026-07-28 audit item (2026-08-18) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Apprentices list showed the full company roster to any signed-in user, not just managers (2026-08-18) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: My Schedule cold-boot cache fallback, built from SKS NSW Labour usage data (2026-08-18) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: weekly digest — per-section on/off + custom intro (2026-08-18) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: sprint prep — desktop polish slice 1, Access-Model Phase 3 keys (2026-08-18) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Contacts screen skipped the rehire-rating prompt when archiving Labour Hire (2026-08-18) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Dashboard map → own page, Map hover shows names, cache-buster hotfix (2026-08-14) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Leave notification gaps closed, digest widened to 4 weeks, Email Templates pilot shipped (2026-08-14) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Teams — untick-to-remove silently didn't save, fixed (v3.5.621, PR #853, merged + live) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Weekly Roster — Roster Overview summary card removed from default view (v3.5.653, PR #896, merged + live) (rotated 2026-09-04 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Shell→Field boot latency — entitlements/timeout fix (v3.5.649, PR #889, merged + live) (rotated 2026-09-04)
+
+---
+
+## eq-solves-service: ConfirmDialog folded into the shared focus-trap hook, plus search_path hardening, dashboard cleanup, a perf narrowing, and real Data Quality worklists (PR #821, 2026-09-01) (rotated 2026-09-04)
+*Modal/SlidePanel had already had their duplicated focus-trap/Escape/scroll-lock logic extracted into `lib/hooks/useFocusTrap.ts` in an earlier, uncommitted pass. ConfirmDialog's own near-identical copy was deliberately left out at the time — it needs a different initial-focus target (Cancel on a destructive confirm, Confirm otherwise) the hook didn't support yet. This session closed that gap.*
+
+- Added an optional `initialFocusRef?: RefObject<HTMLElement | null>` param to `useFocusTrap` — when supplied, it's focused instead of the hook's default "first focusable element". `ConfirmDialog`'s `ConfirmDialogModal` now calls the hook (`destructive ? cancelBtnRef : confirmBtnRef`) instead of its own ~60-line copy of the same mechanics. `Modal`/`SlidePanel`'s existing 2-argument calls are unaffected; `ConfirmDialog`'s public API (`useConfirm()`, `ConfirmOptions`, `ConfirmProvider`) is unchanged. `npx tsc --noEmit` (whole project) and `npx eslint` (the 2 changed files): 0 errors.
+- Found this work sitting entirely uncommitted in a concurrent session's own worktree (`.claude/worktrees/service-review-sprint-e8ef31`, branch `service-p2-polish-20260901`), mixed with ~9 other unrelated in-progress files. Asked before touching it rather than guessing; the other session committed and pushed its own 3 commits mid-conversation, confirming it actually was live/active. Finished only the ConfirmDialog piece there, touching just the 2 files this task needed.
+- Also in this PR (carried from the same branch, not this session's own work): `search_path` pinned on `service.tg_maintenance_checks_iud` (migration `0239`, precautionary — SECURITY INVOKER, no observed bug); 5 dashboard gradient uses removed (brand's no-gradient rule); `revalidateMaintenanceSurfaces()` narrowed from an unconditional 6-path bust to a scoped options object (the app's hottest write path); Data Quality's aggregate-only counts replaced with real per-row worklists (surfaced + fixed 2 live bugs in the underlying checks along the way).
+- **This PR's merge with #822 (entry below) was not a clean fast-forward.** By the time #822 was ready, #821 had already merged and narrowed `revalidateMaintenanceSurfaces()` in the same two functions #822 touches — a real `CONFLICTING` merge state. Resolved by keeping both changes (the narrowed call *and* #822's `revalidatePath('/defects')` — the latter needs no DB read, so it doesn't reintroduce the cost this PR's narrowing was avoiding) and correcting a comment here that had called the `/defects` staleness gap "accepted" and "self-heals," which would have been actively misleading once #822 closed it. Verified via `tsc --noEmit` after resolution, merge commit `c083827` pushed, then Royce merged #822 directly.
+- Confirmed published live via Netlify's deploy record (commit `938040f3`, state `ready`, `published_at` set) within ~2 minutes of merge.
+
+**Deferred:**
+
+---
+
+## eq-solves-service: /defects list was going stale after auto-created/resolved defects — found, fixed, merged, deployed live (PR #822, 2026-09-01) (rotated 2026-09-04)
+*Follow-up task filed by PR #821's own review while narrowing `revalidateMaintenanceSurfaces()` — "defect-count freshness on 2 maintenance actions... `task_3b858742`" — picked up and closed directly here rather than left as a dangling chip.*
+
+- `updateCheckItemAction`/`updateCheckItemResultAction` write `maintenance_check_items.result`, which fires the live `fn_check_item_to_defect` trigger to auto-create/resolve a `defects` row on every fail/un-fail transition — neither action revalidated `/defects`, so the list page could serve stale data until an unrelated action happened to bust it or a hard reload occurred. Fixed with `revalidatePath('/defects')`, matching the pattern already used by the file's other defect-mutating actions.
+- Verified live before fixing, not just from the migration file: `service.maintenance_check_items`/`service.defects` are views over `app_data.*` (migration 0147, June canonicalization) — the auto-defect trigger is still correctly attached to the real `app_data.maintenance_check_items` base table, firing end-to-end through the view's INSTEAD OF trigger.
+- Merged after resolving a real merge conflict with PR #821 above (both touched the same two revalidation call sites in `app/(app)/maintenance/actions.ts`) — closes the "P2 items from the review" bullet from the entry below — and confirmed published live via Netlify's deploy record (state `ready`, matched to the exact merge commit) within ~2 minutes of merge.
+
+**Deferred:**
+
+---
+
+## eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: notification bell was silently broken for anyone signed in through Shell — found, fixed, reviewed, merged, live (2026-08-17) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-service: ACB/NSX cover masthead + blank page 2 fixed; live Secondary Injection load bug found and fixed (2026-08-17) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: ACB/NSX check saves could wipe a technician's readings on a dropped connection — fixed and shipped live (2026-08-18) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Settings page showed broken account controls to Shell-embedded users — fixed, merged, live (2026-08-16) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-service: migrations dispatched live; mobile check-detail header overflow found+fixed+deployed; eq-context accidental-checkout scare investigated (2026-08-13) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-09-04 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-context: ~80 leftover scratch clones found across other sessions' temp folders — found, scope-checked with Royce, left alone (2026-08-21) (rotated 2026-09-04 — open items remain in eq-context.md)
+
+- [x] **Scope check put to Royce directly: clean up only if scoped safely (24h+ untouched) or leave alone. He chose to leave it alone this session** — no deletions made outside the requesting session's own (already-clean) pair. The debris itself is real and will keep accumulating every time a session hits the shared-checkout guard this same way; worth a dedicated sweep later (same shape as the 2026-08-20 stale-stash audit above — verify each is genuinely pushed/dead before removing, not just old) rather than a rushed one folded into an unrelated task. _(added 2026-08-21; sweep run 2026-09-04, see below)_
+- [x] **Re-checked 2026-09-04: grown to 119 (from ~80)** — count-only check, no deletions. Breakdown: 113 fully clean + pushed (safe to remove whenever the sweep runs), 5 dirty, 1 ahead-of-upstream (those 6 need individual review before removal, not just an age cutoff). Same spread as before — eq-shell/eq-field/eq-cards/eq-intake/eq-solves-service/eq-context sessions and their worktrees, oldest from 2026-08-28. Confirms this is an active, growing pattern rather than a one-time find. _(added 2026-09-04; sweep run same day, see below)_
 
 ---
