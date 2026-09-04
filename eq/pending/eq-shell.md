@@ -475,7 +475,6 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ---
 
 ## eq-shell: Access Control gets a real ring visual + tab strip; roster now exposes real permissions instead of raw groups (2026-08-18)
-*Royce asked for the ring visual from the earlier Claude Design mockup, to also cover every sub-page and the click-through drawer.*
 
 **Deferred:**
 - [ ] **Compare roles tab + Custom Groups inline-expand redesign** — scoped in the original Claude Design brief, explicitly held for a second PR. _(added 2026-08-18)_
@@ -496,7 +495,6 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ---
 
 ## eq-shell: Access Control page redesigned — searchable diffed drawer for Base permissions, unified Field permissions view — both shipped, live (2026-08-17)
-*Royce found the Access Control page very difficult to navigate. Ran a `/decide` pass on progressive-disclosure permission UI patterns, mocked up a redesign, had Claude Design produce a competing version, then built the winning ideas for real in two shipped PRs.*
 
 **Deferred:**
 - [ ] **Compare-roles view and a Custom-Groups/preview-a-person retab** — scoped in the original `/decide` pass as follow-on, not built. Revisit if Royce wants the next layer. _(added 2026-08-17)_
