@@ -8,22 +8,25 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 08:53 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 09:46 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (8)
 
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
+- 🔴 **Open security finding** — SEC-71 (P1 — deliberate, no expiry set) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 
-## 🙋 Waiting on you (280)
+## 🙋 Waiting on you (282)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **SEC-71 — 2FA off for everyone by hard-coded constants (P1, deliberate). Expiry: Royce to set.** `_shared/totp.ts:33` `TOTP_ENROLLMENT_MANDATE_ENABLED = false` (#1735) + `_shared/token.ts:638` `TOTP_LOGIN_CHALLENGE_ENABLED = false` (#1737), merged on Royce's 2026-09-01 call ("turn 2FA off across everything … remove that friction in the short term"). No env flag, no per-role carve-out, platform admins included; re-enabling needs a deploy. The June go-live gate "MFA posture — make a conscious call" (B-3) is answered in the less strict direction — its checkbox below is ticked with a pointer here. Needs from Royce: a review date. When it comes back: env flag not constant, platform admins first, mobile enrolment fixed before workers. _(added 2026-09-04)_
+- **eq-shell** · **SEC-73 — eq-field's definer-rights `field_people_directory` / `field_managers` views on both tenant planes (P2 latent) — and eq-context's weekly `security-audit.yml` has been red since 2026-08-30 because of them.** Advisor ERROR ×4 (2 views × ehow/zaap); isolation holds by the view's own `tenant_id = auth.jwt()…` predicate, not RLS; rows carry name/phone/email (widened by eq-field #817 on Royce's call). eq-shell's CHECK 7 exception (#1642) already content-verifies the predicate + no-anon-grant every run, so the "predicate dropped" failure is caught — but it doesn't assert the column list and its comment still says "no email/phone". Needs a call: (a) baseline the four in `scripts/security_audit.py` `ACCEPTED_ERRORS` as `"SEC-73 — review_by <date>"` (the register's intended mechanism; un-reds CI) and refresh the CHECK 7 comment, or (b) switch back to `security_invoker=on`, which first means reconciling SEC-33's RESTRICTIVE `app_data.staff` policy with what non-managers must read. Lean: (a). _(added 2026-09-04)_
 - **eq-shell** · **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: upload a new version of a document that already has real signers, confirm the version number bumps, the old signers show as needing to re-sign, "Push to the same N people" actually re-creates outstanding rows for them (and is a no-op, not a duplicate, if clicked/retried), and Version history lists every version with its own signed/outstanding count including one nobody's been pushed to yet. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — confirming the fix needs a live PostHog project plus a real session left open past two 5-minute poll ticks, watching PostHog's own activity feed for exactly one `$create_alias` instead of one per tick. _(added 2026-09-02)_
@@ -34,9 +37,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open `/admin/users`, switch to Pending, confirm it renders real outstanding invites for a tenant that has some. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — PR #1708's own test plan flags this: build/tests/lint clean, but nobody's archived a real staff-linked account and watched the new checkbox clear it. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
-- **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, `eslint`, and a merge-readiness audit that reproduced the CI run end-to-end. Worth a real pass: open a quote for a customer with existing sites, click "Link existing site," confirm it searches every site in the tenant and auto-fills onto the quote once linked; try "New site" with a name close to an existing one and confirm the duplicate warning shows.
-- **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
-_…and 268 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 270 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -67,15 +68,15 @@ _No merges in the last 7 days._
 
 ## Pending (EQ)
 
-- **eq-shell** (282 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (283 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (244 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (246 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (99 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (32 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (31 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (173 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
@@ -99,15 +100,15 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1449 | 198 / 84 | 29 | 70 |
+| [eq-shell](eq/pending/eq-shell.md) | 1462 | 198 / 85 | 35 | 69 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
-| [eq-field](eq/pending/eq-field.md) | 1262 | 168 / 76 | 45 | 39 |
+| [eq-field](eq/pending/eq-field.md) | 1284 | 169 / 77 | 47 | 39 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 30 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 162 | 14 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 204 | 26 / 6 | 0 | 5 |
+| [eq-context](eq/pending/eq-context.md) | 205 | 25 / 6 | 2 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 888 | 129 / 44 | 0 | 64 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 491 | 92 / 15 | 0 | 55 |
@@ -133,7 +134,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-20) · **Still open: what actually created Will's duplicate account.** The Cards lead above is unconfirmed (Royce can't identify the Sydney session) — back to genuinely unknown. Not urgent, his data is already repaired. If it resurfaces, next step is probably asking Will directly whether he tried a second sign-up around 2026-07-06 09:00 UTC, rather than more log forensics — the available logs are exhausted. _(added 2026-07-20)_
 - **eq-shell** (2026-07-20) · **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
 - **eq-shell** (2026-07-14) · **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
-_…and 290 more — see each file's Queue health row above._
+_…and 289 more — see each file's Queue health row above._
 
 ## Possible recurring failures (unconfirmed)
 
@@ -157,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ? Inconclusive — the honesty check did not complete this run.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 08:53 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 09:46 UTC._

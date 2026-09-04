@@ -13,6 +13,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: CSP still allow-listed the deleted ktmj Supabase project (SEC-53 eq-field half) — PR #916 opened + preview-verified, NOT merged (2026-09-04)
+*SEC-53 in `ops/security-register.md`: both header files still listed `ktmjmdzqrogauaevbktn.supabase.co` (https + wss) in `connect-src`, a project deleted mid-2026. eq-shell closed its half in PR #1663 (2026-08-30); `field.eq.solutions` was still serving the dead ref live (curl, 2026-09-04).*
+
+- [x] **Removed the two ktmj tokens from `_headers` + `netlify.toml`** (byte-identical CSP strings kept, host-list comment updated), v3.5.674 bump. eq-field [PR #916](https://github.com/eq-solutions/eq-field/pull/916) — all 7 checks green, deploy preview CSP verified by curl (0 ktmj, identical to the committed value). _(2026-09-04)_
+- [ ] **Merge #916** — Royce's call; `main` auto-deploys to field.eq.solutions. _(added 2026-09-04)_
+- [ ] **Close SEC-53 in `ops/security-register.md` after merge + live curl of both sites** (including core's `frame-src quotes.eq.solutions` clause of the same finding) — separate eq-context PR; a task chip carries the exact steps. Flip this section's OPEN wording and the matching `eq/changelog/eq-field.md` entry to MERGED in the same PR. _(added 2026-09-04)_
+- [ ] **`supabase/functions/supervisor-digest/README.md` still points deploy/curl instructions at the deleted project** — docs-only fix, its own task chip. _(added 2026-09-04)_
+
+**Notes:**
+- Historical ktmj mentions (CHANGELOG/HISTORY, `docs/archive/*`, migration "Applied to" headers, `index.html` banner comments) deliberately left as history. Zero runtime references.
+- Full detail: `eq/changelog/eq-field.md` (2026-09-04, PR #916 entry) and `sessions/2026-09-04.md`.
+
+---
+
 ## eq-field: Timesheets + Roster canonical write paths — both closed against silent duplication — FIXED, merged, live (2026-09-04)
 *Direct continuation of the same day's Timesheets duplicate-hours work (see the 2026-09-04 entry further down). Cihan Alakuzu and Maylin Ung showed wildly inflated hours again, 25 minutes after that fix (PR #906) had already shipped — this time from completely normal single-cell editing, not a bulk-fill loop.*
 
