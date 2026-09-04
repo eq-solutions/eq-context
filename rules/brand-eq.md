@@ -1,7 +1,7 @@
 ---
 title: EQ Brand — Rules & Assets
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-09-05
 scope: EQ Solutions brand specification — colours, fonts, logos, usage rules
 read_priority: critical
 status: live
@@ -12,6 +12,8 @@ status: live
 Canonical brand spec for all EQ Solutions outputs (UI surfaces, marketing, documents, emails). Design Brief version: **v1.3**.
 
 Programmatic source: `eq-design-tokens` (`C:\Projects\eq-design-tokens`) — JSON → CSS/TS/Dart/Tailwind. This file governs intent and rules; the token files govern exact values.
+
+**Corrected 2026-09-05** — the neutral scale and every border hex below had drifted: they still carried the pre-Direction-D cool-grey ramp (`#F9FAFB` / `#F3F4F6` / `#E5E7EB` / `#D1D5DB`) more than three months after `eq-design-tokens` moved to the warm-sand ramp + clay accent ("Direction D", commit `7af9b69`, 2026-05-31, authorised same-day per `ops/decisions.md` → "EQ Design System: Tokens Everywhere, Components Per-Stack, Pin Never Vendor"). Values below now match `@eq-solutions/tokens` v1.3.3 (confirmed live against `tokens/base/color.json` on `eq-design-tokens` main) — only gray-50/100/200/300 warmed, gray-400–600 stay neutral by design (Direction D warms surfaces only, not text grey). This file governs intent; when the two disagree again, the token JSON wins — verify there before treating a hex here as current.
 
 ---
 
@@ -50,7 +52,7 @@ Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
 
 ### Neutral scale
 
-`#F9FAFB` (gray-50) · `#F3F4F6` (gray-100) · `#E5E7EB` (gray-200, default border) · `#D1D5DB` (gray-300, input border) · `#9CA3AF` (gray-400) · `#6B7280` (gray-500) · `#4B5563` (gray-600)
+`#F6F3EE` (gray-50) · `#EFEAE1` (gray-100) · `#E4DDD2` (gray-200, default border) · `#D4CCBE` (gray-300, input border) · `#9CA3AF` (gray-400) · `#6B7280` (gray-500) · `#4B5563` (gray-600)
 
 ### Status colours (never as brand)
 
@@ -93,7 +95,7 @@ Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
 | Cards | 8px |
 | Large shell cards | 12px |
 
-**Borders:** 1px solid `#E5E7EB` on cards, inputs, and table rows. No coloured left-border accents — Field's site-card colour band is data, not decoration.
+**Borders:** 1px solid `#E4DDD2` on cards, inputs, and table rows. No coloured left-border accents — Field's site-card colour band is data, not decoration.
 
 ---
 
@@ -111,7 +113,7 @@ Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
 **Hover / focus / active states:**
 - Primary button: `#3DA8D8` → `#2986B4` (colour swap only — no opacity change, no shrink)
 - Ghost on dark: transparent → `rgba(255,255,255,0.10)`
-- Ghost on light: transparent → `#F9FAFB`
+- Ghost on light: transparent → `#F6F3EE`
 - Focus ring: `0 0 0 2px rgba(61,168,216,0.40)`, 2px offset — required on every input
 
 ---
@@ -120,10 +122,10 @@ Base URL: `https://pub-409bd651f2e549f4907f5a856a9264ae.r2.dev/`
 
 | Component | Spec |
 |---|---|
-| **Cards** | bg white or ice · border 1px `#E5E7EB` · radius 8 (12 for big shells) · padding 16 small / 20–24 default · no shadow unless floating |
-| **Buttons** | Primary = `--eq-sky` fill / white text · ghost = transparent / 1px `#E5E7EB` / ink text · pills for filters and status |
-| **Inputs** | 1px `#D1D5DB` border · radius 6 · 40px tall (44px mobile) · focus = `--eq-deep` border + sky-20 ring |
-| **Tables** | Header: `--eq-sky` fill + WHITE text (non-negotiable — "blue on white / white on blue is the cornerstone"). Zebra rows: `#F9FAFB` on even. |
+| **Cards** | bg white or ice · border 1px `#E4DDD2` · radius 8 (12 for big shells) · padding 16 small / 20–24 default · no shadow unless floating |
+| **Buttons** | Primary = `--eq-sky` fill / white text · ghost = transparent / 1px `#E4DDD2` / ink text · pills for filters and status |
+| **Inputs** | 1px `#D4CCBE` border · radius 6 · 40px tall (44px mobile) · focus = `--eq-deep` border + sky-20 ring |
+| **Tables** | Header: `--eq-sky` fill + WHITE text (non-negotiable — "blue on white / white on blue is the cornerstone"). Zebra rows: `#F6F3EE` on even. |
 | **Sidebar** | Service: 224px (collapsed 64) · Field: 220px · bg `--eq-ink` · sticky top · nav items 500wt |
 | **Topbar** | Field: 48px white + bottom border · Service mobile: 56px ink fill |
 | **Mobile** | Bottom nav 60px (Field) · FAB 44px circle (`--eq-ink` fill, bottom-right) |
@@ -189,7 +191,7 @@ Brand check: ✓ logo ✓ palette ✓ fonts ✓ flat ✓ no jargon
 | # | Check | Pass criteria |
 |---|---|---|
 | 1 | **Logo** | One of the two approved R2 SVGs. Correct variant for background (blue on light, white on dark). |
-| 2 | **Palette** | Only brand tokens used for fills. No invented colours. No SKS palette (`#1F335C`, `#7C77B9`). |
+| 2 | **Palette** | Only brand tokens used for fills. No invented colours. No SKS palette (`#203060`, `#7C77B9`). |
 | 3 | **Fonts** | Plus Jakarta Sans on all web/UI. Aptos Display as print fallback. No Roboto or Calibri on EQ surfaces. |
 | 4 | **Flat** | No box-shadow on static cards. No gradients except the one canonical Service sign-in exception. |
 | 5 | **No jargon** | No banned words on any user-facing surface. Admin UIs included. |
