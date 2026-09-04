@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 23:00 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 23:16 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (12)
 
@@ -58,14 +58,13 @@ _GitHub API returned 401/403 this run — the CI and PR columns above are unavai
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 13 | 2026-09-04 |
-| eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 2](https://eq-solutions.sentry.io/issues/138175643/) | 13 | 2026-09-04 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 12 | 2026-09-04 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 12 | 2026-09-04 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 11 | 2026-09-04 |
 | eq-field | [Error: 403: {"code":"42501","details":null,"hint":null,"message":"timesheet: onl](https://eq-solutions.sentry.io/issues/145012264/) | 2 | 2026-09-04 |
 | eq-shell | [EQ Field handoff stalled at "minting" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145002211/) | 1 | 2026-09-04 |
 | eq-field | [ReferenceError: _hookTsResizeOnce is not defined](https://eq-solutions.sentry.io/issues/144831279/) | 1 | 2026-09-04 |
+| eq-cards | [minified:B8: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 1 | 2026-09-02 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -78,15 +77,15 @@ _2 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (274 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (273 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (102 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (101 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (34 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (33 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (181 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
@@ -110,15 +109,15 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1416 | 199 / 77 | 19 | 69 |
+| [eq-shell](eq/pending/eq-shell.md) | 1413 | 198 / 77 | 19 | 69 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1234 | 168 / 71 | 36 | 39 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 513 | 78 / 24 | 0 | 30 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 513 | 77 / 24 | 1 | 30 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 162 | 14 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 218 | 26 / 8 | 3 | 5 |
+| [eq-context](eq/pending/eq-context.md) | 215 | 25 / 8 | 3 | 5 |
 | [cross-repo](eq/pending/cross-repo.md) | 903 | 133 / 48 | 0 | 64 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 486 | 92 / 14 | 0 | 55 |
@@ -168,4 +167,4 @@ _[sessions/](sessions/) · 5 shown_
 ? Inconclusive — the honesty check did not complete this run.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 23:00 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 23:16 UTC._
