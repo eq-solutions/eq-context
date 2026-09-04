@@ -8,24 +8,33 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 22:35 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 22:42 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## ⚠ Needs you (8)
+## Since last refresh (2026-09-04 22:35 UTC → 2026-09-04 22:42 UTC)
 
+- Merged: eq-solves-intake [#122](https://github.com/eq-solutions/eq-solves-intake/pull/122) fix(intake-demo): land on the real product screen by default
+- Merged: eq-solves-intake [#121](https://github.com/eq-solutions/eq-solves-intake/pull/121) fix(intake-demo): clear remaining react-hooks/set-state-in-e
+- ⚠ Needs you: 8 → 12 (new items)
+
+## ⚠ Needs you (12)
+
+- 🔴 **GitHub token rejected** — 16 API call(s) returned 401/403 this run, so every CI / open-PR / recently-merged row below is *blind, not clean*. Regenerate `EQ_CONTEXT_PAT` (fine-grained PATs expire) and re-run `digest-refresh.yml`.
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, no expiry set) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
+- 🔴 **Cron failing** — `jwt-contract-drift.yml` 2 consecutive scheduled run(s) failed, last success 2026-09-02 · [failures.md](system/failures.md) F11
+- 🔴 **Cron failing** — `shared-object-drift.yml` 4 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
+- 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (267)
+## 🙋 Waiting on you (272)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open EQ Field normally (should look and feel unchanged), then force a stall (block `eq-field.netlify.app` in devtools, navigate straight to `/sks/field`) and confirm the "Still loading" card appears at 10 seconds with a working Retry. _(added 2026-09-04)_
 - **eq-shell** · **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: upload a new version of a document that already has real signers, confirm the version number bumps, the old signers show as needing to re-sign, "Push to the same N people" actually re-creates outstanding rows for them (and is a no-op, not a duplicate, if clicked/retried), and Version history lists every version with its own signed/outstanding count including one nobody's been pushed to yet. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — confirming the fix needs a live PostHog project plus a real session left open past two 5-minute poll ticks, watching PostHog's own activity feed for exactly one `$create_alias` instead of one per tick. _(added 2026-09-02)_
@@ -37,17 +46,19 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — same environment limitation as most of this session's other work (no Shell credentials); `netlify dev` also produced no output at all this time, which may just be the existing known Node-version flakiness rather than a new distinct failure. Verify via each PR's deploy preview or live: Resourcing's two new rating columns render "No ratings yet"; a Check-in entry shows the new weakness-improvement question; Edit pre-fills every field correctly and saves in place; the close/reopen icon toggles the "Open" tag. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live by a person** — every PR this session verified via `pnpm run build`/`eslint`/`pnpm run test`/live DB queries only, never an actual signed-in click-through. Worth a real pass: upload a document, assign/change its category from each of the 3 tabs, create a new reference-only category via the new toggle, confirm the routing actually changes. _(added 2026-08-30)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, the full test suite, and a merge-readiness audit reproducing the production build end-to-end. Worth a real pass: approve a Cards application with a start date set and confirm it lands; add someone via Shell's "Add to roster" with a start date and confirm it lands; confirm the Resourcing page's new count and filter tab work. _(added 2026-08-30)_
-_…and 255 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+- **eq-shell** · **PR #1675 (Cards-approve dedup fix) not click-tested live** — `findExistingStaff()`'s active-only matching bug (this section's earlier entry) is now fixed and merged, but no real end-to-end test: deactivate a Cards worker's staff row, re-approve a second application for the same person, confirm reactivation instead of a duplicate. No Cards/Shell browser session available in this environment. _(added 2026-08-30)_
+_…and 260 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ? unknown | ? | 0 | — |
-| eq-solves-service | ? unknown | ? | 0 | — |
-| eq-field | ? unknown | ? | 0 | — |
-| eq-cards | ? unknown | ? | 0 | — |
-| eq-solves-intake | ? unknown | ? | 0 | — |
+| eq-shell | ? token error | ? | 0 | — |
+| eq-solves-service | ? token error | ? | 0 | — |
+| eq-field | ? token error | ? | 0 | — |
+| eq-cards | ? token error | ? | 0 | — |
+| eq-solves-intake | ✓ success | 0d ago | 0 | — |
+_GitHub API returned 401/403 this run — the CI and PR columns above are unavailable, not clean. Regenerate `EQ_CONTEXT_PAT`._
 
 ## Live errors (Sentry)
 
@@ -65,11 +76,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 ## Recently built (last 7 days)
 
-_No merges in the last 7 days._
+| Merged | Repo | PR |
+|--------|------|----|
+| 2026-09-04 | eq-solves-intake | [#122](https://github.com/eq-solutions/eq-solves-intake/pull/122) fix(intake-demo): land on the real product screen by default |
+| 2026-09-01 | eq-solves-intake | [#121](https://github.com/eq-solutions/eq-solves-intake/pull/121) fix(intake-demo): clear remaining react-hooks/set-state-in-effect |
+_2 merges · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (279 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (275 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (97 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -77,8 +92,8 @@ _No merges in the last 7 days._
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (30 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
-- **cross-repo** (173 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **eq-context** (34 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **cross-repo** (181 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
@@ -101,7 +116,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1413 | 200 / 79 | 24 | 69 |
+| [eq-shell](eq/pending/eq-shell.md) | 1414 | 199 / 78 | 27 | 69 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1234 | 168 / 71 | 36 | 39 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 496 | 75 / 22 | 0 | 30 |
@@ -109,8 +124,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 205 | 24 / 6 | 3 | 5 |
-| [cross-repo](eq/pending/cross-repo.md) | 888 | 129 / 44 | 0 | 64 |
+| [eq-context](eq/pending/eq-context.md) | 218 | 26 / 8 | 3 | 5 |
+| [cross-repo](eq/pending/cross-repo.md) | 903 | 133 / 48 | 0 | 64 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 486 | 92 / 14 | 0 | 55 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
@@ -159,4 +174,4 @@ _[sessions/](sessions/) · 5 shown_
 ? Inconclusive — the honesty check did not complete this run.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 22:35 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 22:42 UTC._
