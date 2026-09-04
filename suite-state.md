@@ -90,7 +90,7 @@ _No open PRs_
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 1,974 | ✓ 1,974 |
-| Operational | app_data.field_timesheets | 373 | ✓ 373 |
+| Operational | app_data.field_timesheets | 376 | ✓ 376 |
 | Safety | public.prestarts | 233 | ✓ 233 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
@@ -110,7 +110,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified 2026-09-04) — see `ops/pending.md` |
+| Active users (Shell sign-ins, jvkn) | 48 |  |
 
 _No flips this run._
 ---
