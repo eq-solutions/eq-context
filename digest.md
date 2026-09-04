@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-04 20:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 20:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (8)
 
@@ -25,7 +25,7 @@ _2026-09-04 20:45 UTC · what needs your attention. Full snapshot: [suite-state.
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **eq-shell** · **SEC-72 — session / Field-JWT mint fails open on denials when the `tenant_role_overrides` read exceeds 6 s (P2).** Fix is eq-shell [PR #1762](https://github.com/eq-solutions/eq-shell/pull/1762) (auth change, Royce's approval required before merge) — reviewed by a Claude session (comment only, not an approval): timeout path confirmed closed on both call sites; two residuals noted — a removed denial stays enforced up to 10 min in a warm container, and the 10-min-cache fallback path only console.warns (invisible in Sentry) unless the review's suggestion 2 lands. Register row closes only once #1762's squash SHA is live (commit-ancestry check), owned by the reviewing session. _(added 2026-09-04)_
+- **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: open EQ Field normally (should look and feel unchanged), then force a stall (block `eq-field.netlify.app` in devtools, navigate straight to `/sks/field`) and confirm the "Still loading" card appears at 10 seconds with a working Retry. _(added 2026-09-04)_
 - **eq-shell** · **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: upload a new version of a document that already has real signers, confirm the version number bumps, the old signers show as needing to re-sign, "Push to the same N people" actually re-creates outstanding rows for them (and is a no-op, not a duplicate, if clicked/retried), and Version history lists every version with its own signed/outstanding count including one nobody's been pushed to yet. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — confirming the fix needs a live PostHog project plus a real session left open past two 5-minute poll ticks, watching PostHog's own activity feed for exactly one `$create_alias` instead of one per tick. _(added 2026-09-02)_
@@ -58,6 +58,7 @@ _…and 255 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 12 | 2026-09-03 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 11 | 2026-09-04 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 11 | 2026-09-03 |
+| eq-shell | [EQ Field handoff stalled at "minting" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145002211/) | 1 | 2026-09-04 |
 | eq-field | [ReferenceError: _hookTsResizeOnce is not defined](https://eq-solutions.sentry.io/issues/144831279/) | 1 | 2026-09-04 |
 | eq-cards | [minified:B8: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 1 | 2026-09-02 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
@@ -68,7 +69,7 @@ _No merges in the last 7 days._
 
 ## Pending (EQ)
 
-- **eq-shell** (277 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (279 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (97 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -100,7 +101,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1392 | 198 / 79 | 16 | 69 |
+| [eq-shell](eq/pending/eq-shell.md) | 1413 | 200 / 79 | 24 | 69 |
 | [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1234 | 168 / 71 | 36 | 39 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 496 | 75 / 22 | 0 | 30 |
@@ -158,4 +159,4 @@ _[sessions/](sessions/) · 5 shown_
 ? Inconclusive — the honesty check did not complete this run.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 20:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 20:56 UTC._
