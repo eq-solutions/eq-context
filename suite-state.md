@@ -105,14 +105,14 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
-| Maintenance checks completed | 0 | ⚠ FLIPPED |
+| Maintenance checks completed | 0 |  |
 | Prestarts created | 13 |  |
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
 | Active users | blocked | `service.profiles.last_login_at` never populated by Shell SSO (0-of-5, verified 2026-09-04) — see `ops/pending.md` |
 
-⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**
+_No flips this run._
 ---
 
 ## Architecture: What Owns What
