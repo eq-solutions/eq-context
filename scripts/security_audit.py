@@ -42,6 +42,22 @@ PROJECTS = {
 ACCEPTED_ERRORS = {
     # SEC-2 closed 2026-07-21 — live-verified fixed via eq-shell tenant-migrations
     # 0023/0178 on both planes, entry removed. See ops/security-register.md.
+    #
+    # SEC-73 — app_data.field_people_directory + app_data.field_managers are
+    # deliberate definer-rights views (security_invoker=false; eq-field PRs
+    # #813/#814/#817, 2026-08-27). Tenant isolation is the view's own
+    # `tenant_id = (auth.jwt()->'app_metadata'->>'tenant_id')::uuid` predicate,
+    # which eq-shell's drift gate (scripts/check-tenant-drift.mjs CHECK 7,
+    # VIEW_INVOKER_REVIEWED_DEFINER) re-verifies live on both planes every run,
+    # together with the no-anon grant. Accepted as a governed exception by
+    # Royce 2026-09-04 (option (a) in the register row); review_by 2026-12-04.
+    # The advisor cache_key carries NO project ref, so one key covers the same
+    # finding on every project in PROJECTS — today that is 2 views x ehow/zaap
+    # = the 4 findings that have failed this gate since 2026-08-30. A same-named
+    # definer view appearing on jvkn or eq-receipts would be accepted by these
+    # keys too; see the SEC-73 row in ops/security-register.md.
+    "security_definer_view_app_data_field_people_directory": "SEC-73 — review_by 2026-12-04",
+    "security_definer_view_app_data_field_managers": "SEC-73 — review_by 2026-12-04",
 }
 
 
