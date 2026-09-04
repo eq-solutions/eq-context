@@ -25,6 +25,14 @@ import requests
 GH_TOKEN = os.environ.get("GH_TOKEN", "")
 NETLIFY_TOKEN = os.environ.get("NETLIFY_TOKEN", "")
 SENTRY_TOKEN = os.environ.get("SENTRY_AUTH_TOKEN", "")
+# The workflow's own GITHUB_TOKEN. Read-only fallback for eq-context itself
+# and the public repos when GH_TOKEN (EQ_CONTEXT_PAT) is rejected.
+GH_FALLBACK_TOKEN = os.environ.get("GH_FALLBACK_TOKEN", "")
+# (status, path) for every 401/403 seen this run. Found 2026-09-04: the
+# fine-grained EQ_CONTEXT_PAT set 2026-08-03 expired ~2026-09-02 and this
+# digest spent two days reporting "? unknown" CI, 0 open PRs and "No merges
+# in the last 7 days" — all three false, none of them flagged anywhere.
+GH_AUTH_FAILURES = []
 NOW = datetime.now(timezone.utc)
 TODAY = NOW.strftime("%Y-%m-%d")
 STAMP = NOW.strftime("%Y-%m-%d %H:%M UTC")
@@ -115,16 +123,36 @@ META_WORKFLOW_PATHS = {
 
 # ── fetch helpers ────────────────────────────────────────────────────────────
 def gh_get(path):
-    try:
-        r = requests.get(
-            f"https://api.github.com/{path}",
-            headers={"Authorization": f"Bearer {GH_TOKEN}",
-                     "Accept": "application/vnd.github+json"},
-            timeout=15,
-        )
-        return r.json() if r.ok else None
-    except Exception:
+    """GET api.github.com/<path> as JSON, or None.
+
+    A 401/403 on GH_TOKEN is recorded in GH_AUTH_FAILURES, warned to stderr,
+    and retried once with GH_FALLBACK_TOKEN (the workflow's own GITHUB_TOKEN,
+    enough for eq-context itself and the public repos). A dead PAT therefore
+    degrades loudly and partially, not silently and totally — the callers'
+    "unknown"/[] fallbacks are for genuinely-missing data, not for auth.
+    """
+    tokens = [GH_TOKEN] if GH_TOKEN else []
+    if GH_FALLBACK_TOKEN and GH_FALLBACK_TOKEN != GH_TOKEN:
+        tokens.append(GH_FALLBACK_TOKEN)
+    for i, token in enumerate(tokens):
+        try:
+            r = requests.get(
+                f"https://api.github.com/{path}",
+                headers={"Authorization": f"Bearer {token}",
+                         "Accept": "application/vnd.github+json"},
+                timeout=15,
+            )
+        except Exception:
+            return None
+        if r.ok:
+            return r.json()
+        if r.status_code in (401, 403):
+            GH_AUTH_FAILURES.append((r.status_code, path))
+            retry = " — retrying with the fallback token" if i + 1 < len(tokens) else ""
+            print(f"  WARNING: GitHub API {r.status_code} on {path}{retry}", file=sys.stderr)
+            continue
         return None
+    return None
 
 
 def ci_status(repo):
@@ -941,6 +969,13 @@ def build():
                 emoji = "🔴" if p["age"] >= PR_AGE_CRITICAL_DAYS else "🟠"
                 attention.append((emoji, f"**PR aging {p['age']}d** — {repo} {link} \"{title}\""))
 
+    if GH_AUTH_FAILURES:
+        n = len(GH_AUTH_FAILURES)
+        attention.append(("🔴", f"**GitHub token rejected** — {n} API call(s) returned 401/403 "
+                                 f"this run, so every CI / open-PR / recently-merged row below is "
+                                 f"*blind, not clean*. Regenerate `EQ_CONTEXT_PAT` (fine-grained "
+                                 f"PATs expire) and re-run `digest-refresh.yml`."))
+
     sentry_issues = sentry_top_issues()
     yesterday = (NOW - timedelta(days=2)).strftime("%Y-%m-%d")  # 48h window, tz-safe
     for issue in sentry_issues[:3]:
@@ -1141,9 +1176,15 @@ def build():
     ci_icon = {"success": "✓", "failure": "✗", "cancelled": "⚠", "unknown": "?"}
     for repo, ci, ci_age, n_open, oldest in pulse:
         icon = ci_icon.get(ci, "?")
+        # A dead token makes every repo "unknown"; say so instead of implying
+        # the repo has no CI signal.
+        ci_label = "token error" if (ci == "unknown" and GH_AUTH_FAILURES) else ci
         oldest_s = f"{oldest}d" if oldest is not None else "—"
         ci_age_s = f"{ci_age}d ago" if ci_age is not None else "?"
-        lines.append(f"| {repo} | {icon} {ci} | {ci_age_s} | {n_open} | {oldest_s} |")
+        lines.append(f"| {repo} | {icon} {ci_label} | {ci_age_s} | {n_open} | {oldest_s} |")
+    if GH_AUTH_FAILURES:
+        lines.append("_GitHub API returned 401/403 this run — the CI and PR columns above are "
+                     "unavailable, not clean. Regenerate `EQ_CONTEXT_PAT`._")
     lines.append("")
 
     if deploy_rows:
@@ -1190,6 +1231,9 @@ def build():
         else:
             s = "s" if total_recent != 1 else ""
             lines.append(f"_{total_recent} merge{s} · full record in [sessions/](sessions/)_")
+    elif GH_AUTH_FAILURES:
+        lines.append("_Unavailable — the GitHub API rejected the token this run. "
+                     "This is not a quiet week; it is a blind one._")
     else:
         lines.append(f"_No merges in the last {RECENTLY_MERGED_DAYS} days._")
     lines.append("")

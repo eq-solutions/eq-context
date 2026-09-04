@@ -58,6 +58,9 @@ jobs:
           # repos only, e.g. eq-solves-intake) if the PAT isn't set.
           GH_TOKEN:                  ${{ secrets.EQ_CONTEXT_PAT || secrets.GITHUB_TOKEN }}
           NETLIFY_TOKEN:             ${{ secrets.NETLIFY_TOKEN }}
+          # Management API token (already used by security-audit.yml) — lets the
+          # Product Pulse read "active users" from jvkn's shell_control.users.
+          SUPABASE_ACCESS_TOKEN:     ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: python .github/scripts/refresh_suite_state.py
 
       - name: Commit if changed
