@@ -6,6 +6,7 @@ Covers the decision functions that decide pass/fail — the bits that, if wrong,
 either miss a leak or cry wolf.
 """
 import contextlib
+import datetime
 import io
 import os
 import unittest
@@ -62,6 +63,31 @@ class TriageTests(unittest.TestCase):
             self.assertTrue(ck and isinstance(ck, str))
             self.assertRegex(ck, r"^[a-z0-9_]+$")
             self.assertRegex(why, r"^SEC-\d+ — review_by \d{4}-\d{2}-\d{2}$")
+
+    def test_accepted_errors_review_dates_not_past(self):
+        # The review_by date is enforced HERE and nowhere else. The day after
+        # it passes, this fails the weekly workflow's unit-test step until the
+        # finding is re-reviewed in ops/security-register.md and the entry's
+        # review_by extended (or the entry removed). Deliberate: an accepted
+        # risk nobody re-reviews is not accepted, it is forgotten.
+        overdue = security_audit.overdue_reviews()
+        self.assertEqual(overdue, [], "review_by has passed for: " + ", ".join(
+            f"{ck} ({d})" for ck, d in overdue
+        ) + " — re-review in ops/security-register.md, then extend review_by or remove the entry")
+
+    def test_overdue_reviews_fires_after_the_date(self):
+        # Prove the guard bites: the day after review_by every entry is overdue,
+        # and an entry with no parseable date is overdue on any day (fail closed).
+        keys = sorted(security_audit.ACCEPTED_ERRORS)
+        self.assertEqual(
+            sorted(ck for ck, _ in security_audit.overdue_reviews(today=datetime.date(2099, 1, 1))), keys)
+        for ck, why in security_audit.ACCEPTED_ERRORS.items():
+            due = datetime.date.fromisoformat(why.rsplit(" ", 1)[1])
+            # on the review date itself: still fine; the day after: overdue
+            self.assertNotIn(ck, [k for k, _ in security_audit.overdue_reviews(today=due)])
+            self.assertIn(ck, [k for k, _ in security_audit.overdue_reviews(today=due + datetime.timedelta(days=1))])
+        with mock.patch.dict(security_audit.ACCEPTED_ERRORS, {"x_no_date": "SEC-0 — no date"}, clear=True):
+            self.assertEqual(security_audit.overdue_reviews(today=datetime.date(2020, 1, 1)), [("x_no_date", None)])
 
 
 class AcceptedBaselineRunTests(unittest.TestCase):

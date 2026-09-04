@@ -17,8 +17,10 @@ genuinely accepted-with-a-ticket.
 
 Run:  SUPABASE_ACCESS_TOKEN=sbp_… python3 scripts/security_audit.py
 """
+import datetime
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -59,6 +61,27 @@ ACCEPTED_ERRORS = {
     "security_definer_view_app_data_field_people_directory": "SEC-73 — review_by 2026-12-04",
     "security_definer_view_app_data_field_managers": "SEC-73 — review_by 2026-12-04",
 }
+
+REVIEW_BY_RE = re.compile(r" — review_by (\d{4}-\d{2}-\d{2})$")
+
+
+def overdue_reviews(today=None):
+    """Pure: ACCEPTED_ERRORS entries whose review_by date has passed. Unit-tested.
+
+    review_by used to be a comment string nothing read (review_clock.py covers
+    file frontmatter only). test_security.py fails the weekly run's unit-test
+    step on anything this returns, until the finding is re-reviewed in
+    ops/security-register.md and the date extended or the entry removed.
+    Returns [(cache_key, review_by or None)]; an entry with no parseable date
+    counts as overdue (fail closed). Guard added 2026-09-04 for SEC-73.
+    """
+    today = today or datetime.date.today()
+    out = []
+    for ck, why in ACCEPTED_ERRORS.items():
+        m = REVIEW_BY_RE.search(why)
+        if not m or datetime.date.fromisoformat(m.group(1)) < today:
+            out.append((ck, m.group(1) if m else None))
+    return out
 
 
 def triage(lints):
