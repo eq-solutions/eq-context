@@ -1,7 +1,7 @@
 ---
 title: Rules — Non-Negotiables
 owner: Royce Milmlow
-last_updated: 2026-08-04
+last_updated: 2026-09-04
 scope: Hard rules that override all context, requests, or convenience
 read_priority: critical
 status: live
@@ -20,11 +20,13 @@ If something seems to require breaking one of these, stop and flag it.
 
 If sharpening the language to fit these verbs would change a rule's meaning, that is a decision-grade change — surface it via the relevant tier's `pending.md` rather than editing this file inline.
 
+> **Re-verified 2026-09-04** (review-clock pass): project ids, file pointers and cross-references checked against live systems and the current substrate. Three factual rewordings, no rule changed meaning — Rule 0 now names the per-repo EQ pending files, Tier Discipline names the actual four-option tier question, and Rule 2 describes the server-side proxies the live apps really use.
+
 ---
 
 ## Session Discipline
 
-0. **Finish what you start.** At session start, the assistant MUST identify every recommendation, suggestion, and pending action surfaced in the conversation. Every one of them MUST be either completed before session close or deferred to the relevant tier's `pending.md` with a date. Half-applied work is the failure mode this rule prevents.
+0. **Finish what you start.** At session start, the assistant MUST identify every recommendation, suggestion, and pending action surfaced in the conversation. Every one of them MUST be either completed before session close or deferred to the relevant tier's `pending.md` with a date (for EQ that is the per-repo file `eq/pending/<repo>.md` — `eq/pending.md` has been an index since the 2026-08-17 split; SKS and OPS still use `sks/pending.md` / `ops/pending.md`). Half-applied work is the failure mode this rule prevents.
    - If a recommendation genuinely cannot be completed in-session (blocked by external action, requires explicit approval, depends on someone else), the assistant MUST add a dated entry to the relevant `pending.md` before close and MUST NOT leave it hanging in chat.
    - The assistant MUST NOT propose a fix and walk away. The fix MUST either be applied in-session or deferred on the record.
    - "Half-applied cleanup patches" sitting unapplied on disk are a violation of this rule.
@@ -36,7 +38,7 @@ If sharpening the language to fit these verbs would change a rule's meaning, tha
 **Tier-mixing is the failure mode the 2026-05-04 refactor was built to prevent.**
 
 The repo is tier-separated: `/eq`, `/sks`, `/sks-team`, `/ops`, `/system`, `/archive`.
-At session start the assistant MUST ask "EQ or SKS focus?" and load
+At session start the assistant MUST ask the tier question — EQ / SKS / Cross-tier / OPS (`CLAUDE.md` §1) — and load
 defaults from one tier only. Cross-tier loads are explicit, not implicit.
 
 - The assistant MUST NOT surface SKS content unprompted in an EQ session, or vice versa.
@@ -69,7 +71,7 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 ## Code & Deployment
 
 1. The assistant MUST NOT deploy or push to any branch without explicit instruction from Royce.
-2. The assistant MUST NOT expose the Anthropic API key in any frontend file — worker.js proxy only, always.
+2. The assistant MUST NOT expose the Anthropic API key in any frontend file — server-side proxy only, always: a Netlify Function (eq-shell `anthropic-proxy.ts`, eq-field `eq-agent.js`), a Supabase Edge Function with the key in Vault (EQ Receipts), or the legacy `anthropic-proxy` Cloudflare Worker for the single-HTML tools. See `rules/stack.md`.
 3. The assistant MUST NOT cross-deploy between EQ and SKS codebases — ever.
 4. **The assistant MUST NOT touch SKS live Supabase (`nspbmirochztcjijmcrx`) unless Royce explicitly says "SKS live".** More than one Supabase project is reachable and the set changes — the assistant MUST confirm which project it is connecting to first. Registry: `system/substrate-facts.yml` (machine-checked) and `system/infrastructure.md`. This clause used to name three projects inline; two of them (`eq-solves-field`, and urjh behind `eq-substrate`) have since been deleted, which is why the list now lives in one place instead of here.
 5. The assistant MUST NOT remove DEMO_FLAG comments — they mark live re-enable points.

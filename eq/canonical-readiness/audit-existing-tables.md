@@ -1,15 +1,24 @@
 ---
 title: EQ Canonical — Existing 13 Tables Audit (Unit 1 Output)
 owner: Claude Code (Royce reviews)
-last_updated: 2026-05-30
+last_updated: 2026-09-04
+kind: record
 scope: Column-level audit of every existing canonical entity table against Field's actual migration shape (where applicable), Quotes' v1 schema, and Cards' working columns. Output drives Unit 2's schema-split-and-reshape migration. Where canonical and an app's shape diverge, this doc surfaces the gap and recommends a resolution.
-read_priority: standard
-status: draft
+read_priority: reference
+status: archived
 ---
 
 # Existing 13 Tables Audit — Unit 1 Output
 
-**Status:** draft — pending Royce review.
+> **EXECUTED — this is a record, not an open audit.** Unit 2 shipped every recommendation here,
+> including the "one remaining decision" at the bottom: verified live 2026-09-04 on both tenant
+> planes (ehow `ehowgjardagevnrluult`, zaap `zaapmfdkgedqupfjtchl`) — `app_data.staff` carries
+> `user_id`, `notify_roster`, `dob_day`, `dob_month`, `digest_opt_in`, `digest_cron_schedule`,
+> `tafe_day`, `year_level` (and no `role`); `app_data.sites` carries `track_hours`, `budget_hours`,
+> `slug`; `app_data.schedule_entries` is keyed `schedule_id`. Marked `kind: record` on 2026-09-04 for
+> the same reason the parent `plan.md` was on 2026-08-15: it had sat at `status: draft` for 97 days as
+> finished work. Column counts and table locations below are point-in-time (May 2026, `public.*` on
+> jvkn) and have since moved — the live canonical inventory is `spine.md`.
 
 This is the read-only output of canonical-readiness Unit 1. It compares
 each of the 13 canonical entity tables (in `public.*` today; moving to
@@ -558,3 +567,4 @@ this audit recommends ADD. Confirm before Unit 2 drafting.
 |---|---|---|
 | 2026-05-20 | Claude Code (Unit 1) | Initial audit draft. 8 PASS, 3 ADD-COLUMNS, 1 RENAME, 2 MATERIAL DISAGREEMENT (prestart_checks + toolbox_talks). Pending Royce review on the 4 open decisions. |
 | 2026-05-20 | Claude Code (Unit 1) | Audit revised after Phase 1.F verification: staff.role does NOT exist (role lives on users); staff.user_id FK does NOT exist either — new Finding 7 recommends adding it as the missing user↔staff link. The 4 prior open decisions all locked at recommended defaults. One new decision raised (staff.user_id) pending Royce confirmation. |
+| 2026-09-04 | Claude Code (review clock) | Reclassified `kind: record` / `status: archived` after verifying live on both tenant planes that Unit 2 landed every recommendation, including `staff.user_id`. No audit content changed. |

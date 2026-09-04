@@ -192,6 +192,14 @@ def days_overdue(due, today):
 # 2026-08-15 first measurement:  3 generated / 234 record /  91 state, 15 overdue
 # 2026-08-15 after the review:   3 generated / 237 record /  88 state,  5 overdue
 # 2026-08-16 recheck:            3 generated / 237 record /  89 state,  7 overdue
+# 2026-09-04 after the review:   3 generated / 269 record / 104 state,  0 overdue
+#
+# The SKS set below was cleared on 2026-08-21 by reading it (commit 8f62350).
+# The 8 overdue on 2026-09-04 were all fresh age-outs (eq/active.md 15d, the
+# rest 1-7d); cleared by re-verifying each against the live system it
+# describes -- five needed real corrections, one (the executed 2026-05-30
+# table audit) became kind: record. Ceiling left at 7 on purpose: files age
+# out weekly and a ceiling of 0 would keep main red between passes.
 #
 # The 10 cleared between the first two measurements were not cleared by bumping
 # dates. Three were finished work still flying status: live (the executed
