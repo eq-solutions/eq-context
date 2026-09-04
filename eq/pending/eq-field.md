@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Timesheets week-lock trio — confirm()/prompt() silently no-op for every real SKS supervisor through Core — FIXED, merged, live (2026-09-04)
+*Spun off from PR #904 (Prestart/Toolbox Reopen fix, same day) — that PR's own commit found and correctly flagged `unlockCurrentWeek()` as the same bug class in a different feature, deliberately left out of scope. This session picked that up, fixed it, then found two more live instances in the same file while there and spun those off too.*
+
+- [x] **`unlockCurrentWeek()` called raw `window.confirm()`, which silently returns `false` with no dialog inside eq-shell's `FieldIframe.tsx` sandbox (`allow-modals` genuinely absent — independently re-verified against the live file, not just trusted from PR #904's comment).** SKS is Core-only, so Unlock Week had done nothing at all, silently, for every real supervisor for as long as the button has existed under Core. Fixed by swapping to the file's own already-proven `_tsConfirm()` modal wrapper (used 4x elsewhere) — mechanical swap, same message text. eq-field [PR #905](https://github.com/eq-solutions/eq-field/pull/905) (v3.5.663), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.663).
+- [x] **Found two more live instances while there, same file: `lockCurrentWeek()` and `requestTsUnlock()`, both still raw `window.prompt()`.** `requestTsUnlock()`'s case was worse than a no-op — a blocked `prompt()` returns `null`, which the existing code already treats identically to the user's own Cancel, so a worker's unlock request silently vanished with zero feedback; `lockCurrentWeek()` silently locked with a blank reason instead of asking. Needed a different shape of fix (text-input modal, not yes/no), so spun off as a separate task rather than folded into #905. Royce started the spawned task in its own session; it built a new `_tsPrompt()` helper (sibling to `_tsConfirm()`, reusing the shared modal's existing `#confirm-reason` textarea — no new markup needed) and switched both functions onto it. eq-field [PR #908](https://github.com/eq-solutions/eq-field/pull/908) (v3.5.666 — rebased twice past concurrent same-day PRs #906/#907), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.666, verified by polling rather than assumed instantly live).
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass through Core as a supervisor: Unlock Week on a locked week shows the modal and actually unlocks; Lock Week with and without a typed reason both save correctly; as a non-supervisor, "Request unlock" on a locked week shows the modal and the request (with optional reason) lands in the audit log. _(added 2026-09-04)_
+
+**Notes:**
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entries) and `sessions/2026-09-04.md`.
+
+---
+
 ## eq-field: Timesheets duplicate-hours bug + scroll-jump-to-top — FIXED, merged, live (2026-09-04)
 *Royce: David Boyd struggling to enter timesheets, Cihan Alakuzu showing 120h for a normal week, and a screenshot asking why one Timesheets day-cell renders darker than its neighbours. All three investigated against live ehow data + the actual render code, not guessed.*
 
