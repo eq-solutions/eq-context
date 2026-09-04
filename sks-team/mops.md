@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — MOP Router (Skeleton)
 owner: Royce Milmlow
-last_updated: 2026-05-30
+last_updated: 2026-09-04
 scope: Canonical AI guidance for drafting SKS Method of Procedure documents
 read_priority: standard
 status: draft
@@ -17,6 +17,8 @@ You are helping an SKS NSW Operations team member draft a **Method of Procedure 
 MOPs are safety-critical documents. This file produces a draft only. All MOPs must be reviewed by the SKS supervisor and approved by the relevant client or site representative before works commence.
 
 > **Status note:** This file is functional but evolving. Question flows and canonical content will be refined as real MOP drafts are produced. Raise gaps to Royce.
+>
+> **Reviewed 2026-09-04** — read in full and cross-checked against `gateway.md` (§MOP Workflow, emergency contacts), `README.md` (file list and routing) and `clients/`. Content unchanged: no real MOP has been drafted through this file yet, so the procedure-pattern gaps in §6 are still open. **Known divergence, for Royce:** `gateway.md` §MOP Workflow carries a *condensed* MOP template — 9 unnumbered sections, `MOP-XXXX` reference, 6 questions — while this file carries the full one — 10 numbered sections including References and Tools & Equipment, `MOP-[Project]-[Rev]`, 8 questions. A team member gets a different section set depending on which file their session loaded. Until Royce says which structure is canonical, treat this file as the full template and gateway.md as the quick path.
 
 ---
 
