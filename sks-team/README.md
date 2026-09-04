@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Tier README
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-09-05
 scope: Substrate tier providing canonical AI guidance to the SKS NSW Operations team
 read_priority: critical
 status: live
@@ -84,7 +84,7 @@ If a piece of guidance applies across multiple document types (e.g. a canonical 
 - `gateway.md` — **start here** — single-file master router; handles all document types; designed to be a Claude Project system prompt; rubbish-proof (drives the conversation from any input)
 - `quoting.md` — canonical router for SKS team quoting (Client Services template); detailed standalone version
 - `variations.md` — canonical router for variation claims; same depth as quoting.md
-- `mops.md` — MOP (Method of Procedure) router; functional skeleton; evolving
+- `mops.md` — MOP (Method of Procedure) router; canonical template — `gateway.md`'s §MOP Workflow mirrors it verbatim; procedure-step pattern library still growing
 - `clients/equinix.md` — Equinix terminology, site codes, and language patterns (light reference)
 - `clients/schneider.md` — Schneider Electric terminology and project conventions (light reference)
 

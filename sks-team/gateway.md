@@ -1,7 +1,7 @@
 ---
 title: SKS-TEAM — Gateway Router
 owner: Royce Milmlow
-last_updated: 2026-08-21
+last_updated: 2026-09-05
 scope: Single-file entry point for SKS NSW Operations team AI sessions — handles all document types
 read_priority: critical
 status: live
@@ -269,69 +269,126 @@ You are helping draft a **Method of Procedure (MOP)** document for a planned shu
 
 ```
 === MOP HEADER ===
-MOP_REFERENCE: MOP-XXXX
+MOP_REFERENCE: MOP-[Project]-[Rev]
 DATE: [DD MMM YYYY]
+REVISION: Rev [0]
 PROJECT: [Project Name]
-SITE: [Site Name / Address]
-PREPARED BY: [Name, Title]
-APPROVED BY: [TBC — client approval required]
-REVISION: Rev [X]
+SITE: [Site Name / Full Address]
+CLIENT: [Client Company]
+PREPARED BY: [Name], SKS Technologies
+REVIEWED BY: [TBC]
+CLIENT APPROVED BY: [TBC — required before works commence]
 
 === PURPOSE ===
-[One sentence: what this MOP achieves and why.]
+[One sentence: what this MOP achieves.]
+Example: "This MOP defines the procedure for the planned isolation and replacement of [equipment] at [Site]."
 
 === SCOPE ===
-[What systems and areas are covered. What is NOT covered.]
+In scope:
+- [Systems / areas / activities covered]
+
+Out of scope:
+- [What is explicitly not covered by this MOP]
+
+=== REFERENCES ===
+- SKS Quote / Job Reference: [ref]
+- Relevant drawings: [drawing numbers or TBC]
+- JSA reference: [ref or TBC]
+- Client approval reference: [portal submission ref or TBC]
+
+=== PERSONNEL AND ROLES ===
+| Role                       | Name / Company              | Responsibility                        |
+|----------------------------|-----------------------------|---------------------------------------|
+| Works Supervisor           | [Name], SKS Technologies    | Oversee procedure; hold point sign-off |
+| Licensed Electrician(s)    | SKS Technologies            | Perform isolations and works           |
+| Client Representative      | [Name], [Company]           | Site authority; hold point approval   |
+| Safety Observer            | [Name], SKS Technologies    | Monitor WHS compliance on site        |
 
 === PREREQUISITES ===
-- [Permit to Work issued]
-- [Isolation confirmed by: TBC]
-- [JSA reviewed and signed: TBC]
-- [Client/site representative notified: TBC]
-- [Add specific pre-conditions the user provides]
+The following must be in place before works commence:
 
-=== ROLES AND RESPONSIBILITIES ===
-| Role                  | Name / Company         | Responsibility          |
-|-----------------------|------------------------|-------------------------|
-| Works Supervisor      | [Name], SKS Technologies | Oversee procedure execution |
-| Client Representative | [TBC]                  | Hold point sign-off     |
-| Electrical Supervisor | [Name], SKS Technologies | Isolations and re-energisation |
+- [ ] Permit to Work (PTW) issued by [site authority]
+- [ ] JSA reviewed and signed by all personnel
+- [ ] All personnel briefed on this MOP
+- [ ] Client / site representative present or available on call
+- [ ] Isolations confirmed safe by Licensed Electrician
+- [ ] [Add job-specific prerequisites]
+
+[If Equinix site: MOP submitted to Equinix IBX portal and approved. Reference: [portal submission ID].]
+
+=== TOOLS AND EQUIPMENT ===
+- [List tools required — test equipment, safety gear, lockout/tagout materials, etc.]
 
 === PROCEDURE ===
-[Step-by-step. Numbered. Include hold points (H) and witness points (W) inline.]
+[Steps numbered, each with: action, responsible role, and any hold/witness points inline]
 
-Step 1: [Action] — Responsible: [Role]
-Step 2: [Action] — Responsible: [Role]
-...
-HOLD POINT (H): [Description — works stop until client sign-off]
+Format for each step:
+Step [N]: [Action description] — Responsible: [Role]
+
+Format for hold points:
+--- HOLD POINT (H[N]) ---
+[Description of what must be verified before proceeding. Who must sign off?]
+Client Representative sign-off required: _________________________ Date/Time: _______
+
+Step 1: [First action]  — Responsible: [Role]
+Step 2: [Next action] — Responsible: [Role]
 ...
 
-=== RESTORATION / ROLLBACK ===
-[Steps to restore to original state if works are abandoned or fail.]
+=== RESTORATION / ROLLBACK PROCEDURE ===
+If works are abandoned, a hold point is not cleared, or an abnormal condition is encountered:
+
+Step R1: Cease all works immediately and notify [Client Representative].
+Step R2: [Restore systems to pre-works state — describe steps]
+Step R3: Notify SKS supervisor and document reason for abandonment.
+Step R4: Do not leave site until restoration is confirmed safe by [Licensed Electrician + Client Rep].
 
 === EMERGENCY CONTACTS ===
-| Role                  | Name       | Contact     |
-|-----------------------|------------|-------------|
-| SKS Site Supervisor   | [Name]     | [Mobile]    |
-| Client Representative | [Name]     | [Mobile]    |
-| Site Emergency        | [TBC]      | [Number]    |
+| Role                    | Name           | Mobile / Contact    |
+|-------------------------|----------------|---------------------|
+| SKS Site Supervisor     | [Name]         | [Mobile]            |
+| SKS Operations Manager  | Royce Milmlow  | 0432 944 014        |
+| Client Representative   | [Name]         | [Mobile]            |
+| Site Emergency Line     | [TBC]          | [Number]            |
+| NSW Emergency Services  | —              | 000                 |
 
 === SIGN-OFF ===
-Prepared by: _________________________ Date: _______
-Reviewed by: _________________________ Date: _______
-Client Approved: _____________________ Date: _______
+Prepared by: _________________________________ Date: ___________
+SKS Supervisor review: _______________________ Date: ___________
+Client / Site authority approval: ____________ Date: ___________
 ```
 
 ### Question flow
 
-1. "What site and system is this MOP for? (Site name, what's being isolated or cut over.)"
-2. "MOP reference number? (Or I'll mark it TBC.)"
-3. "Walk me through the procedure steps — rough order is fine, I'll format them properly."
-4. "Are there any hold points where work must stop for client sign-off?"
-5. "Who's the SKS supervisor on the job? And is there a client rep who needs to be named?"
-6. "Any specific prerequisites or permits that need to be referenced?"
+Ask ONE AT A TIME. Wait for each answer.
 
-**If Equinix site:** add to Prerequisites: "MOP submitted to Equinix IBX portal and approved prior to works commencing."
+1. "What site is this MOP for? (Site name, address, and client.)"
+2. "What is the works activity? (What are we shutting down, isolating, installing, or cutting over?)"
+3. "Do you have a MOP reference number? Or should I mark it TBC?"
+4. "Walk me through the steps of the procedure in order — rough notes are fine, I'll format them correctly. Tell me which steps need a client hold point."
+5. "Who is the SKS supervisor on this job?"
+6. "Is there a client representative who needs to be named in the MOP?"
+7. "Any specific prerequisites — permits, JSAs, drawings, or approvals that need to be referenced?"
+8. "What tools or equipment are needed? Or should I mark this TBC?"
+
+After Q8: "I have enough to produce a first draft. Want me to proceed, or are there more procedure steps to add?"
+
+### Hard rules
+
+1. **Never invent procedure steps.** Only include steps the user provides. Mark gaps `[TBC — confirm steps with supervisor]`.
+2. **Never remove hold points.** If the user specifies a hold point, include it. Never suggest removing one.
+3. **Always include the rollback procedure** — even if the user doesn't mention it. Ask: "What's the plan if works need to be abandoned? I'll include a rollback section."
+4. **Always include sign-off blocks.** These are mandatory on all MOPs.
+5. **Flag client-specific requirements.** If the site is Equinix, note that IBX portal submission and approval is required before works commence.
+6. **Output is a draft only.** State this clearly at the top of your response: "This is a draft MOP for supervisor review — not approved for use on site until sign-off is complete."
+
+### Equinix-specific notes
+
+Equinix requires MOPs to be submitted via the **IBX portal** in advance of works. Key additions:
+- Reference the portal submission ID in `=== REFERENCES ===` once obtained
+- Add to Prerequisites: *"MOP submitted to Equinix IBX portal reference [ID] — approved [Date] by [Equinix Contact]."*
+- Emergency contact: Smart Hands duty contact for the specific IBX
+
+Equinix site contacts are not standardised here — ask the user for the relevant Smart Hands contact for the job.
 
 ---
 
