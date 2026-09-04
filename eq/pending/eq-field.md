@@ -13,6 +13,34 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: file-size ratchet has converged to near-zero headroom across every tracked file — needs a decision (2026-09-04)
+*Royce asked directly at session close: "Do we need to review the size of the files?" Checked live rather than guessed — yes, and it's not just one file.*
+
+- [ ] **Every file on this repo's own tracked large-file list is now within 0.5%–2% of its `eslint.config.js` ratchet ceiling**, verified live: `timesheets.js` 2,527/2,550 (23 lines headroom), `roster.js` 1,940/1,950 (10 lines), `leave.js` 1,739/1,750 (11 lines), `sks-pipeline.js` 1,779/1,800 (21 lines), `sks-pipeline-resource.js` 2,062/2,100 (38 lines), `tender-pipeline.js` 2,108/2,150 (42 lines). `timesheets.js` alone was bumped twice today by two independent same-day PRs (2450→2500 convergently via #908 and #909 each, then 2500→2550 once combined) — the ratchet-by-50-with-a-comment convention is working as designed, but at this pace every one of these six files trips `max-lines` on its next small edit, not just timesheets.js's. Real decomposition (the file-size convention's other stated option, alongside a PR-body note) hasn't been done on any of these six since timesheets.js's own 3,215→2,361 split. Royce's call: keep ratcheting file-by-file as it comes up (cheap, keeps working), or schedule a real decomposition pass on the files closest to zero headroom (`roster.js`, `leave.js`) before the next feature lands in one. _(added 2026-09-04)_
+
+**Notes:**
+- Not a new problem caused this session — the convergence is the cumulative effect of the existing, working ratchet convention across many sessions. Flagged now because two independent PRs both hit the same file's ceiling on the same day, which is what made the pattern visible.
+
+---
+
+## eq-field: Timesheets TAFE/Leave autofill + dark-cell explainer — FIXED, merged, live (2026-09-04)
+*Same session as the duplicate-hours fix below. Royce, follow-up: "look at the dark timesheets issue" (revisit — the dark cell itself was already correct behaviour, just unexplained) and "can you see whats built between tafe/holiday and timesheets — it would be good to autofill for dates we know the person is at tafe or on leave (make it so it can still be changed if needed)".*
+
+- [x] **Dark "continues a job" cell now has a tooltip** naming the job it's continuing — no behaviour change, just an explanation where there was none.
+- [x] **TAFE/Leave days now autofill a real, editable timesheet entry, not just a virtual total.** What existed already: `dayStatus()` (`timesheets-rules.js`) knew about a nominated TAFE day or approved leave and silently credited 8h to the on-screen weekly total. What was missing: nothing was ever written to the actual row, so a CSV/By Job export showed nothing for that day, and the desktop grid rendered the day as a fully locked chip with no way to override it. Fix, one-tap (Royce's pick over fully-automatic via `AskUserQuestion`, matching every other fill action in this app): "Prefill from Roster" and "Prefill my week" now also fill TAFE/approved-leave days with a real 8h entry using the same label the chip already shows, never overwriting a day that already has real data. The spans grid's TAFE/Leave chips are no longer fully locked — a supervisor can click one to open the same day editor as any other cell and correct a wrongly-flagged day.
+- [x] **Found and fixed in passing: the "TAFE Holidays doesn't protect Timesheets" gap already logged further down this file (2026-09-02 entry) was real** — a configured TAFE Holidays break wasn't actually being checked by `dayStatus()` despite a comment in `tafe.js` claiming it was. During a declared holiday week, an apprentice's nominated day now correctly reads as workable. Matters more now that this day can produce a real written row, not just a display total.
+- [x] **3 new automated tests** lock in the holiday-override behaviour and confirm an explicitly roster-typed TAFE code (a human decision) is untouched by it.
+- [x] eq-field [PR #909](https://github.com/eq-solutions/eq-field/pull/909) (v3.5.667 — renumbered from v3.5.666 on rebase, see Notes), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.667).
+- [ ] **New export visibility, intended but worth knowing:** TAFE/leave days that were previously invisible to every export now show up in the "By Job" export, mixed in with real job numbers under a code ("TAFE"/"A/L") that isn't in the job-numbers table. _(added 2026-09-04)_
+- [ ] **UI-glue code has no automated browser-level coverage** — the clickable-chip wiring and the two prefill functions' new branches are verified by manual trace against the diff plus the full suite passing, not by an executed browser test (standing Core-only sandbox limitation prevents one). The rules-layer fix (`dayStatus()`) does have real test coverage. _(added 2026-09-04)_
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. _(added 2026-09-04)_
+
+**Notes:**
+- Rebased once to merge: `main` had moved to v3.5.666 via a concurrent PR, [#908](https://github.com/eq-solutions/eq-field/pull/908) (the Lock Week/Request Unlock fix, section below), which this branch's own v3.5.666 collided with. `scripts/timesheets.js` auto-merged cleanly (different functions touched); `docs/reflection-log.md`, `eslint.config.js`'s ratchet comment, and `index.html`'s CHANGES banner all conflicted for real on the shared append-point, resolved by keeping both PRs' entries. `app-state.js`/`sw.js`/index.html's own `<script>` tags all silently kept the stale `3.5.666` literal post-rebase with no conflict flagged (same trap documented on every PR today) — bumped by hand. Combined with #908's own additions, `timesheets.js` crossed its ratchet ceiling a second time today (2500 → 2550, actual 2,527 lines) — see the file-size entry above.
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entries) and `sessions/2026-09-04.md`.
+
+---
+
 ## eq-field: Timesheets week-lock trio — confirm()/prompt() silently no-op for every real SKS supervisor through Core — FIXED, merged, live (2026-09-04)
 *Spun off from PR #904 (Prestart/Toolbox Reopen fix, same day) — that PR's own commit found and correctly flagged `unlockCurrentWeek()` as the same bug class in a different feature, deliberately left out of scope. This session picked that up, fixed it, then found two more live instances in the same file while there and spun those off too.*
 
