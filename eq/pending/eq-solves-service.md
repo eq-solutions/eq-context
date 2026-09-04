@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,23 @@ status: live
 # EQ Service — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-service: attachment uploads were completely broken for everyone — root-caused, fixed, shipped live; a related security gap in the same feature closed too (2026-09-04/05)
+*Royce reported every attachment upload failing with a permissions error on a maintenance check page. Root-caused to the file-storage system's write rules having been silently changed at some point outside the normal database-update process — no trace in git anywhere, found only by checking the live database directly. The change had swapped in a read-only rule with no rule allowing new files to be added or removed at all, so every upload failed for every tenant and every role, not just some.*
+
+- Fixed via a new tracked database update (PR #827), verified safe with a rehearsal-then-undo test against the live database before committing. Shipped, merged, and applied to the live system same session — confirmed via both the update ledger and by directly checking the live storage rules afterward.
+- While reviewing the same feature for other issues (Royce: "anything obvious we can improve? are the files secure?"), found a second, smaller gap: the "get me a link to this file" function trusted whatever file path it was given, with nothing in the app itself checking it belonged to the asking tenant — it relied entirely on the database rule above to stop cross-tenant access, and that exact rule had *just* been shown to be able to silently break. Closed with a small belt-and-suspenders check (PR #828); no behavior change for real use. Shipped and merged same session, past the same two pre-existing unrelated CI failures already documented elsewhere in this file (the npm-audit gate, and the known-flaky integration suite).
+- Two more issues found in the same review, deliberately left as-is on Royce's call ("leave 2 as-is for now"): the upload screen trusts whatever file type the browser claims rather than checking the real file; and the Evidence attachment type's own on-screen description advertises video support that the app doesn't actually accept.
+- A separate, unrelated issue was spotted in passing while pulling the security report: a database function tied to the Quotes feature can be called by any signed-in user with no obvious per-company scoping. Handed off separately rather than fixed here — Royce started it running in its own session, still in progress as of this close.
+
+**Deferred:**
+- [ ] **Upload screen trusts the browser's claimed file type — deliberately left as-is.** Royce's call: the risk (a trusted staff member mislabeling a file for another staff member at the same company to open) is real but bounded, and tightening it risks rejecting real uploads in a way that can't be tested here (no working phone-camera-upload test path in this environment). Revisit if there's ever a real incident, or once there's a way to click-test uploads live. _(added 2026-09-05)_
+- [ ] **Evidence attachments advertise "Photos / videos" on-screen, but video files are silently rejected today.** Nobody has decided whether to actually support video (which would also need a bigger size limit than the current 10MB). _(added 2026-09-05)_
+- [ ] **The file-storage system itself allows bigger files (50MB) with no type restriction at its own level** — the app's own rules (10MB, specific file types only) are tighter, so this only matters if something ever writes to file storage directly instead of through the app. Low priority. _(added 2026-09-05)_
+- [ ] **Not click-tested live by a real technician.** The fix was verified against the live database directly (both the broken state and the fixed state), not by an actual person uploading or deleting a file on the maintenance check page. _(added 2026-09-05)_
+- [ ] **Whether any other file-storage buckets (logos, safety photos, licence photos, etc.) have quietly lost their own write rules the same way — not checked.** This session only looked at the one bucket Royce reported a problem on. Given this is now a second confirmed case of a storage bucket's rules changing with zero trace anywhere, worth a quick sweep of the others. _(added 2026-09-05)_
 
 ---
 

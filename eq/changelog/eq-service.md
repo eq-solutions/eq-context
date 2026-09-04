@@ -1,13 +1,24 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-05
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-09-05 (PR #828 MERGED + LIVE — attachment signed-URL action hardened against storage-RLS drift)
+- Follow-up from the 2026-09-04 attachment-upload fix below, found during a broader security review of the same feature (Royce: "anything obvious we can improve? are the files secure?"). `getAttachmentUrlAction` accepted a caller-supplied storage path with zero app-layer tenant check, relying entirely on the `storage.objects` SELECT policy — the exact policy class just shown able to drift silently out-of-band (see below). Added a one-line tenant-prefix guard; no behavior change for real callers, both existing call sites already only pass same-tenant paths.
+- Reviewed and deliberately left as-is (Royce's call): upload trusts the browser's claimed MIME type with no server-side content check. Also flagged, not built: Evidence attachment type's UI copy advertises video support the upload allowlist doesn't include; bucket-level size/type limits (50MB, no allowlist) are looser than the app's own (10MB + allowlist).
+- Merged past the same two pre-existing, unrelated CI failures as PR #827 (npm-audit high-severity; the documented flaky integration-test gap) — independently re-confirmed both failing on `main`'s own latest run at this PR's base commit before overriding.
+
+## 2026-09-04 (PR #827 MERGED + LIVE — attachment uploads fixed; storage-bucket RLS policies had drifted out-of-band)
+- Royce reported every attachment upload failing with "new row violates row-level security policy" on a maintenance check page. Root-caused via a live `pg_policies` query on ehow: the `attachments` Supabase Storage bucket's write policies had silently disappeared at some point outside the normal migration pipeline — bucket flipped from `public=true` + 3 tenant-scoped policies (migration 0005's original shape) to `public=false` with a single SELECT-only policy, INSERT/DELETE dropped entirely, zero trace in any tracked migration. Total outage of the upload feature for every tenant and role, not a role-specific gap.
+- Fixed via migration `0240_attachments_bucket_write_policies.sql`, restoring INSERT/DELETE against the bucket's current private/signed-URL shape (not the old public shape). Dry-run verified via a rolled-back live transaction against ehow before committing.
+- Dispatched `apply-service-migrations` on Royce's explicit go-ahead; confirmed live via both the `service._eq_migrations` ledger and a direct `pg_policies` re-query.
+- `npm audit (high)` and `Integration tests (Supabase local)` CI checks failed on pre-existing, unrelated issues (same two as every recent entry in this file) — confirmed both already failing on `main` itself at this PR's base commit before force-merging past branch protection.
 
 ## 2026-09-02 (PR #826 MERGED + LIVE — dashboard map "API KEY REQUIRED" tiles fixed)
 - CartoDB gated its previously-anonymous basemap tile CDN behind an API key; unauthenticated requests to `basemaps.cartocdn.com` still return HTTP 200, but every tile is now a placeholder watermarked "API KEY REQUIRED" — confirmed live by fetching the tile URL directly, not inferred. An external dependency change, not a code regression.
