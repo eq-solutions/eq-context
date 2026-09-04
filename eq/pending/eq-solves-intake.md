@@ -139,3 +139,24 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - PHASE-0 monorepo migration is **abandoned**; `apps/eq-service`/`apps/eq-shell` are gone from eq-intake. eq-service = `eq-solves-service` repo, eq-shell = `eq-shell` repo (live, shipping daily).
 ---
 
+## ⏩ Session close — 2026-09-04 (eq-intake) — root-caused Royce's own "confused every open", live walkthrough → fix (PR #122)
+
+*Royce: "every time I open it I get confused by it... for the hours we have spent it feels like the worst thing we have built" — but also believes it's the most valuable thing built. Walked `eq-intake-demo` live in-browser together rather than guessing at a redesign.*
+
+**Completed:**
+- Root cause: the demo app's top-level nav had 4 flat, unlabeled tabs — 3 engineering parser-test harnesses plus "One-screen Intake" (the real product, same screen embedded in Shell) — and defaulted to an engineering tab on load. Royce confirmed this, not the underlying screens, was the actual source of the confusion.
+- Fixed: `App.tsx`/`styles.css` — default `mode` is now `"intake"`; the 3 engineering tabs pulled into a visually secondary, labeled group under a distinct primary "One-screen Intake" card. eq-solves-intake [PR #122](https://github.com/eq-solutions/eq-solves-intake/pull/122), squash-merged (`e55aa0d`, CI green), branch deleted.
+- Separately verified (built by a background task Royce ran, not this session): root `C:\Projects\CLAUDE.md`'s seam-map pointer to an archived doc corrected, and `eq-context/ops/decisions.md`'s 2026-05-19 dedupe ADR got an append-only status-check (`cf75d2d`) — confirmed via direct file/git inspection, not just the task's own summary.
+
+**Decided (Royce, this session):**
+- Confirmed the demo/product tab mix-up — not the separate To Do RPC error, not "fix everything" — as the thing to fix this pass.
+- Full ship authorized step by step: "push it" / "open one" / "merge it" / "delete the branch", each re-verified (CI green, mergeable_state clean) immediately before acting.
+
+**Deferred:**
+- [ ] **To Do tab throws `mock-supabase: no handler for rpc "eq_queue_list"`** — found during the live walkthrough, explicitly out of scope for this pass. Likely `RemediationQueue.tsx`; `claude/intake-review-queue-fixups` and `claude/intake-review-queue-polish-c6d845` already have in-flight work there — check those before starting anything new. _(added 2026-09-04)_
+
+**Notes (load-bearing):**
+- Also researched (live code, not docs) and confirmed why Service/Field/Cards never adopted `@eq/intake` — three distinct, deliberate causes, not neglect. Independently corroborates the 2026-08-08 audit findings already in this file (session-close block above) and in `eq-context/ops/decisions.md`'s `cf75d2d` annotation — nothing new decided, just re-verified from a fresh angle.
+- eq-context's shared local checkout was under heavy concurrent-session load this session (drifted 5→16→2→3 commits behind `origin/main` at different points; another concurrent session's own close note today independently reports the same contention and used the identical workaround). Read-only checks went via `git show origin/main:<path>` rather than pulling into the shared tree; this close's own writes went through a fresh scratch clone rather than the shared checkout, for the same reason.
+---
+
