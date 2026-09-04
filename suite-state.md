@@ -106,7 +106,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 12 |  |
+| Prestarts created | 11 |  |
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
