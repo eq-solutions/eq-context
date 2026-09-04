@@ -45,16 +45,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: file-size ratchet convergence — roster.js + leave.js decomposed, 4 files still near-ceiling (2026-09-04)
+## eq-field: file-size ratchet convergence — roster.js + leave.js decomposed, FIXED, merged, live; 4 files still near-ceiling (2026-09-04)
 
-- [ ] **Merge decision on eq-field [PR #912](https://github.com/eq-solutions/eq-field/pull/912) (leave.js's new-request flow → `scripts/leave-submit.js`, v3.5.670) and [PR #913](https://github.com/eq-solutions/eq-field/pull/913) (roster.js's My Schedule render → `scripts/roster-my-schedule.js`, v3.5.671).** Both are pure file-size refactors — no functional change, confirmed via the full test suite plus `tests/lazy-tab-script-guard.test.js` specifically (built to catch exactly this bug class: a moved function becoming unreachable from some tab). CI green, deploy previews ready on both. Neither is click-tested live — standing Core-only sandbox limitation, same as every other entry in this file. Merging either is this repo's production deploy trigger. _(added 2026-09-04)_
 - [ ] **4 of the original 6 tracked files are still near-ceiling, untouched this session** (task scope was the tightest 1-2 files): `sks-pipeline.js` 1,779/1,800 (21 headroom), `sks-pipeline-resource.js` 2,062/2,100 (38), `tender-pipeline.js` 2,108/2,150 (42, deliberately deferred separately per Royce 2026-07-30), `timesheets.js` 2,527/2,550 (23). Same decision as before applies to these: keep ratcheting as it comes up, or schedule their own decomposition pass. _(added 2026-09-04)_
 - [ ] **New finding, not in the original count:** `apprentices.js` is also at 1,739/1,750 (11 lines headroom) — tied with leave.js's pre-decomposition number, discovered only because this session re-verified every entry fresh rather than trusting the original 6-file list. _(added 2026-09-04)_
+- [ ] **Not click-tested live by a person on either PR** — standing Core-only sandbox limitation, same as every other entry in this file. Worth a real pass: submit a leave request end-to-end (both range and individual-day modes), and open My Schedule to confirm the day-card layout (site/address/job number/Workbench line/site contacts/coworkers/map link) is unchanged. _(added 2026-09-04)_
 
 **Notes:**
 - Not a new problem caused originally — the convergence is the cumulative effect of the existing, working ratchet convention across many sessions.
 - The decomposition session caught its own near-miss: an early read of `eslint.config.js`/line counts came from a shared-root checkout ~38 commits behind `origin/main` (a stale, orphaned branch left over from unrelated prior work in that same shared folder) and briefly suggested roster.js was no longer tight — re-verified against a fresh worktree before acting, so no wrong-file work happened, but worth remembering this exact failure mode recurs across sessions.
-- Full technical detail: `sessions/2026-09-04.md` (session (g)). No `eq/changelog/eq-field.md` entry yet — that file's convention is merged-PR-only, and neither PR has merged.
+- Royce merged both explicitly ("merge #912 and #913"). #913 needed a rebase after #912 landed first (shared version-stamp files) — resolved, re-verified, re-merged. Confirmed live: `field.eq.solutions/sw.js` shows v3.5.671 (the later of the two, built on top of the first).
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entries) and `sessions/2026-09-04.md` (session (g)).
 
 ---
 
