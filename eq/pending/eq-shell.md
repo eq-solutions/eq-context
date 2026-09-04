@@ -13,6 +13,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Access Control click-test debt consolidated — 4 unverified-live items across 3 shipped PRs + PR #1768, into one pass (2026-09-05)
+*Four separate "not click-tested live" items had piled up against the same Access Control page across 2026-08-17, 2026-08-18, 2026-08-25 (extended 2026-08-26), and today's PR #1768 — each true on its own, but one real signed-in pass clears all four. Consolidated here as a single action; the four original bullets are removed from their sections further down this file to stop tracking the same gap four times.*
+
+- [ ] **One real admin pass through Access Control clears 4 outstanding checks** — no Shell session/credentials were available in any of the sessions that built these, so none of the following has ever been clicked through live:
+  - *(2026-08-17, searchable diffed drawer)* Open the Base-permissions drawer, search, confirm it filters correctly.
+  - *(2026-08-18, ring visual + tab strip)* Confirm the ring visual and tab strip render, and the roster shows real permissions rather than raw groups.
+  - *(2026-08-25, extended 2026-08-26 — "Preview a person" made honest)* Open Preview a person for a real Supervisor: confirm the "what they actually see" block matches their sidebar, the grouped/plain-English permission sections and Group grants/Role overrides line read correctly, a non-platform-admin can't see the grant/revoke control at all, and the control works end-to-end against a disposable test user.
+  - *(2026-09-05, PR [#1768](https://github.com/eq-solutions/eq-shell/pull/1768))* The same Preview-permissions read now fails closed instead of open on a slow/failed `tenant_role_overrides` query — confirm the tab still loads sanely on an ordinary fast read (the failure-mode path itself can't be forced live without DB access).
+
+  Roughly 10–15 minutes total, whenever Royce or anyone with a live Shell session is next in Access Control. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05)_
+
+---
+
 ## eq-shell: Collin Toohey's duplicate identity fully deleted, closing a live symptom the 2026-08-02 fix didn't catch (2026-09-05)
 *Follow-up to `shell_control.audit_log` 4186 / `identity_collision_flags` ef5d8ae0 (Sentry EQ-SHELL-Z, 2026-08-02) — that fix deactivated stub account `38859cae` + its tenant membership but deliberately left the duplicate `public.workers` row `bf26e8c4` in place ("harmless, no staff_id link"). A review-clock pass on `eq/active.md` surfaced the dormant row again; re-checked live rather than assumed still-harmless.*
 
@@ -290,7 +303,6 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ## eq-shell: Permissions/nav audit — Supervisor's audit.view grant fixed, "Preview a person" made honest, is_platform_admin grants now governed (2026-08-25)
 
 **Deferred:**
-- [ ] **Not click-tested live by a person** — every fix this round verified via `pnpm run build` + `tsc -b --force` + production commit-ancestry, not a real signed-in session. Worth a few minutes each: open Access Control → Preview a person for a real Supervisor and confirm the new "what they actually see" block matches the sidebar, and that the grouped/plain-English permission sections and the Group grants/Role overrides line (both added 2026-08-26) read correctly; confirm a non-platform-admin can't see the new grant/revoke control at all; confirm the control actually works end-to-end against a disposable test user, not a real account. _(added 2026-08-25, extended 2026-08-26)_
 - [ ] **Two pre-existing `is_platform_admin` gaps this session did not touch, still open elsewhere in this file**: no step-up/MFA gate on sensitive actions once granted (added 2026-08-01, Royce: scope as its own session), and the flag bypasses the Conversations UI permission gate with no exception list or audit trail (added 2026-08-19). This session only governs *who becomes* a platform admin, not what an existing one can silently do. _(added 2026-08-25)_
 
 ---
@@ -468,7 +480,6 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 **Deferred:**
 - [ ] **Compare roles tab + Custom Groups inline-expand redesign** — scoped in the original Claude Design brief, explicitly held for a second PR. _(added 2026-08-18)_
-- [ ] **Neither PR clicked through live by a person** — verified by typecheck/lint/tests and confirmed production deploys, not an actual admin session. _(added 2026-08-18)_
 
 ---
 
@@ -490,7 +501,6 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 **Deferred:**
 - [ ] **Compare-roles view and a Custom-Groups/preview-a-person retab** — scoped in the original `/decide` pass as follow-on, not built. Revisit if Royce wants the next layer. _(added 2026-08-17)_
-- [ ] **Not clicked through live** — verified by code review, typecheck/lint/tests, and a clean production deploy, not by an actual person opening the drawer and searching. Worth two minutes on a real admin account. _(added 2026-08-17)_
 
 ---
 
