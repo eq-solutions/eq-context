@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,24 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: Timesheets duplicate-hours bug + scroll-jump-to-top — FIXED, merged, live (2026-09-04)
+*Royce: David Boyd struggling to enter timesheets, Cihan Alakuzu showing 120h for a normal week, and a screenshot asking why one Timesheets day-cell renders darker than its neighbours. All three investigated against live ehow data + the actual render code, not guessed.*
+
+- [x] **Root cause of the 120h: 8 call sites looped `saveTsCell` once per day, each repost carrying the whole growing week — on SKS's canonical write path that compounds into duplicate rows.** Confirmed live: Cihan's job 27862 had 5/4/3/2/1 duplicate rows across Mon–Fri, summing to exactly 120h instead of 40h. Fix: `saveTsCell` split into an in-memory update + a single network flush; new `saveTsCellsBulk()` lets Fill week/Copy last week/DNW/Repeat day/Prefill from roster/CSV import/the +Add job editor's Save+Clear days each hit the network exactly once. eq-field [PR #906](https://github.com/eq-solutions/eq-field/pull/906) (v3.5.664 — renumbered twice, see Notes), merged and confirmed live.
+- [x] **Scroll jump fixed at the source** — `renderTimesheets()`'s scroll-preserve was reading/writing the wrong DOM element (`#page-timesheets` itself never scrolls; the real `overflow:auto` element is the child `.table-scroll`), so every full-table rebuild silently reset to the top. One fix covers every caller.
+- [x] **Cihan's existing 14 duplicate rows cleaned up on ehow, Royce's explicit approval** — kept one correct 8h/job-27862 row per date, leaving 40h.
+- [x] **Thursday-dark question answered: not a bug** — `timesheets-spans.js` deliberately darkens the 2nd+ consecutive day of the same job number to show a multi-day span. No code change.
+- [x] **David Boyd's own stored data checked clean** (no duplicates) — most likely explanation is one of two already-fixed Sentry errors (`EQ-FIELD-1C`/`EQ-FIELD-1D`, shipped v3.5.642), not data loss.
+- [ ] **Exact DB-level reason the delete-then-insert doesn't self-heal under rapid repeated calls was NOT pinned down.** A clean single-threaded Node repro against the real, unmodified `_sbTimesheetsCanon` write path did not reproduce the duplication when properly sequenced — so this PR closes the confirmed trigger (redundant client-side reposts), not a proven root cause of the underlying mechanism. A table-wide scan found this was the only duplicate anywhere in `app_data.field_timesheets`'s history (consistent with "rapid calls" being the real trigger, not a permanently-broken delete) — but if duplicates ever recur from a single, non-looped save, this is the open thread to pull. _(added 2026-09-04)_
+- [ ] **Thursday-dark styling has no tooltip/legend explaining it** — offered to add one; not requested, not built. _(added 2026-09-04)_
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Verified instead via a Node harness against the real production write-path code (`_sbTimesheetsCanon`/`timesheets-adapter.js`, not a reimplementation). Worth a real pass: as a supervisor, open Timesheets for a long list, scroll down, use Fill Week or the +Add job editor's Save on someone mid-list, confirm the view stays put instead of jumping to the top. _(added 2026-09-04)_
+
+**Notes:**
+- Rebased twice mid-session chasing a moving `origin/main` — two concurrent same-day PRs (#904 Prestart/Toolbox Reopen, #905 Unlock Week confirm() fix) each independently claimed this branch's version number before it could merge. Renumbered v3.5.662 → 663 → 664; re-verified `app-state.js`/`sw.js` by hand after each rebase since both silently kept the prior literal version string with no conflict flagged (git sees identical text on both sides) — same trap #904's and #905's own entries already documented.
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entry) and `sessions/2026-09-04.md`.
 
 ---
 
