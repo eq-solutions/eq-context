@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-09-03
+last_updated: 2026-09-04
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-03 21:38 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-04 01:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (7)
 
@@ -53,10 +53,10 @@ _…and 262 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [Error: app_data.staff.cards_worker_id pointing at missing jvkn workers: 2](https://eq-solutions.sentry.io/issues/138175643/) | 13 | 2026-09-03 |
+| eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 12 | 2026-09-03 |
+| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 11 | 2026-09-04 |
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 11 | 2026-09-03 |
-| eq-shell | [Error: Active org_memberships held by non-members: 13](https://eq-solutions.sentry.io/issues/142429897/) | 11 | 2026-09-02 |
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 10 | 2026-09-02 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 9 | 2026-09-02 |
+| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 10 | 2026-09-04 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-02 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/141259049/) | 4 | 2026-09-02 |
 | eq-field | [ReferenceError: _renderRosterOverviewCard is not defined](https://eq-solutions.sentry.io/issues/144372461/) | 1 | 2026-09-02 |
@@ -100,18 +100,18 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1458 | 201 / 84 | 30 | 68 |
-| [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 6 |
-| [eq-field](eq/pending/eq-field.md) | 1172 | 162 / 70 | 26 | 34 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 27 |
+| [eq-shell](eq/pending/eq-shell.md) | 1458 | 201 / 84 | 30 | 70 |
+| [eq-cards](eq/pending/eq-cards.md) | 360 | 48 / 17 | 10 | 7 |
+| [eq-field](eq/pending/eq-field.md) | 1172 | 162 / 70 | 26 | 39 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 522 | 75 / 24 | 0 | 30 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 141 | 13 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 203 | 25 / 6 | 0 | 4 |
-| [cross-repo](eq/pending/cross-repo.md) | 888 | 129 / 44 | 0 | 61 |
+| [eq-context](eq/pending/eq-context.md) | 203 | 25 / 6 | 0 | 5 |
+| [cross-repo](eq/pending/cross-repo.md) | 888 | 129 / 44 | 0 | 64 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 491 | 92 / 15 | 0 | 54 |
+| [SKS](sks/pending.md) | 491 | 92 / 15 | 0 | 55 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 530 | 43 / 3 | 0 | 11 |
 
@@ -131,10 +131,10 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-17) · **Phase 2 deferred: crew-demand overlay.** Needs a `crew_required` column added to `app_data.jobs` (One Pipe migration, both planes) so the "can we staff what we've won" verdict has a real demand side — supply side (deployable crew) is live now, demand isn't wired yet. _(added 2026-07-16)_
 - **eq-shell** (2026-07-17) · **Phase 3 deferred: the one commercial signal permitted by the scope decision** — "N quotes won but no job number yet," gated behind `quotes.view`, no dollar amount, off the default board. Not built. _(added 2026-07-16)_
 - **eq-shell** (2026-07-17) · **Eyeball the next SKS morning brief once signed in** to confirm the signals render as expected end-to-end. The query logic is verified against live data and the deploy is smoke-verified, but the authed brief output itself needs a signed-in SKS session (10-minute per-user cache, or wait for the daily scheduled email). _(added 2026-07-17)_
+- **eq-shell** (2026-07-20) · **Still open: what actually created Will's duplicate account.** The Cards lead above is unconfirmed (Royce can't identify the Sydney session) — back to genuinely unknown. Not urgent, his data is already repaired. If it resurfaces, next step is probably asking Will directly whether he tried a second sign-up around 2026-07-06 09:00 UTC, rather than more log forensics — the available logs are exhausted. _(added 2026-07-20)_
+- **eq-shell** (2026-07-20) · **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
 - **eq-shell** (2026-07-14) · **Later audit polish** — PDF / branded-report export, and logging who reads the log; then on-request data erasure and anomaly alerts. _(added 2026-07-14; before/after values shipped in #860)_
-- **eq-shell** (2026-07-14) · **Crew retry + Sentry watch** — have the crew reopen via a normal browser tab (their home-screen icon may hold stale code from the day's deploys); if anyone still freezes, the fix now self-tags the exact stall in Sentry (`verify-timeout` / `login-timeout` / `session-spinner-timeout` / `chunk-error`). _(added 2026-07-14)_
-- **eq-shell** (2026-07-14) · **Material-preset sanity check** — since materials presets now quote at Rate + markup, any entered as already-marked-up sell prices will read higher; worth a glance in the Rate library. _(added 2026-07-14, carried from #820)_
-_…and 274 more — see each file's Queue health row above._
+_…and 290 more — see each file's Queue health row above._
 
 ## Possible recurring failures (unconfirmed)
 
@@ -158,4 +158,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-03 21:38 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-04 01:37 UTC._
