@@ -13,6 +13,27 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Multi-job Timesheets display + Cihan Alakuzu's inflated hours — 5 PRs merged, live, root causes closed (2026-09-05)
+*Royce, from two screenshots: a multi-job day cell read as one impossible combined shift, and Cihan Alakuzu's timesheet was back to 81.5h for one week — the same failure shape as the v3.5.664/669 duplicate-hours incidents, but investigated fresh rather than assumed to be a recurrence. It wasn't: the unique constraint from v3.5.669 held throughout.*
+
+- [x] **Multi-job cell display fixed, twice.** First pass (PR #923, v3.5.680) showed each job's own hours inline instead of one combined total — still didn't fit the actual grid width and truncated the second job off (Royce, a second screenshot: "27968 (8h) · 281…"). Second pass (PR #925, v3.5.682) stacks each job on its own line instead, closing the truncation for real — 10 new regression tests including the exact reported case.
+- [x] **Root cause of the 81.5h: two independent mechanisms, both closed.** (1) A stale-tab bug — Fill Week's "which jobs already exist" check read a snapshot that's never proactively refreshed, so a tab open across another write would show a day as blank rather than already-logged. Fixed in Fill Week (PR #923) and ported to Copy Last Week (PR #926, v3.5.683) after `/decide` found porting the fix was cheaper than Royce's first instinct (temporarily removing Copy Last Week) and closed the gap instead of avoiding it. (2) "Prefill from roster" defaulted unconfirmed hours to a fake-looking 8h, indistinguishable from a real confirmed day — now leaves hours unset until someone actually confirms them (PR #924, v3.5.681).
+- [x] **A day's *combined* hours across every job on it were never checked anywhere** — only individual per-job values, and only on the legacy fallback table. New `_tsOverloadedDays` (PR #923) ports that same class of guard (>12h warning) to the current editor, checked against the combined total.
+- [x] **Cihan Alakuzu's live data cleaned up, Royce's explicit approval:** the 5 spurious `job=27862` rows (the auto-default) deleted, the 5 hand-entered `job=27682` rows kept — 49.5h, confirmed live. Maylin Ung's existing total was separately confirmed correct and left untouched.
+- [x] **"Who did this" traced as far as possible without a database change:** the app-level audit log has no real actor identity for Timesheets (`who: "system"` always) — traced instead via PostHog (`timesheet_saved` event + `posthog.identify()`), found the exact session (Mobile Safari/iOS, Sydney, timestamps matching to the second) and positively ruled out three other people active in the same window. That session's own `posthog.identify()` never fired despite being authenticated — flagged, not investigated further.
+- [x] **The real gap behind "who did this" closed properly** (PR #927, migration, no version bump): `app_data.eq__guard_timesheet_status` already resolved the caller's real identity on every write, it just never persisted past `approved_by_user_id`. Now stamps `created_by`/`updated_by` too. Applied live and verified with real writes in a rolled-back transaction before the PR was even opened.
+- [ ] **Historical rows stay permanently unattributed** — the new stamping is forward-only from 2026-09-05; there's no way to backfill who wrote a pre-existing row, including Cihan's own cleaned-up ones. _(added 2026-09-05)_
+- [ ] **`created_by`/`updated_by` are raw UUIDs with no display-name resolution yet** — a real follow-up, mirroring the `staffUserIdToName` map PR #921 built for `approved_by_user_id`. Not built this session. _(added 2026-09-05)_
+- [ ] **The unidentified PostHog session's missing `posthog.identify()` call** — a real, separate analytics gap (every other session active in the same window was correctly identified). Not investigated further; worth a look if "who did this" comes up again and the new DB attribution alone isn't enough context (e.g. device/location matters). _(added 2026-09-05)_
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. The PR #927 migration was instead verified with real transactional writes against the live function, which exercises the actual trigger code path more precisely than a UI click could have (proving the "different actor, no status change" case in isolation). _(added 2026-09-05)_
+
+**Notes:**
+- Full technical detail: `eq/changelog/eq-field.md` (5× 2026-09-05 entries, PR #923-927) and `sessions/2026-09-05.md`.
+
+---
+
+---
+
 ## eq-field: Timesheet "who approved this" was blank for every SKS approval — FIXED, merged, live (2026-09-05)
 *Royce, from a screenshot of Core's SKS Timesheets view: the "✓ Approved" button gave no indication of who had approved it. Investigated before building — the plumbing (approval data, a name-resolution helper, an existing initials-chip UI pattern) was already fully built; it just didn't work.*
 
