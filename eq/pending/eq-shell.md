@@ -17,6 +17,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
 - [ ] **Cross-repo timing gap on new-starter onboarding push, still open**: `app_data.staff.user_id` is written only by eq-cards' `workers-canonical-sync` (service-role, confirmed 3 ways — its own source, migration `0196`'s column comment, and the `field_people_iud()` trigger). `cards-approve-staff.ts`'s 3 worker-link blocks now backfill it too ([PR #1774](https://github.com/eq-solutions/eq-shell/pull/1774), merged+live), closing the same-repo half. Still open: `staff-create.ts`'s brand-new-roster insert has no known `user_id` at creation (correct — no login exists yet), and when `workers-canonical-sync` links one later, that function has no concept of `pushOnboardingDocuments`/`start_date` at all — a starter linked while still inside the ±14/90-day trigger window gets nothing pushed. Two possible fix shapes (a cross-repo webhook from that sync, or a periodic eq-shell-side sweep for recently-linked `user_id`s), neither built — needs Royce's scope call. _(added 2026-09-05, supersedes the previous line about task_a1e54a2d — same question, now answered + half-fixed)_
+- [ ] **PR #1774's own write path not click-tested** — checked the Worker Invites hub (`/sks/admin/workers`) for a real Cards application/invite to approve against: none pending (28 already Claimed/processed, 1 unclaimed Pending, 1 pre-existing worker mid-Cards-flow). Waiting on Royce to flag one when it arrives, or ask for a periodic check instead. _(added 2026-09-05)_
+
+---
+
+## eq-shell: tenant_role_overrides fail-closed sweep + quotes-search fix — SSO/click-tested, two gaps remain (2026-09-05)
+
+- [ ] **tenant_role_overrides fail-closed sweep (#1762/#1767/#1768/#1770) — fault-injection still untested.** SSO-smoke-tested via Royce's live Chrome session: EQ Field/Service/Ops all load past authorising with real data, confirming no regression on the healthy path. Nothing has yet simulated an actual slow/failed `tenant_role_overrides` read to confirm a `requirePerm()`-gated write really 403s under real degradation — every one of #1767/#1768/#1770's own PR bodies flagged this as the deeper test still owed. _(added 2026-09-05)_
+- [ ] **Quotes-search fix ([PR #1754](https://github.com/eq-solutions/eq-shell/pull/1754)) — list/table view not click-tested**, only board view. Confirmed live: with the "Open" tab active, searching `SKS-17512` (Invoiced-stage only) still surfaced it under Invoiced, with the "search covers every stage, not just the tab selected" notice showing correctly. _(added 2026-09-05)_
 
 ---
 
