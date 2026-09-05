@@ -57,6 +57,7 @@ _(added 2026-09-05)_
 ## eq-shell: EQ Field white-pane stall — shipped, click-tested live; the follow-on fixes for both remaining gaps also shipped same day (2026-09-04/05)
 
 - [ ] **Watch EQ-SHELL-T/V in Sentry for a few more days before calling them closed.** Both PRs (#1758, #1764) that plausibly explain every occurrence so far are live as of 2026-09-04 evening; check back ~2026-09-08 for any new occurrence with a timestamp after both deploys. If clean, close both issues in Sentry and tick this row. eq-field's own side of the durable fix ([#917](https://github.com/eq-solutions/eq-field/pull/917)) and a dead-code follow-up it exposed ([#919](https://github.com/eq-solutions/eq-field/pull/919)) are both merged+live too — full detail in `eq/changelog/eq-field.md`. _(added 2026-09-05)_
+- [ ] **PR #1778 (a third gap found in #1764 itself — `tenant_config`/`tenant_routing` fallback) not click-tested by a person.** Shipped and confirmed live same day as the two rows above (full detail: `eq/changelog/eq-shell.md`, `sessions/2026-09-05.md`); no Shell session/credentials in this environment to click-test it directly. _(added 2026-09-05)_
 
 ---
 ## eq-shell: security register reconciled — SEC-71 open; SEC-72/SEC-73/SEC-74 closed (2026-09-04/05)
