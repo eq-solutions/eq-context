@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Documents sign-off register — 8-angle cold code audit found + fixed 10 real gaps, PR #1772 merged and confirmed live (2026-09-05)
+*Started as a request for a marketing/explainer page for the Documents feature (`/sks/admin/documents`); widened to "give me a rating and top 3 things to look at," then a full cold code audit — 8 independent finder angles plus an independent verifier on every candidate, not a diff review. Two tenant-isolation gaps were the most severe finds. Full technical detail in `eq/changelog/eq-shell.md`.*
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
+- [ ] **Where does a brand-new starter's Shell login actually get connected?** The onboarding auto-push fix only covers write paths where a staff row already has a linked login (Cards approval's update branches, "Add to Roster"'s reactivate branch, the original Staff-page edit path) — the two pure-insert paths correctly no-op since there's no login yet at that point. Whatever write path links a login to a brand-new starter afterward hasn't been traced, and may need the same trigger. Spawned as `task_a1e54a2d`; Royce started it in a separate session. _(added 2026-09-05)_
+- [ ] **Confirm the crew-push tenant-isolation gap was never actually triggered in production** — a read-only live-data check, not urgent since the code fix is already live either way. Spawned as `task_ba1bdb4b`; Royce started it in a separate session. _(added 2026-09-05)_
+
+---
+
 ## eq-shell: stray `authenticated` grant on eq__log_quote_audit found + fixed — PR #1771 open, not yet merged/dispatched (2026-09-05)
 *Started as a single-function check on the Supabase security-advisor finding for `eq_list_quote_attachment_counts()` (an eq-solves-service session's own attachment-upload review had spotted it and handed it off as `task_d02e3485`) and widened on Royce's follow-up ask ("check the pricing and audit RPCs too") to the rest of the `eq_*` pricing/quote-audit RPC family on ehow. `eq_list_quote_attachment_counts()` itself, and all ~13 pricing RPCs plus the audit reader `eq_list_quote_audit`, checked out fine — correctly tenant-scoped via the JWT claim, and the one asymmetry found (`eq_list_pricing_products` skipping the view-role gate its siblings use) is deliberate per migration `0246_ops_view_rates_setup_gate.sql`'s own explicit enumeration, not a gap. One real finding: the audit *writer*.*
 
