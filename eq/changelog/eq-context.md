@@ -7,6 +7,16 @@ read_priority: reference
 status: live
 ---
 
+## [2026-09-05] Netlify deploy-status null-safety bug fixed in both refresh scripts; SEC-71 review-date PR rebased and merged
+
+**Built by:** Claude Code
+
+- **`refresh_suite_state.py`'s and `refresh_digest.py`'s Netlify-lookup functions had been silently broken since written, not just since today.** Netlify's `/api/v1/sites` returns `"custom_domain": null` (key present, value `null`) for at least one tracked site; `dict.get(key, "")` only substitutes the default when the key is *absent*, not when it's present-but-`None`. Concatenating that `None` to a string threw `TypeError` on every lookup, caught by a bare `except Exception` with zero logging — indistinguishable from "token not set." In `refresh_digest.py` this had silently disabled the "Deploy {state}" 🟠 alert path entirely since the code was written. Found from the actual run logs after first adding stderr diagnostics (mirroring `gh_get()`'s existing 2026-09-04 pattern for the same class of GitHub-token blindness); fixed with `(s.get(...) or "")` on both fields in both scripts. Verified live across three re-triggered runs: `suite-state.md`'s Deploys table now shows real state for all three tracked sites (eq-service, eq-shell, eq-field); `digest-refresh.yml` runs clean with no warnings.
+- Regenerated `EQ_CONTEXT_PAT` (fine-grained, scoped to Contents/Actions/Pull-requests read-only on the 5 repos the scripts actually touch) and created `NETLIFY_TOKEN` — Royce created both, this session only supplied the exact scopes/steps. These were the actual cause of the week's GitHub-token blindness; confirmed fixed live via `digest.md`'s Pulse table (real CI status suite-wide, no more "token error").
+- **SEC-71's review-date decision (2026-12-04, recorded 2026-09-04) reconfirmed by Royce and its PR ([#204](https://github.com/eq-solutions/eq-context/pull/204)) finally merged** — had gone stale (2 days) against same-day SEC-72/73/74 register closures; rebased in an isolated temporary worktree, kept all newer register/pending content, applied only PR #204's own SEC-71 wording, squash-merged.
+- **The GitHub MCP connector returned `403: Resource not accessible by integration` on both `create_pull_request` and `merge_pull_request` against this repo** (reads — `get_file_contents`, `pull_request_read` — work fine). Used the `gh` CLI for every write this session instead (PR merge, `workflow_dispatch`, log reads) — see personal memory `github-mcp-no-write-eq-context.md`.
+- Full session detail (all 5 items on Royce's `EQ_Core_Whats_Left.xlsx` worked through — #2/#3/#4/#5 closed, #1 grok-by-xai still open) in `sessions/2026-09-05.md`.
+
 ## [2026-09-04] Nightly digest's dead-token blindness fixed; Product Pulse "active users" wired to jvkn
 
 **Built by:** Claude Code
