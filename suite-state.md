@@ -73,9 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1777 fix(onboarding): daily sweep catches starters whose Shell login links after they're rostered
-- #1776 feat(security): detect drift between tenant rosters and user_tenant_memberships.active
-- #1775 fix(auth): licence-visibility reads no longer trust org_memberships.status alone
+- #1778 fix(auth): stop tenant_config/tenant_routing timeouts from failing the whole verify-shell-session call
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
@@ -103,7 +101,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-04 |
-| eq-shell | building | 2026-09-05 |
+| eq-shell | new | 2026-09-05 |
 | eq-field | ready | 2026-09-05 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
