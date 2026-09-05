@@ -102,9 +102,9 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | unknown | ? |
-| eq-shell | unknown | ? |
-| eq-field | unknown | ? |
+    | eq-service | ready | 2026-09-04 |
+| eq-shell | building | 2026-09-05 |
+| eq-field | ready | 2026-09-05 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
