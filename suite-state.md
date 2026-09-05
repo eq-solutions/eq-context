@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-04 (nightly cron)_
+_Last verified: 2026-09-05 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,13 +58,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-04)
+## Open PRs (as of 2026-09-05)
 
 _No open PRs_
 
 ---
 
-## System Health (as of 2026-09-04)
+## System Health (as of 2026-09-05)
 
     **CI on main:**
 
@@ -83,7 +83,7 @@ _No open PRs_
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-04)
+## Field Data Plane — SKS tenant (as of 2026-09-05)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 73 | ✓ 73 |
@@ -97,7 +97,7 @@ _No open PRs_
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-04)
+## Product Pulse (as of 2026-09-05)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
