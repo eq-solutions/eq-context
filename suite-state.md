@@ -73,8 +73,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1780 fix(onboarding): exclude personal tenants from the onboarding-push sweep
-- #1779 fix(auth): re-check tenant membership at JWT mint time, not just account-active
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
