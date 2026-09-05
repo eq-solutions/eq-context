@@ -73,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1777 fix(onboarding): daily sweep catches starters whose Shell login links after they're rostered
 - #1776 feat(security): detect drift between tenant rosters and user_tenant_memberships.active
 - #1775 fix(auth): licence-visibility reads no longer trust org_memberships.status alone
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
