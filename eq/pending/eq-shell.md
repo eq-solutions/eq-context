@@ -13,6 +13,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: stray `authenticated` grant on eq__log_quote_audit found + fixed — PR #1771 open, not yet merged/dispatched (2026-09-05)
+*Started as a single-function check on the Supabase security-advisor finding for `eq_list_quote_attachment_counts()` (an eq-solves-service session's own attachment-upload review had spotted it and handed it off as `task_d02e3485`) and widened on Royce's follow-up ask ("check the pricing and audit RPCs too") to the rest of the `eq_*` pricing/quote-audit RPC family on ehow. `eq_list_quote_attachment_counts()` itself, and all ~13 pricing RPCs plus the audit reader `eq_list_quote_audit`, checked out fine — correctly tenant-scoped via the JWT claim, and the one asymmetry found (`eq_list_pricing_products` skipping the view-role gate its siblings use) is deliberate per migration `0246_ops_view_rates_setup_gate.sql`'s own explicit enumeration, not a gap. One real finding: the audit *writer*.*
+
+- [ ] **Merge [PR #1771](https://github.com/eq-solutions/eq-shell/pull/1771)** — `public.eq__log_quote_audit()` had a live `authenticated` EXECUTE grant on both ehow and zaap, directly contradicting its own migration's comment (`0090_quote_audit_and_edits.sql`: "intentionally NOT granted to authenticated: internal helper only"). No role gate and no check that `p_quote_id` belongs to the caller's tenant — any authenticated user, any tenant, any role, could call it directly via PostgREST and insert a fabricated `app_data.quote_audit` row: real tenant_id, but attacker-chosen `action` text and `actor_initials` (audit-trail spoofing, not a cross-tenant read leak — reads stay correctly tenant-scoped). Migration `0302_revoke_eq_log_quote_audit_authenticated.sql` (modeled on the `0245_revoke_eq_update_staff_authenticated.sql` precedent) just revokes the stray grant — all ~15 real callers use it internally via `PERFORM` from their own `SECURITY DEFINER` functions, unaffected by the revoke. **Merging eq-shell `main` auto-deploys core.eq.solutions in minutes — this is a real production-deploy approval, not just a code review.**
+- [ ] **After merge: dispatch `tenant-migrate.yml`** (workflow_dispatch, separately production-gated) to actually apply migration 0302 to ehow + zaap — merging the PR alone does not apply tenant-plane migrations.
+- [ ] **After dispatch: re-verify live** — re-run `get_advisors` (security) on both planes, re-check `pg_proc.proacl` for `eq__log_quote_audit` no longer lists `authenticated`, and smoke-test one real caller (e.g. `eq_set_expires_at`) to confirm audit rows still get written via the internal `PERFORM` path.
+
+_(added 2026-09-05)_
+
+---
 
 ## eq-shell: Access Control click-test debt — 3 of 4 confirmed live, one narrow piece left (2026-09-05)
 *Follow-up to the same-day consolidation of the four scattered click-test items below. Royce had a live, signed-in Edge session open and asked for everything checkable to be checked — done via Claude in Chrome (his real logged-in browser), never the in-app pane.*
@@ -43,6 +53,8 @@ Minor, likely unrelated observation: the Access Control tab went briefly unrespo
 
 ---
 ## eq-shell: security register reconciled — SEC-71 open; SEC-72/SEC-73/SEC-74 closed (2026-09-04/05)
+
+- [ ] **Check resolvePrincipal() fail-closed Sentry events by 2026-09-15.** eq-shell [#1770](https://github.com/eq-solutions/eq-shell/pull/1770) reversed SEC-74's "leave as-is" call the same day it was made (`/decide` pass, 2026-09-05: keep #1770, don't revert). Look for `[role-overrides] resolvePrincipal` events in Sentry — do they cluster with genuine `tenant_role_overrides` read slowness, or with routine cold starts (fresh containers after a deploy, say)? Cold-starts-dominant is the signal to revisit; genuine-slowness-only means the trade held up. Full reasoning in `ops/security-register.md` SEC-74. _(added 2026-09-05)_
 
 - [ ] **SEC-71 — 2FA off for everyone by hard-coded constants (P1, deliberate).** `_shared/totp.ts:33` + `_shared/token.ts:638`, #1735/#1737, Royce's 2026-09-01 call. Review date decided 2026-09-04: **2026-12-04** (`/decide` pass) — on eq-context [PR #204](https://github.com/eq-solutions/eq-context/pull/204), open, needs merge. When it comes back: env flag not constant, platform admins first, mobile enrolment fixed before workers. _(added 2026-09-04)_
 
