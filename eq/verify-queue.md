@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2539,5 +2539,59 @@ a bug rather than just deleting the line.
 **From:** eq-solves-service: /defects list was going stale after auto-created/resolved defects — found, fixed, merged, deployed live (PR #822, 2026-09-01)
 
 - [ ] **Not click-tested live** — no Shell session/credentials in this environment to actually fail a check item and watch `/defects` update without a hard reload. Confidence is otherwise high: it's a copy of an already-working pattern used 3 other times in the same file. _(added 2026-09-01)_
+
+---
+
+**From:** eq-shell: document versioning — new-version upload, version history, confirm-then-push republish, merged live (2026-09-02)
+
+- [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: upload a new version of a document that already has real signers, confirm the version number bumps, the old signers show as needing to re-sign, "Push to the same N people" actually re-creates outstanding rows for them (and is a no-op, not a duplicate, if clicked/retried), and Version history lists every version with its own signed/outstanding count including one nobody's been pushed to yet. _(added 2026-09-03)_
+
+---
+
+**From:** eq-shell: PostHog `$create_alias` spam from the 5-minute session poll — root-caused, fixed, merged live (2026-09-02)
+
+- [ ] **Not click-tested live** — confirming the fix needs a live PostHog project plus a real session left open past two 5-minute poll ticks, watching PostHog's own activity feed for exactly one `$create_alias` instead of one per tick. _(added 2026-09-02)_
+
+---
+
+**From:** eq-cards: Wallet screen's Export button had no visible label — fixed, merged, deployed live (2026-09-02)
+
+- [ ] **Not click-tested live** — the Wallet screen sits behind phone-OTP sign-in; no credentials available in this environment. Verified via `flutter analyze` (clean) and a successful `flutter build web` instead. _(added 2026-09-02)_
+
+---
+
+**From:** eq-field: Apprentices Quarterly Review modal was unstyled and wouldn't close — FIXED, merged, live (2026-09-02)
+
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: open Apprentices → any apprentice → Reviews → "+ New Review", confirm the card renders on a white background with proper fields, Cancel and Save both visibly close it. _(added 2026-09-02)_
+
+---
+
+**From:** eq-field: Calendar never showed weekend roster entries — FIXED, merged, live (2026-09-02)
+
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file; re-verified fresh this session that even the `?tenant=demo` fixture gate now dead-ends at "Sign in through Core" after entering the code, so there's no sandbox path left to try. Worth a real pass: Calendar → November 2026 → the 7th, confirm the CA1 chip renders on both desktop grid and mobile agenda and that clicking it opens the day panel with all three names. _(added 2026-09-02)_
+
+---
+
+**From:** eq-field: My Schedule compliance card stuck on stale "missing" state after a real upload — FIXED, merged, live (2026-09-02)
+
+- [ ] **Not click-tested live** — the fixed path only renders behind real canonical data plus a real authenticated session (both tenants are Core-only); no path to that in this environment. Worth a real pass: upload a credential in EQ Cards, flip back to an already-open Field tab on My Schedule, confirm the card still shows "missing," tap "Check again," confirm it clears without a page reload. _(added 2026-09-02)_
+
+---
+
+**From:** eq-field: My Schedule day-card was cluttered with always-on contact lines — FIXED, merged, live (2026-09-02)
+
+- [ ] **Not click-tested live** — verified via an isolated Node `vm` harness (real source, no DOM/network) instead: 14/14 checks covering empty-state handling, HTML per lead/contacts combination, escaping, and unique per-day box ids. Worth a real pass: open My Schedule for a day with a site that has a lead and Ask-for/Backup contacts, confirm the collapsed row, tap it, confirm all 3 lines appear with working `tel:` links. _(added 2026-09-02)_
+
+---
+
+**From:** eq-field: My Schedule compliance card mislabeled a viewed teammate's gap as "Your profile" — FIXED, merged, live (2026-09-02)
+
+- [ ] **Not click-tested through the full authenticated UI by a person** — confirmed this time against the real Netlify deploy preview itself, not just the local sandbox: both `eq` and `sks` are Core-only, so the PIN gate refuses outright everywhere, real preview included. Worth a real pass: sign in through Core, open My Schedule, switch the picker to a teammate with a missing credential, confirm the card names them, not "Your". _(added 2026-09-02)_
+
+---
+
+**From:** eq-solves-service: dashboard map was showing "API KEY REQUIRED" over every tile — root-caused, fixed, merged, live (PR #826, 2026-09-02)
+
+- [ ] **Not click-tested live by a person.** Verified via direct tile-URL fetch, `tsc --noEmit`, and a real (unauthenticated) dev-server boot — not an actual signed-in look at the rendered map. Worth a real pass: open the dashboard and confirm the map renders a real light-gray basemap with site pins, no leftover watermarking. _(added 2026-09-02)_
 
 ---

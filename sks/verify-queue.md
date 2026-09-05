@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from sks/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -55,5 +55,11 @@ a bug rather than just deleting the line.
 **From:** SKS Uniform Order Template added to `sks/templates.md` (2026-09-01)
 
 - [ ] **Division→kit mapping is Title-only, not confirmed** — the Stay Safe catalogue has no per-division SKU split, so the template's 9 roles pick kit by Title (Site/Management/Office) only; Division (Electrical/Comms/AV) currently only drives a suggested embroidery tag. Needs Sharon/Royce to confirm whether Division should actually change colour/garment/embroidery before wider rollout. _(added 2026-09-01)_
+
+---
+
+**From:** SKS login + Timesheets: "click OK to continue" gate on the retirement notices, merged live (2026-09-02)
+
+- [ ] **Not click-tested with real Supabase data** — this environment has no network access to the SKS database, so verification (z-index stacking, backdrop-click protection, OK-button dismissal) ran with the login name picker and timesheet list empty. The logic doesn't depend on data volume, but worth a real click-through when convenient. _(added 2026-09-02)_
 
 ---

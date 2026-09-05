@@ -22,18 +22,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: dashboard map was showing "API KEY REQUIRED" over every tile — root-caused, fixed, merged, live (PR #826, 2026-09-02)
-*Royce reported the dashboard map covered in "API KEY REQUIRED" text. Confirmed live by fetching the exact tile URL directly rather than guessing: CartoDB's previously-anonymous basemap tile CDN now returns HTTP 200 with a placeholder image watermarked "API KEY REQUIRED" on every tile — a silent 200, so nothing would have alerted on it.*
-
-- Swapped the dashboard's Leaflet basemap (`SiteMapLeaflet.tsx`) from CartoDB's now-gated tile CDN to Esri's keyless "World Light Gray Base" tile service — verified live before committing, no new account/API key/secret needed. Synced the CSP report-only host allowlist in `lib/security-headers.ts` + `public/_headers` to match (kept in lockstep per that file's own rule).
-- `tsc --noEmit` clean. Copied `.env.local` from the main checkout into this worktree and ran the real dev server — confirmed the edited files compile with no runtime errors and `/dashboard` still redirects correctly when signed out. Could not go further: no credentials in this environment, and signing in isn't something this session does regardless of credentials.
-- PR #826: CI's real gate (`tsc + next build`) passed; `npm audit (high)` and `Integration tests (Supabase local)` both failed on pre-existing, unrelated issues (a fresh browserslist advisory via `@serwist/next`'s transitive dep; the already-documented flaky integration-test gap) — waived in the PR body, force-merged with Royce's explicit go-ahead. Confirmed published live via Netlify's deploy record (commit matched exactly, `published_at` set, 96s build, no errors) within ~2 minutes of merge.
-
-**Deferred:**
-- [ ] **Not click-tested live by a person.** Verified via direct tile-URL fetch, `tsc --noEmit`, and a real (unauthenticated) dev-server boot — not an actual signed-in look at the rendered map. Worth a real pass: open the dashboard and confirm the map renders a real light-gray basemap with site pins, no leftover watermarking. _(added 2026-09-02)_
-
----
-
 ## eq-solves-service: PR #821's other spawned follow-up — ConfirmDialog focus-trap adoption still open (2026-09-01)
 *`task_3b858742` (above) and `task_51c64ed0` were spawned together, same PR #821 build. `task_3b858742` shipped as #822; this one — checked directly against live GitHub/pending state at this close, not left as an assumption — has no PR and no other trace anywhere. Genuinely still open, not just slow to report.*
 

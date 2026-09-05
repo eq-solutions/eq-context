@@ -177,15 +177,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: supabase.js decomposition — extracted the JWT-carrier — FIXED, merged, live (2026-09-02)
-*eq-field PR #898 (v3.5.656, same day) had bumped `scripts/supabase.js`'s file-size ratchet ceiling 1550→1600 to land an unrelated retry fix, explicitly flagging the JWT-carrier as the clean extraction candidate it was deferring. This closes that flag.*
-
-- [x] **`_mintDataJwt`/`_getDataJwt`/`_getDataActorId` + their own state moved verbatim into new file `scripts/supabase-jwt-carrier.js`.** `_actorIdEverSeen`/`_actorDropReported` (the 2026-08-26 Mark Brame audit-attribution flags) stay declared in `supabase.js` exactly where they were, referenced from the new file as a bare cross-file global — same mechanism this codebase already uses everywhere else, deliberately not restructured for zero functional benefit on security-adjacent code. `supabase.js`: 1,549 → 1,479 lines; ceiling kept at 1,600 for real headroom rather than dropped to the 1,500 default. PR #898's own retry fix merged mid-task and was ported into the new file rather than lost. eq-field [PR #899](https://github.com/eq-solutions/eq-field/pull/899) (v3.5.657), merged, confirmed live (`field.eq.solutions/sw.js` shows v3.5.657; Netlify deploy record for the merge commit shows `state: ready`/`published_at` set).
-- [x] **`tests/lazy-tab-script-guard.test.js` caught a real bug before it shipped** — the new file initially had no `<script>` tag in `index.html`, so it would never have loaded in a real browser and JWT minting would have silently broken for both tenants. Fixed before merging.
-- [x] **Full suite 38/38 green, lint/cache-buster/bundle checks clean.** Not click-tested live — standing Core-only sandbox limitation; no user-visible surface either way (identical runtime behavior by design).
-
----
-
 ## eq-field: Roster/Editor/Schedule could look "wiped" during a slow data load — FIXED, merged, live (2026-09-02)
 
 - [ ] **A visible "couldn't load this week" indicator in the week-nav bar** would close the last gap (today a stuck week just looks calm, with no on-screen hint to reach for the manual Sync button) — deliberately left out of this PR as a smaller follow-up rather than expanding it further. _(added 2026-09-02)_
@@ -193,21 +184,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Apprentices Quarterly Review modal was unstyled and wouldn't close — FIXED, merged, live (2026-09-02)
-*Royce shared a screenshot of the "+ New Review" form on Phoenix Khatri's profile — a gray-navy wash with raw, unstyled browser-default fields, asking why it looked broken.*
-
-- [x] **Root cause: two CSS classes that don't exist anywhere in the stylesheet** (`modal-box`, `input` instead of the real `.modal`/`.form-input`), live since the feature first shipped (v3.5.168) and carried unchanged through a later file-size split. Second bug in the same function: it opened via a hand-rolled `style.display='flex'` instead of the shared `openModal()`, so `closeModal()` — wired to Cancel and to a successful Save — could never actually close it once opened that way (it only ever removes the `.open` class, never touches inline style). eq-field [PR #887](https://github.com/eq-solutions/eq-field/pull/887) (v3.5.647), merged, confirmed live.
-- [x] **Live `quarterly_reviews` on ehow checked for duplicate saves the stuck-modal bug might have caused** — none found. Table sat at 0 rows both before and after the fix (nobody had ever successfully saved one).
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: open Apprentices → any apprentice → Reviews → "+ New Review", confirm the card renders on a white background with proper fields, Cancel and Save both visibly close it. _(added 2026-09-02)_
-
----
-
 ## eq-field: Apprentices module simplified — journal sharing replaces the separate Ask-for-Feedback flow — FIXED, merged, live (2026-09-02)
 *Same session as the Quarterly Review fix above — a full-module audit (2 parallel agents) plus a live usage check found the whole feature had barely been used (3 profiles total, all created in the 4 days before this session; 5 of 6 activity tables at zero rows). Royce looked at the audit, said it "feels complicated," and described what he actually wants: apprentices able to note things down at their leisure, trusting he'll read and act on it, plus a way to keep them accountable. Chose "consolidate into one loop" from 3 options offered.*
 
-- [x] **Journal's existing share toggle is now the whole loop.** `apprentice_journal` gained `acknowledged_at`/`acknowledged_by`/`acknowledged_note` (additive migration, applied live to ehow). New `journalAcknowledge()` mirrors `resolveFollowUp()`'s exact one-tap-with-optional-note pattern — a manager taps "Got it" on a shared entry, the apprentice sees the acknowledgement (and any note) next time they open their journal. Two new surfaces replace two removed ones: a per-profile card on Overview next to Follow-ups, and a list-level inbox card across every apprentice. eq-field [PR #892](https://github.com/eq-solutions/eq-field/pull/892) (v3.5.651 — collided with and renumbered past another same-day PR's v3.5.650), merged, confirmed live.
-- [x] **Retired: the apprentice-initiated "Ask for Feedback" flow** (pick a named supervisor, optional prompt, email with a `?request=<uuid>` deep link) — it overlapped with journal's own share toggle for no real gain, and was quietly broken (a stale legacy-identity check this session's audit found, never fixed). `feedback_requests` itself left in place (RLS/grants intact, zero rows written in the ~2 months it was live) rather than dropped.
-- [x] **3 PostHog events added** (`journal_entry_created`/`_shared`/`_acknowledged`, ids and booleans only, no entry/note text) — this directly closes the "No usage instrumentation" item from the 2026-08-30 critique further down this file. Royce's own framing: "initial goal is to see if this helps them engage... final outcome would be to hopefully have better people in our business."
 - [ ] **Notification gap, Royce's explicit call, not built:** sharing an entry sends nothing — no email, no push. "Right now im happy if its a closed loop between me and apprentices." `apprentice_profiles.supervisor_id` could route an email without reintroducing the old "pick a person" step if this changes — a real design decision (who, how often, per-entry vs. digest), not something to build unprompted. _(added 2026-09-02)_
 - [ ] **Security-adjacent finding from the audit, not fixed:** `addCustomCompetency()`/`removeCustomCompetency()` (`apprentices.js:429,457`) write straight to Supabase instead of routing through the ownership-checked `apprentice-write.js` — the only thing stopping a non-manager is which buttons render client-side. Every other write in the module was migrated to the checked path in an earlier security fix; these two weren't. Worth closing before more apprentice data accumulates. _(added 2026-09-02)_
 - [ ] **Permission-gate migration still incomplete in 3 files** (`apprentices-feedback-forms.js`, `apprentices-skills-passport.js`, `tafe.js` — `journal.js` was switched to the real per-person `canManageApprentices()` grant as part of today's work, these weren't). Dormant today since default grants match the coarse `isManager` role; breaks silently the first time someone's access is customised via Shell's Access Control. _(added 2026-09-02)_
@@ -225,47 +204,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Calendar never showed weekend roster entries — FIXED, merged, live (2026-09-02)
-*Royce, live example: "CA1 is logged in for 7th November for Richard Simon and Brian but it doesnt show on the calendar." Confirmed live against ehow before touching code: Richard Brown, Simon Bramall, and Brian Griffin-Colls all have a real `app_data.field_schedule` row for CA1 (Equinix CA1) on Sat 7 Nov 2026 — correctly showing on the Roster tab, absent from Calendar.*
-
-- [x] **Root cause: `renderCalendar()`'s per-day data-build loop hard-skipped Saturday/Sunday entirely** (`if (dow >= 5) continue`), so a real weekend roster entry never reached `calDayData` at all — not a Roster/Calendar data-source mismatch, both read the same schedule data. That blanked the grid cell, the mobile agenda card, and the day-detail panel (which bails on a missing `calDayData[ds]`) for every weekend, tenant-wide, not just this date/these people. Every day of the month now builds and renders the same way; weekend cells keep their muted grey styling as a visual cue but are now clickable and show real data. eq-field [PR #882](https://github.com/eq-solutions/eq-field/pull/882) (v3.5.642), merged and confirmed live on `field.eq.solutions/sw.js`.
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file; re-verified fresh this session that even the `?tenant=demo` fixture gate now dead-ends at "Sign in through Core" after entering the code, so there's no sandbox path left to try. Worth a real pass: Calendar → November 2026 → the 7th, confirm the CA1 chip renders on both desktop grid and mobile agenda and that clicking it opens the day panel with all three names. _(added 2026-09-02)_
-
----
-
 ## eq-field: approved leave not appearing on Weekly Roster — investigated, no bug found (2026-09-02)
 
 - [ ] **Likely explanation: the leave request was bulk-imported (`imported_from: nspb-leave-sync-2026-09-01`) from sks-nsw-labour the day before it was checked** — a stale/cached roster tab open since before the import is the probable cause, not a bug. Told Royce to hard-refresh; not confirmed whether that resolved it. _(added 2026-09-02)_
-- [x] **Crew-scoping ruled out as a cause going forward, 2026-09-04.** eq-field PR #910 (v3.5.668) made `field.view_all_crews` the supervisor default (was manager-only) — see the crew-scoping entry above. Whether crew-scoping actually explained Jack's leave looking missing on 2026-09-02 is still unconfirmed either way, but it can't recur for this reason for any supervisor now.
-
----
-
-## eq-field: My Schedule compliance card stuck on stale "missing" state after a real upload — FIXED, merged, live (2026-09-02)
-*Royce, screenshot: logged in as Jordan Sample, "uploaded both white card and photo id and its still asking me for it." Verified live against canonical (jvkn) before touching code: Jordan's data was actually correct (held both, satisfied both required types) — the screenshot itself showed a different person (Liam Holmgreen), whose gap was real and correctly flagged.*
-
-- [x] **Root cause: the card's two backing caches fetch once per page load and never invalidate.** EQ Cards is a separate tab with no push signal back to Field, so an already-open Field tab stays on stale data (including a stale-but-correct-at-the-time empty result from before the upload) until a hard reload. Added a "Check again" action to the card's warning state that resets the caches and re-fetches. eq-field [PR #877](https://github.com/eq-solutions/eq-field/pull/877) (v3.5.638), merged and confirmed live.
-- [ ] **Not click-tested live** — the fixed path only renders behind real canonical data plus a real authenticated session (both tenants are Core-only); no path to that in this environment. Worth a real pass: upload a credential in EQ Cards, flip back to an already-open Field tab on My Schedule, confirm the card still shows "missing," tap "Check again," confirm it clears without a page reload. _(added 2026-09-02)_
-
----
-
-## eq-field: My Schedule day-card was cluttered with always-on contact lines — FIXED, merged, live (2026-09-02)
-*Royce, same screenshot as above: "the daily info is a little bit busy." Offered 4 directions with named tradeoffs; picked "collapse contacts to a tap."*
-
-- [x] **Site lead + Ask-for/Backup contacts (up to 3 always-visible lines) collapsed into one "Site contacts" row, hidden by default.** Same numbers, same `tel:` links, one tap to reveal. My Schedule only — `sites.js`'s Sites page keeps these always open (different screen, more room, nobody flagged it). eq-field [PR #878](https://github.com/eq-solutions/eq-field/pull/878) (v3.5.640 — v3.5.639 collided with a concurrent PR, renumbered), merged and confirmed live.
-- [ ] **Not click-tested live** — verified via an isolated Node `vm` harness (real source, no DOM/network) instead: 14/14 checks covering empty-state handling, HTML per lead/contacts combination, escaping, and unique per-day box ids. Worth a real pass: open My Schedule for a day with a site that has a lead and Ask-for/Backup contacts, confirm the collapsed row, tap it, confirm all 3 lines appear with working `tel:` links. _(added 2026-09-02)_
-
----
-
-## eq-field: My Schedule compliance card mislabeled a viewed teammate's gap as "Your profile" — FIXED, merged, live (2026-09-02)
-
-- [ ] **Not click-tested through the full authenticated UI by a person** — confirmed this time against the real Netlify deploy preview itself, not just the local sandbox: both `eq` and `sks` are Core-only, so the PIN gate refuses outright everywhere, real preview included. Worth a real pass: sign in through Core, open My Schedule, switch the picker to a teammate with a missing credential, confirm the card names them, not "Your". _(added 2026-09-02)_
 
 ---
 
 ## eq-field: Apprentice profile self-service — real year on create, self-editable site — FIXED, merged, live (2026-09-02)
 *Continuation of the "Jordan A. Sample" apprentice walkthrough (see the 2026-08-30/31 section further down this file). Royce flipped Jordan's Shell employment type to Apprentice, then reported the just-created Field profile showed 1st year against Shell's real "year 2", and asked for apprentices to be able to set their own current site.*
 
-- [x] **Self-created apprentice profiles were server-force-setting year_level to 1 regardless of the real value already on the person's staff record.** `netlify/functions/apprentice-write.js`'s create-profile action now seeds it from the caller's own `field_people` row, falling back to 1 only when genuinely unknown. Current site opened up as self-editable on both create and edit (was manager-only) — only the apprentice knows where they're working day to day; year/start date/notes stay supervisor-only. `tests/apprentice-write-scoping.test.js` updated to match (29/29). [PR #879](https://github.com/eq-solutions/eq-field/pull/879) (v3.5.639), merged and confirmed live on `field.eq.solutions/sw.js`.
 - [ ] **`current_site` is now a second, unreconciled place someone's "current site" can live** — separate from both the day-by-day Roster/Schedule assignment and the more detailed `rotations` table (still manager-only). Letting the apprentice self-edit it can drift from what the roster actually has them on today; nothing cross-checks the two. Built as asked, not resolved — worth a look if it causes confusion in practice. _(added 2026-09-02)_
 - [ ] **Not click-tested live by a person** — same standing sandbox limitation as every entry in this file. Worth a real pass: as an apprentice, "Set Up My Profile" and "Edit My Goals" both show an enabled site dropdown with year/start date/notes greyed out; a manager's create/edit flow unchanged. _(added 2026-09-02)_
 - [ ] **This repo's own CLAUDE.md is stale on the 'eq' tenant's canonical model** — it still describes `eq`'s canonical tables as `public.people`/`timesheets`/`leave_requests` directly on zaap. Live-queried zaap this session: that table doesn't exist any more — zaap has fully migrated to the same `app_data.staff` + `field_people`/`field_people_directory`/`field_people_removed` view model already documented for ehow/sks. Needs a CLAUDE.md correction, not a code fix. _(added 2026-09-02)_

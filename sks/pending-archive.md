@@ -1,7 +1,7 @@
 ---
 title: SKS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 scope: Done items rotated out of sks/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -475,6 +475,16 @@ output).*
 ---
 
 ## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-09-04 — open items remain in pending.md)
+
+
+---
+
+## SKS login + Timesheets: "click OK to continue" gate on the retirement notices, merged live (2026-09-02) (rotated 2026-09-05)
+*Escalated the v3.10.112/.113 passive banners (login gate, Timesheets) into a blocking modal — same copy, must click "OK, got it" to continue, once per tab session. [sks-nsw-labour PR #81](https://github.com/eq-solutions/sks-nsw-labour/pull/81) (v3.10.114), squash-merged, confirmed live via Netlify's own deploy record for the merge commit.*
+
+---
+
+## SKS national scale discovery — "what breaks EQ at ~2,000 employees" (2026-07-23) (rotated 2026-09-05 — open items remain in pending.md)
 
 
 ---
