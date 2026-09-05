@@ -215,6 +215,19 @@ surfacing if the retirement date slips or goes unconfirmed for an extended
 stretch. Close condition unchanged: `nspbmirochztcjijmcrx` actually offline /
 anon key actually disabled, then strike from `rls_probe.py KNOWN_LEAKS`.
 
+**Note 2026-09-05:** live-verified the user-facing side of cutover has started —
+sks-nsw-labour shipped a login notice ("SKS ops has moved to core.eq.solutions"),
+a force-logout of everyone, and a "don't fill this out" notice on Timesheets
+(commits 2026-09-01/09-02, v3.10.112–114), consistent with the EQ Core go-live
+review's "Labour timesheets moved to Field" milestone the same week. This is
+real progress but is **not** the close condition: the site still answers
+HTTP 200 and the repo is still active, and Royce confirmed directly (chat,
+2026-09-05, after being asked plainly rather than assumed) that
+`nspbmirochztcjijmcrx` has not been paused and its anon key has not been
+disabled — only the user migration has happened so far. **Still OPEN.** A
+user-facing retirement and an anon-key disable are two different facts; this
+register exists specifically so the two don't get conflated.
+
 ### SEC-2 — eq-canonical-internal RLS trusts user_metadata (CLOSED 2026-07-21)
 Originally: `app_data.eq_intake_rate_limits` policy `tenant_isolation` referenced
 `auth.user_metadata`, which end users can edit — a forgeable-tenant bypass.
