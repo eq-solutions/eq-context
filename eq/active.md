@@ -9,12 +9,12 @@ status: live
 
 # EQ Field — Active State
 
-**Current version:** v3.5.683 · **Deployed:** `field.eq.solutions` (Netlify site `eq-field`, which also answers on `eq-field.netlify.app`) + the Shell embed at `core.eq.solutions/sks/field`
+**Current version:** v3.5.685 · **Deployed:** `field.eq.solutions` (Netlify site `eq-field`, which also answers on `eq-field.netlify.app`) + the Shell embed at `core.eq.solutions/sks/field`
 **Repo:** `eq-solutions/eq-field` — vanilla HTML/JS, no build step; `main` auto-deploys via Netlify
 
 > **Re-verified line-by-line 2026-09-04** against live: `field.eq.solutions/sw.js` (`CACHE` const) and eq-field `origin/main`; eq-shell `origin/main` (`src/pages/FieldIframe.tsx`, `src/lib/fieldTenants.ts`); jvkn (`shell_control.tenant_routing`, `public.organisations` + `module_entitlements`, the edge-function list, `pg_trigger`); ehow (row counts, the `app_data.field_*` view inventory, table locations). The previous version of this file (last_updated 2026-07-21) was pinned at v3.5.334 — 339 versions behind — and its "Gated" list still said the roster was empty. Every section below was rewritten from what was found, not bumped. Older dated snapshots that used to live here (2026-06-13 sync counts, the 2026-06-18 apprentice/acknowledgments launches) are records, not state — they live in `eq/changelog/eq-field.md`.
 >
-> **Version bump only, 2026-09-05** — v3.5.673 → v3.5.683 (10 versions, 5 PRs, one live DB migration), everything else in this file unchanged from the 2026-09-04 pass above; not re-verified line-by-line this time. Headline: `app_data.timesheets` now stamps real `created_by`/`updated_by` from the caller's JWT on every write (was permanently NULL before — see `eq/changelog/eq-field.md` PR #927), and the Timesheets Fill Week / Copy Last Week editors now force a fresh per-person/week read before checking for existing data, closing a stale-tab bug that let a supervisor silently double-book a day. Full detail: `eq/changelog/eq-field.md` and `eq/pending/eq-field.md`, both 2026-09-05.
+> **Version bump only, 2026-09-05** — v3.5.673 → v3.5.685 (12 versions, 7 PRs, one live DB migration), everything else in this file unchanged from the 2026-09-04 pass above; not re-verified line-by-line this time. Headline: `app_data.timesheets` now stamps real `created_by`/`updated_by` from the caller's JWT on every write (was permanently NULL before — PR #927) and resolves both to a display name shown right on the Timesheets day cell (PR #929, same pattern as the existing `approved_by` chip). The Timesheets Fill Week / Copy Last Week editors now force a fresh per-person/week read before checking for existing data, closing a stale-tab bug that let a supervisor silently double-book a day (PR #923/#926). Also same day: DNW's overwrite-confirm now always fires, and the multi-job grid cell shows up to 3 jobs instead of 2 (PR #928). Full detail: `eq/changelog/eq-field.md` and `eq/pending/eq-field.md`, both 2026-09-05.
 
 ---
 

@@ -22,13 +22,26 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] **Cihan Alakuzu's live data cleaned up, Royce's explicit approval:** the 5 spurious `job=27862` rows (the auto-default) deleted, the 5 hand-entered `job=27682` rows kept — 49.5h, confirmed live. Maylin Ung's existing total was separately confirmed correct and left untouched.
 - [x] **"Who did this" traced as far as possible without a database change:** the app-level audit log has no real actor identity for Timesheets (`who: "system"` always) — traced instead via PostHog (`timesheet_saved` event + `posthog.identify()`), found the exact session (Mobile Safari/iOS, Sydney, timestamps matching to the second) and positively ruled out three other people active in the same window. That session's own `posthog.identify()` never fired despite being authenticated — flagged, not investigated further.
 - [x] **The real gap behind "who did this" closed properly** (PR #927, migration, no version bump): `app_data.eq__guard_timesheet_status` already resolved the caller's real identity on every write, it just never persisted past `approved_by_user_id`. Now stamps `created_by`/`updated_by` too. Applied live and verified with real writes in a rolled-back transaction before the PR was even opened.
-- [ ] **Historical rows stay permanently unattributed** — the new stamping is forward-only from 2026-09-05; there's no way to backfill who wrote a pre-existing row, including Cihan's own cleaned-up ones. _(added 2026-09-05)_
-- [ ] **`created_by`/`updated_by` are raw UUIDs with no display-name resolution yet** — a real follow-up, mirroring the `staffUserIdToName` map PR #921 built for `approved_by_user_id`. Not built this session. _(added 2026-09-05)_
+- [x] **Display-name resolution for `created_by`/`updated_by` built same day** (PR #929, v3.5.685), mirroring the `staffUserIdToName` map PR #921 built for `approved_by_user_id`. Every work-day cell's hover tooltip now shows "Created by X" / "Created by X, last updated by Y", folded into the existing multi-job breakdown tooltip. A day with multiple job segments (Cihan's exact shape) can show two different names — `created_by` is the earliest segment's actor, `updated_by` the most-recently-touched one.
+- [ ] **Historical rows stay permanently unattributed** — the stamping (and its display) is forward-only from 2026-09-05; there's no way to backfill who wrote a pre-existing row. Confirmed directly by PR #929: Cihan's own 5 remaining, already-cleaned-up rows all predate the migration and show no attribution tooltip at all — the exact incident this was built for won't carry it end-to-end. _(added 2026-09-05)_
 - [ ] **The unidentified PostHog session's missing `posthog.identify()` call** — a real, separate analytics gap (every other session active in the same window was correctly identified). Not investigated further; worth a look if "who did this" comes up again and the new DB attribution alone isn't enough context (e.g. device/location matters). _(added 2026-09-05)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. The PR #927 migration was instead verified with real transactional writes against the live function, which exercises the actual trigger code path more precisely than a UI click could have (proving the "different actor, no status change" case in isolation). _(added 2026-09-05)_
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. The PR #927 migration was verified with real transactional writes against the live function; PR #929's display side has no live post-migration row to click-test against yet (nothing new has been saved since). _(added 2026-09-05)_
 
 **Notes:**
-- Full technical detail: `eq/changelog/eq-field.md` (5× 2026-09-05 entries, PR #923-927) and `sessions/2026-09-05.md`.
+- Full technical detail: `eq/changelog/eq-field.md` (6× 2026-09-05 entries, PR #923-927 + #929) and `sessions/2026-09-05.md`.
+
+---
+
+## eq-field: Timesheets DNW confirm gap + 3-job grid display cap — FIXED, merged, live (PR #928, v3.5.684, 2026-09-05)
+*Two fixes prompted by Royce reviewing a live Timesheets screenshot: an accidental-DNW-press question ("what if someone accidentally presses did not work? how do I change it"), plus a separate report that Bruno Pedrosa and Fernando Alba both have real 3-job days the grid was hiding. Direct continuation of the same-day multi-job stacking fix (PR #925) above — same file, same `_jobsLabelHtml` mechanism, just raising its cap.*
+
+- [x] **DNW confirm gap** (`fillTsWeekDNW`, `timesheets.js`): the "overwrite Mon–Fri with DNW?" confirm dialog only fired when the week already had entries — a stray click on a still-blank week marked it DNW instantly, no prompt at all. Now always confirms; the message still distinguishes overwrite-vs-blank.
+- [x] **3-job grid display cap** (`_jobsLabelHtml`, `timesheets-spans.js`): the compact grid cell stacked at most 2 job lines (`_JOBS_STACK_MAX`), hiding a 3rd+ job's code/hours behind a bare "+N" badge, visible only via the hover tooltip or the edit modal. Cap raised 2 → 3. Storage, weekly totals, CSV export, and the edit modal were never capped — only this compact preview was.
+- [ ] **The DNW confirm now fires on every click, including the routine/intentional case** — a real, named tradeoff, not free: one extra click × however many labour-hire workers get marked DNW in a row, for a population where this is a routine weekly action. Worth revisiting if it turns out to be annoying in practice rather than reassuring. _(added 2026-09-05)_
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. _(added 2026-09-05)_
+
+**Notes:**
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-05 entry) and `docs/reflection-log.md` in the eq-field repo itself.
 
 ---
 
