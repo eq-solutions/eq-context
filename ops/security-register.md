@@ -228,6 +228,17 @@ disabled — only the user migration has happened so far. **Still OPEN.** A
 user-facing retirement and an anon-key disable are two different facts; this
 register exists specifically so the two don't get conflated.
 
+**Note 2026-09-05 (later, separate session):** asked again in a different
+context (a `/decide` pass on suite-wide priority), Royce volunteered a
+concrete timeline unprompted: *"SKS NSW LABOUR is done - not used anymore. I
+am holding it there for another 2 weeks just to make sure everything works
+on field and then we are done."* Target decommission ≈ **2026-09-19**.
+Consistent with, not a contradiction of, the note above — that note
+established the DB/anon-key are not yet touched; this one adds a date to
+"weeks away." **Still OPEN, same close condition as always** — re-open to
+active surfacing if 2026-09-19 passes with `nspbmirochztcjijmcrx` still live
+and its anon key still enabled.
+
 ### SEC-2 — eq-canonical-internal RLS trusts user_metadata (CLOSED 2026-07-21)
 Originally: `app_data.eq_intake_rate_limits` policy `tenant_isolation` referenced
 `auth.user_metadata`, which end users can edit — a forgeable-tenant bypass.
