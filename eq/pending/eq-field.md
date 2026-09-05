@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Timesheet "who approved this" was blank for every SKS approval — FIXED, merged, live (2026-09-05)
+*Royce, from a screenshot of Core's SKS Timesheets view: the "✓ Approved" button gave no indication of who had approved it. Investigated before building — the plumbing (approval data, a name-resolution helper, an existing initials-chip UI pattern) was already fully built; it just didn't work.*
+
+- [x] **Root cause, verified live against ehow, not assumed:** `app_data.timesheets.approved_by_user_id` is stamped by a DB trigger from the approving manager's Shell/Core login identity (`app_data.staff.user_id`) — the client was resolving it as if it were `staff_id`, a different id space that can never match. Confirmed: 100% of 103 currently-approved SKS timesheets had real, correct attribution the app just couldn't read back (Royce Milmlow, Ian Marston, Simon Bramall, Jack Cluff — all 4 real, current people).
+- [x] **Fix is entirely client-side, no database change:** added a `user_id -> name` lookup alongside the existing `staff_id -> name` one, and pointed the read side at it. Also removed a dead write-side guess that the database was silently discarding anyway, which had been firing a false "not linked" warning at supervisors.
+- [x] **The Approved button on desktop now shows the approver's initials directly** (e.g. "✓ RM"), instead of only a tooltip that, until this fix, was blank anyway.
+- [x] eq-field [PR #921](https://github.com/eq-solutions/eq-field/pull/921) (v3.5.678 — renumbered from v3.5.677 after a same-day rebase collision with PR #920), merged, confirmed live (`field.eq.solutions/sw.js` shows v3.5.678).
+- [x] **Checked leave requests for the identical bug before assuming it applied — it doesn't.** `app_data.leave_requests.approver_id` is already correctly resolved (verified live: all 17 populated rows show the real approver's name). The real gap there is different and structural: 30 of 47 approved leave requests were approved via the emailed magic-link flow, which never establishes a login, so there's no identity to attribute at all — not a lookup bug, a data-capture gap. **Royce's call: leave it as-is, no code change.** A real fix would mean the leave-approval email endpoint resolving its own bound approver email to a staff record, which is a separate, smaller piece of work if ever revisited.
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Verified instead against real production data (the live query results above), which is a stronger check for this specific bug than a single manual click would have been. _(added 2026-09-05)_
+
+**Notes:**
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-05 entry) and `sessions/2026-09-05.md`.
+
+---
+
 ## eq-field: CSP still allow-listed the deleted ktmj Supabase project (SEC-53 eq-field half) — FIXED, merged, live (2026-09-04)
 
 - [ ] **`supabase/functions/supervisor-digest/README.md` still points deploy/curl instructions at the deleted project** — docs-only fix, its own task chip. _(added 2026-09-04)_
@@ -68,7 +83,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-field: file-size ratchet convergence — roster.js + leave.js decomposed, FIXED, merged, live; 4 files still near-ceiling (2026-09-04)
 
-- [ ] **4 of the original 6 tracked files are still near-ceiling, untouched this session** (task scope was the tightest 1-2 files): `sks-pipeline.js` 1,779/1,800 (21 headroom), `sks-pipeline-resource.js` 2,062/2,100 (38), `tender-pipeline.js` 2,108/2,150 (42, deliberately deferred separately per Royce 2026-07-30), `timesheets.js` 2,527/2,550 (23). Same decision as before applies to these: keep ratcheting as it comes up, or schedule their own decomposition pass. _(added 2026-09-04)_
+- [ ] **4 of the original 6 tracked files are still near-ceiling, untouched this session** (task scope was the tightest 1-2 files): `sks-pipeline.js` 1,779/1,800 (21 headroom), `sks-pipeline-resource.js` 2,062/2,100 (38), `tender-pipeline.js` 2,108/2,150 (42, deliberately deferred separately per Royce 2026-07-30), `timesheets.js` 2,527/2,550 (23). Same decision as before applies to these: keep ratcheting as it comes up, or schedule their own decomposition pass. _(added 2026-09-04, **correction 2026-09-05**: `timesheets.js` count is now stale — two independent same-day PRs (#920, #921) both added a few lines and collided on rebase, pushing it to 2,554; ceiling bumped to 2,600, 46 headroom left, not 23)_
 - [ ] **New finding, not in the original count:** `apprentices.js` is also at 1,739/1,750 (11 lines headroom) — tied with leave.js's pre-decomposition number, discovered only because this session re-verified every entry fresh rather than trusting the original 6-file list. _(added 2026-09-04)_
 - [ ] **Not click-tested live by a person on either PR** — standing Core-only sandbox limitation, same as every other entry in this file. Worth a real pass: submit a leave request end-to-end (both range and individual-day modes), and open My Schedule to confirm the day-card layout (site/address/job number/Workbench line/site contacts/coworkers/map link) is unchanged. _(added 2026-09-04)_
 
