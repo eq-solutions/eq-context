@@ -13,12 +13,10 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: Documents sign-off register — 8-angle cold code audit found + fixed 10 real gaps, PR #1772 merged and confirmed live (2026-09-05)
-*Started as a request for a marketing/explainer page for the Documents feature (`/sks/admin/documents`); widened to "give me a rating and top 3 things to look at," then a full cold code audit — 8 independent finder angles plus an independent verifier on every candidate, not a diff review. Two tenant-isolation gaps were the most severe finds. Full technical detail in `eq/changelog/eq-shell.md`.*
+## eq-shell: Documents sign-off register — 8-angle cold code audit, PR #1772 (2026-09-05)
 
 - [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
 - [ ] **Where does a brand-new starter's Shell login actually get connected?** The onboarding auto-push fix only covers write paths where a staff row already has a linked login (Cards approval's update branches, "Add to Roster"'s reactivate branch, the original Staff-page edit path) — the two pure-insert paths correctly no-op since there's no login yet at that point. Whatever write path links a login to a brand-new starter afterward hasn't been traced, and may need the same trigger. Spawned as `task_a1e54a2d`; Royce started it in a separate session. _(added 2026-09-05)_
-- [ ] **Confirm the crew-push tenant-isolation gap was never actually triggered in production** — a read-only live-data check, not urgent since the code fix is already live either way. Spawned as `task_ba1bdb4b`; Royce started it in a separate session. _(added 2026-09-05)_
 
 ---
 
