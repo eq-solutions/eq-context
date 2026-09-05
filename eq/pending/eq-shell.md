@@ -369,7 +369,6 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 ## eq-shell + org: secrets-org-hardening-sprint — SEC-61 closed, SEC-63 resolved, SEC-60 built to scope (2026-08-24)
 
-- [ ] **SEC-63's `dev`-context leak fix** — the account-scope `SUPABASE_JWT_SECRET`'s dev-context plaintext leak is still live. Royce chose to delete it himself via the Netlify dashboard (Team settings → Shared environment variables) rather than have the session retry past its own classifier block. Not yet confirmed done. _(added 2026-08-24)_
 - [ ] **SEC-60's remaining 3 gaps, deliberately deferred** — org-wide 2FA requirement, branch protection on the other 5 repos (eq-field, eq-cards, eq-solves-intake, eq-context, sks-nsw-labour), SHA-pinning on third-party Actions. Royce picked the lowest-disruption subset this round; these three are a real future pass, not forgotten. _(added 2026-08-24)_
 
 ---
