@@ -815,7 +815,7 @@ def deploy_state(site):
         if not isinstance(sites, list):
             return None, None
         match = next((s for s in sites
-                      if site in (s.get("name", "") + s.get("custom_domain", ""))), None)
+                      if site in ((s.get("name") or "") + (s.get("custom_domain") or ""))), None)
         if not match:
             return None, None
         deploys = requests.get(
@@ -828,7 +828,9 @@ def deploy_state(site):
         d = deploys[0]
         published = (d.get("published_at") or d.get("created_at") or "")[:10]
         return d.get("state", "unknown"), published or None
-    except Exception:
+    except Exception as e:
+        print(f"  WARNING: Netlify deploy_state({site!r}) raised "
+              f"{type(e).__name__}: {e}", file=sys.stderr)
         return None, None
 
 
