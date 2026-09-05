@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-05 02:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-05 02:14 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-05 01:57 UTC → 2026-09-05 02:10 UTC)
+## Since last refresh (2026-09-05 02:10 UTC → 2026-09-05 02:14 UTC)
 
-- Merged: eq-shell [#1777](https://github.com/eq-solutions/eq-shell/pull/1777) fix(onboarding): daily sweep catches starters whose Shell lo
-- Merged: eq-shell [#1776](https://github.com/eq-solutions/eq-shell/pull/1776) feat(security): detect drift between tenant rosters and user
-- Merged: eq-shell [#1775](https://github.com/eq-solutions/eq-shell/pull/1775) fix(auth): licence-visibility reads no longer trust org_memb
-- Merged: eq-shell [#1763](https://github.com/eq-solutions/eq-shell/pull/1763) fix(drift-guard): CHECK 7 comment refresh + column allow-lis
-- Merged: eq-shell [#1762](https://github.com/eq-solutions/eq-shell/pull/1762) fix(auth): fail closed when the tenant_role_overrides read t
-- Merged: eq-shell [#1761](https://github.com/eq-solutions/eq-shell/pull/1761) ci(migrations): fail the ledger-hygiene check on duplicate n
-- Merged: eq-shell [#1760](https://github.com/eq-solutions/eq-shell/pull/1760) fix(auth): stop unauthenticated POSTs from locking a phone o
-- Merged: eq-shell [#1759](https://github.com/eq-solutions/eq-shell/pull/1759) fix(admin): tenant-scope every delete in the employment-reco
-- ⚠ Needs you: 17 → 18 (new items)
+- Merged: eq-shell [#1778](https://github.com/eq-solutions/eq-shell/pull/1778) fix(auth): stop tenant_config/tenant_routing timeouts from f
+- Merged: eq-shell [#1766](https://github.com/eq-solutions/eq-shell/pull/1766) fix(auth): stop unauthenticated POSTs from locking a phone o
+- Merged: eq-shell [#1765](https://github.com/eq-solutions/eq-shell/pull/1765) fix(field-iframe): gate the post-accepted draw notice on Fie
+- Merged: eq-shell [#1764](https://github.com/eq-solutions/eq-shell/pull/1764) fix(auth): bound the remaining 7 gating reads in verify-shel
+- Merged: eq-shell [#1758](https://github.com/eq-solutions/eq-shell/pull/1758) fix(field-iframe): 10s stall state with Retry, per-step hand
+- Merged: eq-shell [#1757](https://github.com/eq-solutions/eq-shell/pull/1757) fix(crm): validate contacts before update_site/add_site writ
+- Merged: eq-shell [#1755](https://github.com/eq-solutions/eq-shell/pull/1755) perf: lazy-load CardsIframe and ServiceIframe (Tier 2)
+- Merged: eq-shell [#1754](https://github.com/eq-solutions/eq-shell/pull/1754) fix(quotes): search no longer silently scopes to the active 
 
 ## ⚠ Needs you (18)
 
@@ -65,9 +64,9 @@ _…and 256 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 8 | 4d |
+| eq-shell | ✓ success | 0d ago | 7 | 4d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 15d |
-| eq-field | ✓ success | 0d ago | 2 | 2d |
+| eq-field | ✓ success | 0d ago | 3 | 2d |
 | eq-cards | ✓ success | 2d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -93,9 +92,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-05 | eq-shell | [#1778](https://github.com/eq-solutions/eq-shell/pull/1778) fix(auth): stop tenant_config/tenant_routing timeouts from failin |
+| 2026-09-05 | eq-shell | [#1777](https://github.com/eq-solutions/eq-shell/pull/1777) fix(onboarding): daily sweep catches starters whose Shell login l |
 | 2026-09-05 | eq-shell | [#1776](https://github.com/eq-solutions/eq-shell/pull/1776) feat(security): detect drift between tenant rosters and user_tena |
 | 2026-09-05 | eq-shell | [#1775](https://github.com/eq-solutions/eq-shell/pull/1775) fix(auth): licence-visibility reads no longer trust org_membershi |
-| 2026-09-05 | eq-shell | [#1777](https://github.com/eq-solutions/eq-shell/pull/1777) fix(onboarding): daily sweep catches starters whose Shell login l |
 | 2026-09-05 | eq-shell | [#1773](https://github.com/eq-solutions/eq-shell/pull/1773) fix(auth): revoke org_memberships when a shell login is deactivat |
 | 2026-09-05 | eq-shell | [#1774](https://github.com/eq-solutions/eq-shell/pull/1774) fix(cards): fill staff.user_id when Cards worker link resolves it |
 | 2026-09-05 | eq-shell | [#1756](https://github.com/eq-solutions/eq-shell/pull/1756) chore(intake): auto re-vendor eq-intake/eq-platform |
@@ -107,7 +107,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-04 | eq-shell | [#1771](https://github.com/eq-solutions/eq-shell/pull/1771) fix(quotes): revoke stray authenticated grant on eq__log_quote_au |
 | 2026-09-04 | eq-shell | [#1770](https://github.com/eq-solutions/eq-shell/pull/1770) fix(auth): fail closed in resolvePrincipal(), the last tenant_rol |
 | 2026-09-04 | eq-shell | [#1768](https://github.com/eq-solutions/eq-shell/pull/1768) fix(auth): fail closed on the last tenant_role_overrides fail-ope |
-| 2026-09-04 | eq-shell | [#1767](https://github.com/eq-solutions/eq-shell/pull/1767) fix(auth): fail closed in the three remaining tenant_role_overrid |
 _Showing 15 of 86 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -144,7 +143,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1436 | 200 / 82 | 20 | 72 |
+| [eq-shell](eq/pending/eq-shell.md) | 1436 | 201 / 81 | 20 | 72 |
 | [eq-cards](eq/pending/eq-cards.md) | 359 | 48 / 17 | 10 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1249 | 168 / 72 | 41 | 41 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 505 | 77 / 24 | 0 | 32 |
@@ -202,4 +201,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-05 02:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-05 02:14 UTC._
