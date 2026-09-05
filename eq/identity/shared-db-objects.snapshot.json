@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-01T00:00:00Z",
+  "generated_at": "2026-09-05T01:34:00Z",
   "generated_by": "eq-context session 2026-09-01, seeded from live pg_get_viewdef/pg_get_functiondef queries against ehow via the Supabase MCP (see eq-field investigation this same session)",
   "plane": "ehow",
   "objects": {
@@ -21,49 +21,49 @@
       "schema": "app_data",
       "name": "field_people_iud",
       "kind": "function",
-      "sha256": "aa5989c4c07e6e567725fbd2cd557f65f80923e81e902f86d43a0df07df5d34d",
+      "sha256": "b914a2ea8ba4eb0bf96b63860d382ae2104b13c648db55709660d46b468f25e5",
       "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\n    declare v_name text; v_first text; v_last text; v_sid uuid; v_tid uuid;\n            v_can_licences boolean; v_can_labour_hire boolean; v_can_people boolean;\n            v_secret text; v_worker_id uuid; v_push_body jsonb;\n    begin\n  "
     },
     "app_data.field_people_removed_iud": {
       "schema": "app_data",
       "name": "field_people_removed_iud",
       "kind": "function",
-      "sha256": "ddf915cb99c0665d446ff4b8a8f9b0c1bb12539e0f54e1a4c5f472b600b9eed2",
-      "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_removed_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\ndeclare\n  v_tid uuid := nullif(auth.jwt() -> 'app_metadata' ->> 'tenant_id','')::uuid;\n  v_actor uuid := nullif(auth.jwt() -> 'app_metadata' ->> 'actor_id','')::uuid;\n  v_can_labour_hire boolean := COALESCE((auth.jwt() -> 'app_me"
+      "sha256": "29d36f9de7f25fea204cdf56f59a773b3841e70b23a7b7d5bbdd6fae42a68e9b",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_removed_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\ndeclare\n  v_tid uuid := nullif(auth.jwt() -> 'app_metadata' ->> 'tenant_id','')::uuid;\n  v_actor uuid := nullif(auth.jwt() -> 'app_metadata' ->> 'actor_id','')::uuid;\n  v_can_labour_hire boolean := (\n                       COALES"
     },
     "app_data.field_teams_iud": {
       "schema": "app_data",
       "name": "field_teams_iud",
       "kind": "function",
-      "sha256": "cf78123359a596a4c1c4a1dad92fd71abeaa0c62071b735c4f16cab11c70798e",
-      "preview": "CREATE OR REPLACE FUNCTION app_data.field_teams_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_id        uuid;\n  v_tenant_id uuid := (((auth.jwt() -> 'app_metadata'::text) ->> 'tenant_id'::text))::uuid;\nBEGIN\n  IF NOT (\n    COALESCE((auth.jwt() -> 'app_metadata' ->> 'eq_role') IN ('manager', 'supervisor'), false)\n    O"
+      "sha256": "3c7038c0a83fc409869f657ad9a7a1e6fa0e5a49f6d66f6ecfbe503176a1d6a2",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_teams_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_id        uuid;\n  v_tenant_id uuid := (((auth.jwt() -> 'app_metadata'::text) ->> 'tenant_id'::text))::uuid;\nBEGIN\n  IF NOT (\n    (\n      COALESCE((auth.jwt() -> 'app_metadata' ->> 'eq_role') IN ('manager', 'supervisor'), fals"
     },
     "app_data.field_team_members_iud": {
       "schema": "app_data",
       "name": "field_team_members_iud",
       "kind": "function",
-      "sha256": "13bcbcd99547ae781fbd75cab4801c697473de04948dafef7029f7766b94dbab",
-      "preview": "CREATE OR REPLACE FUNCTION app_data.field_team_members_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_id        uuid;\n  v_org_id    uuid;\n  v_tenant_id uuid := (((auth.jwt() -> 'app_metadata'::text) ->> 'tenant_id'::text))::uuid;\nBEGIN\n  IF NOT (\n    COALESCE((auth.jwt() -> 'app_metadata' ->> 'eq_role') IN ('manager', "
+      "sha256": "ed8d759eb97709f71fa4da5e7c5cc383b8349aead5d28bdeb6f80fe2ce4908c7",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_team_members_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_id        uuid;\n  v_org_id    uuid;\n  v_tenant_id uuid := (((auth.jwt() -> 'app_metadata'::text) ->> 'tenant_id'::text))::uuid;\nBEGIN\n  IF NOT (\n    (\n      COALESCE((auth.jwt() -> 'app_metadata' ->> 'eq_role') IN ('ma"
     },
     "app_data.field_team_supervisors_iud": {
       "schema": "app_data",
       "name": "field_team_supervisors_iud",
       "kind": "function",
-      "sha256": "b6cf60aff4285bebf7e169c19505aefac755e0a68df82e0b1d1110827aee9f3d",
-      "preview": "CREATE OR REPLACE FUNCTION app_data.field_team_supervisors_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_id     uuid;\n  v_org_id uuid;\nBEGIN\n  IF NOT (\n    COALESCE((auth.jwt() -> 'app_metadata' ->> 'eq_role') IN ('manager', 'supervisor'), false)\n    OR (\n      COALESCE((auth.jwt() -> 'app_metadata' -> 'extra_perms') "
+      "sha256": "e66c7ac7f8d5ee36428c02a2cd7c6d18730158d300afd6e2b343dee885238a8e",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_team_supervisors_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_id     uuid;\n  v_org_id uuid;\nBEGIN\n  IF NOT (\n    (\n      COALESCE((auth.jwt() -> 'app_metadata' ->> 'eq_role') IN ('manager', 'supervisor'), false)\n      OR COALESCE((auth.jwt() -> 'app_metadata' -> 'extra_perms'"
     },
     "app_data.eq__guard_timesheet_status": {
       "schema": "app_data",
       "name": "eq__guard_timesheet_status",
       "kind": "function",
-      "sha256": "8d13fa237797d05055d6582688434f9c9346ed63fe58df8b555695a344f9996c",
+      "sha256": "abafee3cbebb4f8b25d7ac2b14fd6eb091be8925fa18be343fb35d4d158c54cc",
       "preview": "CREATE OR REPLACE FUNCTION app_data.eq__guard_timesheet_status()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_claims  jsonb;\n  v_role    text;\n  v_eq_role text;\n  v_is_mgr  boolean;\n  v_is_appr boolean;\n  v_uid     uuid;\n  v_staff   uuid;\n  v_old     text;\n  v_new     text;\nBEGIN\n  v_claims := nullif(current_setting('request.jwt.claims', tr"
     },
     "app_data.eq__guard_leave_status": {
       "schema": "app_data",
       "name": "eq__guard_leave_status",
       "kind": "function",
-      "sha256": "2b43f899d82d6158cdddd9481841684d1addfb86e329a0d960f01f1916aabd4d",
+      "sha256": "856956c1f85fb42912d79f08fdc478c19020284bfe5b30ff6992b65e1ca51a17",
       "preview": "CREATE OR REPLACE FUNCTION app_data.eq__guard_leave_status()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_claims  jsonb;\n  v_role    text;\n  v_eq_role text;\n  v_is_mgr  boolean;\n  v_is_appr boolean;\n  v_staff   uuid;\n  v_old     text;\n  v_new     text;\nBEGIN\n  v_claims := nullif(current_setting('request.jwt.claims', true), '')::jsonb;\n\n  IF"
     },
     "app_data.field_job_numbers_src": {
