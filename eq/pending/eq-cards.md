@@ -13,6 +13,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: one open Sentry issue, likely transient (2026-09-05)
+- [ ] **EQ-CARDS-1N** — `AuthRetryableFetchException`/`Failed to fetch` on a Supabase auth-token refresh (Flutter/Dart, GoTrue client), single occurrence, no recurrence in 3+ days. Same shape as eq-field's own now-closed EQ-FIELD-16/19 (a transient network blip on a token refresh, not a code bug), but not verified against eq-cards' own retry handling — no Flutter toolchain stood up to check it, given a single occurrence with zero recurrence didn't seem to justify it. Royce's call whether to chase further. _(added 2026-09-05)_
+
+---
+
 ## eq-cards: Wallet "can't load licences" root-caused to a stale client session — fixed, merged, deployed live; wallet nudge stack also consolidated (2026-09-02)
 *Royce: couldn't see licences on two SKS labour-hire workers' phones (Conor Horgan, then Nelson Sareto) when checking Core. Verified live before building anything: both workers' data checked out completely clean on both ends (ehow `app_data.staff`/`licences` and jvkn `workers`/`licences`) — no duplicate records (ruling out the Aug-30 dedup bug that named these exact two workers), correct cross-plane links both directions, valid non-private licences, active org memberships. Root cause: the wallet's licence fetch trusts whatever Supabase session object is cached with no live-check or refresh — a session that goes stale while the Shell iframe tab is backgrounded (GoTrue's own refresh timer lagging) fails straight to the "Sign in again" error screen instead of self-healing. Matches a same-day Sentry `AuthRetryableFetchException` (issue 144338444) and the identical failure class already fixed once in this codebase (`not_provisioned_screen.dart`, EQ-CARDS-1C).*
 

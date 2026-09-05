@@ -8086,3 +8086,30 @@ Also found and fixed in passing: this worktree's `node_modules` was missing `pdf
 Full technical detail: `eq/changelog/eq-shell.md` (2026-09-05 entry), `sessions/2026-09-05.md` ("(h)" entry).
 
 ---
+
+## eq-shell: verify-shell-session's remaining 7 unbounded gating reads fixed — Sentry EQ-SHELL-T/V closed, PR #1764 merged + live (2026-09-05)
+*A "check the other repos for Sentry issues too" sweep off an eq-field session found EQ-SHELL-T (`auth-stall: verify-timeout`) and EQ-SHELL-V (`auth-stall: session-spinner-timeout`) still firing after #1736 (2026-09-02) — #1758 (2026-09-05, a different Field-iframe fix) had already investigated and confirmed explicitly: "#1736 bounded 4 of verify-shell-session's 11 concurrent reads; the other 7 stay unbounded."*
+
+- [x] **New `withDeadlineOrReject()`** (`_shared/supabase.ts`) — deliberately not a reuse of the existing `withDeadline()`: that resolves a timeout to a made-up fallback, wrong for a gating read (a timed-out tenant lookup isn't the same fact as an inactive tenant). This rejects on timeout with a distinct, greppable error instead, so a timeout lands on each read's own already-correct rejection handling — zero new fallback semantics invented.
+- [x] **All 7 remaining gating reads wrapped** (user, revocation, memberships, tenant, entitlements, tenant_config, tenant_routing), 10s ceiling — 5s margin under the client's 15s deadline.
+- [x] **Real conflict with #1762 (same-day, merged mid-review) resolved by hand, not trusted to an automatic 3-way merge** — #1762 rewrote this same function's role-overrides handling. Verified the two changes touch genuinely different array slots (independent, not overlapping) before accepting the auto-merge; one real one-line import conflict resolved manually; #1762's own new test file needed a one-line fix (its module mock's export list didn't include the newly-added `withDeadlineOrReject`, breaking test-file import — not a behavioral failure).
+- [x] **[PR #1764](https://github.com/eq-solutions/eq-shell/pull/1764) merged** (`d434a407`), confirmed live via Netlify deploy record (`published_at` set, not just merge-record existing) ~6 min after merge.
+
+**Deferred, not this PR's scope:** EQ-SHELL-1Z (`EQ Field handoff stalled at "minting"`) fired once during this same session (Royce himself) — confirmed as PR #1758's own new stall telemetry catching a real but self-healing stall exactly as designed (10s notice + Retry). Working as intended, no fix needed.
+
+Full technical detail: PR #1764's own description (records the conflict-resolution reasoning in full), `sessions/2026-09-05.md`.
+
+---
+
+## eq-field: Timesheets reopen-403 reported "check connection" instead of the real reason — PR #920 merged + live (2026-09-05)
+*Found live, 2 minutes old, during the same cross-repo Sentry sweep that produced the eq-shell entry above: a real SKS user tried to edit a cell on an already-approved timesheet, hit the DB's own "only a manager can reopen an approved timesheet" guard (403), and got a misleading generic toast instead of the real reason.*
+
+- [x] **Root cause, two bugs same origin**: `supabase-canon-write.js`'s `_ts()` collapsed the server's structured error body into a flat string (so the only toast possible was a generic "check connection," wrong for a permission denial). Separately, `_tsFlushRow()` attached its own `.catch()` to a promise *derived from* `_tsP`, not `_tsP` itself — the raw un-caught `_tsP` is what `saveTsCell()`/`saveTsCellsBulk()` `await` with no try/catch of their own, so the same rejection surfaced twice: once as the misleading toast, once as a genuinely unhandled rejection (`mechanism: "unhandledrejection"` — what Sentry actually caught).
+- [x] **Fixed**: `_ts()` now attaches `.status`/`.pgMessage` to the thrown Error; the toast uses the real message when the server sent one; both call sites wrap their await in try/catch so the same denial can't also escape unhandled. 3 new tests lock in the Error enrichment (the one part of this fix reachable from the existing Node harness).
+- [x] **[PR #920](https://github.com/eq-solutions/eq-field/pull/920) merged** (v3.5.677, `16350ea8`), confirmed live via `field.eq.solutions/sw.js`.
+
+**Deferred, named not fixed:** this makes the *failure* clearer, it doesn't stop a supervisor from attempting to edit an approved-but-unlocked week in the first place — "Approved" and "Locked" are two separate gates that both block editing differently, and nothing here explains that distinction to the user. A real, separate product question, not addressed by this fix.
+
+Full technical detail: `eq/changelog/eq-field.md` (2026-09-05 entry), `docs/reflection-log.md` in the eq-field repo itself, `sessions/2026-09-05.md`.
+
+---
