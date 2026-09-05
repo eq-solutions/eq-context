@@ -327,7 +327,8 @@ def netlify_site_info(site_name):
                   f"(site_name={site_name!r}): {str(sites)[:200]}", file=sys.stderr)
             return "unknown", None
         match = next(
-            (s for s in sites if site_name in (s.get("name", "") + s.get("custom_domain", ""))),
+            (s for s in sites
+             if site_name in ((s.get("name") or "") + (s.get("custom_domain") or ""))),
             None,
         )
         if not match:
