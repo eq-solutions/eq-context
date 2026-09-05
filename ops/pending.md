@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-05
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,23 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## EQ_CONTEXT_PAT (GitHub Actions secret) expired — ROTATED & CONFIRMED LIVE 2026-09-05. Workstation-PAT compromise (separate, older) still open (2026-09-03)
+
+Royce flagged `github.com/settings/personal-access-tokens/17800873` as expired and asked whether it matters. Live-verified rather than assumed: triggered all 3 dependent workflows manually.
+
+- **`jwt-contract-drift.yml` hard-fails** — no fallback secret (`GH_TOKEN: ${{ secrets.EQ_CONTEXT_PAT }}` only). Error: `HTTP 404 ... GH_TOKEN is unset/lacks access` fetching the private `eq-contracts` repo.
+- **`digest-refresh.yml` and `suite-state-refresh.yml` exit 0 and commit cleanly, but silently drop all cross-repo PR/CI data** instead of erroring — `secrets.EQ_CONTEXT_PAT || secrets.GITHUB_TOKEN` only falls back when the secret is *unset*, not when it's set-but-expired, so `GH_TOKEN` gets the dead token and every cross-repo call fails quietly. Now live on `main`: `suite-state.md`'s Open PRs section reads "No open PRs" (actually 12 real ones across eq-shell/eq-service/eq-field) and CI status reads "? unknown" for all 5 repos (was all ✓ success as of 2026-09-02 22:40 UTC). This is the F1/F14 pattern recurring in a new shape — not staleness, active silent erasure with exit code 0.
+- Token died in a ~35-minute window: last good scheduled run 2026-09-02 22:40 UTC, first failed manual trigger 2026-09-02 23:15 UTC (≈08:40–09:15 AEST 2026-09-03).
+- `EQ_CONTEXT_PAT` secret was last rotated 2026-08-03 — a 30-day fine-grained PAT expiring now is a strong circumstantial match, but **not confirmed** to be the same token as ID `17800873` — no API surfaces which fine-grained PAT backs a given secret. Fastest confirmation: check what repos/org that settings page lists as scoped — `eq-solutions` org + workflow scope points to `EQ_CONTEXT_PAT`.
+- **Side effect of live-verifying this**: the 2 manual test-run commits are now on `main`, so `digest.md`/`suite-state.md` currently show the degraded (wrong) cross-repo data rather than yesterday's stale-but-correct snapshot. Self-heals on the next successful refresh after rotation — reverting was offered, declined this session.
+
+**Needs Royce:**
+- [x] **Rotate/reissue the PAT and update the `EQ_CONTEXT_PAT` GitHub Actions secret** on `eq-solutions/eq-context`. _(added 2026-09-03)_ **DONE 2026-09-05** — Royce rotated it (secret timestamp 01:57 UTC); confirmed live, not just by timestamp: `jwt-contract-drift.yml` (zero-fallback, the cleanest test) succeeded at 02:10 UTC, first success since 2026-09-02, and the next `digest.md` regen (02:14 UTC) shows real Pulse data again across all 5 repos (eq-shell ✓/7 PRs, eq-service ✓/6, eq-field ✓/3, eq-cards ✓/0, eq-solves-intake ✓/0) — no more "? unknown"/"0".
+- [ ] **Separately, still unresolved**: `system/infrastructure.md` → "GitHub PATs" section has 3 *workstation* PATs (different from `EQ_CONTEXT_PAT` — these back local `.git-credentials` push, not Actions) flagged **compromised** since 2026-05-15 (leaked into a substrate commit, caught by push-protection), with a 5-step rotation checklist never marked done — file untouched since, now ~4 months stale. Worth doing both rotations in the same pass. _(added 2026-09-03)_
+- [x] **Harden `refresh_digest.py`/the suite-state generator to fail loudly instead of silently zeroing cross-repo data** when `GH_TOKEN` is rejected. _(added 2026-09-03)_ **Already shipped independently** — a concurrent/later session built this exact fix before I circled back: eq-context [PR #202](https://github.com/eq-solutions/eq-context/pull/202) (`12a530f`), merged 2026-09-05. `refresh_digest.py` now records every 401/403, retries once with the runner's own `GITHUB_TOKEN`, and surfaces a 🔴 "GitHub token rejected" Needs-you item instead of silently reporting "unknown"/"0 open PRs". Confirmed live in the digest content itself.
 
 ---
 
