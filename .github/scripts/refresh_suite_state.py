@@ -300,37 +300,64 @@ def migration_count(repo="eq-solutions/eq-service"):
     return f"{len(sqls)} (latest: {latest.split('_')[0]})"
 
 def netlify_site_info(site_name):
-    """Return (state, published_at) for a Netlify site's last deploy."""
+    """Return (state, published_at) for a Netlify site's last deploy.
+
+    Mirrors refresh_digest.py's gh_get() philosophy (2026-09-04 fix for the
+    equivalent GitHub-token blindness): a failure gets logged to stderr with
+    its real HTTP status, never swallowed into an indistinguishable "unknown"
+    that looks identical to "token not set" or "no matching site". Never logs
+    the token itself.
+    """
     if not NETLIFY_TOKEN:
         return "unknown", None
     try:
-        sites = requests.get(
+        r = requests.get(
             "https://api.netlify.com/api/v1/sites",
             headers={"Authorization": f"Bearer {NETLIFY_TOKEN}"},
             params={"filter": "all"},
             timeout=10,
-        ).json()
+        )
+        if not r.ok:
+            print(f"  WARNING: Netlify API {r.status_code} on GET /sites "
+                  f"(site_name={site_name!r}): {r.text[:200]}", file=sys.stderr)
+            return "unknown", None
+        sites = r.json()
         if not isinstance(sites, list):
+            print(f"  WARNING: Netlify GET /sites returned non-list body "
+                  f"(site_name={site_name!r}): {str(sites)[:200]}", file=sys.stderr)
             return "unknown", None
         match = next(
             (s for s in sites if site_name in (s.get("name", "") + s.get("custom_domain", ""))),
             None,
         )
         if not match:
+            print(f"  WARNING: no Netlify site matched {site_name!r} among "
+                  f"{len(sites)} sites returned — names seen: "
+                  f"{[s.get('name') for s in sites][:10]}", file=sys.stderr)
             return "unknown", None
-        deploys = requests.get(
+        r2 = requests.get(
             f"https://api.netlify.com/api/v1/sites/{match['id']}/deploys",
             headers={"Authorization": f"Bearer {NETLIFY_TOKEN}"},
             params={"per_page": 1},
             timeout=10,
-        ).json()
+        )
+        if not r2.ok:
+            print(f"  WARNING: Netlify API {r2.status_code} on GET "
+                  f"/sites/{match['id']}/deploys (site_name={site_name!r}): "
+                  f"{r2.text[:200]}", file=sys.stderr)
+            return "unknown", None
+        deploys = r2.json()
         if not isinstance(deploys, list) or not deploys:
+            print(f"  WARNING: no deploys returned for site_name={site_name!r} "
+                  f"(site id {match['id']})", file=sys.stderr)
             return "unknown", None
         d = deploys[0]
         published = d.get("published_at") or d.get("created_at", "")
         published_short = published[:10] if published else "?"
         return d.get("state", "unknown"), published_short
-    except Exception:
+    except Exception as e:
+        print(f"  WARNING: Netlify lookup raised {type(e).__name__}: {e} "
+              f"(site_name={site_name!r})", file=sys.stderr)
         return "unknown", None
 
 if __name__ == "__main__":
