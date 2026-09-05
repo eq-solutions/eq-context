@@ -8113,3 +8113,12 @@ Full technical detail: PR #1764's own description (records the conflict-resoluti
 Full technical detail: `eq/changelog/eq-field.md` (2026-09-05 entry), `docs/reflection-log.md` in the eq-field repo itself, `sessions/2026-09-05.md`.
 
 ---
+
+## eq-cards: `AuthRetryableFetchException` on wallet licence fetch — root-caused to the exact bug PR #342 already fixed, Sentry issue closed (2026-09-05)
+*Flagged earlier the same day by another session as "likely transient, Royce's call whether to chase further" (no Flutter toolchain available to verify further). This session pulled the full Sentry event and found the timestamp told the whole story.*
+
+- [x] **EQ-CARDS-1N** (`AuthRetryableFetchException`/`Failed to fetch` on a Supabase `refresh_token` grant, culprit `/licences`) — event occurred 2026-09-02 00:21 UTC, ~8 hours before [PR #342](https://github.com/eq-solutions/eq-cards/pull/342) merged (08:33 UTC) fixing exactly this race in `licences_list_notifier.dart`. Confirmed the fix is live: Netlify deploy published 08:39:13 UTC, 2 minutes after merge, timestamp-matched to the triggering Action run. Zero recurrence in the 3 days since. Marked resolved in Sentry directly (with a comment linking the PR and deploy timestamp) rather than left open for lack of a `Fixes EQ-CARDS-1N` reference in the original commit message.
+
+Full query trail (PostHog funnel re-query + Supabase cohort join used to separately confirm the same PR's funnel-conversion fix is holding): `sessions/2026-09-05.md`.
+
+---

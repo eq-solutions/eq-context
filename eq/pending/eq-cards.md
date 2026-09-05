@@ -13,11 +13,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-cards: one open Sentry issue, likely transient (2026-09-05)
-- [ ] **EQ-CARDS-1N** — `AuthRetryableFetchException`/`Failed to fetch` on a Supabase auth-token refresh (Flutter/Dart, GoTrue client), single occurrence, no recurrence in 3+ days. Same shape as eq-field's own now-closed EQ-FIELD-16/19 (a transient network blip on a token refresh, not a code bug), but not verified against eq-cards' own retry handling — no Flutter toolchain stood up to check it, given a single occurrence with zero recurrence didn't seem to justify it. Royce's call whether to chase further. _(added 2026-09-05)_
-
----
-
 ## eq-cards: Wallet "can't load licences" root-caused to a stale client session — fixed, merged, deployed live; wallet nudge stack also consolidated (2026-09-02)
 *Royce: couldn't see licences on two SKS labour-hire workers' phones (Conor Horgan, then Nelson Sareto) when checking Core. Verified live before building anything: both workers' data checked out completely clean on both ends (ehow `app_data.staff`/`licences` and jvkn `workers`/`licences`) — no duplicate records (ruling out the Aug-30 dedup bug that named these exact two workers), correct cross-plane links both directions, valid non-private licences, active org memberships. Root cause: the wallet's licence fetch trusts whatever Supabase session object is cached with no live-check or refresh — a session that goes stale while the Shell iframe tab is backgrounded (GoTrue's own refresh timer lagging) fails straight to the "Sign in again" error screen instead of self-healing. Matches a same-day Sentry `AuthRetryableFetchException` (issue 144338444) and the identical failure class already fixed once in this codebase (`not_provisioned_screen.dart`, EQ-CARDS-1C).*
 
@@ -109,18 +104,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-cards + eq-shell: `/auth/handoff` signup-blocker root-caused, fixed, merged, deployed live (2026-08-27)
-*Asked to investigate why `cards.eq.solutions/auth/handoff` — the page Shell's SSO handoff lands new signups on, 99%+ of suite signup traffic — was losing almost everyone who reached it. Given PostHog evidence up front (30d trailing, project 162632): 1,378 pageviews but only 243 (18%) ever resolved to a `shell_handoff_outcome` event at all; of those, 236 were `token_verify_success` (97%); but only 27 of those 236 (11%) ever reached `signup_completed`. A 100-minute session recording showed zero clicks, zero keypresses, no console errors — a silent hang, not a crash. Read-only investigation first, propose a fix only once the actual mechanism was found — not the symptom.*
-
 
 **Deferred:**
 - [ ] **Neither PR was click-tested live by a person** — no live Shell session was available this session. Worth a real click-through of the slow-fallback retry UI, and one genuine new-signup handoff to confirm `is_new_user`/`signup_completed` fire correctly end-to-end. _(added 2026-08-27)_
 - [ ] **WHY the `verifyOTP` network call itself stalls server-side was never confirmed** — slow `custom_access_token_hook`? Supabase connection-pool exhaustion on jvkn? No Supabase Auth-log/MCP access was available this session to check GoTrue-side latency directly. The client-side fix (bounded timeout + fallback UI) is correct regardless of the server-side reason, but the underlying mechanism is still open. _(added 2026-08-27)_
-- [ ] **Re-query the PostHog funnel again once real traffic has passed through** (hours, not minutes) to confirm the fix actually moved the 82%/11% numbers. _(added 2026-08-27)_
+- [ ] **Rare residual `signup_completed` miss found on re-query**: one after-fix new signup (`auth.users.created_at` 27.5h before their eventual successful verify) fell outside the 30-min window and never converted — 1 occurrence in 9 days of post-fix traffic, not the dominant pattern the original diagnosis described. Worth a look only if it starts recurring. _(added 2026-09-05)_
 
 **Notes:**
 - Full technical diagnosis (file:line citations, ruled-out causes, exact funnel query shapes) lives in this session's own memory records — eq-cards' `cards_handoff_signup_blocker_diagnosed.md` and the companion eq-shell `cards-auth-handoff-stuck-signup-blocker.md` — not duplicated here.
 - Both PRs built in dedicated `.claude/worktrees/` (never the shared bare-root checkouts) per each repo's own established convention.
 - GitHub MCP (`mcp__d2708d72...`) returned 404 for both PRs in this org, before and after merge — auth-scope issue, not a PR-state issue. `gh` CLI worked throughout and was used instead; worth knowing if a future session hits the same 404s here.
+- **2026-09-05 re-query confirmed both mechanisms are working.** Resolution rate roughly doubled (27%→49% of pageviews now get an outcome event at all, at flat daily traffic) and, restricted to genuine new signups (a proper person-level cohort join against jvkn `auth.users.created_at`, not a raw event ratio), conversion held at 100% in both the pre- and post-fix windows (17/17, then 3/3). The raw aggregate ratio looked like it dropped (11%→3%) but that was proven to be a mix-shift artifact — the shorter post-fix window simply had fewer new-worker signups relative to returning users re-opening their wallet — not a regression. Full query trail in `sessions/2026-09-05.md`.
 
 ---
 
