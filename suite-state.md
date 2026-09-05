@@ -61,10 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-05)
 
 **eq-field:**
+- #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
 **eq-service:**
+- #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
@@ -73,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
-- #1782 docs(auth): clarify tenant-membership.ts's intentional users.active blind spot
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
@@ -100,8 +101,8 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-04 |
-| eq-shell | building | 2026-09-05 |
+    | eq-service | ready | 2026-09-05 |
+| eq-shell | ready | 2026-09-05 |
 | eq-field | ready | 2026-09-05 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
