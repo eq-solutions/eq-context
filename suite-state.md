@@ -73,6 +73,8 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1780 fix(onboarding): exclude personal tenants from the onboarding-push sweep
+- #1779 fix(auth): re-check tenant membership at JWT mint time, not just account-active
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
@@ -100,7 +102,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-04 |
-| eq-shell | new | 2026-09-05 |
+| eq-shell | building | 2026-09-05 |
 | eq-field | ready | 2026-09-05 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
@@ -114,7 +116,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 1,974 | ✓ 1,974 |
-| Operational | app_data.field_timesheets | 397 | ✓ 397 |
+| Operational | app_data.field_timesheets | 396 | ✓ 396 |
 | Safety | public.prestarts | 233 | ✓ 233 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
