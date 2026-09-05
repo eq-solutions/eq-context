@@ -73,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1782 docs(auth): clarify tenant-membership.ts's intentional users.active blind spot
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
