@@ -14,7 +14,7 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
-## EQ_CONTEXT_PAT (GitHub Actions secret) expired — confirmed live, digest.md/suite-state.md silently degraded (2026-09-03)
+## EQ_CONTEXT_PAT (GitHub Actions secret) expired — ROTATED & CONFIRMED LIVE 2026-09-05. Workstation-PAT compromise (separate, older) still open (2026-09-03)
 
 Royce flagged `github.com/settings/personal-access-tokens/17800873` as expired and asked whether it matters. Live-verified rather than assumed: triggered all 3 dependent workflows manually.
 
@@ -25,9 +25,9 @@ Royce flagged `github.com/settings/personal-access-tokens/17800873` as expired a
 - **Side effect of live-verifying this**: the 2 manual test-run commits are now on `main`, so `digest.md`/`suite-state.md` currently show the degraded (wrong) cross-repo data rather than yesterday's stale-but-correct snapshot. Self-heals on the next successful refresh after rotation — reverting was offered, declined this session.
 
 **Needs Royce:**
-- [ ] **Rotate/reissue the PAT and update the `EQ_CONTEXT_PAT` GitHub Actions secret** on `eq-solutions/eq-context`. Credential action — not something Claude does. _(added 2026-09-03)_
+- [x] **Rotate/reissue the PAT and update the `EQ_CONTEXT_PAT` GitHub Actions secret** on `eq-solutions/eq-context`. _(added 2026-09-03)_ **DONE 2026-09-05** — Royce rotated it (secret timestamp 01:57 UTC); confirmed live, not just by timestamp: `jwt-contract-drift.yml` (zero-fallback, the cleanest test) succeeded at 02:10 UTC, first success since 2026-09-02, and the next `digest.md` regen (02:14 UTC) shows real Pulse data again across all 5 repos (eq-shell ✓/7 PRs, eq-service ✓/6, eq-field ✓/3, eq-cards ✓/0, eq-solves-intake ✓/0) — no more "? unknown"/"0".
 - [ ] **Separately, still unresolved**: `system/infrastructure.md` → "GitHub PATs" section has 3 *workstation* PATs (different from `EQ_CONTEXT_PAT` — these back local `.git-credentials` push, not Actions) flagged **compromised** since 2026-05-15 (leaked into a substrate commit, caught by push-protection), with a 5-step rotation checklist never marked done — file untouched since, now ~4 months stale. Worth doing both rotations in the same pass. _(added 2026-09-03)_
-- [ ] **Harden `refresh_digest.py`/the suite-state generator to fail loudly instead of silently zeroing cross-repo data** when `GH_TOKEN` is rejected — same shape as the SEC-1 de-escalation gap above (F4/F5 pattern: a script quietly overriding what should be a visible signal). Currently indistinguishable from "genuinely zero PRs" in the rendered output. _(added 2026-09-03)_
+- [x] **Harden `refresh_digest.py`/the suite-state generator to fail loudly instead of silently zeroing cross-repo data** when `GH_TOKEN` is rejected. _(added 2026-09-03)_ **Already shipped independently** — a concurrent/later session built this exact fix before I circled back: eq-context [PR #202](https://github.com/eq-solutions/eq-context/pull/202) (`12a530f`), merged 2026-09-05. `refresh_digest.py` now records every 401/403, retries once with the runner's own `GITHUB_TOKEN`, and surfaces a 🔴 "GitHub token rejected" Needs-you item instead of silently reporting "unknown"/"0 open PRs". Confirmed live in the digest content itself.
 
 ---
 
