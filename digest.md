@@ -8,7 +8,7 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-05 01:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-05 01:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
 ## ⚠ Needs you (12)
 
@@ -25,11 +25,14 @@ _2026-09-05 01:11 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (276)
+## 🙋 Waiting on you (279)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
+- **eq-shell** · **Cross-repo timing gap on new-starter onboarding push, still open**: `app_data.staff.user_id` is written only by eq-cards' `workers-canonical-sync` (service-role, confirmed 3 ways — its own source, migration `0196`'s column comment, and the `field_people_iud()` trigger). `cards-approve-staff.ts`'s 3 worker-link blocks now backfill it too ([PR #1774](https://github.com/eq-solutions/eq-shell/pull/1774), merged+live), closing the same-repo half. Still open: `staff-create.ts`'s brand-new-roster insert has no known `user_id` at creation (correct — no login exists yet), and when `workers-canonical-sync` links one later, that function has no concept of `pushOnboardingDocuments`/`start_date` at all — a starter linked while still inside the ±14/90-day trigger window gets nothing pushed. Two possible fix shapes (a cross-repo webhook from that sync, or a periodic eq-shell-side sweep for recently-linked `user_id`s), neither built — needs Royce's scope call. _(added 2026-09-05, supersedes the previous line about task_a1e54a2d — same question, now answered + half-fixed)_
+- **eq-shell** · **PR #1774's own write path not click-tested** — checked the Worker Invites hub (`/sks/admin/workers`) for a real Cards application/invite to approve against: none pending (28 already Claimed/processed, 1 unclaimed Pending, 1 pre-existing worker mid-Cards-flow). Waiting on Royce to flag one when it arrives, or ask for a periodic check instead. _(added 2026-09-05)_
+- **eq-shell** · **Quotes-search fix ([PR #1754](https://github.com/eq-solutions/eq-shell/pull/1754)) — list/table view not click-tested**, only board view. Confirmed live: with the "Open" tab active, searching `SKS-17512` (Invoiced-stage only) still surfaced it under Invoiced, with the "search covers every stage, not just the tab selected" notice showing correctly. _(added 2026-09-05)_
 - **eq-shell** · **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05)_
 - **eq-shell** · **3 of the 4 fixes verified only via `tsc -b --force` + eslint + `pnpm test` (including a negative-proof test per fix: fails on the pre-fix code, passes on the fix) — not a real click-through.** Only PR #1760's rate-limit reordering got an end-to-end live check (real HTTP requests against its deploy preview, cross-checked against the live `rate_limit_buckets`/`audit_log` tables). Worth a real pass on the other three: trigger `update_site`/`add_site` with an inactive contact and confirm it's rejected before any write lands; delete a user with linked staff/worker records and confirm the purge stays inside one tenant; open a PR with a deliberately colliding migration prefix and confirm CI fails it. _(added 2026-09-04)_
 - **eq-shell** · **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
@@ -38,10 +41,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — verified via `pnpm exec tsc -b --force` and `eslint` (both clean) plus an independent merge-readiness audit before merging. This machine's Node 24 breaks `vite build`/`netlify dev` for this repo (pre-existing, unrelated to this change), so no live click-through was possible. Worth a real pass: KPI numbers match the table's own counts, per-team rows sum to the roster totals, mobile view unchanged. _(added 2026-09-02)_
 - **eq-shell** · **Not click-tested live** — PR #1708's own test plan flags this: build/tests/lint clean, but nobody's archived a real staff-linked account and watched the new checkbox clear it. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
-- **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
-- **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, an 8-angle automated review, and Netlify deploy-preview smoke tests; no Shell session/credentials in this environment. Worth a real pass covering both PRs (#1683, #1685): panel opens in place with a shareable `?open=` URL; a formal entry opens with full detail, rating deltas, and (where attached) a source document; saving without answering "happy and engaged" is blocked and scrolls to the field; engagement tags render with color; a person with no `start_date` is flagged "missing a start date" but NOT also "overdue"; a hollow historical review shows its summary and one "no structured answers" note instead of ~20 blank fields. _(added 2026-08-30)_
-- **eq-shell** · **Not click-tested live** — same environment limitation as most of this session's other work (no Shell credentials); `netlify dev` also produced no output at all this time, which may just be the existing known Node-version flakiness rather than a new distinct failure. Verify via each PR's deploy preview or live: Resourcing's two new rating columns render "No ratings yet"; a Check-in entry shows the new weakness-improvement question; Edit pre-fills every field correctly and saves in place; the close/reopen icon toggles the "Open" tag. _(added 2026-09-01)_
-_…and 264 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 267 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -64,7 +64,6 @@ _GitHub API returned 401/403 this run — the CI and PR columns above are unavai
 | eq-field | [Error: 403: {"code":"42501","details":null,"hint":null,"message":"timesheet: onl](https://eq-solutions.sentry.io/issues/145012264/) | 2 | 2026-09-04 |
 | eq-shell | [EQ Field handoff stalled at "minting" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145002211/) | 1 | 2026-09-04 |
 | eq-field | [ReferenceError: _hookTsResizeOnce is not defined](https://eq-solutions.sentry.io/issues/144831279/) | 1 | 2026-09-04 |
-| eq-cards | [minified:B8: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 1 | 2026-09-02 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -85,7 +84,7 @@ _2 merges · full record in [sessions/](sessions/)_
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (33 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (34 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (180 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
@@ -109,15 +108,15 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1433 | 203 / 79 | 20 | 72 |
+| [eq-shell](eq/pending/eq-shell.md) | 1436 | 200 / 82 | 20 | 72 |
 | [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 18 | 10 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1249 | 168 / 72 | 41 | 41 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 513 | 77 / 24 | 1 | 32 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 505 | 77 / 24 | 0 | 32 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 162 | 14 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
-| [eq-context](eq/pending/eq-context.md) | 215 | 25 / 8 | 3 | 8 |
+| [eq-context](eq/pending/eq-context.md) | 216 | 26 / 8 | 3 | 8 |
 | [cross-repo](eq/pending/cross-repo.md) | 900 | 133 / 47 | 0 | 67 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 486 | 92 / 14 | 0 | 58 |
@@ -167,4 +166,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-05 01:11 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-05 01:49 UTC._
