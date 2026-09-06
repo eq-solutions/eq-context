@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-05 (nightly cron)_
+_Last verified: 2026-09-06 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-05)
+## Open PRs (as of 2026-09-06)
 
 **eq-field:**
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
@@ -75,6 +75,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1783 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
@@ -85,13 +86,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-09-05)
+## System Health (as of 2026-09-06)
 
     **CI on main:**
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? queued |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -101,7 +102,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-05 |
+    | eq-service | building | 2026-09-06 |
 | eq-shell | ready | 2026-09-05 |
 | eq-field | ready | 2026-09-05 |
 
@@ -109,7 +110,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-05)
+## Field Data Plane — SKS tenant (as of 2026-09-06)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 73 | ✓ 73 |
@@ -123,7 +124,7 @@ _If this file is >48h old, the cron is broken._
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-05)
+## Product Pulse (as of 2026-09-06)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
