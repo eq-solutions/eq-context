@@ -1,0 +1,246 @@
+---
+title: "/close command backup — Session End Protocol"
+owner: Royce Milmlow
+last_updated: 2026-09-06
+scope: Durability backup of Royce's user-level Claude Code /close command — source of truth is ~/.claude/commands/close.md, not this file
+read_priority: reference
+status: live
+description: Session-end housekeeping. Updates pending.md, writes session log, pushes substrate. Usage: /close
+---
+
+# /close — Session End Protocol (CLAUDE.md §10)
+
+Run every step IN ORDER. Do not skip. This is the last thing that happens in a session.
+
+---
+
+## Step 1 — Inventory what happened
+
+Scan this session's conversation for:
+- Tasks completed (any Edit/Write/migration that landed)
+- Decisions made (anything Royce confirmed)
+- Deferred items (things flagged but not built)
+- New information (schema facts, product decisions, constraints)
+
+Hold this list mentally — it drives steps 2–4.
+
+---
+
+## Step 2 — Update the active tier's pending.md
+
+Determine the active tier from the session context:
+- EQ work → `C:\Projects\eq-context\eq\pending\<repo>.md` (e.g. `eq-shell.md`, `eq-field.md`,
+  `eq-cards.md`) — **not** `eq\pending.md`. That file was split into one file per repo on
+  2026-08-17 and is now just a 28-line index pointing here; at least 6 sessions on
+  2026-08-25 alone hit the stale instruction, read the index, and self-corrected. If the
+  repo doesn't cleanly match one of the listed files, use `eq\pending\cross-repo.md`.
+- SKS work → `C:\Projects\eq-context\sks\pending.md` (not split — still one file)
+- OPS work → `C:\Projects\eq-context\ops\pending.md` (not split — still one file)
+- If cross-tier, update both.
+
+Read the file. Then:
+- Tick (`[x]`) any items completed this session (match by content, not line number)
+- Add new deferred items with today's date: `- [ ] <item> _(added YYYY-MM-DD)_`
+
+**Then apply the archive rule** (also stated inline in pending.md — the two must never
+diverge again; this contradicted an older "leave ticked items for history" instruction
+until 2026-07-27, which is why the file grew to 478 open / 163 unrotated done before
+anyone noticed):
+- For every section YOU touched this session (don't sweep the whole file — that's a
+  separate housekeeping pass, not a per-close step): if it now has **zero open items
+  left**, move it wholesale (header + full write-up) to the matching `pending-archive.md`
+  for that tier. If it still has **any open item(s)**, trim it down to just the header
+  and the remaining `- [ ]` line(s) — drop the italic intro paragraph and every `[x]`
+  line; that narrative already lives in the changelog and session log from Steps 3–4,
+  it does not need a second home in the live doc.
+- Do NOT touch sections you didn't work on this session, and never delete anything —
+  archive/trim only moves or drops content that's provably preserved elsewhere
+  (changelog + session log). If a section mixes checklist items with free-standing prose
+  that isn't part of any bullet (e.g. a standing rule note, a warning block), leave that
+  section alone and flag it in the session log instead of guessing at how to trim it.
+
+Write the updated file.
+
+> Brief-gate note: substrate docs (`pending.md`, `sessions/`, `changelog/`) and
+> `~/.claude/**` are EXEMPT from the brief-gate (scoped in `guard.js` 2026-06-30), so
+> Steps 2–4 write freely without a flag — no more touch-the-flag dance. If you ever
+> do hit a block here, the gate over-matched: fix the exemption in `guard.js`, don't
+> work around it with `touch`.
+
+---
+
+## Step 3 — Write the session log
+
+Write to `C:\Projects\eq-context\sessions\YYYY-MM-DD.md` where YYYY-MM-DD = today.
+
+If a file for today already exists, append a `---` divider and add below it.
+
+Format:
+
+```markdown
+# Session YYYY-MM-DD — <one-line title of the session's main outcome>
+
+## Built
+- <what was actually built/changed, one line per item>
+
+## Decided
+- <decisions confirmed by Royce, one line each>
+
+## Deferred
+- <items flagged but not built, with reason>
+
+## Notes
+<anything that would otherwise be lost — constraints discovered, substrate corrections, gotchas>
+```
+
+Keep it tight. Future sessions read this to avoid re-deriving context.
+
+---
+
+## Step 4 — Update changelogs (conditional)
+
+Only run this step if a product file changed this session (eq-shell, eq-service, eq-field, eq-cards, etc.).
+
+Update the relevant changelog at `C:\Projects\eq-context\eq\changelog\<product>.md` (create if missing):
+
+```markdown
+## YYYY-MM-DD
+- <what changed, one line>
+```
+
+---
+
+## Step 5 — Commit and push to GitHub
+
+Stage ONLY the files this session actually changed. Scope the session log to **today's
+file** (not the whole `sessions\` dir — a concurrent agent may have its own file there),
+and INCLUDE any changelog you touched in Step 4 (this is the step most often forgotten):
+
+```
+git -C C:/Projects/eq-context add eq/pending.md eq/changelog/<product>.md sessions/YYYY-MM-DD.md
+#   ^ add sks/pending.md / ops/pending.md too ONLY if you changed them
+git -C C:/Projects/eq-context commit -m "chore: session close YYYY-MM-DD [skip ci]"
+git -C C:/Projects/eq-context push origin main
+```
+
+**Use forward slashes exactly as shown, both in the `-C` path and the file arguments.** If
+these run through the Bash tool (Git Bash/POSIX sh), a backslash-separated path silently
+corrupts — bash treats `\` as its escape character, so `C:\Projects\eq-context` collapses to
+`C:Projectseq-context` with no error until git fails on the mangled path. Confirmed live,
+recurring 2026-08-16 through 2026-08-31 — see the identical fix in `brief.md` Step 3.
+
+Leave files you did NOT touch unstaged (e.g. `IDENTITY-MODEL.md`, `worktree-registry.md`
+edited by other agents) — never `git add -A`.
+
+**If the push fails (non-fast-forward)** a concurrent session pushed first. Do NOT rely on
+`git pull --ff-only` — it ABORTS when your local commit has diverged. Rebase instead:
+```
+git -C C:/Projects/eq-context fetch origin main
+git -C C:/Projects/eq-context stash --include-untracked   # only if you have unrelated unstaged changes
+git -C C:/Projects/eq-context rebase origin/main
+git -C C:/Projects/eq-context stash pop                   # only if you stashed
+git -C C:/Projects/eq-context push origin main
+```
+Confirm the push succeeded before continuing.
+
+---
+
+## Step 6 — Clear the brief flag (LAST — only after the push succeeds)
+
+Now that substrate is committed + pushed, delete THIS SESSION'S flag so it doesn't carry over:
+```
+Remove-Item "C:\Users\EQ\AppData\Local\Temp\eq-brief-<TODAY>-<SESSION_ID>.flag" -ErrorAction SilentlyContinue
+```
+(bash: `rm -f "/c/Users/EQ/AppData/Local/Temp/eq-brief-$(date +%Y-%m-%d)-<SESSION_ID>.flag"`)
+
+`<SESSION_ID>` is this session's id (the GUID directory in the scratchpad path). **Never wildcard
+this** — `eq-brief-<TODAY>-*.flag` would delete other concurrent sessions' flags and re-block them
+mid-work, which is the bug this per-session naming exists to prevent.
+
+Doing this BEFORE the writes (the old ordering) is what blocked Steps 2–4 on repeat closes.
+
+---
+
+## Step 7 — Render the session card (plain English)
+
+End the session on a card Royce can scan in two seconds, not a wall of text. Build it from the Step 1 inventory and render it with `mcp__visualize__show_widget`.
+
+**Plain English is the rule — no jargon on the card.** Translate every technical item into what it means for Royce. Cut migration numbers, PR numbers, table/schema names, "canonical", branch names, version tags. Say what changed and why it matters. (The technical detail already lives in the session log from Step 3 — the log is for the next Claude, the card is for Royce.)
+
+Examples of the translation:
+- "Migration 0159 stuck on ehow + zaap (checksum drift)" → "A database update is stuck on two systems — until it lands, Field can't auto-fill the customer on prestart forms."
+- "eq-cards PR #127 open" → "An onboarding fix is waiting for your review."
+- "Subcontractor role added to eq-roles v2.4.0" → "Added a 'subcontractor' role you can assign to people across the apps."
+
+Fill the card from the inventory:
+- **Needs you** — anything needing Royce's decision or action. If there's nothing, show one row: "All clear — nothing waiting on you."
+- **Done this session** — what was built or landed.
+- **Next** — deferred items and obvious follow-ups. Omit this section only if empty.
+
+Top metrics: **Done** = count built · **Deferred** = new deferred count · **Needs you** = items needing Royce's call.
+
+Call `show_widget` with `title: "eq_session_close_card"`, `favicon` unused, and this HTML. Set the date, the tier badge (EQ / SKS / OPS), the three numbers, and one row per item. Repeat or delete rows as needed. Keep every line plain English.
+
+```html
+<h2 class="sr-only">Session close for ‹DATE›: ‹N› done, ‹M› deferred, ‹K› need you.</h2>
+<style>
+.sc-sec { font-size: 13px; font-weight: 500; color: var(--text-muted); margin: 0 0 8px; }
+.sc-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--radius); margin-bottom: 6px; }
+.sc-row i { font-size: 18px; line-height: 1.4; flex-shrink: 0; }
+.sc-row p { margin: 0; font-size: 14px; line-height: 1.45; color: var(--text-primary); }
+.sc-row .sub { color: var(--text-secondary); font-size: 13px; }
+</style>
+<div style="padding: 0.5rem 0;">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px;">
+    <div style="display: flex; align-items: baseline; gap: 10px;">
+      <span style="font-size: 18px; font-weight: 500; color: var(--text-primary);">Session close</span>
+      <span style="font-size: 14px; color: var(--text-muted);">‹DATE›</span>
+    </div>
+    <span style="font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: var(--bg-accent); color: var(--text-accent);">‹EQ›</span>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 1rem 0 1.5rem;">
+    <div style="background: var(--surface-1); border-radius: var(--radius); padding: 0.85rem 1rem;">
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Done</div>
+      <div style="font-size: 24px; font-weight: 500; color: var(--text-primary);">‹N›</div>
+    </div>
+    <div style="background: var(--surface-1); border-radius: var(--radius); padding: 0.85rem 1rem;">
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Deferred</div>
+      <div style="font-size: 24px; font-weight: 500; color: var(--text-primary);">‹M›</div>
+    </div>
+    <div style="background: var(--surface-1); border-radius: var(--radius); padding: 0.85rem 1rem;">
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Needs you</div>
+      <div style="font-size: 24px; font-weight: 500; color: var(--text-warning);">‹K›</div>
+    </div>
+  </div>
+  <p class="sc-sec">Needs you</p>
+  <div class="sc-row" style="background: var(--bg-warning);">
+    <i class="ti ti-alert-triangle" style="color: var(--text-warning);" aria-hidden="true"></i>
+    <p>‹plain-English headline› <span class="sub">— ‹why it matters, plain English›</span></p>
+  </div>
+  <p class="sc-sec" style="margin-top: 1.25rem;">Done this session</p>
+  <div class="sc-row" style="background: var(--surface-1); padding: 8px 12px;">
+    <i class="ti ti-check" style="color: var(--text-success);" aria-hidden="true"></i>
+    <p>‹what was done› <span class="sub">— ‹plain detail›</span></p>
+  </div>
+  <p class="sc-sec" style="margin-top: 1.25rem;">Next</p>
+  <div class="sc-row" style="background: var(--surface-1); padding: 8px 12px;">
+    <i class="ti ti-arrow-right" style="color: var(--text-primary);" aria-hidden="true"></i>
+    <p>‹next step› <span class="sub">— ‹why›</span></p>
+  </div>
+</div>
+```
+
+Row swaps: for a "waiting for your review" item use `ti-eye` with `color: var(--text-accent)`; for the all-clear row use `ti-check` with `color: var(--text-success)`. If **Needs you** is 0, set the metric colour to `var(--text-primary)` and show only the all-clear row.
+
+---
+
+## Step 8 — Final confirmation
+
+The card already shows the summary — do NOT restate its contents as text. Print only these two lines below it:
+
+```
+Session closed. Pushed to substrate.
+Log: sessions/YYYY-MM-DD.md
+```
+
+Nothing else. The session is done.
