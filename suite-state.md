@@ -61,14 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-06)
 
 **eq-field:**
-- #931 v3.5.686 — FIX: ?tenant=demo stopped resolving to the demo sandbox
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
 **eq-service:**
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
-- #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
 
@@ -100,7 +98,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | new | 2026-09-06 |
+    | eq-service | building | 2026-09-06 |
 | eq-shell | ready | 2026-09-05 |
 | eq-field | ready | 2026-09-06 |
 
