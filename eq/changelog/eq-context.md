@@ -1,11 +1,23 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
+
+## [2026-09-06] F10 mechanism 4 closed — core.hooksPath now self-heals on a fresh clone
+
+**Built by:** Claude Code
+
+- **`hooks/session_start.py`'s HOOKS check now self-heals a completely-unset `core.hooksPath`** — found on a brand-new Windows PC's first eq-context session, recorded as F10's 4th recurrence and structurally different from the first three (never configured, not misdirected; a `git clone` cannot populate local config for itself). Runs `git config --local core.hooksPath .githooks` directly and re-verifies via the same read used for the steady-state "ok" case, instead of only printing a warning. A wrong-but-set value (mechanisms 1-3's shape) is left untouched, print-only, unchanged — overwriting a value someone may have set deliberately is a different risk than filling an empty one.
+- **`system/onboarding.md` gained a "First-time setup" step, `README.md` a one-line cross-reference** — covers the human/non-Claude-Code path the hook can't reach.
+- **`.pre-commit-config.yaml` labeled "NOT CURRENTLY ADOPTED"** rather than deleted (Royce's call, `AskUserQuestion`) — confirmed zero references anywhere in `.github/workflows/*.yml`. Adopting the real `pre-commit` framework instead was investigated and ruled out: `pre-commit install` has the identical "manual step `git clone` can't run for you" problem, and its default target `.git/hooks/pre-commit` is the exact path that caused the 2026-08-04 shadow-copy incident.
+- **`scripts/pre-commit-secrets.sh`'s own stale "Install" comment fixed** — it told a reader to `cp` itself into `.git/hooks/pre-commit` by hand, reproducing that same incident shape; now points at `scripts/install-hooks.ps1` and explains why not to do the old thing.
+- **`hooks/README.md`'s `session_start.py` row corrected** — was still describing the pre-2026-08-05 state ("F10 itself stays at rung 1").
+- 4 new adversarial cases (3 covering the self-heal path, 1 control proving a wrong-but-set value is never silently overwritten). Full python suite 150/150; `hooks/test_session_start_sync.py` and `hooks/test_ratchet_rules.py` (the other two CI-wired test files) also re-run clean. Pushed via an isolated clone, confirmed live via the raw URL. Full detail: `system/failures.md` F10, `sessions/2026-09-06.md`.
+- Found in passing, spun off rather than bundled in: `hooks/adversarial_test.sh` (not CI-wired) fails 0/36 on any machine where `python3` resolves to the Windows Store app-execution-alias stub instead of a real interpreter.
 
 ## [2026-09-05] Netlify deploy-status null-safety bug fixed in both refresh scripts; SEC-71 review-date PR rebased and merged
 
