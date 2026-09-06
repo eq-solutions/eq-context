@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -71,15 +71,6 @@ _(added 2026-09-05)_
 ## eq-shell: Go-live review — 4 findings fixed (write-before-validate, tenant-scoped deletes, rate-limit ordering, migration-prefix guard), all merged live (2026-09-04)
 
 - [ ] **3 of the 4 fixes verified only via `tsc -b --force` + eslint + `pnpm test` (including a negative-proof test per fix: fails on the pre-fix code, passes on the fix) — not a real click-through.** Only PR #1760's rate-limit reordering got an end-to-end live check (real HTTP requests against its deploy preview, cross-checked against the live `rate_limit_buckets`/`audit_log` tables). Worth a real pass on the other three: trigger `update_site`/`add_site` with an inactive contact and confirm it's rejected before any write lands; delete a user with linked staff/worker records and confirm the purge stays inside one tenant; open a PR with a deliberately colliding migration prefix and confirm CI fails it. _(added 2026-09-04)_
-
----
-
-## eq-shell: EQ Ops quotes search silently scoped to the active pipeline tab — root-caused, fixed, merged live (2026-09-03)
-*Bug report handed in with root cause pre-identified: `eq_list_quotes` ANDs `p_stage` and `p_search` server-side, and `selectedTabs` defaults to "in-progress" only for anyone with no saved tab preference — so a search hit sitting in another stage (draft, submitted, etc.) read as "not found" with no indication why. Reported via Matt Miller (SKS manager), unable to find draft quotes SKS-17964/18000/18001 while on the default "In Progress" tab despite full permission to see them.*
-
-- [x] **Root cause confirmed live against ehow, not just the migration file** — `eq_list_quotes` (migration 0300) has independent AND-ed `p_stage`/`p_search` WHERE clauses, exactly matching the report. Found one thing the report didn't cover: a second, independent narrowing client-side (`displayedQuotes`, driven by `activeStages`, derived purely from `selectedTabs`) that would silently re-apply the same stage scope to whatever the server returned — fixing only the RPC call would have left this filter discarding the wider result set again.
-- [x] **PR [#1754](https://github.com/eq-solutions/eq-shell/pull/1754)** — `QuotesModule.tsx`: `loadQuotes()` drops `p_stage` to null while a search term is present; `activeStages` (feeds both list and board view) resolves to `[]` under the same condition; small notice added ("Search results include every stage...") when this widens results beyond the visibly selected tab. No RPC/migration change needed — existing signature already accepted `p_stage: null`. `tsc -b --force` + `eslint` clean. Squash-merged `68de2e78`, Netlify build triggered 2s after merge (matches the documented 2-4s-trigger pattern); `published_at` not yet confirmed as of session close.
-- [ ] **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
 
 ---
 

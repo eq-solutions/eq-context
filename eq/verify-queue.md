@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2593,5 +2593,11 @@ a bug rather than just deleting the line.
 **From:** eq-solves-service: dashboard map was showing "API KEY REQUIRED" over every tile — root-caused, fixed, merged, live (PR #826, 2026-09-02)
 
 - [ ] **Not click-tested live by a person.** Verified via direct tile-URL fetch, `tsc --noEmit`, and a real (unauthenticated) dev-server boot — not an actual signed-in look at the rendered map. Worth a real pass: open the dashboard and confirm the map renders a real light-gray basemap with site pins, no leftover watermarking. _(added 2026-09-02)_
+
+---
+
+**From:** eq-shell: EQ Ops quotes search silently scoped to the active pipeline tab — root-caused, fixed, merged live (2026-09-03)
+
+- [ ] **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
 
 ---

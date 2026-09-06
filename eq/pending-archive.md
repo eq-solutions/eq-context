@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -8649,5 +8649,173 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 - Also researched (live code, not docs) and confirmed why Service/Field/Cards never adopted `@eq/intake` — three distinct, deliberate causes, not neglect. Independently corroborates the 2026-08-08 audit findings already in this file (session-close block above) and in `eq-context/ops/decisions.md`'s `cf75d2d` annotation — nothing new decided, just re-verified from a fresh angle.
 - eq-context's shared local checkout was under heavy concurrent-session load on 2026-09-04 (drifted 5→16→2→3 commits behind `origin/main` at different points; another concurrent session's own close note that day independently reported the same contention and used the identical workaround). Read-only checks went via `git show origin/main:<path>` rather than pulling into the shared tree; that close's own writes went through a fresh scratch clone rather than the shared checkout, for the same reason.
 - Two non-blocking gaps found on the new-PC environment check (2026-09-06): `canvas` (optional dependency of `unpdf`, PDF-page-to-image rendering) fails to build from source — no Visual Studio C++ build tools on the machine, and no Node 24 prebuilt binary exists yet for canvas@2.11.2; and the README's "Get it running" section points at an `.env.example` that doesn't exist anywhere in the repo (only env var any source file reads is `ANTHROPIC_API_KEY`). Neither blocks day-to-day work; not fixed this session.
+
+---
+
+## eq-shell: EQ Ops quotes search silently scoped to the active pipeline tab — root-caused, fixed, merged live (2026-09-03) (rotated 2026-09-06)
+*Bug report handed in with root cause pre-identified: `eq_list_quotes` ANDs `p_stage` and `p_search` server-side, and `selectedTabs` defaults to "in-progress" only for anyone with no saved tab preference — so a search hit sitting in another stage (draft, submitted, etc.) read as "not found" with no indication why. Reported via Matt Miller (SKS manager), unable to find draft quotes SKS-17964/18000/18001 while on the default "In Progress" tab despite full permission to see them.*
+
+- [x] **Root cause confirmed live against ehow, not just the migration file** — `eq_list_quotes` (migration 0300) has independent AND-ed `p_stage`/`p_search` WHERE clauses, exactly matching the report. Found one thing the report didn't cover: a second, independent narrowing client-side (`displayedQuotes`, driven by `activeStages`, derived purely from `selectedTabs`) that would silently re-apply the same stage scope to whatever the server returned — fixing only the RPC call would have left this filter discarding the wider result set again.
+- [x] **PR [#1754](https://github.com/eq-solutions/eq-shell/pull/1754)** — `QuotesModule.tsx`: `loadQuotes()` drops `p_stage` to null while a search term is present; `activeStages` (feeds both list and board view) resolves to `[]` under the same condition; small notice added ("Search results include every stage...") when this widens results beyond the visibly selected tab. No RPC/migration change needed — existing signature already accepted `p_stage: null`. `tsc -b --force` + `eslint` clean. Squash-merged `68de2e78`, Netlify build triggered 2s after merge (matches the documented 2-4s-trigger pattern); `published_at` not yet confirmed as of session close.
+
+---
+
+## eq-shell: Resourcing overview — KPI tiles, per-team rollup, training-plan surfaced (2026-09-02) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: two trial accounts hard-deleted — purge-endpoint gap now fixed, PR #1708 merged+live (2026-09-01) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: customer Field/Service status now computed from owned sites, merged (2026-09-01) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Resourcing rebuilt — in-place panel, readable conversation history, engagement fixes, RLS/dashboard leak closed (2026-08-30) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: staff Conversations — feature audit, security fix, ratings rollup, edit/close UI, backfill to 25/27 (2026-09-01) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents to Sign — full redesign (load time + Type/Category unification), all merged live (2026-08-30) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: start_date capture at review points + Resourcing visibility nudge, merged live (2026-08-30) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: site "Ask for"/"Backup" contacts — canonical conversion shipped, migrations dispatched + verified live (2026-08-29/30) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Worker invite role never reached workers.role — Labour Hire/Apprentice/Subcontractor invites landed as Direct — built, merged, live (2026-08-26) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page edit resent every field on every save — PR open, blocked on unrelated CI (2026-08-25) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page now shows who hasn't signed in to Shell yet, with a filter — built, merged, live (2026-08-20) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: QR/join-code Cards signups notified nobody — admins now get the same email + roster badge the in-app connect flow already had (2026-08-18) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: dropped "custodian" wording from Plant & Equipment, now shows the assigned person's phone/email instead (2026-08-23) (rotated 2026-09-06 — open items remain in eq-shell.md)
+
 
 ---
