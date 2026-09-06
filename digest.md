@@ -1,26 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-05 14:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-06 00:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-05 03:13 UTC → 2026-09-05 14:26 UTC)
+## Since last refresh (2026-09-05 14:26 UTC → 2026-09-06 00:56 UTC)
 
-- Merged: eq-shell [#1782](https://github.com/eq-solutions/eq-shell/pull/1782) docs(auth): clarify tenant-membership.ts's intentional users
-- Merged: eq-shell [#1770](https://github.com/eq-solutions/eq-shell/pull/1770) fix(auth): fail closed in resolvePrincipal(), the last tenan
-- Merged: eq-shell [#1768](https://github.com/eq-solutions/eq-shell/pull/1768) fix(auth): fail closed on the last tenant_role_overrides fai
-- Merged: eq-shell [#1766](https://github.com/eq-solutions/eq-shell/pull/1766) fix(auth): stop unauthenticated POSTs from locking a phone o
-- Merged: eq-shell [#1765](https://github.com/eq-solutions/eq-shell/pull/1765) fix(field-iframe): gate the post-accepted draw notice on Fie
-- Merged: eq-shell [#1764](https://github.com/eq-solutions/eq-shell/pull/1764) fix(auth): bound the remaining 7 gating reads in verify-shel
-- Merged: eq-shell [#1758](https://github.com/eq-solutions/eq-shell/pull/1758) fix(field-iframe): 10s stall state with Retry, per-step hand
-- Merged: eq-shell [#1757](https://github.com/eq-solutions/eq-shell/pull/1757) fix(crm): validate contacts before update_site/add_site writ
-- ✅ Needs you: 18 → 16
+- Merged: eq-shell [#1772](https://github.com/eq-solutions/eq-shell/pull/1772) fix(documents): close tenant-isolation, onboarding, and clea
+- Merged: eq-shell [#1771](https://github.com/eq-solutions/eq-shell/pull/1771) fix(quotes): revoke stray authenticated grant on eq__log_quo
+- Merged: eq-shell [#1767](https://github.com/eq-solutions/eq-shell/pull/1767) fix(auth): fail closed in the three remaining tenant_role_ov
+- Merged: eq-shell [#1763](https://github.com/eq-solutions/eq-shell/pull/1763) fix(drift-guard): CHECK 7 comment refresh + column allow-lis
+- Merged: eq-shell [#1762](https://github.com/eq-solutions/eq-shell/pull/1762) fix(auth): fail closed when the tenant_role_overrides read t
+- Merged: eq-shell [#1761](https://github.com/eq-solutions/eq-shell/pull/1761) ci(migrations): fail the ledger-hygiene check on duplicate n
+- Merged: eq-shell [#1760](https://github.com/eq-solutions/eq-shell/pull/1760) fix(auth): stop unauthenticated POSTs from locking a phone o
+- Merged: eq-shell [#1759](https://github.com/eq-solutions/eq-shell/pull/1759) fix(admin): tenant-scope every delete in the employment-reco
 
 ## ⚠ Needs you (16)
 
@@ -63,7 +62,7 @@ _…and 247 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 7 | 4d |
+| eq-shell | ✓ success | 0d ago | 8 | 5d |
 | eq-solves-service | ✓ success | 0d ago | 7 | 16d |
 | eq-field | ✓ success | 0d ago | 3 | 3d |
 | eq-cards | ✓ success | 3d ago | 0 | — |
@@ -79,7 +78,7 @@ _…and 247 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 12 | 2026-09-04 |
+| eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 13 | 2026-09-05 |
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 12 | 2026-09-04 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 11 | 2026-09-04 |
 | eq-field | [Error: 403: {"code":"42501","details":null,"hint":null,"message":"timesheet: onl](https://eq-solutions.sentry.io/issues/145012264/) | 2 | 2026-09-04 |
@@ -107,7 +106,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-05 | eq-field | [#928](https://github.com/eq-solutions/eq-field/pull/928) v3.5.684 — Timesheets: DNW always confirms; grid shows a 3rd job |
 | 2026-09-05 | eq-field | [#927](https://github.com/eq-solutions/eq-field/pull/927) Timesheets: real created_by/updated_by attribution |
 | 2026-09-05 | eq-field | [#926](https://github.com/eq-solutions/eq-field/pull/926) v3.5.683 — Copy Last Week gets the same staleness fix as Fill Wee |
-_Showing 15 of 86 · full record in [sessions/](sessions/)_
+_Showing 15 of 85 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -143,18 +142,18 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1403 | 201 / 80 | 6 | 72 |
+| [eq-shell](eq/pending/eq-shell.md) | 1403 | 201 / 80 | 6 | 75 |
 | [eq-cards](eq/pending/eq-cards.md) | 336 | 48 / 16 | 0 | 7 |
-| [eq-field](eq/pending/eq-field.md) | 1230 | 171 / 69 | 37 | 41 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 493 | 77 / 23 | 0 | 32 |
+| [eq-field](eq/pending/eq-field.md) | 1230 | 171 / 69 | 37 | 48 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 493 | 77 / 23 | 0 | 35 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 162 | 14 / 5 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 23 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 22 | 2 / 0 | 0 | 0 |
-| [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 0 |
+| [eq-receipts](eq/pending/eq-receipts.md) | 44 | 3 / 1 | 0 | 1 |
 | [eq-context](eq/pending/eq-context.md) | 207 | 26 / 8 | 0 | 8 |
-| [cross-repo](eq/pending/cross-repo.md) | 900 | 133 / 47 | 0 | 67 |
+| [cross-repo](eq/pending/cross-repo.md) | 900 | 133 / 47 | 0 | 70 |
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 481 | 92 / 13 | 0 | 58 |
+| [SKS](sks/pending.md) | 481 | 92 / 13 | 0 | 59 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 547 | 44 / 3 | 2 | 13 |
 
@@ -162,6 +161,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-22) · **PR #945 (the licence-upload fix) will still show this same check as failed** until that branch itself picks up the latest main — merging a fix to main doesn't retroactively clear an already-running check on a different, older branch. Whoever picks #945 back up just needs to update/rebase that branch; not a real problem, just easy to misread as still-broken. _(added 2026-07-22)_
+- **eq-shell** (2026-07-22) · **Six leftover records still need clearing — needs your hand.** A prepared script is sitting in the repo (`scripts/cleanup-orphaned-shell-users.sql`). It snapshots first, re-checks six safety conditions before touching anything, and won't save changes unless you confirm the numbers look right. It can't be automated — that database has no automatic update path. Nobody is affected in the meantime; none of these accounts can be signed into. _(added 2026-07-22)_
+- **eq-shell** (2026-07-22) · **The old admin button should be guarded or retired.** It still exists and would still do the wrong thing if pointed at records like these. Its original job was finished off by fixes that went live a week ago, so it may simply be dead. Separate task, chip raised. _(added 2026-07-22)_
 - **eq-shell** (2026-07-21) · **A separate, already-diagnosed cause of people getting logged out unexpectedly** (a background check treats "the server was just slow to answer" the same as "you're not logged in any more," and logs you out either way) is understood but not yet built, since it changes how login/session behaviour works and needs an explicit go-ahead first. _(added 2026-07-21)_
 - **eq-shell** (2026-07-21) · **Worth a quick look once deployed:** confirm the Company field shows/saves correctly for Labour Hire and Subcontractor (desktop + mobile), and re-export SKS-17386 to confirm Clarifications now sits left-aligned without needing a manual fix in Word. _(added 2026-07-21)_
 - **eq-shell** (2026-07-21) · **The third — a simple "how sure are we this credential is real" label on licences — is deliberately parked**, not forgotten: Royce's 90/10 decision (90% on the SKS career, company-scale Cards parked) puts this on the wrong side of the line, since it's a cross-company trust signal SKS's own onboarding doesn't need. Revisit only if the company-scale question reopens. Full detail in the audit doc (`eq-context/eq/cards/portable-trade-identity-audit-2026-07-20.md`). _(added 2026-07-21)_
@@ -174,10 +176,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-16) · **Now in scope, not yet built: extend the "you'll lose this" warning to more forms** (site details, invites, admin settings — currently only quotes), a plain "you're offline" banner when the connection drops, and re-checking sign-in status automatically when someone comes back to a tab left open a while. _(added 2026-07-19)_
 - **eq-shell** (2026-07-17) · **Royce to eyeball the live dashboard signed in** — the endpoint/bundle/error-monitoring checks are all clean, but only a signed-in pass confirms the three bands render correctly and the rostered-but-lapsed join surfaces real people. _(added 2026-07-17)_
 - **eq-shell** (2026-07-17) · **Gate keys are interim** (`field.view`/`service.view`) — swap to the cluster-1 granular keys (`field.view_licences` etc., PR #885, concurrent session) once that ships. _(added 2026-07-17)_
-- **eq-shell** (2026-07-17) · **Phase 2 deferred: crew-demand overlay.** Needs a `crew_required` column added to `app_data.jobs` (One Pipe migration, both planes) so the "can we staff what we've won" verdict has a real demand side — supply side (deployable crew) is live now, demand isn't wired yet. _(added 2026-07-16)_
-- **eq-shell** (2026-07-17) · **Phase 3 deferred: the one commercial signal permitted by the scope decision** — "N quotes won but no job number yet," gated behind `quotes.view`, no dollar amount, off the default board. Not built. _(added 2026-07-16)_
-- **eq-shell** (2026-07-17) · **Eyeball the next SKS morning brief once signed in** to confirm the signals render as expected end-to-end. The query logic is verified against live data and the deploy is smoke-verified, but the authed brief output itself needs a signed-in SKS session (10-minute per-user cache, or wait for the daily scheduled email). _(added 2026-07-17)_
-_…and 307 more — see each file's Queue health row above._
+_…and 325 more — see each file's Queue health row above._
 
 ## Possible recurring failures (unconfirmed)
 
@@ -201,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-05 14:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-06 00:56 UTC._
