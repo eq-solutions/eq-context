@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-06)
 
 **eq-field:**
-- #932 fix(ci): cache-buster guard now catches same-PR drift, not just HEAD-vs-main
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -98,7 +97,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-06 |
+    | eq-service | ready | 2026-09-06 |
 | eq-shell | ready | 2026-09-06 |
 | eq-field | ready | 2026-09-06 |
 
@@ -113,8 +112,8 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 1,974 | ✓ 1,974 |
-| Operational | app_data.field_timesheets | 396 | ✓ 396 |
-| Safety | public.prestarts | 233 | ✓ 233 |
+| Operational | app_data.field_timesheets | 407 | ✓ 407 |
+| Safety | public.prestarts | 235 | ✓ 235 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -129,11 +128,11 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 11 |  |
+| Prestarts created | 12 |  |
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 47 |  |
+| Active users (Shell sign-ins, jvkn) | 48 |  |
 
 _No flips this run._
 ---
