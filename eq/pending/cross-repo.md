@@ -1,13 +1,25 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
 ---
 
 # Cross-Repo — Pending
+
+---
+
+## eq-cards + eq-shell + jvkn: labour-hire licence-photo fix re-verified live, full roster checked — no one else exposed (2026-09-07)
+*Royce asked whether Conor Horgan/Nelson Sareto can now see their licences via Core, and to check the rest of the labour-hire roster too. Re-confirmed the 2026-08-25/26 photo-promotion fix directly against live jvkn rather than trusting old migration/PR comments at face value: `eq_cards_claim_invite` (eq-cards migration `0161`) and eq-shell's `shell-join-tenant.ts`/`accept-invite.ts` (PRs #1517/#1519/#1603) all now dispatch to the shared `promote-labour-hire-photo` edge function on claim. Both workers' claimed accounts show all 8 licences between them (4 each) with a photo or document attached — zero gaps.*
+
+- Widened to every worker tagged `labour_hire` (either `public.workers.role` or `shell_control.users.role`, 20 total) — only Conor/Nelson have ever had a `worker_credentials` row of any kind, so nobody else was ever exposed to this specific bug. Confirmed directly, not assumed from the two named cases.
+
+**Notes:**
+- **3 claimed labour-hire accounts have a completely empty wallet** — Shihab Al-Gburi, Ali Alsalman, Amir Farid: zero `worker_credentials`, zero `licences`, by any method (intake or self-scan). Not a bug, nothing lost — nobody has captured a licence for them yet. Worth a nudge if Royce expects them to already hold tickets. _(added 2026-09-07)_
+- **15 labour-hire-tagged workers haven't claimed an account yet** — normal pre-onboarding state, already surfaced by the existing "chase unclaimed invites" admin alert (eq-shell #1574). _(added 2026-09-07)_
+- **Does not touch the separate, still-open stale-session question** for these same two workers — see `eq/pending/eq-cards.md`'s 2026-09-02 "Wallet can't load licences" section: whether that fix actually resolved their "Sign in again" symptom is still unconfirmed (no Sentry access, no way to sign in as either worker). Today's check only rules out a data-completeness explanation. _(added 2026-09-07)_
 
 ---
 

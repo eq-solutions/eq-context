@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -24,6 +24,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - **GitHub MCP still 404s on this repo specifically** — confirmed via a failed read (`list_pull_requests`), not just the write (`create_pull_request`), so it's a real access gap, not a fluke. Same issue already documented in the 2026-08-27 `/auth/handoff` entry further down this file, still unresolved 6 days later. `gh` CLI used throughout instead, same fallback as that session.
 - Hit the same `flutter pub get`/`dart analyze` auto-editing `pubspec.lock` (6 unrelated transitive bumps) and `analysis_options.yaml` (exclude-path additions) as side effects already tracked as a recurring cost in the pdfrx_engine section directly below (now a third session hitting it the same day) — reverted both before committing, same as that session did.
 - A separate, unrelated bug found while investigating — eq-shell's mobile Records drawer shows the Licences tab to every role, but the endpoint behind it requires manager/supervisor, so a non-manager who taps it gets a permanent, unrecoverable "Couldn't load licences" error — was spawned as background task `task_72a0e5d3`. Royce started it running in a separate session; not part of this PR.
+- **Data-side re-checked 2026-09-07** (a separate session, a different bug): both workers' licence photos/documents came back fully populated and complete — confirmed live while re-verifying the unrelated 2026-08-25/26 photo-promotion fix (`eq_cards_claim_invite`/migration `0161` + eq-shell PRs #1517/#1519/#1603 — see `eq/pending/cross-repo.md`'s 2026-09-07 entry). Rules out a data gap as the explanation if either worker is still hitting this section's "Sign in again" symptom — the stale-session question itself is untouched and remains exactly as unconfirmed as the row above.
 
 ---
 
