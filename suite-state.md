@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-06)
 
 **eq-field:**
+- #932 fix(ci): cache-buster guard now catches same-PR drift, not just HEAD-vs-main
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -70,6 +71,7 @@ _If this file is >48h old, the cron is broken._
 - #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
+- #1785 fix(field-iframe): don't alarm on stall/draw notices while the tab is backgrounded
 - #1783 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
@@ -87,7 +89,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -98,7 +100,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-06 |
-| eq-shell | building | 2026-09-06 |
+| eq-shell | ready | 2026-09-06 |
 | eq-field | ready | 2026-09-06 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
@@ -132,7 +134,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 1 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 48 |  |
+| Active users (Shell sign-ins, jvkn) | 47 |  |
 
 _No flips this run._
 ---
