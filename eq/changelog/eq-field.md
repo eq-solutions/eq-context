@@ -1,13 +1,22 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-09-06 (PR #931 MERGED, v3.5.687 — FIX: ?tenant=demo stopped resolving to the demo sandbox)
+- Resumed uncommitted WIP found sitting in a leftover local worktree from a prior session (surfaced yesterday while click-testing PR #930's own deploy preview via the documented `?tenant=demo` route). Root cause: the canonical-driven tenant-resolution rewrite made every `?tenant=` override require a matching canonical `organisations` row — `'demo'` is a pure in-memory sandbox (`_isDemoTenant()` in `supabase.js`) that was never meant to have one, so the override silently no-opped and fell through to the host-matched org (`eq`, on the eq host) instead, on both preview and production.
+- Fix (`app-state.js`, `_loadCanonicalConfig`): `'demo'` is now checked before the `allOrgs.find` lookup and resolves to a local synthetic org object — no canonical row required.
+- Smoke-testing this fix's own deploy preview before merge caught a second, same-shape latent bug: `module_entitlements`'s fetch also built its URL from `org.id` unconditionally, which is `null` for the synthetic demo org — a guaranteed 400 from PostgREST (`org_id=eq.null` reads as a literal string, not SQL NULL) on every demo session, silently swallowed by the existing catch block. Skipped outright, same pattern as the ORG_UUID fetch-fallback the first fix already guarded.
+- Smoke-testing *again* after that second fix caught a third issue, this time in process rather than code: the first push (tagged v3.5.686) had already been fetched by the earlier preview visit, and `scripts/*.js` is served `Cache-Control: immutable`. Confirmed directly via Cache Storage inspection — not assumed — that the Service Worker's `eq-field-v3.5.686` cache still held the pre-fix script and served it to every tab at that origin (SW scope is origin-wide, not per-tab), even a brand-new tab that had never loaded the page before. Pushing the fix again under the same tag would have shipped a genuinely-fixed server file that any already-visited client could never actually receive. Retargeted the whole PR to v3.5.687 (APP_VERSION, `sw.js` CACHE, the script tag, and the changelog banner) rather than reuse the poisoned tag.
+- `tests/tenant-demo-override.test.js` added — 4 regression assertions covering all three fixed call sites, all passing.
+- Not a security loosening: `'demo'` still can't reach real tenant data — it only ever engages `_isDemoTenant()`'s in-memory short-circuit, which already returns seed data / no-op writes regardless of how the slug was resolved.
+- Merged, verified live directly on `field.eq.solutions` (not just the deploy preview): clean load, no 400, entitlements fetch correctly skipped, `sw.js` confirms v3.5.687.
 
 ## 2026-09-05 (PR #929 MERGED, v3.5.685 — Timesheets day cells now show who created and last touched them)
 - Direct follow-up to the same-day PR #927 (below — `app_data.timesheets` now stamps real `created_by`/`updated_by`): that closed the database side, this closes the display side, mirroring exactly how PR #921 resolved `approved_by_user_id` to a name. Royce: "build the display-name resolution for created_by/updated_by."

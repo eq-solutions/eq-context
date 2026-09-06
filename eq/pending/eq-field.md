@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-06
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,21 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: `?tenant=demo` silently fell back to the host org — FIXED, merged, live (PR #931, v3.5.687, 2026-09-06)
+*Resumed uncommitted WIP found sitting in a leftover local worktree from a prior session (found while click-testing PR #930's own deploy preview yesterday). Smoke-testing the fix's own deploy preview twice, before merge, caught two further real bugs the original WIP didn't know about.*
+
+- [x] **Root cause + fix:** the canonical-driven tenant-resolution rewrite made every `?tenant=` override require a matching canonical `organisations` row — but `'demo'` is a pure in-memory sandbox that was never meant to have one, so the override silently no-opped and fell back to the host-matched org (`eq`, on the eq host). `_loadCanonicalConfig()` now special-cases `'demo'` before the lookup.
+- [x] **Second same-shape bug, caught by smoke-testing the fix's own preview before merge:** `module_entitlements` also built its fetch URL from `org.id` unconditionally, which is `null` for the synthetic demo org — 400s against PostgREST every demo session. Skipped outright, same pattern as the first fix.
+- [x] **Third issue, caught by smoke-testing again after that second fix:** re-pushing changed content under the already-used `v3.5.686` tag left the Service Worker permanently serving the pre-fix script to every tab at that origin (`Cache-Control: immutable` + origin-wide SW scope) — confirmed directly via Cache Storage, not assumed. Retargeted the whole PR to `v3.5.687` before merge rather than reuse the poisoned tag.
+- [x] **Verified live on `field.eq.solutions` itself, not just the deploy preview** — clean load, no 400, entitlements fetch correctly skipped. No Core-only sandbox caveat applies here (`?tenant=demo` needs no login).
+- [ ] **`scripts/check-cache-busters.mjs` (and the CI/pre-push guard built on it) only diffs a changed file against `origin/main` — not against a PR's own earlier commits.** A same-PR follow-up push that changes a tagged file's content again without re-bumping the tag ships genuinely-different bytes under a URL every earlier visitor's browser has already cached forever. Worked around this time by retargeting to a fresh tag; the check itself still wouldn't catch a repeat. Needs a decision: extend the script to also diff against the PR's own previous commit, or accept as a known gotcha. _(added 2026-09-06)_
+
+**Notes:**
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-06 entry) and `sessions/2026-09-06.md`.
+- Also found, unrelated to this fix: `system/worktree-registry.md`'s eq-field "Active (do not touch)" entry (`site-contact-mapping-fix`, PR #821) is stale — verified live that PR merged 2026-08-28 and the worktree folder no longer exists. Not corrected this session (out of scope for this fix); flagged for whoever next touches that registry.
 
 ---
 
