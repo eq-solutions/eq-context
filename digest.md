@@ -8,21 +8,21 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-06 02:45 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-06 02:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-06 01:32 UTC → 2026-09-06 02:45 UTC)
+## Since last refresh (2026-09-06 02:45 UTC → 2026-09-06 02:50 UTC)
 
-- Merged: eq-shell [#1770](https://github.com/eq-solutions/eq-shell/pull/1770) fix(auth): fail closed in resolvePrincipal(), the last tenan
-- Merged: eq-shell [#1768](https://github.com/eq-solutions/eq-shell/pull/1768) fix(auth): fail closed on the last tenant_role_overrides fai
-- Merged: eq-shell [#1766](https://github.com/eq-solutions/eq-shell/pull/1766) fix(auth): stop unauthenticated POSTs from locking a phone o
-- Merged: eq-shell [#1765](https://github.com/eq-solutions/eq-shell/pull/1765) fix(field-iframe): gate the post-accepted draw notice on Fie
-- Merged: eq-shell [#1764](https://github.com/eq-solutions/eq-shell/pull/1764) fix(auth): bound the remaining 7 gating reads in verify-shel
-- Merged: eq-shell [#1758](https://github.com/eq-solutions/eq-shell/pull/1758) fix(field-iframe): 10s stall state with Retry, per-step hand
-- Merged: eq-shell [#1757](https://github.com/eq-solutions/eq-shell/pull/1757) fix(crm): validate contacts before update_site/add_site writ
-- Merged: eq-shell [#1755](https://github.com/eq-solutions/eq-shell/pull/1755) perf: lazy-load CardsIframe and ServiceIframe (Tier 2)
-- ⚠ Needs you: 12 → 14 (new items)
+- Merged: eq-shell [#1774](https://github.com/eq-solutions/eq-shell/pull/1774) fix(cards): fill staff.user_id when Cards worker link resolv
+- Merged: eq-shell [#1772](https://github.com/eq-solutions/eq-shell/pull/1772) fix(documents): close tenant-isolation, onboarding, and clea
+- Merged: eq-shell [#1771](https://github.com/eq-solutions/eq-shell/pull/1771) fix(quotes): revoke stray authenticated grant on eq__log_quo
+- Merged: eq-shell [#1767](https://github.com/eq-solutions/eq-shell/pull/1767) fix(auth): fail closed in the three remaining tenant_role_ov
+- Merged: eq-shell [#1763](https://github.com/eq-solutions/eq-shell/pull/1763) fix(drift-guard): CHECK 7 comment refresh + column allow-lis
+- Merged: eq-shell [#1762](https://github.com/eq-solutions/eq-shell/pull/1762) fix(auth): fail closed when the tenant_role_overrides read t
+- Merged: eq-shell [#1761](https://github.com/eq-solutions/eq-shell/pull/1761) ci(migrations): fail the ledger-hygiene check on duplicate n
+- Merged: eq-shell [#1760](https://github.com/eq-solutions/eq-shell/pull/1760) fix(auth): stop unauthenticated POSTs from locking a phone o
+- ✅ Needs you: 14 → 12
 
-## ⚠ Needs you (14)
+## ⚠ Needs you (12)
 
 - 🔴 **PR aging 16d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
@@ -31,10 +31,8 @@ _2026-09-06 02:45 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Cron failing** — `shared-object-drift.yml` 5 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
-- 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — three distinct mechanisms, one sy · possibly recurred in [2026-08-26.md](sessions/2026-08-26.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
-- 🟠 **PR aging 12d** — eq-solves-service [#810](https://github.com/eq-solutions/eq-service/pull/810) "chore(deps): bump the eq-design-system group across 1 directory with 2"
 - 🟠 **Sentry new error** — `eq-field` [Error: 403: {"code":"42501","details":null,"hint":null,"mess](https://eq-solutions.sentry.io/issues/145012264/)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff stalled at "booted" (10s, no 'accepted' yet](https://eq-solutions.sentry.io/issues/145052767/)
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
@@ -62,7 +60,7 @@ _…and 247 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 8 | 5d |
-| eq-solves-service | ✓ success | 0d ago | 3 | 16d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 16d |
 | eq-field | ✓ success | 0d ago | 3 | 3d |
 | eq-cards | ✓ success | 3d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -88,6 +86,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-06 | eq-solves-service | [#810](https://github.com/eq-solutions/eq-service/pull/810) chore(deps): bump the eq-design-system group across 1 directory w |
 | 2026-09-06 | eq-solves-service | [#830](https://github.com/eq-solutions/eq-service/pull/830) fix(deps): override browserslist to close 2 high-severity advisor |
 | 2026-09-06 | eq-solves-service | [#814](https://github.com/eq-solutions/eq-service/pull/814) chore(deps): bump resend from 6.18.1 to 6.21.0 |
 | 2026-09-06 | eq-solves-service | [#812](https://github.com/eq-solutions/eq-service/pull/812) chore(deps): bump posthog-node from 5.46.1 to 5.49.2 |
@@ -102,8 +101,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-05 | eq-shell | [#1777](https://github.com/eq-solutions/eq-shell/pull/1777) fix(onboarding): daily sweep catches starters whose Shell login l |
 | 2026-09-05 | eq-shell | [#1776](https://github.com/eq-solutions/eq-shell/pull/1776) feat(security): detect drift between tenant rosters and user_tena |
 | 2026-09-05 | eq-shell | [#1775](https://github.com/eq-solutions/eq-shell/pull/1775) fix(auth): licence-visibility reads no longer trust org_membershi |
-| 2026-09-05 | eq-shell | [#1773](https://github.com/eq-solutions/eq-shell/pull/1773) fix(auth): revoke org_memberships when a shell login is deactivat |
-_Showing 15 of 89 · full record in [sessions/](sessions/)_
+_Showing 15 of 90 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -197,4 +195,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-06 02:45 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-06 02:50 UTC._
