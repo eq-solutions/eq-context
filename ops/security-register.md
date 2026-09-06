@@ -1,7 +1,7 @@
 ---
 title: OPS — Security Register
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s. This is the ONLY security-register.md in the repo — a same-named file mentioned in eq/pending.md lives in a local scratchpad/ folder for an unrelated Trust-page/SOC2 draft, not tracked in git.
 read_priority: critical
 status: live
@@ -82,7 +82,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-54 | P3 | eq-service's mutating route handlers have no explicit CSRF token or Origin/Referer check — mitigated by the `eq_service_jwt` cookie's CHIPS partitioning + the JSON-body requirement, but that's defense-by-side-effect, not by design | eq-solves-service | OPEN — found 2026-08-20, reasoned. AuthZ itself is fine (role/tenant from JWT claims server-side). Recommend an explicit same-origin assertion on mutating routes. |
 | SEC-55 | P3 | eq-service list/search pages interpolate raw user search terms into PostgREST `.or()`/`.ilike()` filter strings — bounded by a separate `.eq('tenant_id', …)` AND-filter plus RLS, so no cross-tenant read and no SQL injection (PostgREST compiles to parameterized SQL), but a crafted term can break the within-tenant match | eq-solves-service | OPEN — found 2026-08-20, reasoned. Hygiene: use `.textSearch()` or sanitize. |
 | SEC-56 | P3 | `apply-service-migrations.yml` (eq-service) still machine-posts a false "pauses for production-environment approval" claim on every migration PR — SEC-14's fix corrected the header/inline comments but missed this runtime string | eq-service (GitHub Actions) | **OPEN — found 2026-08-20, proved live.** 38 of the last 100 PR comments carry it, most recent 2026-08-20. Falsifies SEC-14's "closed as fully swept." See Detail. |
-| SEC-57 | **P1** | An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) holds `actions:write`/`contents:write`/`administration:write`/`workflows:write` on every repo — enough to dispatch live-DDL workflows or push to `main` on auto-deploying repos. Undercuts the "only Milmlow can dispatch" rationale SEC-11/SEC-14 both rest on; the collaborator check that rationale used is structurally blind to app installations | eq-solutions (GitHub org, all repos) | **OPEN — found 2026-08-20, proved (config) / reasoned (exploit step, correctly not exercised — that would be a write).** Two more apps (`figma`, `cloudflare-workers-and-pages`) hold similar permissions on unenumerated repo subsets. See Detail. |
+| SEC-57 | **P1** | An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) holds `actions:write`/`contents:write`/`administration:write`/`workflows:write` on every repo — enough to dispatch live-DDL workflows or push to `main` on auto-deploying repos. Undercuts the "only Milmlow can dispatch" rationale SEC-11/SEC-14 both rest on; the collaborator check that rationale used is structurally blind to app installations | eq-solutions (GitHub org, all repos) | **PARTIALLY CLOSED 2026-09-07** — the org-wide, all-repos `grok-by-xai` installation (the one holding `actions:write`/`workflows:write`, the actual Actions-dispatch risk) is REMOVED: confirmed by Royce's own uninstall action (org Installed-Apps page, uninstall job queued) and a same-day live re-check (`gh api orgs/eq-solutions/installations`) showing 4 installations total, `grok-by-xai` absent from all of them. That closes the sharpest exploit path this finding described — no remaining app holds `actions:write` or `workflows:write`, so none can dispatch `tenant-migrate.yml`/`apply-service-migrations.yml`. `figma` and `cloudflare-workers-and-pages` still hold `contents:write`+`administration:write` each — now confirmed `repository_selection: selected`, not `all` (a correction to this row's original "unenumerated" phrasing), but which repos are actually selected still isn't pulled. That narrower push-to-main/strip-branch-protection risk stays open — Royce's call on P1 vs P2 pending that enumeration. See Detail. |
 | SEC-58 | P2 | `supabase/CONTROL-PLANE-LEDGER.md` (eq-shell) needs its next hand-refresh pass — **correction 2026-08-30: the "84/131, 48 untracked" figures here are themselves stale.** A 2026-08-24 refresh already closed most of that gap (ledger header confirms: "53 applied · 0 pending · 1 misfiled · 0 not-found... No hand-apply gap exists today"). Live-checked 2026-08-30: `supabase/migrations/` now holds 147 files, ledger tracks 135 — 12 untracked, all dated 2026-07-27 through 2026-08-28 (recent additions since the last refresh, not a discovered gap). No CI/automation regenerates this file by design (it is a hand-audited "ground-truth record," confirmed no workflow writes it) — staleness here is expected lag between manual passes, not a missed dispatch. | eq-canonical (jvkn) | **OPEN, P3 not P2 — routine hand-refresh due, not a live gap.** The one misfiled migration lead (targeting the wrong plane, governed by neither pipeline) is plausibly `supabase/migrations/2026_07_11_tender_tables_anon_lockdown.sql` — filed under the jvkn path but its own content targets zaap/ehow tender tables (same family as SEC-36). Not yet confirmed as THE misfiled file named in this row's original 2026-08-20 finding, worth a look during the next refresh pass rather than treated as separately proved here. |
 | SEC-59 | ~~P3~~ **CLOSED 2026-08-30** | The `shell_control` write-lockdown migrations revoked INSERT/UPDATE/DELETE from `authenticated` but left TRUNCATE granted on 9 tables — TRUNCATE bypasses RLS entirely, though PostgREST has no TRUNCATE verb so there's no browser path today | eq-canonical (jvkn) | **CLOSED 2026-08-30** (row updated 2026-09-04). Same PR as SEC-34 — eq-shell [PR #1662](https://github.com/eq-solutions/eq-shell/pull/1662) (`ea814154`) revokes TRUNCATE from `authenticated` on all 9 `shell_control` tables; dispatched via `control-plane-migrate.yml` to jvkn, confirmed live against the database: all 9 TRUNCATE grants gone (`sessions/2026-08-30.md`, `eq/changelog/eq-shell.md` 2026-08-30 entry). History: ~~OPEN — found 2026-08-20, proved. May overlap with the completed §A sweep — flagging, not claiming novelty.~~ |
 | SEC-60 | P3 | Several org/repo hardening gaps: 2FA not required org-wide; secret scanning + push protection disabled on all 7 in-scope repos incl. 3 public ones; third-party Actions unpinned org-wide; **branch protection exists on eq-shell only** — eq-service's `main` (auto-deploys service.eq.solutions, gates the ehow migration pipeline) accepts a direct push with zero required checks | eq-solutions (GitHub org, all repos) | **PARTIALLY CLOSED 2026-08-24** — branch protection added on eq-service; secret scanning + push protection enabled on the 3 public repos. 2FA, the other 5 repos' branch protection, and Action SHA-pinning deliberately left for a later pass (Royce's scope call). See Detail. |
@@ -1377,6 +1377,30 @@ installations, so the check that rationale rests on cannot establish it. Two mor
 Deliberately-installed integration, hence P1 not P0 — if Royce reads the xAI app as fully
 trusted, P2 is defensible, but the "only Royce can dispatch" framing in SEC-11/14 is wrong
 either way and both rows now say so. No exploit step attempted (would be a write).
+
+**2026-09-07 — grok-by-xai removed; Actions-dispatch risk closed, contents/admin-write risk
+from the other two apps remains open, narrower than originally described.** Royce removed the
+`grok-by-xai` installation from the eq-solutions org — confirmed live: the org's Installed
+GitHub Apps page showed the uninstall job queued, and a same-day re-check
+(`gh api orgs/eq-solutions/installations`) shows 4 installations total, `grok-by-xai` absent.
+It was the only installation holding `actions:write`+`workflows:write`, so the specific exploit
+path this finding led with — an installation token dispatching `eq-shell/tenant-migrate.yml` or
+`eq-service/apply-service-migrations.yml` (fleet-wide live DDL) — is now closed: no remaining
+app can call the Actions-dispatch API at all. Current state of the other 4: `netlify`
+(all-repos, but `contents:read` only, no `administration` — not a comparable risk, wasn't named
+in the original finding either), `claude-design-import` (all-repos, fully read-only — same),
+and `figma` + `cloudflare-workers-and-pages` (both `repository_selection: selected`, not
+`all` — a correction to this finding's original "unenumerated repo subsets" phrasing, now
+confirmed scoped rather than org-wide). The latter two still hold `contents:write`+
+`administration:write` each — still enough to push to `main` or strip branch protection on
+whichever repos they're actually scoped to. Which repos those are is still not enumerated
+(`GET /installation/repositories` needs the installation's own token, not the org-level
+credential this check used) — a real remaining gap, just narrower than the original finding
+(no Actions-dispatch angle, and confirmed selected-repos rather than all-repos). This falsifies
+neither SEC-11 nor SEC-14's correction above (both were about Actions-dispatch specifically,
+now genuinely closed) — but doesn't fully close this row either. Left at P1 rather than
+downgraded or closed outright, pending Royce's call once the figma/cloudflare repo lists are
+actually pulled.
 
 ### SEC-58 — control-plane ledger 48 files behind; no live gap found on spot-check (P2)
 `eq-shell/supabase/migrations/` (jvkn) has 131 files on `main`;
