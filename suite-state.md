@@ -68,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-service:**
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
-- #791 fix(reports): make reissuing a report possible from the UI
 
 **eq-shell:**
 - #1785 fix(field-iframe): don't alarm on stall/draw notices while the tab is backgrounded
@@ -89,7 +88,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✗ failure |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -99,7 +98,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-06 |
+    | eq-service | building | 2026-09-06 |
 | eq-shell | ready | 2026-09-06 |
 | eq-field | ready | 2026-09-06 |
 
