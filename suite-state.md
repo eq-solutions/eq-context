@@ -69,6 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1786 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1785 fix(field-iframe): don't alarm on stall/draw notices while the tab is backgrounded
 - #1783 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
@@ -98,7 +99,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-06 |
-| eq-shell | ready | 2026-09-06 |
+| eq-shell | building | 2026-09-06 |
 | eq-field | ready | 2026-09-06 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
