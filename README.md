@@ -31,6 +31,10 @@ live: the repo is public, so assistants read these files directly from it via ra
 (`https://raw.githubusercontent.com/eq-solutions/eq-context/main/<path>`). A merged
 commit is the deliverable — there is no separate cache to sync.
 
+**First clone?** Run `scripts/install-hooks.ps1` once before committing — a fresh
+clone starts with git hooks unconfigured (local machine config, not something
+`git clone` can set for you). Detail: `system/onboarding.md`.
+
 ## Structure
 
 ```

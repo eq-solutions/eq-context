@@ -3,12 +3,22 @@
 #
 # Catches the most common secret formats so they never leave the
 # working tree. Works without gitleaks or pre-commit framework
-# installed. The .pre-commit-config.yaml at the repo root is the
-# preferred prod-grade version; this script is the always-on fallback.
+# installed. The .pre-commit-config.yaml at the repo root documents a
+# gitleaks-based upgrade path but is NOT currently adopted (no CI
+# wiring, nobody has run `pre-commit install`) — this script is the
+# real, live fallback, invoked directly by .githooks/pre-commit.
 #
-# Install:
-#   cp scripts/pre-commit-secrets.sh .git/hooks/pre-commit
-#   chmod +x .git/hooks/pre-commit
+# Enable (once per clone — see system/onboarding.md "First-time setup"):
+#   scripts/install-hooks.ps1
+# That sets core.hooksPath to the version-controlled .githooks/
+# directory, whose pre-commit hook calls this script by relative path.
+#
+# Do NOT copy this file into .git/hooks/pre-commit by hand — that
+# directory is untracked per-clone, and an untracked copy sitting there
+# is exactly the shadow-copy shape that caused a real incident
+# (system/failures.md -> F10, 2026-08-04): it silently wins over the
+# governed .githooks hook and nobody notices until secrets have already
+# leaked.
 #
 # Bypass for an emergency (use sparingly):
 #   git commit --no-verify

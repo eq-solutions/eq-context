@@ -17,7 +17,11 @@ costs no ceremony. Prints, unprompted, at every session start:
   6. HOOKS       — core.hooksPath resolves to .githooks at every scope that can set
                    it (--local and, if enabled, --worktree). The identical
                    "pre-commit silently doesn't run" symptom has now recurred via
-                   3 distinct mechanisms on 3 different dates (failure F10).
+                   4 distinct mechanisms on 4 different dates (failure F10). The
+                   4th (a fresh clone/machine, 2026-09-06) self-heals here — see
+                   the HOOKS section below — since it's structurally different
+                   from the other three: never configured, not misdirected, and
+                   nothing about `git clone` can populate local config for itself.
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
 Fails open but loud: a silent guard is the bug we are fixing.
@@ -321,13 +325,24 @@ else:
 
 # --- 6. HOOKS (core.hooksPath resolution — F10) -------------------------------
 # The identical "pre-commit silently doesn't run" symptom has recurred through
-# three distinct mechanisms: 2026-05-24 hooksPath pointed at a directory missing
-# the real hook (prose only, system/lessons.md, no guard); 2026-08-04 hooksPath
-# pointed at .git/hooks via an untracked shadow copy of the secret-scanning
-# script (failure F8); 2026-08-05 a --worktree-scope override on THIS checkout
+# four distinct mechanisms. Three are a WRONG value actively set somewhere:
+# 2026-05-24 hooksPath pointed at a directory missing the real hook (prose
+# only, system/lessons.md, no guard); 2026-08-04 hooksPath pointed at
+# .git/hooks via an untracked shadow copy of the secret-scanning script
+# (failure F8); 2026-08-05 a --worktree-scope override on THIS checkout
 # shadowed a correct --local value of .githooks, found only by hand mid-
-# investigation (eq/pending.md, "Correction, 2026-08-05"). None of the three had
-# a check that runs every session until now. system/failures.md -> F10.
+# investigation (eq/pending.md, "Correction, 2026-08-05"). Those three stay
+# print-only below — overwriting a value someone may have set deliberately
+# (e.g. mid-diagnosis) is a different risk than filling an empty one.
+#
+# The 4th (2026-09-06) is a different shape: UNSET at every scope, found on a
+# brand-new machine's first session. A fresh `git clone` cannot populate local
+# git config for itself — true of ANY tool relying on core.hooksPath, not a
+# gap specific to this repo — so there is no legitimate reading of "unset" to
+# preserve, unlike a wrong-but-set value. That ONE case self-heals: set
+# --local core.hooksPath to .githooks directly, then re-verify via the same
+# read this file already trusts for the steady-state "ok" case below, rather
+# than trusting the write call's own return code. system/failures.md -> F10.
 def _git_cfg(*args):
     try:
         p = subprocess.run(["git", "config"] + list(args), cwd=ROOT,
@@ -344,13 +359,42 @@ def _norm_hp(v):
     return (v[2:] if v.startswith("./") else v).rstrip("/")
 
 
+def _fix_unset_hookspath():
+    """The ONE safe auto-fix — see the section comment above for why only the
+    completely-unset case qualifies. Never raises: a broken fix attempt must
+    not silence the rest of the gate, same posture as REVIEW/RATCHET above."""
+    try:
+        subprocess.run(["git", "config", "--local", "core.hooksPath", ".githooks"],
+                        cwd=ROOT, capture_output=True, text=True, timeout=5)
+    except Exception:
+        pass
+
+
 local_hp = _git_cfg("--local", "--get", "core.hooksPath")
 worktree_ext = _git_cfg("--get", "extensions.worktreeConfig")
 worktree_hp = _git_cfg("--worktree", "--get", "core.hooksPath") if worktree_ext == "true" else None
 effective_hp = _git_cfg("--get", "core.hooksPath")
 eff_n, local_n, wt_n = _norm_hp(effective_hp), _norm_hp(local_hp), _norm_hp(worktree_hp)
 
-if eff_n != ".githooks":
+if effective_hp is None:
+    _fix_unset_hookspath()
+    if _norm_hp(_git_cfg("--get", "core.hooksPath")) == ".githooks":
+        out.append(
+            "HOOKS      *** FIXED *** core.hooksPath was unset at every scope — a fresh\n"
+            "           clone/machine, since `git clone` cannot set local config for itself\n"
+            "           (failure F10, mechanism 4, 2026-09-06). Set just now:\n"
+            "           git config --local core.hooksPath .githooks\n"
+            "           .githooks/pre-commit (secret scanning, frontmatter status enum) is\n"
+            "           active starting with your next commit. system/failures.md -> F10."
+        )
+    else:
+        out.append(
+            "HOOKS      *** WRONG *** core.hooksPath is unset, and the automatic fix did not\n"
+            "           take (git may be unavailable in this environment). Run by hand:\n"
+            "           git config --local core.hooksPath .githooks\n"
+            "           system/failures.md -> F10."
+        )
+elif eff_n != ".githooks":
     out.append(
         f"HOOKS      *** WRONG *** core.hooksPath resolves to {effective_hp!r}, not .githooks\n"
         f"           (local={local_hp!r} worktree={worktree_hp!r}). .githooks/pre-commit\n"

@@ -589,6 +589,55 @@ te("CONTROL: identical bad --worktree set OUTSIDE the shared checkout -> allowed
    bash_at("git config --worktree core.hooksPath .git/hooks", f10_repo), 0, OTHER10)
 _rmtree_retry(f10_repo)
 
+
+def gate_out(root):
+    r = subprocess.run([sys.executable, GATE], capture_output=True, text=True,
+                       env=dict(env, EQ_CONTEXT=root))
+    return r.stdout or ""
+
+
+def read_hookspath(root, *scope):
+    r = subprocess.run(["git", "config", *scope, "--get", "core.hooksPath"],
+                       cwd=root, capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
+print("=== F10 mechanism 4 - session_start.py SELF-HEALS an UNSET core.hooksPath ===")
+# f9_fixture_repo() is `git init` + one commit, nothing else — core.hooksPath is
+# unset by construction, the exact "fresh clone/machine" shape of F10's 4th
+# recurrence (2026-09-06). No separate "make it unset" setup step needed.
+f10sh_repo = f9_fixture_repo("_f10_selfheal")
+ok = read_hookspath(f10sh_repo) is None
+print("  {:<52}{}".format("fixture starts with core.hooksPath unset", "PASS" if ok else "*** FAIL ***"))
+passed += ok
+failed += (not ok)
+
+out1 = gate_out(f10sh_repo)
+ok = ("FIXED" in out1 and "core.hooksPath" in out1
+      and read_hookspath(f10sh_repo) == ".githooks")
+print("  {:<52}{}".format("first run: prints FIXED and actually sets .githooks", "PASS" if ok else "*** FAIL ***"))
+passed += ok
+failed += (not ok)
+
+out2 = gate_out(f10sh_repo)
+ok = "HOOKS      ok" in out2 and "FIXED" not in out2
+print("  {:<52}{}".format("second run: steady-state ok, not re-announced as FIXED", "PASS" if ok else "*** FAIL ***"))
+passed += ok
+failed += (not ok)
+_rmtree_retry(f10sh_repo)
+
+print("=== F10 CONTROL - a WRONG-but-SET value must still only WARN, never be silently overwritten ===")
+f10sh_wrong = f9_fixture_repo("_f10_selfheal_wrong")
+subprocess.run(["git", "config", "--local", "core.hooksPath", ".git/hooks"],
+               cwd=f10sh_wrong, capture_output=True, text=True)
+out3 = gate_out(f10sh_wrong)
+ok = ("WRONG" in out3 and "FIXED" not in out3
+      and read_hookspath(f10sh_wrong) == ".git/hooks")
+print("  {:<52}{}".format("wrong-but-set value: WARN only, value left untouched", "PASS" if ok else "*** FAIL ***"))
+passed += ok
+failed += (not ok)
+_rmtree_retry(f10sh_wrong)
+
 print("=== CONTROLS - legitimate work must NOT be blocked ===")
 t("Edit a short file", edit(SHORT), 0)
 t("Write a NEW file (parent exists)", {"tool_name": "Write", "tool_input": {"file_path": NEWF}}, 0)

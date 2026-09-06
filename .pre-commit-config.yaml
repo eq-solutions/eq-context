@@ -1,4 +1,13 @@
-# Pre-commit config for eq-context substrate.
+# Pre-commit config for eq-context substrate — NOT CURRENTLY ADOPTED.
+#
+# Status (2026-09-06): reference only. No CI workflow invokes the
+# pre-commit framework and nobody has run `pre-commit install` here.
+# The real, live local guard today is scripts/pre-commit-secrets.sh,
+# called directly by the governed .githooks/pre-commit (enabled once
+# per clone via scripts/install-hooks.ps1 — see system/onboarding.md's
+# "First-time setup"). Keeping this file as a documented option for a
+# future gitleaks-based upgrade, not deleting it — treat it as inert
+# until someone actually runs the steps below.
 #
 # To enable:
 #   pip install pre-commit
@@ -9,10 +18,9 @@
 # second push but earlier pushes had already exposed them. This hook is
 # the local prevention so secrets never leave the working tree.
 #
-# The native git pre-commit hook at .git/hooks/pre-commit also runs a
-# regex sweep (committed to-repo as scripts/pre-commit-secrets.sh) so
-# basic protection is in place even without the pre-commit framework
-# installed.
+# scripts/pre-commit-secrets.sh (the always-on fallback that's actually
+# wired in today) covers the same GitHub-PAT/JWT/cloud-key patterns
+# without needing this framework installed at all.
 
 repos:
   - repo: https://github.com/gitleaks/gitleaks

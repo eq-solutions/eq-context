@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Onboarding
 owner: Royce Milmlow
-last_updated: 2026-07-16
+last_updated: 2026-09-06
 scope: Tutorial introduction for any new assistant or human entering this repo
 read_priority: optional
 status: live
@@ -45,6 +45,31 @@ There is no cache and no sync step — a merged commit is live immediately, and
 the file on `main` is the freshness signal of record. (Historical: a Supabase
 edge cache mirrored files into a `context_files` table until its host project
 was deleted 2026-06-22; that path is retired.)
+
+---
+
+## First-time setup (once per clone)
+
+A fresh `git clone` starts with git hooks **unconfigured** — `core.hooksPath`
+is local machine config, and nothing about cloning a repo can set it for you.
+Do this once, immediately, before your first edit:
+
+```powershell
+cd eq-context
+.\scripts\install-hooks.ps1
+```
+
+This points git at the version-controlled `.githooks/` directory, which
+blocks committed secrets and invalid frontmatter before they ever reach
+`main`. Skip it and your commits carry **no local guard at all** — CI still
+catches most of it (`frontmatter-check.yml`, `md-health.yml`), but only
+*after* the bad commit is already pushed.
+
+A Claude Code session doesn't need to remember this by hand:
+`hooks/session_start.py`'s gate detects an unconfigured clone and fixes it
+automatically on the very first session-start print (`system/failures.md` →
+F10). This step is for a human cloning directly, or any other tool that
+doesn't run that gate.
 
 ---
 
