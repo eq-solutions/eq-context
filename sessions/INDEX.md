@@ -1,8 +1,9 @@
 # Session Index
-_148 logs · reverse-chronological · auto-generated_
+_149 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-09-07 | [Labour-hire licence-photo fix re-verified live; full roster audited, no other worker exposed](2026-09-07.md) |
 | 2026-09-06 | [Resumed and shipped the `?tenant=demo` fix, caught two more bugs in the same class before merge](2026-09-06.md) |
 | 2026-09-05 | [SEC-53 verified live, closed in the register, and merged](2026-09-05.md) |
 | 2026-09-04 | [eq-shell FieldIframe TDZ/lint fix (PR #1752) — merged, confirmed live](2026-09-04.md) |
