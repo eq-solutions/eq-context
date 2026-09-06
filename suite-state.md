@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-06)
 
 **eq-field:**
+- #931 v3.5.686 — FIX: ?tenant=demo stopped resolving to the demo sandbox
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -70,7 +71,6 @@ _If this file is >48h old, the cron is broken._
 - #814 chore(deps): bump resend from 6.18.1 to 6.21.0
 - #813 chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22
 - #812 chore(deps): bump posthog-node from 5.46.1 to 5.49.2
-- #811 chore(deps-dev): bump vitest from 4.1.10 to 4.1.11
 - #810 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #791 fix(reports): make reissuing a report possible from the UI
 
@@ -92,7 +92,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? queued |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -104,7 +104,7 @@ _If this file is >48h old, the cron is broken._
     |------|-------|-------------|
     | eq-service | building | 2026-09-06 |
 | eq-shell | ready | 2026-09-05 |
-| eq-field | ready | 2026-09-05 |
+| eq-field | ready | 2026-09-06 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
