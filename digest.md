@@ -8,34 +8,33 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-06 07:06 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-06 14:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-06 02:50 UTC → 2026-09-06 07:06 UTC)
+## Since last refresh (2026-09-06 07:06 UTC → 2026-09-06 14:48 UTC)
 
-- Merged: eq-shell [#1784](https://github.com/eq-solutions/eq-shell/pull/1784) feat(documents): add person-first grouping to the signoff re
-- Merged: eq-shell [#1773](https://github.com/eq-solutions/eq-shell/pull/1773) fix(auth): revoke org_memberships when a shell login is deac
-- Merged: eq-shell [#1770](https://github.com/eq-solutions/eq-shell/pull/1770) fix(auth): fail closed in resolvePrincipal(), the last tenan
-- Merged: eq-shell [#1768](https://github.com/eq-solutions/eq-shell/pull/1768) fix(auth): fail closed on the last tenant_role_overrides fai
-- Merged: eq-shell [#1766](https://github.com/eq-solutions/eq-shell/pull/1766) fix(auth): stop unauthenticated POSTs from locking a phone o
-- Merged: eq-shell [#1765](https://github.com/eq-solutions/eq-shell/pull/1765) fix(field-iframe): gate the post-accepted draw notice on Fie
-- Merged: eq-shell [#1764](https://github.com/eq-solutions/eq-shell/pull/1764) fix(auth): bound the remaining 7 gating reads in verify-shel
-- Merged: eq-shell [#1759](https://github.com/eq-solutions/eq-shell/pull/1759) fix(admin): tenant-scope every delete in the employment-reco
-- ⚠ Needs you: 12 → 13 (new items)
+- Merged: eq-shell [#1775](https://github.com/eq-solutions/eq-shell/pull/1775) fix(auth): licence-visibility reads no longer trust org_memb
+- Merged: eq-shell [#1774](https://github.com/eq-solutions/eq-shell/pull/1774) fix(cards): fill staff.user_id when Cards worker link resolv
+- Merged: eq-shell [#1772](https://github.com/eq-solutions/eq-shell/pull/1772) fix(documents): close tenant-isolation, onboarding, and clea
+- Merged: eq-shell [#1771](https://github.com/eq-solutions/eq-shell/pull/1771) fix(quotes): revoke stray authenticated grant on eq__log_quo
+- Merged: eq-shell [#1767](https://github.com/eq-solutions/eq-shell/pull/1767) fix(auth): fail closed in the three remaining tenant_role_ov
+- Merged: eq-shell [#1763](https://github.com/eq-solutions/eq-shell/pull/1763) fix(drift-guard): CHECK 7 comment refresh + column allow-lis
+- Merged: eq-shell [#1762](https://github.com/eq-solutions/eq-shell/pull/1762) fix(auth): fail closed when the tenant_role_overrides read t
+- Merged: eq-shell [#1761](https://github.com/eq-solutions/eq-shell/pull/1761) ci(migrations): fail the ledger-hygiene check on duplicate n
+- ✅ Needs you: 13 → 12
 
-## ⚠ Needs you (13)
+## ⚠ Needs you (12)
 
-- 🔴 **PR aging 16d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
+- 🔴 **PR aging 17d** — eq-solves-service [#791](https://github.com/eq-solutions/eq-service/pull/791) "fix(reports): make reissuing a report possible from the UI"
 - 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-57 (P1) — An org-wide GitHub App installation (`grok-by-xai`, `repository_selection: all`) · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
-- 🔴 **Cron failing** — `shared-object-drift.yml` 5 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
+- 🔴 **Cron failing** — `shared-object-drift.yml` 6 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
-- 🟠 **Sentry new error** — `eq-field` [Error: 403: {"code":"42501","details":null,"hint":null,"mess](https://eq-solutions.sentry.io/issues/145012264/)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff stalled at "booted" (10s, no 'accepted' yet](https://eq-solutions.sentry.io/issues/145052767/)
-- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
+- 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff stalled at "minting" (10s, no 'accepted' ye](https://eq-solutions.sentry.io/issues/145002211/)
 - 🟠 **Cron failing** — `security-audit.yml` 1 consecutive scheduled run(s) failed, last success 2026-08-23 · [failures.md](system/failures.md) F11
 
 ## 🙋 Waiting on you (259)
@@ -44,7 +43,6 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
 - **eq-shell** · **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05)_
-- **eq-shell** · **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
 - **eq-shell** · **Not click-tested live** — verified via `pnpm exec tsc -b --force` and `eslint` (both clean) plus an independent merge-readiness audit before merging. This machine's Node 24 breaks `vite build`/`netlify dev` for this repo (pre-existing, unrelated to this change), so no live click-through was possible. Worth a real pass: KPI numbers match the table's own counts, per-team rows sum to the roster totals, mobile view unchanged. _(added 2026-09-02)_
 - **eq-shell** · **Not click-tested live** — PR #1708's own test plan flags this: build/tests/lint clean, but nobody's archived a real staff-linked account and watched the new checkbox clear it. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
@@ -54,33 +52,32 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live by a person** — every PR this session verified via `pnpm run build`/`eslint`/`pnpm run test`/live DB queries only, never an actual signed-in click-through. Worth a real pass: upload a document, assign/change its category from each of the 3 tabs, create a new reference-only category via the new toggle, confirm the routing actually changes. _(added 2026-08-30)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, the full test suite, and a merge-readiness audit reproducing the production build end-to-end. Worth a real pass: approve a Cards application with a start date set and confirm it lands; add someone via Shell's "Add to roster" with a start date and confirm it lands; confirm the Resourcing page's new count and filter tab work. _(added 2026-08-30)_
 - **eq-shell** · **PR #1675 (Cards-approve dedup fix) not click-tested live** — `findExistingStaff()`'s active-only matching bug (this section's earlier entry) is now fixed and merged, but no real end-to-end test: deactivate a Cards worker's staff row, re-approve a second application for the same person, confirm reactivation instead of a duplicate. No Cards/Shell browser session available in this environment. _(added 2026-08-30)_
+- **eq-shell** · **Not click-tested live by a person** — verified via live SQL + deploy-state checks, not by opening the Edit Site modal itself. Worth a real pass on Equinix SY5: confirm Ask for/Backup show Matthew Miller/Scott Hotson, try the inline "+ Add new contact" flow, save, reopen, confirm it stuck. _(added 2026-08-30)_
 _…and 247 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 8 | 5d |
-| eq-solves-service | ✓ success | 0d ago | 2 | 16d |
-| eq-field | ✓ success | 0d ago | 3 | 3d |
-| eq-cards | ✓ success | 3d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 9 | 6d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 17d |
+| eq-field | ✓ success | 0d ago | 4 | 4d |
+| eq-cards | ✓ success | 4d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Deploys
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-06 |
+| eq-shell | ready | 2026-09-06 |
 
 ## Live errors (Sentry)
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-shell | [Error: Unclaimed worker invites past grace period: 2 still valid, 0 expired](https://eq-solutions.sentry.io/issues/142642035/) | 13 | 2026-09-05 |
-| eq-field | [Error: 403: {"code":"42501","details":null,"hint":null,"message":"timesheet: onl](https://eq-solutions.sentry.io/issues/145012264/) | 2 | 2026-09-04 |
 | eq-shell | [EQ Field handoff stalled at "booted" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145052767/) | 1 | 2026-09-05 |
 | eq-shell | [EQ Field handoff stalled at "minting" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145002211/) | 1 | 2026-09-04 |
-| eq-field | [ReferenceError: _hookTsResizeOnce is not defined](https://eq-solutions.sentry.io/issues/144831279/) | 1 | 2026-09-04 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -102,12 +99,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-05 | eq-shell | [#1778](https://github.com/eq-solutions/eq-shell/pull/1778) fix(auth): stop tenant_config/tenant_routing timeouts from failin |
 | 2026-09-05 | eq-shell | [#1777](https://github.com/eq-solutions/eq-shell/pull/1777) fix(onboarding): daily sweep catches starters whose Shell login l |
 | 2026-09-05 | eq-shell | [#1776](https://github.com/eq-solutions/eq-shell/pull/1776) feat(security): detect drift between tenant rosters and user_tena |
-_Showing 15 of 90 · full record in [sessions/](sessions/)_
+_Showing 15 of 89 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (269 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (62 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-shell** (268 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (233 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (99 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -138,7 +135,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1403 | 201 / 80 | 6 | 75 |
+| [eq-shell](eq/pending/eq-shell.md) | 1394 | 201 / 79 | 4 | 75 |
 | [eq-cards](eq/pending/eq-cards.md) | 336 | 48 / 16 | 0 | 7 |
 | [eq-field](eq/pending/eq-field.md) | 1245 | 172 / 69 | 41 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 493 | 77 / 23 | 0 | 35 |
@@ -151,7 +148,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 481 | 92 / 13 | 0 | 59 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 547 | 44 / 3 | 2 | 13 |
+| [OPS](ops/pending.md) | 555 | 44 / 3 | 2 | 13 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -196,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-06 07:06 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-06 14:48 UTC._
