@@ -74,9 +74,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1797 feat(intake): add eq_tidy_read_entity_columns for column-projected reads
 - #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
-- #1794 fix(shell): extract HubSidebar's icon maps into their own module
-- #1791 fix(security): a revoked session can no longer mint credentials or be laundered into a fresh one
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
@@ -102,7 +101,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | new | 2026-09-07 |
+| eq-shell | building | 2026-09-07 |
 | eq-field | ready | 2026-09-07 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
@@ -113,7 +112,7 @@ _If this file is >48h old, the cron is broken._
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 73 | ✓ 73 |
-| Directory | app_data.field_sites | 58 | ✓ 58 |
+| Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 1,980 | ✓ 1,980 |
 | Operational | app_data.field_timesheets | 409 | ✓ 409 |
