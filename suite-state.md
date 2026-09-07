@@ -74,7 +74,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1799 fix(customers): update the customer Field/Service pill live when toggling a site
+- #1800 fix(security): bump fast-uri past 4 newer SSRF/host-confusion advisories (#981)
 - #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
@@ -101,7 +101,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | ready | 2026-09-07 |
+| eq-shell | building | 2026-09-07 |
 | eq-field | ready | 2026-09-07 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
