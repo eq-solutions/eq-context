@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Lessons Learned
 owner: Royce Milmlow
-last_updated: 2026-08-20
+last_updated: 2026-09-07
 scope: Hard-won technical gotchas; append-only. Full narratives for the entries marked "moved to archive" live in archive/lessons-history.md.
 read_priority: reference
 status: live
@@ -19,6 +19,11 @@ ledger), `system/TODAY.md` (the specific goal-nobody-owned incident), or
 "one fact, one home" rule (`AUTONOMOUS-SPRINT-RULES.md` §7), those entries now
 carry just the rule + a pointer; the full narrative moved to
 `archive/lessons-history.md`, not deleted.
+
+**Budget:** ~500 lines (currently 405). Past that, evict the oldest resolved
+entries to `archive/lessons-history.md` using the same trim-not-delete pattern
+as the 2026-07-12 precedent above — rule + pointer stays here, full narrative
+moves. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
 
 ---
 

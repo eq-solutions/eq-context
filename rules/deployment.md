@@ -1,7 +1,7 @@
 ---
 title: Rules — Deployment
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-09-07
 scope: Deployment guardrails for EQ and SKS sites and infrastructure
 read_priority: critical
 status: live
@@ -15,7 +15,8 @@ status: live
 
 > Killed/deferred sites are not listed. EQ Variations and EQ Compliance/Ops
 > are killed (29 Apr 2026). EQ Expenses is now an internal SKS tool only.
-> EQ Quotes is deferred ~6 months. See `/archive/` for historical context.
+> EQ Quotes is RETIRED (replaced by EQ Ops inside Shell — see `eq/products.md`,
+> `suite-state.md`). See `/archive/` for historical context.
 
 > Updated 2026-05-20 after the SKS Live split: `sks-nsw-labour.netlify.app`
 > now deploys from its own dedicated repo `eq-solutions/sks-nsw-labour`,

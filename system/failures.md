@@ -13,6 +13,12 @@ status: live
 
 The ratchet only tightens. It is driven by reality — a failure that actually happened — never by opinion.
 
+**Budget:** ~400 lines (currently 257). Past that, evict entries whose guard
+has held for 90+ days with zero recurrences to a new `system/failures-archive.md`
+(same split pattern as `system/worktree-registry-archive.md`) — keep the F-number
+and rung here as a one-line pointer, move the full incident narrative.
+(`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
 ## The enforcement ladder
 
 | Rung | Form | Catches |
