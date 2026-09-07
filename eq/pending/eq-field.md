@@ -30,6 +30,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 **Notes:**
 - Directly completes the open item this file already flagged on 2026-09-04 ("every SKS employee's timesheet hours AND leave-request details are now visible to every supervisor org-wide") — that claim was NOT actually true at the database level until this session; see the "supervisors now see every crew" section further down, now closed out.
 - Full technical detail, including the complete blast-radius table and all verification output: `sessions/2026-09-07.md` and two same-day entries in eq-field's own `docs/reflection-log.md`.
+- Corroborated independently, same day: Royce separately relayed David Boyd's own complaint ("cant see all the timesheets") in an unrelated conversation, without either side initially knowing about the other. That session re-pulled `app_data.eq__timesheets_caller_has_broad_read` live from ehow and confirmed this migration is what actually closes his case — client-side (PR #910) and Shell overrides were already clean, the DB function was the missing piece. Still not click-tested as him. See the David Boyd entry in `sessions/2026-09-07.md` (appended after this one).
 
 ---
 
