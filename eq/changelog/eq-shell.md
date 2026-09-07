@@ -9,12 +9,12 @@ status: live
 
 # eq-shell changelog
 
-## 2026-09-07 (PR #1802, MERGED + LIVE — session no longer clears on a pure verify-shell-session timeout)
-- `App.tsx`'s `SessionProvider` already retried once on a 15s timeout before giving up (#888, #1174, then deadline-bounded reads via #1736/#1764/#1778). On full exhaustion of both attempts, the outer `catch` cleared session state unconditionally — identical to an explicit 401, even though a timeout means the server said nothing at all. Regressed again 2026-09-06 (Sentry `EQ-SHELL-T/V`, both attempts failing back-to-back).
-- Fix: on `AbortError` specifically, keep whatever session is already cached (the optimistic `sessionStorage` read on mount already rendered it) and let the 5-minute background poll or a manual reload retry, instead of bouncing to the login screen on a network blip. Any other exception still clears state, fail-closed, unchanged. Only changes the client's own optimistic display state — every real API call is still separately authorized server-side regardless.
-- Auth-adjacent — built only after Royce's explicit go-ahead on this specific approach (AskUserQuestion), merged only after his explicit "merge it".
-- `tsc -b --force` clean, 591/591 tests, eslint clean on the file. Not click-tested live (no Shell session in this environment).
-- Squash-merged (`a68bca41`). **No dedicated deploy record or GitHub check-run/deployment/status ever appeared for this commit** — confirmed live instead via commit-ancestry against the production deploy that actually went `ready` a few minutes later (`3d801784`, no error): `a68bca41` is a direct ancestor. It shipped bundled into a later concurrent merge's build, same pattern this repo hit repeatedly tonight — a single Netlify snapshot taken right after merging would have looked like nothing happened.
+## 2026-09-07 (PR #1795, MERGED + LIVE — invite-resend `email_delivered` fix; Sentry sourcemap upload gated to close a live sourcemap leak)
+- Resend-invite path no longer hardcodes `email_delivered: false` on a successful resend.
+- `vite.config.ts`: `sourcemap` generation now gated on `SENTRY_AUTH_TOKEN` being set, not just the post-upload cleanup — closes a gap where a missing token meant unminified `.js.map` files shipped to production unremoved. Confirmed live on core.eq.solutions post-merge: no `sourceMappingURL` in the bundle, `.js.map` request falls through to the SPA shell.
+
+## 2026-09-07 (PR #1806, MERGED + LIVE — migration ledger collision resolved, `0303_tidy_read_entity_columns` renumbered to `0304`)
+- PR #1796 and PR #1797 both merged claiming migration number `0303`; renumbered the later-merged file. No content change, filename only — both migrations independently idempotent.
 
 ## 2026-09-07 (PR #1796 + PR #1803, MERGED + LIVE — real Manager/reporting-line field added to Staff, restricted to Royce until the SKS backfill lands)
 - **[PR #1796](https://github.com/eq-solutions/eq-shell/pull/1796)** — new `manager_id` self-referencing column on `app_data.staff` (migration `0303`, ehow/SKS plane only). Manager field (view + edit) added to the Staff page (`SplitPanel.tsx` desktop, `StaffPage.tsx`'s `MobileSheet` mobile), a native `<select>` sourced from the already-loaded roster matching this repo's existing person-picker convention (no new typeahead component). Server-side validation in `entity-patch.ts`: rejects self-reference and cross-tenant manager assignment. Migration dispatched to ehow via `tenant-migrate.yml`, confirmed live.

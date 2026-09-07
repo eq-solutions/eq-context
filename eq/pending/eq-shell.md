@@ -15,6 +15,25 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: PR #1795 sourcemap leak found + fixed, migration-ledger collision resolved — both merged, verified live (2026-09-07)
+*Royce asked to merge PR #1795 (invite-resend `email_delivered` fix + Sentry sourcemap upload wiring, built earlier the same day). A pre-merge audit surfaced a real, live-confirmed risk before merging rather than a hypothetical one.*
+
+**Done:**
+- [x] Sourcemap leak: `vite.config.ts` set `sourcemap: true` unconditionally but only cleaned `.js.map` up inside the Sentry-upload plugin block (gated on `SENTRY_AUTH_TOKEN`) — confirmed live on the PR's own deploy preview (`.js.map` returned 200 with real sourcemap content) before touching anything. Fixed: `sourcemap: !!process.env.SENTRY_AUTH_TOKEN` — no window where a map exists without the plugin also running to delete it. Verified locally (0 `.js.map` files in `dist/` with no token set) and again on production post-merge (no `sourceMappingURL` in the live bundle; `.js.map` request now falls through to the SPA shell instead of serving real content).
+- [x] Migration ledger collision: PR #1796 and #1797 merged 31 seconds apart, both claiming migration number `0303` (`0303_staff_manager_id.sql` / `0303_tidy_read_entity_columns.sql`) — blocked all merges to `main`, not just #1795. Both confirmed idempotent by reading the actual SQL (`CREATE OR REPLACE FUNCTION`; `ADD COLUMN IF NOT EXISTS`), so renumbering the later-merged one to `0304` was safe regardless of whether `tenant-migrate.yml` had already applied it under the old name. Shipped as PR #1806, merged first.
+- [x] A separate required check (`Schema drift + anon-grant + policy-lint`, orphan-perms) was also failing on both PRs — traced to the `staff.manage_reporting_line` grant landing on `shell_control.security_group_perms` without a matching roles-package registration. Found PR #1803 (a concurrent session) had already fixed the registration minutes before this session got there — rebased both PRs onto that instead of duplicating the fix.
+- [x] Both PRs merged (#1806 then #1795), confirmed live on `core.eq.solutions` directly, not just the deploy preview.
+
+**Deferred:**
+- [ ] `staff.manage_reporting_line` was live in `shell_control.security_group_perms` with **zero matching `audit_log` row** — the grant didn't go through any audited admin-UI path, meaning it was written directly by someone/something outside the normal flow. Never identified who/what/when; only confirmed the practical symptom (missing registration) is resolved by PR #1803. Worth a look given this repo's own "audit-log every mutation" convention. _(added 2026-09-07)_
+
+**Notes:**
+- Extremely high concurrency today: 16 sessions active suite-wide, 5+ on eq-shell alone — the `0303` collision is a direct symptom, not a one-off. `origin/main` moved at least 6 times over the course of this one merge task.
+- `shell_control.security_group_perms` has no timestamp/actor columns at all (just `group_id`, `perm_key`) — the only trace of who/when a grant was added would be `shell_control.audit_log` (columns: `at`, `event`, `actor_id`, `tenant_id`, `target_id`, `detail`), and only if the write went through an audited path. This one didn't, which is why the Deferred item above can't be resolved further without asking around.
+- Did not touch the Dependabot vulnerability count (5→2 high/moderate observed dropping across this task's own pushes) — another session was visibly already on it.
+
+---
+
 ## eq-shell: real reporting-line ("Manager") field added to Staff, restricted to Royce only until the SKS backfill lands (2026-09-07)
 *Continuation of a want flagged twice before (2026-08-30, HR folder audit — see `sks/pending.md`) and never actioned: Shell's Staff → Org Chart page only ever held rostering/crew-grouping data (`app_data.teams`), never a real management-reporting hierarchy. Royce confirmed via AskUserQuestion he wants the real thing, seeded from his own separate SKS interactive org-chart tool's JSON export.*
 
