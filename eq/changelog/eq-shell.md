@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-07 (PR #1799, MERGED + LIVE — customer Field/Service pill now updates live when toggling a site)
+- Customer-level Field/Service pill on the Customers page only updated after a full page refresh when toggling a site directly, not immediately — `toggleSiteActivation`'s optimistic update patched only the toggled site's own row, never recomputed the customer-level rollup (`crm-customers.ts`: on iff an owned, active site is). `toggleCustomerActivation` (toggling from the customer pill itself) already kept both directions in sync; this closed the one remaining one-way gap.
+- Found via a live screenshot Royce shared (customer AW Edwards) showing the pill stuck grey despite its only site having Field on; a hard refresh fixed it, confirming the backend rollup was always correct and this was purely a client-side sync gap, not a deploy or logic bug.
+- `DetailSite`'s TS interface was also missing `active`, even though `crm-customers.ts`'s `mapSite()` already sends it on the wire — added the field rather than dropping the active-check to match a stale type.
+- `pnpm exec tsc -b` and `eslint` clean. Squash-merged (`c290dea7`) on Royce's explicit "merge". **Confirmed live**: deploy `6a9e909a` reached `ready`, verified as the genuinely-serving deploy via `git merge-base --is-ancestor` against `origin/main` — not inferred from a green deploy alone, since 3 unrelated production deploys had errored earlier the same evening. Not click-tested live by a person — no Shell session/credentials in this environment.
+
 ## 2026-09-07 (PR #1792 + PR #1797, MERGED + LIVE — eq-intake re-vendored with a duplicate-scan perf fix; new column-projected tidy RPC)
 - Downstream of a live perf bug Royce hit himself on `/intake`'s "Scan for possible duplicates" (screenshotted the freeze) — traced to eq-solves-intake's `duplicate-detect.ts` rebuilding both records' bigram sets from scratch on every O(n^2) pairwise comparison instead of once per candidate. Fixed there, benchmarked against live data (2,854 assets on ehow): ~8.7s -> ~1.7s full scan.
 - **[PR #1792](https://github.com/eq-solutions/eq-shell/pull/1792)** — re-vendored `eq-intake/eq-platform` from eq-solves-intake@6e1e2f2 via `scripts/revendor-intake.mjs` (this repo vendors that one in-tree rather than depending on it live — it's a private repo Netlify can't clone as a submodule). Build + full test suite clean (583 tests, 581 pass, 2 pre-existing skips). Confirmed live via deploy-ancestry, not just merge success: `23c45cbc`, published.

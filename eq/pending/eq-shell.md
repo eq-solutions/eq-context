@@ -167,6 +167,14 @@ _(added 2026-09-05)_
 
 ---
 
+## eq-shell: customer Field/Service pill now updates live when toggling a site, PR #1799 merged + deployed (2026-09-07)
+*Found while explaining the PR #1700 cascade fix to Royce and cross-checking a live screenshot of a real customer (AW Edwards) — the customer-level pill was showing grey/off despite its only site having Field on. Traced through both frontend (`CustomersPage.tsx`) and backend (`crm-customers.ts`); the backend rollup was always correct, confirmed when Royce hard-refreshed and the pill updated. Root cause: `toggleSiteActivation`'s optimistic update only patched the toggled site's own row, never recomputed the customer-level rollup client-side — a one-way gap, since toggling from the customer side already synced both directions.*
+
+- eq-shell [PR #1799](https://github.com/eq-solutions/eq-shell/pull/1799), merged (squash `c290dea7`) — Royce's explicit "merge" after reading the deploy caveat. **Confirmed live** on core.eq.solutions: deploy `6a9e909a` reached `ready` and verified as the actual serving deploy via `git merge-base --is-ancestor`, not just "a deploy went green" — 3 unrelated production deploys had errored earlier that same evening, which is exactly why the naive check would have been wrong here.
+- [ ] **Not click-tested live by a person** — verified via `pnpm exec tsc -b`, `eslint`, and the live-deploy check above; no Shell session/credentials in this environment. Worth a real pass: toggle a site's Field/Service flag on a customer with an owned site and confirm the customer pill updates immediately, in both directions, without a page refresh. _(added 2026-09-07)_
+
+---
+
 ## eq-shell: GitHub MCP connector can't see this repo (falls back to `gh` CLI) (2026-09-01)
 
 - [ ] **`mcp__d2708d72…` (the GitHub MCP server) 404s on every `eq-solutions/eq-shell` call** (`list_pull_requests`, `create_pull_request`) despite `get_me` succeeding against a real, valid account — looks like the token/App installation backing that MCP connector just isn't scoped to this repo. `gh` CLI (separately authenticated, `repo`+`workflow` scopes) works fine and was used instead for PR #1703. Not investigated further — worth a look if it keeps happening, since global CLAUDE.md prefers MCP over scripts for GitHub. _(added 2026-09-01)_
