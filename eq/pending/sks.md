@@ -1,13 +1,15 @@
 ---
 title: SKS-tagged (misfiled) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-09-07
 scope: Items headed "SKS:" that were sitting in eq/pending.md despite the suite convention that SKS items live in sks/pending.md. Not merged there automatically (a different, more mature tracking system already exists for that file) — flagged here for a human/session to move on purpose.
 read_priority: critical
 status: live
 ---
 
 # SKS-tagged (misfiled) — Pending
+
+**Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
 
 ---
 

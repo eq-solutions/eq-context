@@ -11,6 +11,8 @@ status: live
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
+**Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
 ---
 
 ## eq-cards: new-PC session — finished the Wallet info-density punch-list item, found + fixed a live worker-sync bug, full /triage pass on the waiting-on-you bucket (2026-09-07)
@@ -87,6 +89,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Self-serve tenant provisioning doesn't collect tier/modules upfront** — the provision-link form (eq-shell's `AdminTenantsPage.tsx`) only takes org name/phone/email; tier and modules get set afterward via a separate Edit step. Real gap, wrong sprint — three-tenants-ever doesn't justify the slot right now. _(added 2026-08-30)_
+- [ ] **Whether to generate a real EQ self-join link/QR for the meeting, swapped in for the Sample ID Sheet's generic search-and-apply flow** — asked Royce directly; no answer yet as of this close. `AdminSelfJoinLinks.tsx` is ready to use as-is — pick a role/label/expiry and click Create, a 30-second admin action whenever he wants it done. _(added 2026-09-02)_
 
 **Notes:**
 - A third live DB write this session (the Prestart fix's two view migrations, tracked under `eq/pending/eq-field.md`) hit the identical auto-mode classifier wall as the `accepts_applications` flip — three for three, consistent, not a fluke. Royce can loosen it via a Bash permission rule if this keeps recurring; not done by default.
@@ -128,7 +131,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **eq-shell coupling contract** — several `eq_cards_*` `SECURITY DEFINER` functions write directly into eq-shell's `shell_control.users`/`shell_control.user_tenant_memberships` with no API boundary or version pin (migrations 0029-0031). A column rename on eq-shell's side would break eq-cards silently, invisible to this repo's own CI. Needs alignment with whoever owns eq-shell, not something this repo can fix alone. _(added 2026-08-25)_
-- [x] **The 3-way visual "Design" picker (Linear/Wallet/Photo-first) needs Royce's own call**, not a delegated one — triples the maintenance surface of the most-used screens, in real tension with `ARCHITECTURE.md`'s own rule one ("boring beats clever"). Well-executed (accessibility consolidated across all three variants) but the resolve-or-keep decision needs eyes on the actual screens. _(added 2026-08-25 — resolved 2026-09-07: side-by-side screenshots of both screens across all three variants, plus the maintenance-cost/usage-data tradeoff, published as an artifact and referenced in that session's chat, not duplicated into substrate — same convention as this section's own note above. Live-verified while building it: the picker no longer changes the populated Wallet list at all — only the empty state and licence detail still vary, as of the same day's separate info-density commit that orphaned `LicenceCard`'s three-way styling from the list screen as a side effect. The usage question turned out to be unanswerable either way: `design_version` is local-storage-only with zero analytics instrumentation, so no one can see what real users have actually picked. The keep-1/2/3 decision itself is still Royce's — not made here.)_
+- [ ] **The 3-way visual "Design" picker (Linear/Wallet/Photo-first) needs Royce's own call**, not a delegated one — triples the maintenance surface of the most-used screens, in real tension with `ARCHITECTURE.md`'s own rule one ("boring beats clever"). Well-executed (accessibility consolidated across all three variants) but the resolve-or-keep decision needs eyes on the actual screens. _(added 2026-08-25)_
 - [ ] **External/adversarial security review** — everything above is self- and CI-verified; an outside or adversarial pass on the post-sprint state wasn't attempted and doesn't fit inside a sprint by design. _(added 2026-08-25)_
 - [ ] **Real usability sessions with actual SKS tradies** — the accessibility/affordance work above is code-level verified; nobody has watched a real tradie use the fixed flow. Calendar-bound, not a code task. _(added 2026-08-25)_
 - [ ] **A recurring doc-freshness check** (a PR-template checkbox, or a scheduled reminder) — proposed, not built. Without one, the ~87-day drift this session found in `ARCHITECTURE.md`/`STATUS.md`/`CHANGELOG.md` (already fixed, see PRs #300/#306/#308) has no guard against recurring. _(added 2026-08-25)_
@@ -211,6 +214,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-cards: punch-list #4 marked "Active" but partially shipped without its own caveat (2026-08-16)
 *`system/punch-list.md`'s item 4 still shows the pre-2026-08-13 note ("reconcile against screenshots before building, don't build from this doc alone"). [PR #235](https://github.com/eq-solutions/eq-cards/pull/235) shipped 2026-08-13 anyway, scoped strictly to the original doc — its own description confirms the screenshots were never incorporated. Not corrected in `punch-list.md` directly (Royce's file, his rule) — flagged here instead. Full detail: `sessions/2026-08-16.md`.*
 
+- [ ] Get Royce's "first-open popup / info overload" screenshots (mentioned as sent separately, never received/incorporated), scope what's still missing against what PR #235 already shipped, build the remainder. _(added 2026-08-16)_
 - [ ] Once resolved, update `punch-list.md` item 4's note to match reality — it currently still reads as if nothing shipped. _(added 2026-08-16 — the info-density fix shipped 2026-09-07 without ever receiving the screenshots this note was waiting on; the note itself is what still needs updating)_
 
 ---

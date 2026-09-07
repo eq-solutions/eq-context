@@ -11,22 +11,12 @@ status: live
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
----
-
-## eq-shell: EQ Field handoff stall-notice false alarms on backgrounded tabs — PR #1785 merged, live; 3 Sentry issues closed (2026-09-07)
-*Triage of Sentry issue EQ-SHELL-20 ("handoff stalled at 'booted'") found an already-open, unmerged fix rather than new work — [PR #1785](https://github.com/eq-solutions/eq-shell/pull/1785). Root cause: a backgrounded tab throttles/coalesces the stall-notice `setTimeout` (shipped 2026-09-04, #1758) instead of cancelling it, so it can fire real minutes after Field actually booted fine. Fix gates the alarm behind a live `document.hidden` check plus a `visibilitychange` re-arm.*
-
-- Merged PR #1785 (squash `953de61a`) on Royce's "merge if safe," after a clean merge-readiness audit (all 5 required checks green, `mergeStateStatus: CLEAN`, single-file diff matching the PR description exactly, no auth-adjacent risk). Confirmed live on core.eq.solutions via commit-ancestry against the deploy actually marked `currentDeploy` (`a7ae2cd3`, published 09:35:44 UTC) — the merge commit's own build showed a misleading `state: error` / `"Skipped"` (superseded by PR #1793 landing ~30s later, not a real failure); verified per `rules/deployment.md`'s prescribed method rather than trusting the build status at face value.
-- Resolved the 3 Sentry issues sharing this alarm's code path: EQ-SHELL-20 (145052767, "booted"), EQ-SHELL-21 (145332293, "never reported rendered"), EQ-SHELL-1Z (145002211, "minting").
-- [ ] **EQ-SHELL-1Z may not have been the same bug.** Its one event only overshot the 10s notice threshold by ~0.5s — normal timer jitter, not the multi-second-plus gap EQ-SHELL-20/21 showed. Resolved anyway (shared code path, Sentry auto-reopens on recurrence), but if it recurs, treat it as a possible genuine slow-mint issue (token-exchange's own documented p95 is 5.25s) rather than assuming backgrounding again.
-- [ ] **Not click-tested live** — same standing gap as the PR's own test plan: nobody has backgrounded a real tab mid-handoff past 10s and confirmed no notice/Sentry event fires while hidden, and that a still-stuck handoff still alarms promptly (with accurate elapsed time) on return to the tab. No Shell session/credentials in this environment.
-
-_(added 2026-09-07)_
+**Budget:** ~500 lines (currently 1,394 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
 
 ---
 
 ## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07)
-*Full review of eq-shell (security, unfinished work, quality) plus a reconciliation pass across all ~50 open GitHub issues — 9 closed with live-code evidence (2 of the first 3 spot-checked P0/P1 security issues turned out already fixed weeks ago, just never closed — real open count is meaningfully smaller than the raw total, but only an audit like this one can say by how much). Fixed the two the review found still genuinely open: #709 (reset-user-pin could target a platform_admin — full escalation path via the reset link + accept-pin-reset's auto-sign-in) and #870 (a revoked session could still mint credentials, or get laundered into a fresh un-revoked one via switch-tenant). Also shipped the `.env.example` completion (closes #713) and an `ENFORCE_IFRAME_ORIGIN` drift warning. All 4 PRs (#1788-#1791) merged and confirmed live via deploy-ancestry check, not just merge-API success — Netlify skipped 3 of the 4 individual builds mid-session under tonight's exceptionally heavy concurrent-merge volume (multiple other sessions landing PRs on this repo in real time, including the sibling #1785 fix directly above); each skipped commit's ancestry was independently confirmed before treating it as live.*
+*Full review of eq-shell (security, unfinished work, quality) plus a reconciliation pass across all ~50 open GitHub issues — 9 closed with live-code evidence (2 of the first 3 spot-checked P0/P1 security issues turned out already fixed weeks ago, just never closed — real open count is meaningfully smaller than the raw total, but only an audit like this one can say by how much). Fixed the two the review found still genuinely open: #709 (reset-user-pin could target a platform_admin — full escalation path via the reset link + accept-pin-reset's auto-sign-in) and #870 (a revoked session could still mint credentials, or get laundered into a fresh un-revoked one via switch-tenant). Also shipped the `.env.example` completion (closes #713) and an `ENFORCE_IFRAME_ORIGIN` drift warning. All 4 PRs (#1788-#1791) merged and confirmed live via deploy-ancestry check, not just merge-API success — Netlify skipped 3 of the 4 individual builds mid-session under tonight's exceptionally heavy concurrent-merge volume (multiple other sessions landing PRs on this repo in real time); each skipped commit's ancestry was independently confirmed before treating it as live.*
 
 - [ ] **None of tonight's 4 fixes have been click-tested live by a person** — verified via full test suite + lint + an independent merge-readiness audit only. Worth a real pass once convenient: try resetting a platform_admin's PIN as a regular manager (should 403 `cannot-reset-platform-admin`); try switching tenant on a session that's been logged out/revoked elsewhere (should 401, not succeed).
 - [ ] **#870's own narrower remaining edge, deliberately not fixed**: a manager can still reset a same-tenant co-member who also belongs to a second tenant and inherit that person's other-tenant access via the resulting session. Needs a decision on how a reset-triggered session should be scoped — flagged on the PR/issue, not resolved either way.
@@ -65,7 +55,7 @@ _(added 2026-09-05)_
 ---
 
 ## eq-shell: Access Control click-test debt — 3 of 4 confirmed live, one narrow piece left (2026-09-05)
-- [ ] **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05)_
+- [ ] **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05; deferred again 2026-09-07 via `/triage` — still nobody pointed at a disposable test account)_
 
 ---
 
@@ -140,7 +130,7 @@ _(added 2026-09-05)_
 ## eq-shell: customer Field/Service status now computed from owned sites, merged (2026-09-01)
 *Royce spotted a customer showing "Field: off" in the Customers page while one of its own sites showed the Field tick on, and asked whether the site would still show in Field (yes — the real gate only ever reads the site's own flag) and then whether the customer pill should follow its sites instead of being independently set. Confirmed via AskUserQuestion: compute it everywhere, including the separate App activation admin page, and repurpose that page's per-customer toggle into a cascade instead of leaving it write to a value nothing reads.*
 
-- eq-shell [PR #1700](https://github.com/eq-solutions/eq-shell/pull/1700), merged (squash `bb9f501e`) — Royce's go given without a live click-test ("go" after CI green + deploy preview ready). **Confirmed live 2026-09-07** — `bb9f501e` is an ancestor of current `main`, which has deployed cleanly since.
+- eq-shell [PR #1700](https://github.com/eq-solutions/eq-shell/pull/1700), merged (squash `bb9f501e`) — Royce's go given without a live click-test ("go" after CI green + deploy preview ready). **Not yet confirmed published** as of merge — queued behind another concurrent deploy at last check (commit `5847e2a4` building ahead of it). Confirm `published_at`/`state:"ready"` for `bb9f501e` before treating it as live.
 - [ ] **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01; re-attempted 2026-09-07 — still blocked, in-app Browser shows the sign-in screen and Claude in Chrome has zero connected browsers in this environment; `/decide` recommended Royce run the 6 checks himself (~5 min) and report back, or connect Claude in Chrome so a session can test it directly next time)_
 - [ ] **Dropping the now-unused stored `customers.field_enabled`/`service_enabled` columns** — deliberately out of scope this session (a separate, bigger schema-migration call); they're just no longer written or read. _(added 2026-09-01)_
 - **Also found, unrelated to this fix**: a real recurrence of the eq-shell worktree Edit-tool/Bash filesystem desync (3rd distinct worktree now) — a first typecheck/test run silently validated stale pre-edit files; caught via a direct `grep` for a distinctive added string, fixed via the documented Bash-reconstruction workaround, and found a genuine duplicate-line-at-splice-seam bug along the way (one syntax-breaking variant caught by `tsc`, one cosmetic double-blank-line variant that wasn't). Logged to the `worktree-tool-filesystem-desync` Claude memory note.
@@ -870,6 +860,13 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 ---
 
+## eq-shell: root-caused why 5 archived staff kept reappearing — it was actually 87 people, every night — FIXED + LIVE same day, by a concurrent session (2026-07-24)
+
+- [ ] **An automatic check is scheduled for the morning of 2026-07-25 to confirm the fix actually held overnight** — will look at the 5 originally-reported people directly, check for any suspicious mass-reactivation pattern across staff generally, and report back. Not yet confirmed by Royce himself. _(added 2026-07-24)_
+- [ ] **`eq_reconcile_worker_sync()` (the nightly dispatcher itself, jvkn `pg_cron` job id 2) still isn't tracked in any repo migration** — a governance gap independent of the bug above, not touched by this fix. Not urgent now that the harmful write is gone, but worth bringing under the normal migration pipeline at some point. _(added 2026-07-24)_
+
+---
+
 ## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24)
 
 - [ ] **Not yet click-tested against the newest version** — the tick/cross feedback and the job title column are live, but nobody has run a fresh file through *this* version of the screen yet. _(added 2026-07-24)_
@@ -880,13 +877,13 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ## eq-shell: SKS Job Creation export now fills in the 3 fields it always had blank + broader customer search (2026-07-23)
 *Royce sent a real "JobCreation-SKS-17359-Equinix..." spreadsheet and asked to check wiring for 3 fields on it, plus whether customer search covers sites/contracts.*
 - ~~Not yet click-tested live in the browser~~ → **it was tested (2026-07-26), and all 5 fields (B17/B27/B28/B29/B30) came back blank on a real export.** Root cause: a duplicate `eq_get_job_creation` overload — `CREATE OR REPLACE` only replaces a function with an identical arg signature, so the new fields landed on an unreachable 1-arg overload while `job-creation.ts`'s service-role caller actually invokes the 2-arg one. Fixed by migration 0202 (dropped both, consolidated into the single correct 2-arg signature); confirmed live via direct RPC call on the real Equinix quote.
-- [ ] **Royce hasn't yet re-pulled a fresh export to eyeball the fixed cells himself** — the fix was confirmed via direct RPC call, not a real export download; he asked for this exact check but got redirected before it happened. _(added 2026-07-26)_
+- [ ] **Royce hasn't yet re-pulled a fresh export to eyeball the fixed cells himself** — the fix was confirmed via direct RPC call, not a real export download; he asked for this exact check but got redirected before it happened. _(added 2026-07-26)_ **Checked 2026-09-07 via `/triage`: still genuinely needs Royce's own eyes on a real download — that's the whole point, a second automated check wouldn't satisfy it. No live Shell session in this environment to pull one on his behalf either. Where to do it: open the quote in Job Creation and export — server-side generator is `eq-shell/netlify/functions/job-creation.ts`. Still open.**
 
 ---
 
 ## eq-shell: Sentry check — one new error, tied to the licence-upload question above (2026-07-23)
 *Asked to check Sentry after the fix above shipped.*
-- [ ] **New: the automatic "read the certificate for me" step failed once on a PDF upload, rejected by the server that does the reading.** Didn't affect the person uploading — it just quietly fell back to typing the details in by hand, same as if no reading happened at all. Only happened once so far. Task chip spawned to check whether the two systems' shared password has gotten out of sync (which would keep failing) or it was a one-off. _(added 2026-07-23)_
+- [x] **New: the automatic "read the certificate for me" step failed once on a PDF upload, rejected by the server that does the reading.** Didn't affect the person uploading — it just quietly fell back to typing the details in by hand, same as if no reading happened at all. Only happened once so far. Task chip spawned to check whether the two systems' shared password has gotten out of sync (which would keep failing) or it was a one-off. _(added 2026-07-23)_ **Resolved 2026-09-07 via `/triage`: Sentry search for "certificate" on eq-shell (30d window) returns zero issues — no recurrence in the 46 days since, confirmed one-off. Closing.**
 - Two other Sentry items are already known/tracked, unchanged since yesterday's digest — not repeated here.
 
 ---
@@ -897,15 +894,26 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 
 ---
 
+## eq-shell: cleared a false-alarm security check that was blocking every open shell PR (2026-07-22)
+*A routine automated safety check started blocking every shell change today because it misread a brand-new, actually-safe table as wide open. Fixed by adding it to the check's existing list of known-safe patterns (see the fuller writeup in `sks/pending.md` — the underlying investigation also turned up a real, separate bug on SKS's database, now fixed).*
+- [x] **PR #945 (the licence-upload fix) will still show this same check as failed** until that branch itself picks up the latest main — merging a fix to main doesn't retroactively clear an already-running check on a different, older branch. Whoever picks #945 back up just needs to update/rebase that branch; not a real problem, just easy to misread as still-broken. _(added 2026-07-22)_ **Closed 2026-09-07 via `/triage`: PR #945 no longer exists on eq-shell (404 via GitHub) and isn't in any repo's current open-PR list — either long since merged or abandoned. Nothing left to rebase. Moot.**
+
+## Deleted accounts were leaving a login record behind — asked to "restore" them, found the opposite was true (2026-07-22)
+*Six leftover login records had no matching sign-in identity. The obvious read was that they were half-created accounts from invites that never completed, and there's an existing admin button that finishes those off. Checking the history first showed they were the reverse: real accounts that people had used — added their licences, invited colleagues — and then deleted. Pressing that button would have re-created working logins for six people who'd asked to be removed.*
+- [ ] **Six leftover records still need clearing — needs your hand.** A prepared script is sitting in the repo (`scripts/cleanup-orphaned-shell-users.sql`). It snapshots first, re-checks six safety conditions before touching anything, and won't save changes unless you confirm the numbers look right. It can't be automated — that database has no automatic update path. Nobody is affected in the meantime; none of these accounts can be signed into. _(added 2026-07-22)_
+- [ ] **The old admin button should be guarded or retired.** It still exists and would still do the wrong thing if pointed at records like these. Its original job was finished off by fixes that went live a week ago, so it may simply be dead. Separate task, chip raised. _(added 2026-07-22)_
+
+---
+
 ## eq-shell: server error-tracking was silently dropping events, then EQ Ops pricing was found badly broken and fixed (2026-07-21)
 *Two separate arcs in one session. First: server-side error reports from scheduled background jobs (like the daily "workers who were never invited" check) were being silently thrown away before they reached the alerting tool — so problems like the 45 never-invited workers below went unnoticed. Second: Royce reported EQ Ops pricing was broken in three ways at once — couldn't save setup changes, labour cost had gone to zero, and there was no way to reorder line items on a quote or filter the quotes list. What looked like one bug turned out to be three unrelated ones, plus a real data-loss regression traced back a week.*
-- [ ] **A separate, already-diagnosed cause of people getting logged out unexpectedly** (a background check treats "the server was just slow to answer" the same as "you're not logged in any more," and logs you out either way) is understood but not yet built, since it changes how login/session behaviour works and needs an explicit go-ahead first. _(added 2026-07-21)_
+- [ ] **A separate, already-diagnosed cause of people getting logged out unexpectedly** (a background check treats "the server was just slow to answer" the same as "you're not logged in any more," and logs you out either way) is understood but not yet built, since it changes how login/session behaviour works and needs an explicit go-ahead first. _(added 2026-07-21)_ **Checked 2026-09-07 via `/triage` — this framing is stale, not actioned: `App.tsx`'s `SessionProvider` shows this exact problem class has had real, continuous engineering since (#888, #1174, then deadline-bounding #1736/#1764/#1778), and it regressed again as recently as 2026-09-06 (Sentry "EQ-SHELL-T/V"), tracked under the separate "EQ Field white-pane stall" section below. The retry logic reduces false logouts but the final fallback still logs out on a fully-exhausted stall — the underlying tension this bullet names is real and current, just not "not yet built." Did not write a session/auth code change on this click — no explicit go-ahead for a specific approach, and any fix belongs in the already-active thread, not as a second parallel effort. Left open; superseded by the white-pane-stall tracking above as the live record.**
 
 ---
 
 ## eq-shell: Staff Company field for subcontractors + a real approval bug where the chosen role got silently dropped (2026-07-21)
 *Asked to rename the Staff page's "Agency" field to "Company" and open it up to subcontractors as well as labour-hire (so you can record who a sub actually works for), plus flagged that approving Alabbas's sign-up as a subcontractor still left him recorded as a direct employee. The second part turned out to be a real bug, not a one-off mistake.*
-- [ ] **Worth a quick look once deployed:** confirm the Company field shows/saves correctly for Labour Hire and Subcontractor (desktop + mobile), and re-export SKS-17386 to confirm Clarifications now sits left-aligned without needing a manual fix in Word. _(added 2026-07-21)_
+- [ ] **Worth a quick look once deployed:** confirm the Company field shows/saves correctly for Labour Hire and Subcontractor (desktop + mobile), and re-export SKS-17386 to confirm Clarifications now sits left-aligned without needing a manual fix in Word. _(added 2026-07-21)_ **Checked 2026-09-07 via `/triage`: same blocker as the rest of this bucket — no live Shell session in this environment for either the UI click-test or the SKS-17386 doc re-export (`quoteDocGenerator.ts` needs an authed session). Still open; needs a real Shell sign-in to close out.**
 
 ---
 
@@ -924,11 +932,13 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ## NSW Comms — resource dashboard, demo follow-up, and a real speed fix (2026-07-17/19, MERGED + LIVE)
 *Asked to polish NSW Comms: it was slow to load and Royce wanted a resource-overview screen up front instead of the raw job list. Built that, then Patrick (runs Microsoft's Sydney account from Melbourne) saw a demo and asked for one more thing; a couple of days later Royce reported the whole page was still "VERY slow" and asked what could be done — that turned out to need actual measurement, not a guess.*
 - [ ] **Deferred: who should get the weekly summary email?** Built and ready, just needs a recipient list from Royce before it's switched on. _(added 2026-07-17)_
+- [ ] **Declined for now (Royce's call): a personal calendar feed per crew member, and a weather warning near Microsoft dock dates.** Offered as options alongside the above; not built. _(added 2026-07-17)_
 
 ---
 
 ## eq-shell speed + offline review — shipped 6 speed fixes (2026-07-16/19, MERGED + LIVE)
 *Asked for a review of eq-shell's loading speed and what could be done about lost work if someone loses connection or leaves a page open. Checked live numbers first (actual page-load times, how many people are on mobile, real error logs) rather than guessing, then started with two specific fixes Royce asked for. After those landed, kept going through several more rounds of "what's the next thing worth fixing" — in hindsight, stretched one merge instruction further than intended and kept shipping without checking back in each time. Royce caught it ("are we in a rabbit hole here?") and the session stopped there. Everything shipped is real, tested, working — but the scope crept past what was explicitly asked for partway through.*
+- [ ] **Deferred: bigger first-load speedup** — breaking one large file into smaller pieces that only load when needed. Real win, but a bigger change that needs a hands-on check, not just automated tests. _(added 2026-07-19)_
 - [ ] **Deferred: extend the "you'll lose this" warning** to other forms — site details, invites, admin settings. Currently only on quotes. _(added 2026-07-19)_
 - [ ] **Deferred: make long lists load a page at a time** instead of everything at once (quotes, comms roster, staff, customers). _(added 2026-07-19)_
 - [ ] **Now in scope, not yet built: extend the "you'll lose this" warning to more forms** (site details, invites, admin settings — currently only quotes), a plain "you're offline" banner when the connection drops, and re-checking sign-in status automatically when someone comes back to a tab left open a while. _(added 2026-07-19)_
@@ -938,6 +948,7 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE)
 *The dashboard's "Activity" and "Upcoming" columns were weak — a raw event log nobody reads and a column that was usually empty. Root cause: the AI briefing engine already computes a rich cross-app picture every load (licences, incidents, service/calibration due, quote signals, crew capacity) and then compresses all of it into a 3-sentence paragraph, discarding the structured data. Worked through concept mockups with Royce, steelmanned the direction, then narrowed scope on his explicit call: no pipeline/dollar figures anywhere on the board — "Core isn't the home of all commercials," so any revenue total would be partial by construction and confidently wrong. Landed on three bands scoped to what canonical actually has authority over: Compliance, Outstanding works (Service), Crew/Operations.*
 - [ ] **Royce to eyeball the live dashboard signed in** — the endpoint/bundle/error-monitoring checks are all clean, but only a signed-in pass confirms the three bands render correctly and the rostered-but-lapsed join surfaces real people. _(added 2026-07-17)_
+- [ ] **Gate keys are interim** (`field.view`/`service.view`) — swap to the cluster-1 granular keys (`field.view_licences` etc., PR #885, concurrent session) once that ships. _(added 2026-07-17)_
 - [ ] **Phase 2 deferred: crew-demand overlay.** Needs a `crew_required` column added to `app_data.jobs` (One Pipe migration, both planes) so the "can we staff what we've won" verdict has a real demand side — supply side (deployable crew) is live now, demand isn't wired yet. _(added 2026-07-16)_
 - [ ] **Phase 3 deferred: the one commercial signal permitted by the scope decision** — "N quotes won but no job number yet," gated behind `quotes.view`, no dollar amount, off the default board. Not built. _(added 2026-07-16)_
 
@@ -955,6 +966,7 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ### Follow-up: a worker with a phone-only sign-in record still ended up with two, unmerged (2026-07-20)
 *A real SKS worker (Will Brown) ended up with two disconnected sign-in identities: his real one (phone-based, holding his SKS access + licences) and a second, separate one (email/password) created via an invite-accept on 2026-07-06 — which orphaned his SKS access under the new, empty account. His data was hand-repaired before this session. PR #862 above (email-only matching) does NOT close this gap: tested live, it would still return the wrong (duplicate) account for someone whose real record has no email on file.*
 - [ ] **Still open: what actually created Will's duplicate account.** The Cards lead above is unconfirmed (Royce can't identify the Sydney session) — back to genuinely unknown. Not urgent, his data is already repaired. If it resurfaces, next step is probably asking Will directly whether he tried a second sign-up around 2026-07-06 09:00 UTC, rather than more log forensics — the available logs are exhausted. _(added 2026-07-20)_
+- [ ] **Outbound email → dev@eq.solutions (staged, NOT deployed).** Changed all system email to send FROM dev@ and route replies to dev@ (was noreply@ with replies going nowhere), plus the 3 in-app "contact us" links → dev@. Code staged on branch `claude/email-new-users-levers-baab69` (uncommitted); the sender env `EMAIL_FROM` is already set on Netlify but needs a redeploy to take effect. Decide: commit → PR → deploy, or drop. _(added 2026-07-15)_
 
 ---
 
@@ -981,6 +993,12 @@ Full build/fix history for this incident (CHECK 10-14, PRs #1618/1622/1623/1627/
 ## ✅ eq-shell lighthouse recon → 6 fixes shipped to core.eq.solutions (2026-07-13, ALL MERGED + DEPLOYED)
 *Scheduled lighthouse recon on eq-shell surfaced 14 findings; the 6 highest-value non-duplicates were filed unarmed, then (on Royce's go) built, reviewed, and merged. An independent adversarial review pass before merge caught two real bugs in Claude's own fixes and they were corrected before landing. All 6 auto-deploy live to core.eq.solutions.*
 - [ ] **8 lower-value lighthouse findings left unfiled (queued)** — TOTP replay window, canonical-api warm-Lambda scope cache, dashboard-counts missing the issues entity, README migration-range drift, check-perm-sync error message, unused vendored `eq-format-ui`, a Unicode-glyph success icon on the public quote page. Pick up in a future recon if worth it. _(added 2026-07-13)_
+
+---
+
+## ✅ eq-shell — invite acceptance 500 fixed (Leif Lundberg, 2026-07-13, MERGED + LIVE)
+*Leif (SKS manager) hit "Could not accept the invite" on the Welcome-aboard screen. Generic error = an un-mapped `server-error` 500 from accept-invite's user INSERT, not a validation error.*
+- [ ] **Leif still needs to accept** — his invite is valid/unused (token regenerated 2026-07-13, expires 07-20). Royce sending him the link + the how-to page (`scratchpad/leif-signin-howto.html`, artifact `de35bebb`). _(added 2026-07-13)_
 
 ---
 
@@ -1019,7 +1037,8 @@ Reported: `core.eq.solutions/sks/field` throws "Minified React error #418" in co
 - Build #732 despite scope ambiguity — fleet chose remove-anon, verified against live before landing.
 
 **Deferred (added 2026-07-11):**
-- [ ] **Arm/build the queued fleet bugs — down to 1 of 5.** Re-checked live 2026-09-07: #736/#737 merged (PRs #749/#750), #734 closed, #705 done — only #735 (RLS `(select)` wrapping) remains open/unarmed, still your call to arm. _(added 2026-07-11, updated 2026-09-07)_
+- [ ] **Arm/build the queued fleet bugs** — #736 (invite-users-batch entitlements), #737 (zero-row 404) armed, not yet built. #734 (quote-job-consumer) + #735 (RLS `(select)` wrapping) filed UNARMED — Royce's call to arm. #705 (eq-intake xlsx) DONE this session — see below. _(added 2026-07-11)_
+- [ ] **zaap tender tables are now service_role-only** (no `authenticated` tenant policies — the create migration's `field_authed_all_*` never reached zaap). Fine if the EQ app reads them via service_role; add the authenticated tenant policy if Field ever needs authed access there. _(added 2026-07-11)_
 
 **Notes / substrate corrections:**
 - **eq-shell canonical-api control-plane DB = eq-canonical (`jvknxcmbtrfnxfrwfimn`), NOT ehow** — confirmed by `shell_control.tenant_routing` living on jvkn, not ehow.
@@ -1054,6 +1073,10 @@ Reported: `core.eq.solutions/sks/field` throws "Minified React error #418" in co
 **Root cause found — the real cause of "EQ Field Timesheets stuck on a loading spinner for over a minute":**
 
 **Multi-agent audit (Royce approved running as a workflow) — found 8 more real instances of the same bug class:**
+
+**Deferred:**
+- [ ] **EQ Service "session expired, please reconnect" stuck screen — root cause still genuinely unknown.** Two chased theories were investigated and explicitly REFUTED with hard evidence: React error #418 (hydration mismatch) is a dated, known, confirmed-non-blocking noise pattern (2026-07-05 team note, 705 events/14d, essentially every active user) — NOT the cause. A suspected hanging `token-exchange` call was also refuted — real Netlify function logs showed every invocation completing in under 4s with zero errors; the "pending forever" read came from a flaky automated browser tab (same tab independently threw an unrelated CDP "renderer frozen" error). Two chips built on these now-retracted theories (`task_2911c80d`, `task_abbb7fd0`) were already started by Royce before the retraction landed — worth redirecting or discarding. The actual cause of the stuck-reconnect screen is still open. _(added 2026-07-08)_
+- [ ] **EQ Service sidebar-header tenant logo clipped** (in `ShellSessionRecovery`'s fallback UI specifically, not the top bar — top bar renders fine live) — chip `task_14031bea` was already started by Royce before this correction landed; built on a stale "top-bar alignment" framing. _(added 2026-07-08)_
 
 **Notes:**
 - **LESSON — don't trust a single automated-browser "pending forever" network read as proof of a server-side hang.** Cross-check against a harder source of truth (real server logs) before reporting a "confirmed" root cause — this session did that correctly on the second pass, but only after already reporting the wrong thing once. `netlify logs --source functions --function <name> --since <window> --json --filter <site>` pulls real historical function invocation logs from the CLI in this monorepo — needs `--filter <site>` to skip an interactive project-picker prompt that otherwise hangs in a non-interactive shell.
@@ -1156,12 +1179,32 @@ Reported: `core.eq.solutions/sks/field` throws "Minified React error #418" in co
 - [ ] **Manual click-through of PR #641 once deployed** — load `/_platform/tenants`, confirm no regression on Provision/Retry/Archive/Reactivate **and** the new hard-delete action from PR #642, and (if a stuck row exists, or one is forced) confirm "Stuck — Cancel" appears only past 20 min and Retry re-provisions cleanly afterward. _(added 2026-07-04)_
 ---
 
+## ⏩ Session close — 2026-07-03 (eq-shell) — Ops site create/edit shipped (PR #616 open)
+
+**Completed (eq-shell, branch `claude/ops-site-create-edit`, worktree):**
+
+**Deferred (added 2026-07-03):**
+- [ ] **Remove worktree `.claude/worktrees/ops-site-create-edit`** — now that #616 is merged, safe to `git -C C:\Projects\eq-shell worktree remove .claude/worktrees/ops-site-create-edit`. _(added 2026-07-03)_
+---
+
 ## ⏩ Session close — 2026-07-03 (eq-shell) — steward-drift audit closed out: PR #608 MERGED (gate green, code-only)
 
 **Completed (eq-shell, PR #608 merged `6882f40` → auto-deploy core.eq.solutions):**
 
 **Deferred (added 2026-07-03):**
+- [ ] **Commit eq-intake/CLAUDE.md** — left untracked (eq-intake tree dirty on `feat/armada-sprint-polish`); fold into whichever branch lands next. _(added 2026-07-03)_
 - [ ] **Coordinated `--reconcile-ledger`** — after go-live settles: renames/stamps the 16 bare 0103–0116/0141 rows, drops `057` + go-live hand rows. Run only WITH eq-intake (their numbering reads the live ledger). _(added 2026-07-03)_
+---
+
+## ⏩ Session close — 2026-07-03 (eq-shell) — staff pending-connections roster-name fallback fixed (PR #609, blocked on gate)
+
+**Completed (eq-shell, PR #609 open — CI green except the pre-existing red drift gate):**
+
+**Decided (Royce):**
+- Land #609 by fixing the gate first via #608 (chosen over admin-bypass; the auto-mode classifier had separately declined an agent `--admin` self-merge, correctly).
+
+**Completed:**
+- [ ] **Tenant-migrate run 28638433643 was dispatched then CANCELLED** — dispatched from the #608 branch on the stale premise that a live apply was needed to green the gate; the newer session-state showed #608 is code-only, and applying unmerged branch migrations risks checksum/ledger mess. Nothing was applied (cancelled at the production-approval gate, never approved). Post-merge apply of 0155/0156 from main is the normal One Pipe dispatch — separate explicit call. _(added 2026-07-03, needs your call)_
 ---
 
 ## ⏩ Session close — 2026-07-02 (eq-shell) — Access Control security hardening (PR #590 + #595, consolidated)
@@ -1231,6 +1274,16 @@ Reported: `core.eq.solutions/sks/field` throws "Minified React error #418" in co
 - [ ] **`issues.*` PermKeys activation** — Phase 3 when Issues UI ships for EQ plane; currently deferred constants _(added 2026-06-30)_
 ---
 
+## ⏩ Session close — 2026-06-30 (part j) — eq-shell branch prune (215→49) + worktree cleanup
+
+**Completed (eq-shell git hygiene — no product code touched):**
+
+**Deferred (added 2026-06-30) → RESOLVED same day:**
+- [ ] **3 docs-spike branches KEPT — Royce's call to delete** — `claude/design-system-tokens` (41d; early @eq/tokens design spec + design-audit-2026-05-20.md), `claude/epic-ellis-987f75` (23d; single SCHEMA-GOVERNANCE.md note), `claude/vigilant-cray-4e074e` (36d; HANDOFF-*.md session notes). These hold **unique unmerged docs not in main** — superseded, but deleting unmerged work needs your sign-off. Likely all 3 safe to `git branch -D` _(added 2026-06-30)_
+
+**Final state:** eq-shell local branches **49 → 9** (6 active + 3 docs-spikes pending your call); remote **14 → 5** (only active: main, ops-pipeline-enhancements, staff-matrix-fixes, audit-team-access-events, hex-burndown-staff).
+---
+
 ## ⏩ Session close — 2026-06-30 (part i) — Licence-expiry config + CI/auth-test hardening + platform audit + security re-verify
 
 **Completed (eq-shell, merged + deployed):**
@@ -1272,6 +1325,7 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 
 **Deferred (added 2026-06-30):**
 - [ ] **Verify header→GUC actor capture** — confirm `actor_id` populates on the first real UI edit; if it shows "Automatic", the change still logs but who-attribution needs a follow-up _(added 2026-06-30)_
+- [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn), operator-only, separate from the tenant page _(added 2026-06-30)_
 ---
 
 ## ⏩ Session close — 2026-06-29 (part d) — Licence-expiry notifications: fixed (wrong DB) + hardened
@@ -1337,6 +1391,13 @@ PR #379 revoked the 4 worker-PII tables (the instances). The *class* + ratchet a
 - [ ] **2 unclaimed worker invites past grace period** (Sentry EQ-SHELL-1W) — invite `fc318823…` (William Brown, created 07-30) and `84342181…` (Callum Treharne, created 08-26). Re-investigated 2026-09-05: the two are NOT symmetric as this line originally implied. William already has a linked shell account and 7 real licences visible — his invite's `claimed_at` just never got set (likely linked through a different path than the one that stamps it), a bookkeeping gap with no live consequence. Callum is genuinely still unclaimed (matches eq-field's own separately-tracked "~7 SKS staff missing" list) — nothing to do but wait for him to sign up. _(added 2026-09-02, corrected 2026-09-05)_
 
 PR #1736 (auth-stall fix + 2 more bugs found on review) merged and live; the one operationally-relevant `org_membership` finding (Vinicius ZARA POLI, `365e58ba`, 2 licences on a grant that should've been revoked with his 2026-08-24 deactivation) was investigated and fixed on Royce's go-ahead — both his `org_memberships.status` and `user_tenant_memberships.active` rows corrected on jvkn. Full detail in `eq/changelog/eq-shell.md` and `sessions/2026-09-02.md`. **2026-09-05 update: this was one instance of a class, not a one-off** — a full sweep found 13 more identities in the identical state (active `org_memberships` grant surviving a deactivated shell account), all revoked the same way (Royce's explicit "decide the org_memberships cleanup" call). Root cause (nothing kept `org_memberships.status` in sync with `shell_control.users.active` on deactivation) is now fixed: [eq-shell PR #1773](https://github.com/eq-solutions/eq-shell/pull/1773) (this was `task_9e4a9490`) adds a `shell_control.users` trigger that revokes the deactivated user's active `org_memberships` row(s) automatically, closing all three known write paths (`edit-user.ts`, `entity-patch.ts`, `check-shell-staff-active-drift.mjs`) at once rather than fixing them individually. Merged, dispatched, and confirmed live on jvkn 2026-09-05 (trigger + function verified directly via `pg_trigger`/`pg_get_functiondef`, not just the ledger record). Two adjacent items deliberately left out of that PR — `shell_control.user_tenant_memberships.active` showing its own independent staleness (the Vinicius case above), and hardening the two licence-gating functions to also check `users.active` directly — spawned as a follow-up (`task_cbd9b871`). **2026-09-05 close: both closed.** Investigated live first: no DB-level trigger or scheduled backstop exists for `user_tenant_memberships.active` — the only sync path is an async webhook chain (tenant-plane trigger -> `field-identity-push.ts` -> `eq_cards_admin_sync_tenant_access` RPC) with 3 identified silent-failure points. Built and merged both fixes: [PR #1775](https://github.com/eq-solutions/eq-shell/pull/1775) (read-side hardening — `staff-canonical-licences.ts`/`cards-export-licences-background.ts` now re-derive live tenant membership via a new `filterLiveTenantMembers()` helper instead of trusting `org_memberships.status` alone) and [PR #1776](https://github.com/eq-solutions/eq-shell/pull/1776) (new daily `check-tenant-membership-roster-drift.mjs` + scheduled workflow, alert-only, modelled on `check-shell-staff-active-drift.mjs`). Both merged (CI green throughout), confirmed live via commit-ancestry (a concurrent PR #1778 superseded both individual Netlify deploys — normal "Skipped" behaviour under concurrent merging, not a failure). Running #1776's own classification logic against live data (the script itself couldn't run in this environment — no Management API token) found 11 real `sks` identities already in the dangerous drift state (roster inactive, tenant membership still active) — all 11 fixed live via `eq_cards_admin_sync_tenant_access`, re-verified 0 remain. Checked the `eq` tenant too: N/A, `app_data.staff` on zaap has zero `cards_worker_id`-linked rows to compare. One related, out-of-scope finding spawned separately: `hasActiveTenantMembership()` in `_shared/tenant-membership.ts` has the same single-flag gap, reused in 5 other call sites including JWT minting — flagged as `task_a1b539c3`, Royce started it, running independently as of this close.
+
+---
+
+## eq-shell: identify()/alias() spam every ~5 minutes — fixed (PR #1745, merged + live)
+*A PostHog review of eq-field/eq-shell traffic found Shell firing 568 `$create_alias` events in one day for just 34 users — 4 admins with hours-long open tabs accounted for two-thirds of it. Root cause: an intentional 5-minute session re-hydration poll (`App.tsx`) calls `identifyUser()` on every tick, which unconditionally called `ph.alias(email)` — `posthog-js`'s `alias()` has no de-dupe for repeat calls (verified against the actual shipped SDK bytes, not docs), unlike `identify()` which does. Not user-visible, not an identity-fragmentation bug (distinct_id never changed) — pure telemetry noise polluting the person-merge graph. Fixed with a last-aliased-email guard, ~17 lines. Confirmed live: fresh page loads after the fix are clean; the 2 heaviest pre-fix offenders kept ticking for ~1.5h post-deploy from tabs already open before it shipped — expected (stale in-memory bundle), not a flaw. Full detail: `eq/changelog/eq-shell.md`, `sessions/2026-09-02.md`.*
+
+- [ ] Nothing open — fix is live and self-verified. Logged for record only. _(added 2026-09-02)_
 
 ---
 

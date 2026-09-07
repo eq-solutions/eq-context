@@ -11,6 +11,8 @@ status: live
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
+**Budget:** ~500 lines (currently 1,284 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
 ---
 
 ## eq-field: Sharon Maroni couldn't see anyone's timesheets — the "supervisors see every crew" fix from 2026-09-04 never reached the database — FIXED, merged, live (2026-09-07)

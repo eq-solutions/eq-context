@@ -11,6 +11,8 @@ status: live
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
+**Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
 ---
 
 ## eq-solves-service: new-PC environment setup + full Dependabot/CI-health batch cleared, PR #791 (report reissue) shipped live (2026-09-07)
