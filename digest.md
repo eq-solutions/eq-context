@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-07 19:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-07 19:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-07 19:32 UTC → 2026-09-07 19:43 UTC)
+## Since last refresh (2026-09-07 19:43 UTC → 2026-09-07 19:56 UTC)
 
-- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
-- Merged: eq-shell [#1797](https://github.com/eq-solutions/eq-shell/pull/1797) feat(intake): add eq_tidy_read_entity_columns for column-pro
-- Merged: eq-shell [#1796](https://github.com/eq-solutions/eq-shell/pull/1796) feat(staff): add a real Manager (reporting-line) field, SKS 
-- Merged: eq-shell [#1794](https://github.com/eq-solutions/eq-shell/pull/1794) fix(shell): extract HubSidebar's icon maps into their own mo
-- Merged: eq-shell [#1793](https://github.com/eq-solutions/eq-shell/pull/1793) feat(staff): redesign Teams (formerly Org Chart) for scale a
-- Merged: eq-shell [#1792](https://github.com/eq-solutions/eq-shell/pull/1792) chore(intake): re-vendor eq-intake to eq-solves-intake@6e1e2
-- Merged: eq-shell [#1790](https://github.com/eq-solutions/eq-shell/pull/1790) fix(security): block reset-user-pin from targeting a platfor
-- Merged: eq-shell [#1789](https://github.com/eq-solutions/eq-shell/pull/1789) fix(security): warn loudly when ENFORCE_IFRAME_ORIGIN isn't 
+- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
+- Merged: eq-shell [#1798](https://github.com/eq-solutions/eq-shell/pull/1798) feat(staff): reframe Resourcing around conversations happeni
+- Merged: eq-shell [#1791](https://github.com/eq-solutions/eq-shell/pull/1791) fix(security): a revoked session can no longer mint credenti
+- Merged: eq-shell [#1788](https://github.com/eq-solutions/eq-shell/pull/1788) docs(env): document the full .env.example surface, including
+- Merged: eq-shell [#1785](https://github.com/eq-solutions/eq-shell/pull/1785) fix(field-iframe): don't alarm on stall/draw notices while t
+- Merged: eq-field [#936](https://github.com/eq-solutions/eq-field/pull/936) fix(security): supervisor role gets tenant-wide read on Time
+- Merged: eq-field [#935](https://github.com/eq-solutions/eq-field/pull/935) v3.5.689 — FIX: Timesheets day/date header text was low-cont
+- Merged: eq-field [#934](https://github.com/eq-solutions/eq-field/pull/934) v3.5.689 — FIX: team-less person's roster row (leave include
 
 ## ⚠ Needs you (14)
 
@@ -43,6 +43,7 @@ _2026-09-07 19:43 UTC · what needs your attention. Full snapshot: [suite-state.
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b`, `eslint`, full `vite build`, and the live-deploy check above; no Shell session/credentials in this environment. Worth a real pass on all three: open a record, refresh, confirm it reopens the same one instead of dropping back to the list. _(added 2026-09-07)_
+- **eq-shell** · **Not click-tested live by a person** — verified via full build/test/lint, live DB queries (ledger + catalog), and production deploy-ancestry only. Worth a real pass: open `/intake`'s Health score, Decay, and Licence-expiry views for the SKS tenant and confirm they still show correct data now that they're reading a narrower column set. _(added 2026-09-07)_
 - **eq-shell** · **Bulk backfill still blocked on Royce** — `scripts/import-sks-manager-lines.mjs` exists (double-gated dry-run/`--apply`, reuses the identity-bridge resolver from `etl-nspbmir-to-ehow.mjs`) but its `parseExport()` shape is provisional — nobody has seen a real export from `SKS_NSW_Org_Chart_Interactive.html`'s own Export function yet. Needs Royce to supply the file; run dry-run first, review the unmatched/ambiguous report with him before `--apply`. _(added 2026-09-07)_
 - **eq-shell** · **Not click-tested live by a person** — verified via full build/test/lint (591/593 passing) + live DB queries (migration applied, security-group grant confirmed, production deploy confirmed via exact commit-ref match), not an actual signed-in click-through. Worth a real pass: as Royce, confirm the Manager field shows/edits correctly on a real staff profile; as any other account, confirm it's completely absent (view and edit). _(added 2026-09-07)_
 - **eq-shell** · **None of tonight's 4 fixes have been click-tested live by a person** — verified via full test suite + lint + an independent merge-readiness audit only. Worth a real pass once convenient: try resetting a platform_admin's PIN as a regular manager (should 403 `cannot-reset-platform-admin`); try switching tenant on a session that's been logged out/revoked elsewhere (should 401, not succeed).
@@ -53,7 +54,6 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05; deferred again 2026-09-07 via `/triage` — still nobody pointed at a disposable test account)_
 - **eq-shell** · **PR #1778 (a third gap found in #1764 itself — `tenant_config`/`tenant_routing` fallback) not click-tested by a person.** Shipped and confirmed live same day as the two rows above (full detail: `eq/changelog/eq-shell.md`, `sessions/2026-09-05.md`); no Shell session/credentials in this environment to click-test it directly. _(added 2026-09-05)_
 - **eq-shell** · **3 of the 4 fixes verified only via `tsc -b --force` + eslint + `pnpm test` (including a negative-proof test per fix: fails on the pre-fix code, passes on the fix) — not a real click-through.** Only PR #1760's rate-limit reordering got an end-to-end live check (real HTTP requests against its deploy preview, cross-checked against the live `rate_limit_buckets`/`audit_log` tables). Worth a real pass on the other three: trigger `update_site`/`add_site` with an inactive contact and confirm it's rejected before any write lands; delete a user with linked staff/worker records and confirm the purge stays inside one tenant; open a PR with a deliberately colliding migration prefix and confirm CI fails it. _(added 2026-09-04)_
-- **eq-shell** · **Not click-tested live** — verified via `pnpm exec tsc -b --force` and `eslint` (both clean) plus an independent merge-readiness audit before merging. This machine's Node 24 breaks `vite build`/`netlify dev` for this repo (pre-existing, unrelated to this change), so no live click-through was possible. Worth a real pass: KPI numbers match the table's own counts, per-team rows sum to the roster totals, mobile view unchanged. _(added 2026-09-02)_
 _…and 260 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
@@ -84,6 +84,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-07 | eq-shell | [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles |
 | 2026-09-07 | eq-shell | [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca45 |
 | 2026-09-07 | eq-shell | [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kanban |
 | 2026-09-07 | eq-shell | [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd49a |
@@ -98,16 +99,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-07 | eq-shell | [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the SKS ba |
 | 2026-09-07 | eq-shell | [#1802](https://github.com/eq-solutions/eq-shell/pull/1802) fix(auth): don't clear a cached session on a pure verify-shell-se |
 | 2026-09-07 | eq-shell | [#1800](https://github.com/eq-solutions/eq-shell/pull/1800) fix(security): bump fast-uri past 4 newer SSRF/host-confusion adv |
-| 2026-09-07 | eq-shell | [#1799](https://github.com/eq-solutions/eq-shell/pull/1799) fix(customers): update the customer Field/Service pill live when  |
 _Showing 15 of 78 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (279 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (281 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (237 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (66 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
-- **eq-solves-intake** (21 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
+- **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
@@ -135,11 +135,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1417 | 197 / 86 | 5 | 73 |
+| [eq-shell](eq/pending/eq-shell.md) | 1430 | 198 / 87 | 5 | 73 |
 | [eq-cards](eq/pending/eq-cards.md) | 355 | 48 / 17 | 0 | 9 |
 | [eq-field](eq/pending/eq-field.md) | 1216 | 175 / 68 | 28 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 378 | 49 / 18 | 0 | 20 |
-| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 164 | 14 / 7 | 0 | 17 |
+| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 164 | 13 / 6 | 2 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 46 | 3 / 1 | 0 | 2 |
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-07 19:43 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-07 19:56 UTC._
