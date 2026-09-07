@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,16 @@ status: live
 # EQ Shell — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-shell: new-PC dev environment set up — build/test green, netlify dev mostly working (2026-09-07)
+*Royce's new PC. `node_modules` had been copied over from the old machine rather than freshly installed — pnpm's hardlinked store doesn't survive that, causing a `tsup` build failure (`Cannot find module 'resolve-from'`). Wiped and reinstalled; `pnpm run build` and `pnpm test` now pass clean (581/583, 2 skipped). Netlify CLI logged in (`dev@eq.solutions`) + linked to the `eq-shell` site; pulled the available dev-context env vars into local `.env` via the CLI (kept secret values out of the conversation). Windows Developer Mode had never been enabled on this machine, blocking the symlink creation pnpm and Netlify's local function bundler both need — Royce enabled it, confirmed fixed via a live Node.js symlink test.*
+
+- [ ] **`.env.example` is stale** — missing vars the README's own "Required environment variables" table documents as required (`TENANT_ROUTING_MASTER_KEY`, `CANONICAL_API_KEY_*`), while Netlify's dev context has ~20 configured vars not in the template at all (`CANONICAL_SUPABASE_*`, `FIELD_SUPABASE_*`, Twilio, Gotenberg, Google Doc AI). Worth reconciling against both sources. _(added 2026-09-07)_
+- [ ] **`SUPABASE_URL`/`SUPABASE_JWT_SECRET`/`SUPABASE_SERVICE_ROLE_KEY`/`SKS_SUPABASE_JWT_SECRET` aren't set anywhere in Netlify's dev context** — only the `VITE_`-prefixed browser pair is. Unclear if that's deliberate (keeping the RLS-bypassing service-role key off local machines by default) or an oversight — blocks the full local `netlify dev` login flow until decided. _(added 2026-09-07)_
+- [ ] **`netlify dev`'s Functions emulator is slow/error-prone on a cold machine** — ~70 functions each resolving the same large Sentry/OpenTelemetry tree tripped Windows `EMFILE` (too many open files) on the first two runs; a third run over the same (by-then Defender-cached) files got measurably further with zero errors. Looks like antivirus first-touch scanning, not a code or config problem — self-resolves with normal use, but worth a README line for the next Windows setup. _(added 2026-09-07)_
+- [ ] **`netlify link`/`netlify env:list`/`netlify dev` all need `--filter eq-shell`** on netlify-cli 27.5.x, or they hang on an interactive monorepo-project picker (the pnpm workspace's packages read as separate "projects" to this CLI version) — fatal in a non-interactive session. Worth a README callout. _(added 2026-09-07)_
 
 ---
 
