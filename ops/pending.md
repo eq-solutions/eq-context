@@ -36,8 +36,9 @@ A second, unrelated session today hit `core.hooksPath` resolving to the wrong-bu
   yet** — protocol exists, baseline sizes logged in its own Pass Log table, but nobody's
   gone rule-by-rule through CLAUDE.md + `rules/*.md` to actually propose cuts. Run `/tidy`
   when there's time to spend on it. _(added 2026-09-07)_
-- [ ] `worktree-registry.md` (368.5KB / 647 lines) — investigation spawned, Royce started
-  it running (`task_d0ceeaf5`). _(added 2026-09-07)_
+- [ ] `tidy-protocol.md`'s own Pass Log table doesn't yet track `worktree-registry.md`'s
+  size the way it tracks `eq/pending/*`/`lessons.md`/`failures.md` — add a column so
+  regrowth past its new ~150-line budget gets caught next pass. _(added 2026-09-07)_
 
 ---
 
