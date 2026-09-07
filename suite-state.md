@@ -77,7 +77,6 @@ _If this file is >48h old, the cron is broken._
 - #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
 - #1794 fix(shell): extract HubSidebar's icon maps into their own module
 - #1791 fix(security): a revoked session can no longer mint credentials or be laundered into a fresh one
-- #1790 fix(security): block reset-user-pin from targeting a platform_admin
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
