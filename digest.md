@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-07 11:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-07 11:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-07 11:17 UTC → 2026-09-07 11:20 UTC)
+## Since last refresh (2026-09-07 11:20 UTC → 2026-09-07 11:26 UTC)
 
-- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
-- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
-- Merged: eq-shell [#1788](https://github.com/eq-solutions/eq-shell/pull/1788) docs(env): document the full .env.example surface, including
-- Merged: eq-shell [#1787](https://github.com/eq-solutions/eq-shell/pull/1787) fix(auth): pause before verify-shell-session's retry to outl
-- Merged: eq-shell [#1785](https://github.com/eq-solutions/eq-shell/pull/1785) fix(field-iframe): don't alarm on stall/draw notices while t
-- Merged: eq-shell [#1784](https://github.com/eq-solutions/eq-shell/pull/1784) feat(documents): add person-first grouping to the signoff re
-- Merged: eq-shell [#1782](https://github.com/eq-solutions/eq-shell/pull/1782) docs(auth): clarify tenant-membership.ts's intentional users
-- Merged: eq-shell [#1780](https://github.com/eq-solutions/eq-shell/pull/1780) fix(onboarding): exclude personal tenants from the onboardin
+- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
+- Merged: eq-shell [#1793](https://github.com/eq-solutions/eq-shell/pull/1793) feat(staff): redesign Teams (formerly Org Chart) for scale a
+- Merged: eq-shell [#1792](https://github.com/eq-solutions/eq-shell/pull/1792) chore(intake): re-vendor eq-intake to eq-solves-intake@6e1e2
+- Merged: eq-shell [#1790](https://github.com/eq-solutions/eq-shell/pull/1790) fix(security): block reset-user-pin from targeting a platfor
+- Merged: eq-shell [#1789](https://github.com/eq-solutions/eq-shell/pull/1789) fix(security): warn loudly when ENFORCE_IFRAME_ORIGIN isn't 
+- Merged: eq-shell [#1781](https://github.com/eq-solutions/eq-shell/pull/1781) fix(quotes): give closed-lost quotes a lane on the EQ Ops bo
+- Merged: eq-field [#936](https://github.com/eq-solutions/eq-field/pull/936) fix(security): supervisor role gets tenant-wide read on Time
+- Merged: eq-field [#935](https://github.com/eq-solutions/eq-field/pull/935) v3.5.689 — FIX: Timesheets day/date header text was low-cont
 
 ## ⚠ Needs you (9)
 
@@ -55,7 +55,7 @@ _…and 263 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 9 | 6d |
+| eq-shell | ✓ success | 0d ago | 8 | 6d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 2d |
 | eq-field | ✓ success | 0d ago | 3 | 5d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
@@ -79,9 +79,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-07 | eq-shell | [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx |
+| 2026-09-07 | eq-shell | [#1795](https://github.com/eq-solutions/eq-shell/pull/1795) fix(invite): resend path stops hardcoding email_delivered false;  |
 | 2026-09-07 | eq-shell | [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL |
 | 2026-09-07 | eq-shell | [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL |
-| 2026-09-07 | eq-shell | [#1795](https://github.com/eq-solutions/eq-shell/pull/1795) fix(invite): resend path stops hardcoding email_delivered false;  |
 | 2026-09-07 | eq-shell | [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0304 |
 | 2026-09-07 | eq-shell | [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, fflate) |
 | 2026-09-07 | eq-shell | [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages |
@@ -93,12 +94,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-07 | eq-shell | [#1797](https://github.com/eq-solutions/eq-shell/pull/1797) feat(intake): add eq_tidy_read_entity_columns for column-projecte |
 | 2026-09-07 | eq-shell | [#1796](https://github.com/eq-solutions/eq-shell/pull/1796) feat(staff): add a real Manager (reporting-line) field, SKS only |
 | 2026-09-07 | eq-shell | [#1794](https://github.com/eq-solutions/eq-shell/pull/1794) fix(shell): extract HubSidebar's icon maps into their own module |
-| 2026-09-07 | eq-shell | [#1791](https://github.com/eq-solutions/eq-shell/pull/1791) fix(security): a revoked session can no longer mint credentials o |
 _Showing 15 of 80 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (275 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (276 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (68 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -130,7 +130,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1416 | 196 / 85 | 8 | 73 |
+| [eq-shell](eq/pending/eq-shell.md) | 1435 | 197 / 85 | 12 | 73 |
 | [eq-cards](eq/pending/eq-cards.md) | 355 | 48 / 17 | 0 | 9 |
 | [eq-field](eq/pending/eq-field.md) | 1261 | 175 / 71 | 47 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 393 | 49 / 20 | 0 | 20 |
@@ -188,4 +188,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-07 11:20 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-07 11:26 UTC._
