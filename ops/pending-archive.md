@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-04
+last_updated: 2026-09-07
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -13,6 +13,21 @@ Done items and fully-closed session write-ups rotated out of `ops/pending.md`.
 If you're looking for something to action, it's not here — check `ops/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `ops/pending.md`.
+
+---
+
+## Substrate assessment (7/10) -> 2 tools built: `safe_commit.py`, `check_budgets.py` (2026-09-07, rotated 2026-09-07)
+
+- [x] **`check_budgets.py` wired into CI** (`.github/workflows/md-health.yml`) --
+  runs alongside `prune_ratchet.py`/`review_clock.py` on every push and PR to
+  `main`. Blocked mid-task by a real GitHub permission wall, not a bug: the
+  environment's `gh` OAuth App token had full `repo` write access (every other
+  push that session had succeeded) but lacked the separate `workflow` scope
+  GitHub requires for any push touching `.github/workflows/*`. Royce chose to
+  fix it properly rather than work around it once -- `gh auth refresh -h
+  github.com -s workflow` (one device-flow retry after the first code expired
+  unused), verified via `gh auth status`, then the parked commit pushed clean.
+  eq-context commit `f2eb7c94`.
 
 ---
 
