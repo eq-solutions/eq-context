@@ -16,6 +16,56 @@ section's done items live here; its open items stayed in `ops/pending.md`.
 
 ---
 
+## `/tidy` protocol built; `/brief`'s stale-digest gap found and fixed live (2026-09-07, rotated 2026-09-07)
+
+Royce asked whether the substrate had gotten too structured and was limiting judgment —
+diagnosed with real numbers rather than assumed: of the 15 most recent `eq-context`
+commits at session start, 14 were automated bookkeeping (7× session-close, 3× nightly
+digest, 2× nightly suite-state-refresh) and 1 was product work; `eq/pending.md` had
+already regrown to 4,919 lines across shards three weeks after its 491KB crisis-split.
+Built `rules/tidy-protocol.md` + `/tidy` as a Royce-triggered-only (never automatic)
+pressure-release pass — measure standing-file sizes, classify every CLAUDE.md/rules rule
+as HARD/PREFERENCE/SCAR TISSUE, enforce size budgets, propose cuts with sign-off rather
+than editing unilaterally.
+
+Running `/brief eq-context` to clear the write-gate for that file surfaced a live instance
+of the exact problem being diagnosed: the brief's Health section was sourced from a local
+`digest.md` confirmed (via `git show origin/main:digest.md`) to be ~7 hours / 2 commits
+stale — real Needs You count was 9, not the 7 reported. Root-caused and fixed in `/brief`
+itself (shared by `/gap`/`/decide`/`/reflect`, all four fixed): a `$ARGUMENTS`-into-empty-
+heading templating bug that produced self-contradicting text, no check that `digest.md`
+was current before presenting it, and a Step 2 that depended on `system/worktree-registry.md`
+(368.5KB / 647 lines — exceeds a single file-read), now using live `git worktree list`.
+
+**All follow-ups closed, across this and two other concurrent sessions the same day:**
+- **Classification pass run** (steps 2–6 of `rules/tidy-protocol.md`) — went rule-by-rule
+  through `CLAUDE.md` + `rules/*.md`. Verdict: the rule files themselves were already
+  disciplined; nothing found was over the protocol's own 90-day scar-tissue threshold.
+  2 cuts applied anyway: a dead carve-out in `non-negotiables.md` (123→113 lines), and a
+  40-line duplicate of the eq-shell deploy note that lived in both `rules/deployment.md`
+  and the user's global `~/.claude/CLAUDE.md` (189→135 lines) — trimmed to a pointer.
+- **`worktree-registry.md` (368.5KB / 647 lines)** — `task_d0ceeaf5` resolved it, split
+  into a live file (now 96 lines) + pruning archive, with a ~150-line budget written into
+  the live file itself (`b7b07726`).
+- **`tidy-protocol.md`'s Pass Log didn't track `worktree-registry.md`** — a concurrent
+  session flagged this gap in `ops/pending.md` before this row was even written; closed
+  same day by adding the column, backfilled against both the pre-split (368.5KB) and
+  post-split (96 lines) states.
+- **Nightly digest/suite-state-refresh "firing 2-3× a day"** — `task_43c901bf` found this
+  wasn't a bug: 13 of the last 15 runs on each workflow are `repository_dispatch`
+  real-time refreshes (fired by `notify-substrate.yml` on every EQ-repo merge), by
+  design, with an existing concurrency guard — not the schedule cron misfiring. The only
+  actual defect was stale "nightly" framing in `suite-state.md`'s own frontmatter/Crons
+  table, left over from before the dispatch mechanism was wired up. Framing fixed,
+  generator fixed so it self-heals going forward (`5701927f`).
+- **Standing bloat NOT solved by any of the above**: `eq/pending/*`, `lessons.md`,
+  `failures.md` still have no enforced budget — tracked as its own fresh open item in
+  `ops/pending.md` rather than left buried here.
+
+No open items — closed same day, across multiple sessions.
+
+---
+
 ## index-drift CI check red on main since 2026-08-01 — orphaned doc, one-line fix (2026-08-05, rotated 2026-08-05)
 
 Found while checking PR #128's CI: the scheduled "Index drift check" workflow had been

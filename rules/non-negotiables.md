@@ -82,7 +82,7 @@ defaults from one tier only. Cross-tier loads are explicit, not implicit.
 10. Every Netlify/Cloudflare Pages site MUST ship with a `_headers` security file.
 11. **Every service-role or admin-client query MUST carry an explicit tenant filter.** Service-role and `createPublicAdminClient()` connections bypass RLS entirely — a query that omits `.eq('org_id', …)` / `where org_id = $1` returns *every tenant's rows* and fails silently, with no error and no RLS backstop. The tenant id MUST be resolved server-side (from the session JWT, the URL path, or an orchestration loop); it MUST NOT be read from client-supplied JSON. Where a shared helper exists that injects the filter structurally, code SHOULD use it rather than hand-writing the predicate. Designed 2026-04-27 in `eq/field/multi-tenancy/plan.md` Step 2.5 and never landed here until 2026-08-04 — this rule is forward-looking; a line-by-line audit of existing edge functions against it is separate, larger work. See `rules/agentic-coding.md`.
 
-> **Sprint-scope note — LAPSED 2026-07-16.** The 2026-05-30 ADR conditionally relaxing #1 (full-auto merge + deploy for EQ surfaces) was scoped to the Autonomous Sprint coordination mode, which was retired 2026-07-12. Royce confirmed 2026-07-16 the carve-out lapsed with it — #1 applies as written, no exceptions. See `ops/decisions.md` 2026-05-30 ADR, now marked Superseded.
+> Rule #1 has no active exceptions. (A conditional relaxation existed 2026-05-30 to 2026-07-16 for the retired Autonomous Sprint mode — `ops/decisions.md`, now Superseded.)
 
 ---
 

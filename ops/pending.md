@@ -30,15 +30,19 @@ A second, unrelated session today hit `core.hooksPath` resolving to the wrong-bu
 
 ---
 
-## `/tidy` protocol built; `/brief`'s stale-digest gap found and fixed live (2026-09-07)
+## Pending-file budgets still unenforced (2026-09-07)
 
-- [ ] **The actual classification pass (steps 2–6 of `rules/tidy-protocol.md`) hasn't run
-  yet** — protocol exists, baseline sizes logged in its own Pass Log table, but nobody's
-  gone rule-by-rule through CLAUDE.md + `rules/*.md` to actually propose cuts. Run `/tidy`
-  when there's time to spend on it. _(added 2026-09-07)_
-- [ ] `tidy-protocol.md`'s own Pass Log table doesn't yet track `worktree-registry.md`'s
-  size the way it tracks `eq/pending/*`/`lessons.md`/`failures.md` — add a column so
-  regrowth past its new ~150-line budget gets caught next pass. _(added 2026-09-07)_
+`/tidy`'s classification pass (full write-up archived — see `ops/pending-archive.md`)
+found the substrate's growth is concentrated in exactly the files already known to be
+purely additive: `eq/pending/*.md`, `system/lessons.md`, `system/failures.md`.
+`system/worktree-registry.md` and `suite-state.md` both already prove the pattern that
+would fix this (a stated eviction/size budget written into the file itself); nothing
+else has one yet.
+
+- [ ] **Give `lessons.md`, `failures.md`, and any `eq/pending/<repo>.md` past ~500 lines
+  the same stated-budget-and-evict pattern `suite-state.md` and `worktree-registry.md`
+  already use.** Not done by this pass — a bigger, structural change, not a quick trim.
+  _(added 2026-09-07)_
 
 ---
 
