@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Infrastructure Accounts
 owner: Royce Milmlow
-last_updated: 2026-08-10
+last_updated: 2026-09-07
 scope: Supabase project IDs, Cloudflare, Netlify, GitHub, Beelink workstation
 read_priority: standard
 status: live
@@ -67,7 +67,7 @@ Fine-grained PATs. All verified active 2026-05-15. Credential files in `C:\Proje
 | `eq-cards/` | `eq-solutions/eq-cards` | git push (remote exists and is active) |
 | `eq-solves-service/` | `eq-solutions/eq-service` | git push |
 
-(Other folders — `eq-intake`, `eq-quotes`, `eq-solves-assets`, `eq-solves-jobs`, `eq-website`, `eq-analytics-v2` — are local-only, no git remote. Note: eq-solves-service repo name on GitHub is `eq-service`, not `eq-solves-service`.)
+(Other folders — `eq-quotes`, `eq-solves-assets`, `eq-solves-jobs`, `eq-website`, `eq-analytics-v2` — are local-only, no git remote. Note: eq-solves-service repo name on GitHub is `eq-service`, not `eq-solves-service`.)
 
 **Token inventory:**
 

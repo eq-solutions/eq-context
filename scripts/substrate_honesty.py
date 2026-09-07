@@ -70,7 +70,7 @@ AUTO_DEPLOY_TOKENS = ("eq-shell", "core.eq.solutions")
 # check allow-lists by name rather than inferring which repo a sentence is
 # about, because guessing is what produced F13 in the first place.
 MANUAL_DEPLOY_TOKENS = ("eq-cards", "eq-receipts", "eq-website", "sks-nsw-labour",
-                        "cloudflare", "eq-intake")
+                        "cloudflare", "eq-intake", "eq-solves-intake")
 
 DEPLOY_POSTURE = re.compile(
     r"manual[- ]deploy[- ]only|explicit[- ]only"
