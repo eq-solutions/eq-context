@@ -1,7 +1,7 @@
 ---
 title: Machinery Index
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-07
 scope: Every executable file in the substrate — hooks, scripts, CI workflows — and what each one actually does. The prose tiers have per-file tables enforced by index_drift; until 2026-08-15 the machinery had none.
 read_priority: reference
 status: live
@@ -71,7 +71,9 @@ its pure logic separable — that is the convention, not an accident.
 | `rls_probe.py` | The public-key data-leak test — proves an anon key returns zero rows where it should. |
 | `check_shared_object_drift.py` | Diffs the live `pg_get_viewdef`/`pg_get_functiondef` of every object in `eq/identity/shared-db-objects.json` against a checked-in snapshot. Needs `SUPABASE_ACCESS_TOKEN`; no-ops cleanly without it. `--update-snapshot` rebaselines after a reviewed, intentional change. |
 | `pulse_promotion_guard.py` | F5's kept promotion-guard rule: fails a PR that hand-edits a Product Pulse (F4) row in `suite-state.md` — only the nightly bot's own direct push may write one. PR-context only. |
-| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_dedupe_pending_archive.py` · `test_clean_zombie_live_sections.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` · `test_shared_object_drift.py` · `test_pulse_promotion_guard.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
+| `check_budgets.py` | Reads every tracked file's own `**Budget:**` line and compares it to that file's current size; fails when any file is over. Discovers budgeted files automatically (scans for the marker) rather than a hardcoded list — a future `/tidy` pass that budgets a new file needs nothing added here. |
+| `safe_commit.py` | Commits + pushes specific files via a throwaway worktree off a fresh `origin/main`, rebasing and retrying on a non-fast-forward race — the safe alternative to a direct commit in this shared checkout (F9). Not a check; a write-safety utility, run by hand. |
+| `test_index_drift.py` · `test_session_start_budget.py` · `test_prune_ratchet.py` · `test_rotate_pending.py` · `test_dedupe_pending_archive.py` · `test_clean_zombie_live_sections.py` · `test_substrate_honesty.py` · `test_claim_expiry.py` · `test_review_clock.py` · `test_changelog_duplicates.py` · `test_link_check.py` · `test_duplicate_sessions.py` · `test_security.py` · `test_shared_object_drift.py` · `test_pulse_promotion_guard.py` · `test_check_budgets.py` | Unit tests for the pure logic of their namesakes. No network, no fixtures on disk. |
 
 ## `.github/scripts/` — generators
 
