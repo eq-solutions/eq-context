@@ -22,6 +22,14 @@ No open items — closed same session. One unrelated bug found in passing, not b
 
 ---
 
+## F10 — possible 5th recurrence (wrong-but-set), self-corrected before it could be investigated (2026-09-07)
+
+A second, unrelated session today hit `core.hooksPath` resolving to the wrong-but-set shape (absolute path, matching mechanisms 1-3) via `hooks/session_start.py`'s HOOKS check — this session's own gate reported the identical symptom independently, minutes later. Both times the *effective* value was observed wrong, not just a stale print (`failures.md` F10's own distinction between a genuine recurrence and its documented LATENT SHADOW false-positive). Not the 2026-09-06 self-heal: that fix only covers a fully-*unset* value at every scope, and this was wrong-but-set. Not mechanism 3 (worktree-shadow): `extensions.worktreeConfig` confirmed off (`--worktree` queries fail outright), so a `--worktree` scope cannot have been winning. By the time this session checked live — a few minutes after its own gate output — the value was already back to the correct `.githooks`; re-asserted defensively (no-op). Cause unconfirmed: the other session (working via `EnterWorktree`) explicitly logged that it did not fix this itself; whether Royce corrected it by hand, or some other mechanism did, is unknown.
+
+- [ ] **Needs Royce's call**: log this as F10's 5th recurrence in `system/failures.md` (per the file's own process, that's a proposal `guard-ratchet.yml`/Royce decides, not something a session should self-file), and worth someone actually testing whether `EnterWorktree` is the trigger the other session suspected — untested as of this entry. _(added 2026-09-07)_
+
+---
+
 ## EQ_CONTEXT_PAT (GitHub Actions secret) expired — ROTATED & CONFIRMED LIVE 2026-09-05. Workstation-PAT compromise (separate, older) still open (2026-09-03)
 
 Royce flagged `github.com/settings/personal-access-tokens/17800873` as expired and asked whether it matters. Live-verified rather than assumed: triggered all 3 dependent workflows manually.
