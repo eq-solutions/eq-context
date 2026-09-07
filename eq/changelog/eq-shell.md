@@ -1,13 +1,19 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-07 (PR #1807 + #1808 + #1810, MERGED + LIVE — Customers, Staff, and Plant & equipment each gained their own URL)
+- `CustomersPage`, `StaffPage`, and the Plant & equipment module all held "which record is open" in local React state only, with no routing integration — refreshing the page (or sharing a link) always dropped back to the list. Added a `<page>/:id` route to each, rendering the same component; the open-record state now reads from `useParams` and writes via `useNavigate` instead of `useState`. Matches an existing `AdminEditUser` (`admin/users/:userId`) precedent already in this codebase.
+- Staff's existing `?open=<id>&focus=conversations` one-shot deep link (the "Ask anything" bar, the Resourcing dashboard) keeps working for existing callers — it now redirects into the canonical `staff/:staffId` URL instead of just seeding transient state, so it's refresh-safe too now, with zero changes needed anywhere it's generated.
+- Also fixed a genuine pre-existing `react-hooks/rules-of-hooks` violation found while editing the equipment module: a `useMemo` was declared after an early permission-gated `return`. Confirmed pre-existing (reproduces on the unmodified file via `git stash`) and unrelated to the routing change.
+- `tsc -b`, `eslint`, and a full `vite build` clean on all three. Squash-merged `0575cc04` (Customers), `8f1f6311` (Staff), `6b6d945c` (Equipment) on Royce's explicit "merge them all". One real merge conflict along the way: the third PR (Equipment) no longer applied cleanly to `main` once the other two had landed and shifted the same file's surrounding text — rebased, resolved, re-verified, force-pushed, then merged. **Confirmed live**: `6b6d945c` (newest of the three) is the exact commit Netlify's `currentDeploy` is serving, verified via `git merge-base --is-ancestor` rather than trusting a green deploy alone — the other two commits are direct ancestors of it on `main`.
 
 ## 2026-09-07 (PR #1805, MERGED + LIVE — 3 of 5 open Dependabot alerts closed)
 - **[PR #1805](https://github.com/eq-solutions/eq-shell/pull/1805)** — `pnpm.overrides` for `browserslist` (`^4.28.7`, closes GitHub alerts #206/#207, both high) and `posthog-js>fflate` (`^0.4.9`, closes #201, moderate). Both transitive; the fflate override is scoped to the posthog-js edge so it doesn't touch the already-safe `fflate@0.8.3` resolved under `@react-pdf/renderer`.

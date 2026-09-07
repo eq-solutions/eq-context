@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,17 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,394 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-shell: Customers, Staff, and Plant & equipment all gained their own URL — 3 PRs merged + live (2026-09-07)
+*Found while explaining the PR #1700 cascade fix to Royce with a diagram — a live screenshot he shared exposed a real bug, which led to checking whether the underlying "detail view has no URL" gap was wider than Customers alone. Confirmed via code: Staff's `?open=` mechanism looked like it already solved this but was actually a one-shot deep-link-in, stripped right after landing — not persistent during normal use. Plant & equipment had zero routing integration at all, same as Customers. Royce chose the full-route fix (matching an existing `AdminEditUser` precedent already in this codebase) across all three pages, not a smaller patch.*
+
+- eq-shell [PR #1807](https://github.com/eq-solutions/eq-shell/pull/1807) (Customers), [PR #1808](https://github.com/eq-solutions/eq-shell/pull/1808) (Staff), [PR #1810](https://github.com/eq-solutions/eq-shell/pull/1810) (Plant & equipment) — each adds a `<page>/:id` route rendering the same component, switching the "which record is open" state from local `useState` to `useParams`/`useNavigate`. All three squash-merged (`0575cc04`, `8f1f6311`, `6b6d945c`) on Royce's explicit "merge them all". **Confirmed live**: `6b6d945c` (the newest of the three) is the exact commit Netlify's `currentDeploy` is serving, verified via `git merge-base --is-ancestor`; the other two commits are direct ancestors of it on `main`, so all three are covered by that one check.
+- Staff's existing `?open=<id>&focus=conversations` deep link (used by the "Ask anything" bar and the Resourcing dashboard) still works unchanged for external callers — it now redirects into the new canonical `staff/:staffId` URL instead of just seeding transient state, so those entry points became refresh-safe too as a side effect. No external caller code needed to change.
+- **Also fixed, unrelated to routing**: a genuine pre-existing `react-hooks/rules-of-hooks` violation in the Plant & equipment module — a `useMemo` was declared after an early permission-gated `return`, making it a conditionally-called hook. Confirmed pre-existing via `git stash` against the unmodified file before fixing; would otherwise have failed PR #1810's own CI lint run, since it sits in the same file the routing change touches.
+- **Process note for future sessions in this repo**: mid-build, a second PR's commit got accidentally pushed onto the first PR's branch (reused one worktree instead of creating a fresh one per PR) — caught before either PR was touched by anyone, fixed via a cherry-pick onto a new branch + a reset/force-push on the original. Separately, merging all 3 in sequence hit a real conflict on the third: two prior merges to the same file (different route blocks) shifted enough surrounding text that the third PR's diff no longer applied cleanly, needing a rebase before it would merge. Worth remembering that stacking same-file PRs isn't guaranteed conflict-free even when the actual changes don't overlap.
+- [ ] **Not click-tested live by a person** — verified via `tsc -b`, `eslint`, full `vite build`, and the live-deploy check above; no Shell session/credentials in this environment. Worth a real pass on all three: open a record, refresh, confirm it reopens the same one instead of dropping back to the list. _(added 2026-09-07)_
 
 ---
 
