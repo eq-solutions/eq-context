@@ -80,7 +80,6 @@ _If this file is >48h old, the cron is broken._
 - #1809 fix(quotes): remove board-only Closed column from EQ Ops kanban
 - #1808 feat(staff): give the staff detail panel its own URL
 - #1807 feat(customers): give the customer detail view its own URL
-- #1805 fix(deps): close 3 Dependabot advisories (browserslist, fflate)
 - #1804 chore(intake): re-vendor eq-intake to eq-solves-intake@81bd49a
 - #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
