@@ -33,6 +33,19 @@ from pathlib import Path
 BUDGET_PARAGRAPH_RE = re.compile(r"\*\*Budget:\*\*(.*?)(?:\n\s*\n|\Z)", re.DOTALL)
 BUDGET_NUMBER_RE = re.compile(r"~?(\d+)\s*lines")
 
+# Files that discuss the **Budget:** marker convention itself -- documenting the
+# mechanism, narrating work on it -- rather than declaring a budget for their own
+# content. Same self-reference problem substrate_honesty.py's SCAN_EXEMPT_FILES
+# solves for its own scanned tokens. sessions/ logs are exempt wholesale: a dated
+# narrative record is never itself a file that would carry a real line budget.
+BUDGET_MARKER_DISCUSSION_EXEMPT = {"system/machinery.md"}
+
+
+def is_budget_marker_exempt(rel_path: str) -> bool:
+    """Pure: True if rel_path may mention '**Budget:**' in prose without that
+    being a self-declared budget for its own content."""
+    return rel_path.startswith("sessions/") or rel_path in BUDGET_MARKER_DISCUSSION_EXEMPT
+
 
 def repo_root(start: Path) -> Path:
     result = subprocess.run(
@@ -82,16 +95,19 @@ def check_all(
         except (OSError, UnicodeDecodeError):
             continue  # not every tracked .md is guaranteed readable as utf-8; skip rather than crash
 
+        rel = str(path.relative_to(root)).replace("\\", "/")
+        if is_budget_marker_exempt(rel):
+            continue
+
         try:
             budget = extract_budget(text)
         except ValueError as exc:
-            errors.append((str(path.relative_to(root)).replace("\\", "/"), str(exc)))
+            errors.append((rel, str(exc)))
             continue
         if budget is None:
             continue
 
         actual = len(text.splitlines())
-        rel = str(path.relative_to(root)).replace("\\", "/")
         (over if actual > budget else ok).append((rel, budget, actual))
 
     return ok, over, errors
