@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2599,5 +2599,35 @@ a bug rather than just deleting the line.
 **From:** eq-shell: EQ Ops quotes search silently scoped to the active pipeline tab — root-caused, fixed, merged live (2026-09-03)
 
 - [ ] **Not click-tested live** — Quotes is auth-gated and this environment had no Shell session/credentials; separately, entering credentials directly is off-limits regardless. Worth a real pass once confirmed live: search for a quote outside the default "In Progress" tab (e.g. a draft) and confirm it now surfaces in both list and board layouts, with the new notice showing. _(added 2026-09-03)_
+
+---
+
+**From:** eq-field: Timesheets + Roster canonical write paths — both closed against silent duplication — FIXED, merged, live (2026-09-04)
+
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. _(added 2026-09-04)_
+
+---
+
+**From:** eq-field: supervisors now see every crew's Timesheets/Leave by default, not just their own — FIXED, merged, live (2026-09-04)
+
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: sign in as a supervisor (not a manager) and confirm Timesheets/Leave now show every crew, with the team pills still narrowing correctly. _(added 2026-09-04; the database side reached parity with this client-side behavior on 2026-09-07, see that section above — a live UI click-through as a real supervisor still hasn't happened either side of that fix)_
+
+---
+
+**From:** eq-field: Timesheets week-lock trio — confirm()/prompt() silently no-op for every real SKS supervisor through Core — FIXED, merged, live (2026-09-04)
+
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass through Core as a supervisor: Unlock Week on a locked week shows the modal and actually unlocks; Lock Week with and without a typed reason both save correctly; as a non-supervisor, "Request unlock" on a locked week shows the modal and the request (with optional reason) lands in the audit log. _(added 2026-09-04)_
+
+---
+
+**From:** eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20)
+
+- [ ] **Not click-tested live by Royce** — verified by typecheck, full build, 444 unit tests, CI, and Netlify commit-ancestry, not by actually opening the Send Report modal and issuing a report. The path has zero production rows, so a live click-through would be the first real exercise it has ever had. _(added 2026-08-20)_
+
+---
+
+**From:** eq-solves-service: ACB/NSX check saves could wipe a technician's readings on a dropped connection — fixed and shipped live (2026-08-18)
+
+- [ ] **Not click-tested live by a real technician** — verified via `tsc`/`next build` and a live database check, not by an actual on-site ACB/NSX save. Draft-autosave (`lib/hooks/useDraftAutosave.ts`) has since been wired into ACB/NSX/RCD with a restore/discard banner, confirmed live 2026-09-07 — worth including in this click-test too. _(added 2026-08-18)_
 
 ---

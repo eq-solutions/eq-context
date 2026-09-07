@@ -8942,3 +8942,427 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 - [ ] Get Royce's "first-open popup / info overload" screenshots (mentioned as sent separately, never received/incorporated), scope what's still missing against what PR #235 already shipped, build the remainder. _(added 2026-08-16, dismissed 2026-09-07 via /triage — screenshots never arrived; the info-density fix (PR #343) shipped 2026-09-07 from the scoping doc alone, without them. The companion "update punch-list.md's note" bullet stays open in eq-cards.md — that correction is still owed regardless.)_
 
 ---
+
+## eq-shell: EQ Field white-pane stall — shipped, click-tested live; the follow-on fixes for both remaining gaps also shipped same day (2026-09-04/05) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Resourcing overview — KPI tiles, per-team rollup, training-plan surfaced (2026-09-02) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: two trial accounts hard-deleted — purge-endpoint gap now fixed, PR #1708 merged+live (2026-09-01) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: customer Field/Service status now computed from owned sites, merged (2026-09-01) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Resourcing rebuilt — in-place panel, readable conversation history, engagement fixes, RLS/dashboard leak closed (2026-08-30) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: staff Conversations — feature audit, security fix, ratings rollup, edit/close UI, backfill to 25/27 (2026-09-01) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents to Sign — full redesign (load time + Type/Category unification), all merged live (2026-08-30) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: start_date capture at review points + Resourcing visibility nudge, merged live (2026-08-30) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: site "Ask for"/"Backup" contacts — canonical conversion shipped, migrations dispatched + verified live (2026-08-29/30) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Documents Register signer-name mismatch + load-time fix, merged live (2026-08-28) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Worker invite role never reached workers.role — Labour Hire/Apprentice/Subcontractor invites landed as Direct — built, merged, live (2026-08-26) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page edit resent every field on every save — PR open, blocked on unrelated CI (2026-08-25) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff-page navigation slowness — two root causes found and fixed live (2026-08-24) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep completed — Documents/Intake/Admin covered, 3 more gaps found and closed; sprint doc's S1/S3 also shipped (2026-08-23) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: access-control sweep — 2 more live gaps found and closed (staff conversations, GM Reports financial data) (2026-08-23) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: quotes ownership scoping built — own-quotes-only for Employees; a Records DB gap found and deliberately left alone (2026-08-23) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page now shows who hasn't signed in to Shell yet, with a filter — built, merged, live (2026-08-20) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: QR/join-code Cards signups notified nobody — admins now get the same email + roster badge the in-app connect flow already had (2026-08-18) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Mobile Home redesign — compliance card collapsed, Suppliers + Compliance report quick links added (2026-08-14) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff list — apprentice year badge + Trade multi-select shipped, text[] conversion blocked on eq-field coordination (2026-08-14) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join bulk-approve + gap-analysis-driven onboarding fixes (2026-08-06) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ-SHELL-R closed (false alarm) + EQ-SHELL-1B fixed — Outlook email attachments on quotes, merged + live (2026-08-06) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Sentry check — one new error, tied to the licence-upload question above (2026-07-23) (rotated 2026-09-07)
+*Asked to check Sentry after the fix above shipped.*
+- [x] **New: the automatic "read the certificate for me" step failed once on a PDF upload, rejected by the server that does the reading.** Didn't affect the person uploading — it just quietly fell back to typing the details in by hand, same as if no reading happened at all. Only happened once so far. Task chip spawned to check whether the two systems' shared password has gotten out of sync (which would keep failing) or it was a one-off. _(added 2026-07-23)_ **Resolved 2026-09-07 via `/triage`: Sentry search for "certificate" on eq-shell (30d window) returns zero issues — no recurrence in the 46 days since, confirmed one-off. Closing.**
+- Two other Sentry items are already known/tracked, unchanged since yesterday's digest — not repeated here.
+
+---
+
+## eq-shell: cleared a false-alarm security check that was blocking every open shell PR (2026-07-22) (rotated 2026-09-07)
+*A routine automated safety check started blocking every shell change today because it misread a brand-new, actually-safe table as wide open. Fixed by adding it to the check's existing list of known-safe patterns (see the fuller writeup in `sks/pending.md` — the underlying investigation also turned up a real, separate bug on SKS's database, now fixed).*
+- [x] **PR #945 (the licence-upload fix) will still show this same check as failed** until that branch itself picks up the latest main — merging a fix to main doesn't retroactively clear an already-running check on a different, older branch. Whoever picks #945 back up just needs to update/rebase that branch; not a real problem, just easy to misread as still-broken. _(added 2026-07-22)_ **Closed 2026-09-07 via `/triage`: PR #945 no longer exists on eq-shell (404 via GitHub) and isn't in any repo's current open-PR list — either long since merged or abandoned. Nothing left to rebase. Moot.**
+
+---
+
+## eq-shell: server error-tracking was silently dropping events, then EQ Ops pricing was found badly broken and fixed (2026-07-21) (rotated 2026-09-07)
+*Two separate arcs in one session. First: server-side error reports from scheduled background jobs (like the daily "workers who were never invited" check) were being silently thrown away before they reached the alerting tool — so problems like the 45 never-invited workers below went unnoticed. Second: Royce reported EQ Ops pricing was broken in three ways at once — couldn't save setup changes, labour cost had gone to zero, and there was no way to reorder line items on a quote or filter the quotes list. What looked like one bug turned out to be three unrelated ones, plus a real data-loss regression traced back a week.*
+- [x] **A separate, already-diagnosed cause of people getting logged out unexpectedly** (a background check treats "the server was just slow to answer" the same as "you're not logged in any more," and logs you out either way) is understood but not yet built, since it changes how login/session behaviour works and needs an explicit go-ahead first. _(added 2026-07-21)_ **Checked 2026-09-07 via `/triage` — this framing is stale, not actioned: `App.tsx`'s `SessionProvider` shows this exact problem class has had real, continuous engineering since (#888, #1174, then deadline-bounding #1736/#1764/#1778), and it regressed again as recently as 2026-09-06 (Sentry "EQ-SHELL-T/V"), tracked under the separate "EQ Field white-pane stall" section below. The retry logic reduces false logouts but the final fallback still logs out on a fully-exhausted stall — the underlying tension this bullet names is real and current, just not "not yet built." Did not write a session/auth code change on this click — no explicit go-ahead for a specific approach, and any fix belongs in the already-active thread, not as a second parallel effort. Left open; superseded by the white-pane-stall tracking above as the live record.** **Built 2026-09-07, Royce's explicit go-ahead obtained via AskUserQuestion first (auth-adjacent):** [PR #1802](https://github.com/eq-solutions/eq-shell/pull/1802) — on a pure `AbortError` timeout (both retries exhausted, no actual server response), keep the cached session instead of clearing it; any other exception still clears state, fail-closed, unchanged. `tsc -b --force` clean, 591/591 tests, eslint clean on the file. **Merged 2026-09-07 on Royce's explicit "merge it," squash `a68bca41` — confirmed live via commit-ancestry against the current production deploy (`3d801784`, `state: ready`, no error) rather than trusting a single deploy record, since it landed bundled into a later concurrent merge's build, same pattern this repo hit repeatedly tonight.** Not click-tested live (no Shell session in this environment) — PR body has the specific manual check. Closing — the diagnosis and the fix are both done; only the live click-test remains, tracked generally under this file's standing "not click-tested" gap, not re-listed as its own item.
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: dropped "custodian" wording from Plant & Equipment, now shows the assigned person's phone/email instead (2026-08-23) (rotated 2026-09-07 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-field: Timesheets + Roster canonical write paths — both closed against silent duplication — FIXED, merged, live (2026-09-04) (rotated 2026-09-07)
+*Direct continuation of the same day's Timesheets duplicate-hours work (see the 2026-09-04 entry further down). Cihan Alakuzu and Maylin Ung showed wildly inflated hours again, 25 minutes after that fix (PR #906) had already shipped — this time from completely normal single-cell editing, not a bulk-fill loop.*
+
+- [x] **Timesheets: root-caused to a deeper, previously-unproven mechanism — the write path itself wasn't idempotent.** `_sbTimesheetsCanon` replaced a person's whole week via a DELETE then a separate INSERT, two non-atomic requests. A slow response that the app's own write-queue retries fires an independent copy of that same pair; if the original also eventually lands, both inserts survive. Fix: upsert each day/job row via `ON CONFLICT (staff_id, date, task)` instead, deleting only rows a save is actually clearing. New unique constraint added live to both `ehowgjardagevnrluult` (SKS) and `zaapmfdkgedqupfjtchl` (eq) — zero pre-existing violations on either before applying. Cihan's and Maylin's new duplicates cleaned up directly (explicit approval), reconstructed to their real totals: Maylin 46.5h, Cihan 81.5h. eq-field [PR #911](https://github.com/eq-solutions/eq-field/pull/911) (v3.5.669), merged, confirmed live.
+- [x] **Roster: checked for the identical risk rather than assumed — asked directly ("fix roster's write path too").** `_sbRosterCanon` (same file, `schedule` table) has the textually identical delete-then-insert shape. Live check found the risk was NOT symmetric: SKS's database already carried a real unique index on `schedule_entries(staff_id, date)` (added independently of this work) — a racing duplicate there was already failing loudly (a unique-violation error) instead of silently duplicating, a reliability gap rather than a data-integrity one. The eq tenant's database had no such index at all and was genuinely exposed to the same silent-duplication risk timesheets had. Same upsert fix applied; new migration makes the matching index live on the eq tenant too (no-op on SKS, which already had it). eq-field [PR #914](https://github.com/eq-solutions/eq-field/pull/914) (v3.5.672), merged, confirmed live.
+- [x] **Confirmed Timesheets and Roster are the only two canonical write paths with this delete-then-insert shape in the codebase** — `leave_requests` has no equivalent dispatch (grepped `supabase.js`'s own dispatch table). Both real instances of this bug class are now closed.
+- [x] **4 new regression tests total** (2 per fix, split across `tests/timesheets-canon-write.test.js` and `tests/supabase-canon-write.test.js`): an identical save sent twice must leave exactly one row, not two; clearing one day in a save that still carries another day's existing value must only remove the cleared day's row. Both existing test files' mock `fetch` had to be upgraded to actually enforce the new uniqueness first, or neither could prove anything about the fix.
+
+**Notes:**
+- The exact client-side trigger (a write-queue retry racing the delete-then-insert) is the most plausible mechanism given the code and this app's own already-documented network flakiness (`EQ-FIELD-19`/`EQ-FIELD-16`), but wasn't directly observed in a captured retry event for the two people affected — said plainly rather than overclaimed. The fix doesn't depend on that theory being exactly right: upserting on a real unique constraint closes the whole class of non-idempotency regardless of what specifically triggers a duplicated request.
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entries) and `sessions/2026-09-04.md`.
+
+---
+
+## eq-field: supervisors now see every crew's Timesheets/Leave by default, not just their own — FIXED, merged, live (2026-09-04) (rotated 2026-09-07)
+
+---
+
+## eq-field: My Schedule's "For Workbench" line — shows the job number(s) AND hours actually logged in Timesheets, not just the planned roster job — FIXED, merged, live (2026-09-04) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+- [x] **First pass (Royce's explicit ask): show Timesheets' actual logged job number(s) on My Schedule too, labelled "For Workbench"** so a worker can see what to key into the external payroll system without opening Timesheets. Additive — the existing planned-job line is untouched, a day with nothing logged shows nothing extra. New `loggedJobsForDisplay()` helper (`roster.js`) parses the same packed `"JOB:hrs|JOB:hrs"` grammar `timesheets.js` itself uses. eq-field [PR #903](https://github.com/eq-solutions/eq-field/pull/903) (v3.5.661), merged, live.
+- [x] **Second pass, same day (Royce: "We need to show the hours aswell for each day"):** a split day showed both job codes but not which hours went to which — still needed a trip into Timesheets to check. `loggedJobsForDisplay()` extended to also carry hours per job (single bare job reads the day-total field; a split day carries each segment's own hours inline, matching `timesheets.js`'s own parse exactly). Line now reads e.g. "🧾 For Workbench: 28101 (4h) · 28165 (4h)". eq-field [PR #907](https://github.com/eq-solutions/eq-field/pull/907) (v3.5.665 — renumbered from v3.5.663 on rebase), merged, live.
+- [x] **8 new tests** (`tests/schedule-workbench-job.test.js`) cover single-job, half-hour values, split days, the same-job-typed-twice-sums-its-hours edge case, and empty/malformed-segment cases.
+
+---
+
+## eq-field: file-size ratchet convergence — roster.js + leave.js decomposed, FIXED, merged, live; 4 files still near-ceiling (2026-09-04) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Timesheets TAFE/Leave autofill + dark-cell explainer — FIXED, merged, live (2026-09-04) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+- [x] **Dark "continues a job" cell now has a tooltip** naming the job it's continuing — no behaviour change, just an explanation where there was none.
+- [x] **TAFE/Leave days now autofill a real, editable timesheet entry, not just a virtual total.** What existed already: `dayStatus()` (`timesheets-rules.js`) knew about a nominated TAFE day or approved leave and silently credited 8h to the on-screen weekly total. What was missing: nothing was ever written to the actual row, so a CSV/By Job export showed nothing for that day, and the desktop grid rendered the day as a fully locked chip with no way to override it. Fix, one-tap (Royce's pick over fully-automatic via `AskUserQuestion`, matching every other fill action in this app): "Prefill from Roster" and "Prefill my week" now also fill TAFE/approved-leave days with a real 8h entry using the same label the chip already shows, never overwriting a day that already has real data. The spans grid's TAFE/Leave chips are no longer fully locked — a supervisor can click one to open the same day editor as any other cell and correct a wrongly-flagged day.
+- [x] **Found and fixed in passing: the "TAFE Holidays doesn't protect Timesheets" gap already logged further down this file (2026-09-02 entry) was real** — a configured TAFE Holidays break wasn't actually being checked by `dayStatus()` despite a comment in `tafe.js` claiming it was. During a declared holiday week, an apprentice's nominated day now correctly reads as workable. Matters more now that this day can produce a real written row, not just a display total.
+- [x] **3 new automated tests** lock in the holiday-override behaviour and confirm an explicitly roster-typed TAFE code (a human decision) is untouched by it.
+- [x] eq-field [PR #909](https://github.com/eq-solutions/eq-field/pull/909) (v3.5.667 — renumbered from v3.5.666 on rebase, see Notes), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.667).
+
+---
+
+## eq-field: Timesheets week-lock trio — confirm()/prompt() silently no-op for every real SKS supervisor through Core — FIXED, merged, live (2026-09-04) (rotated 2026-09-07)
+*Spun off from PR #904 (Prestart/Toolbox Reopen fix, same day) — that PR's own commit found and correctly flagged `unlockCurrentWeek()` as the same bug class in a different feature, deliberately left out of scope. This session picked that up, fixed it, then found two more live instances in the same file while there and spun those off too.*
+
+- [x] **`unlockCurrentWeek()` called raw `window.confirm()`, which silently returns `false` with no dialog inside eq-shell's `FieldIframe.tsx` sandbox (`allow-modals` genuinely absent — independently re-verified against the live file, not just trusted from PR #904's comment).** SKS is Core-only, so Unlock Week had done nothing at all, silently, for every real supervisor for as long as the button has existed under Core. Fixed by swapping to the file's own already-proven `_tsConfirm()` modal wrapper (used 4x elsewhere) — mechanical swap, same message text. eq-field [PR #905](https://github.com/eq-solutions/eq-field/pull/905) (v3.5.663), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.663).
+- [x] **Found two more live instances while there, same file: `lockCurrentWeek()` and `requestTsUnlock()`, both still raw `window.prompt()`.** `requestTsUnlock()`'s case was worse than a no-op — a blocked `prompt()` returns `null`, which the existing code already treats identically to the user's own Cancel, so a worker's unlock request silently vanished with zero feedback; `lockCurrentWeek()` silently locked with a blank reason instead of asking. Needed a different shape of fix (text-input modal, not yes/no), so spun off as a separate task rather than folded into #905. Royce started the spawned task in its own session; it built a new `_tsPrompt()` helper (sibling to `_tsConfirm()`, reusing the shared modal's existing `#confirm-reason` textarea — no new markup needed) and switched both functions onto it. eq-field [PR #908](https://github.com/eq-solutions/eq-field/pull/908) (v3.5.666 — rebased twice past concurrent same-day PRs #906/#907), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.666, verified by polling rather than assumed instantly live).
+
+**Notes:**
+- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entries) and `sessions/2026-09-04.md`.
+
+---
+
+## eq-field: Timesheets duplicate-hours bug + scroll-jump-to-top — FIXED, merged, live (2026-09-04) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+- [x] **Root cause of the 120h: 8 call sites looped `saveTsCell` once per day, each repost carrying the whole growing week — on SKS's canonical write path that compounds into duplicate rows.** Confirmed live: Cihan's job 27862 had 5/4/3/2/1 duplicate rows across Mon–Fri, summing to exactly 120h instead of 40h. Fix: `saveTsCell` split into an in-memory update + a single network flush; new `saveTsCellsBulk()` lets Fill week/Copy last week/DNW/Repeat day/Prefill from roster/CSV import/the +Add job editor's Save+Clear days each hit the network exactly once. eq-field [PR #906](https://github.com/eq-solutions/eq-field/pull/906) (v3.5.664 — renumbered twice, see Notes), merged and confirmed live.
+- [x] **Scroll jump fixed at the source** — `renderTimesheets()`'s scroll-preserve was reading/writing the wrong DOM element (`#page-timesheets` itself never scrolls; the real `overflow:auto` element is the child `.table-scroll`), so every full-table rebuild silently reset to the top. One fix covers every caller.
+- [x] **Cihan's existing 14 duplicate rows cleaned up on ehow, Royce's explicit approval** — kept one correct 8h/job-27862 row per date, leaving 40h.
+- [x] **Thursday-dark question answered: not a bug** — `timesheets-spans.js` deliberately darkens the 2nd+ consecutive day of the same job number to show a multi-day span. No code change.
+- [x] **David Boyd's own stored data checked clean** (no duplicates) — most likely explanation is one of two already-fixed Sentry errors (`EQ-FIELD-1C`/`EQ-FIELD-1D`, shipped v3.5.642), not data loss.
+
+---
+
+## eq-field: Roster/Editor/Schedule could look "wiped" during a slow data load — FIXED, merged, live (2026-09-02) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Apprentices module simplified — journal sharing replaces the separate Ask-for-Feedback flow — FIXED, merged, live (2026-09-02) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Apprentice profile self-service — real year on create, self-editable site — FIXED, merged, live (2026-09-02) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: TAFE Holidays staleness alert on Dashboard — PR open, not merged (2026-09-01) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: roster/timesheets staff-name map 400ing for every non-manager, wider silent bug for managers found + fixed (2026-09-01) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Weekly Roster "By Crew" gap chips + Edit Roster search/site field (2026-09-01) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Feature Toggles page — descriptions get concrete examples + mini-previews (2026-08-31) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Cameron Tregoning's two mobile bug reports — Prestart create unreachable + roster warning leak, both fixed (2026-08-30) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Timesheets Fill Week + Approved column, plus the "OFF ≠ approved leave" display gap (2026-08-27) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: People save — dirty-field diffing, closes a live data-clobber bug (Zemi Asri, 2026-08-25) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: boot-perf — 3 of the 4 flagged scripts moved off the critical path, closes the 2026-07-28 audit item (2026-08-18) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Apprentices list showed the full company roster to any signed-in user, not just managers (2026-08-18) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: My Schedule cold-boot cache fallback, built from SKS NSW Labour usage data (2026-08-18) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: weekly digest — per-section on/off + custom intro (2026-08-18) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: sprint prep — desktop polish slice 1, Access-Model Phase 3 keys (2026-08-18) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Contacts screen skipped the rehire-rating prompt when archiving Labour Hire (2026-08-18) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Dashboard map → own page, Map hover shows names, cache-buster hotfix (2026-08-14) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Leave notification gaps closed, digest widened to 4 weeks, Email Templates pilot shipped (2026-08-14) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Teams — untick-to-remove silently didn't save, fixed (v3.5.621, PR #853, merged + live) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Weekly Roster — Roster Overview summary card removed from default view (v3.5.653, PR #896, merged + live) (rotated 2026-09-07 — open items remain in eq-field.md)
+
+
+---
+
+## eq-solves-service: attachment uploads were completely broken for everyone — root-caused, fixed, shipped live; a related security gap in the same feature closed too (2026-09-04/05) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20) (rotated 2026-09-07)
+
+**Deferred:**
+
+---
+
+## eq-solves-service: notification bell was silently broken for anyone signed in through Shell — found, fixed, reviewed, merged, live (2026-08-17) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-service: ACB/NSX cover masthead + blank page 2 fixed; live Secondary Injection load bug found and fixed (2026-08-17) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: ACB/NSX check saves could wipe a technician's readings on a dropped connection — fixed and shipped live (2026-08-18) (rotated 2026-09-07)
+*A tech reported a check "wouldn't save / then deleted all the info" at site CA1, suspected offline-related. Root-caused: the ACB/NSX visual-check and electrical-reading saves deleted existing readings then inserted the new ones as two separate server calls — a dropped connection between them left the delete committed with nothing to replace it. Existing offline-safety measures (the banner, the pre-save connectivity check) can't catch this, since the failure window is between two server calls, not before the first one.*
+
+**Deferred:**
+
+---
+
+## eq-solves-service: Settings page showed broken account controls to Shell-embedded users — fixed, merged, live (2026-08-16) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-service: migrations dispatched live; mobile check-detail header overflow found+fixed+deployed; eq-context accidental-checkout scare investigated (2026-08-13) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-09-07 — open items remain in eq-solves-service.md)
+
+
+---

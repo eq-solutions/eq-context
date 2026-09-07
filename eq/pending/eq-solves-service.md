@@ -56,13 +56,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20)
-
-**Deferred:**
-- [ ] **Not click-tested live by Royce** — verified by typecheck, full build, 444 unit tests, CI, and Netlify commit-ancestry, not by actually opening the Send Report modal and issuing a report. The path has zero production rows, so a live click-through would be the first real exercise it has ever had. _(added 2026-08-20)_
-
----
-
 ## eq-solves-service: the automated safety-check suite has been unable to fully test itself since April — fixed past two blocking bugs, a third is being fixed live in an open PR (2026-08-20)
 *Found while checking whether the report-reissue fix above actually got tested — asked directly "did the integration tests pass?", which surfaced that the CI check which spins up a fresh test database has been broken since migration 0042 (mid-April). Root-caused two separate, stacked bugs and fixed both. That let the test database get built roughly 120 database updates further than before it hit the next thing missing — which turned out to be a bigger, separate gap now being closed in its own follow-up.*
 
@@ -112,14 +105,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **"Approved by" has no real data source to wire to.** The DB carries unused `signature_technician_url` / `signature_site_url` / `signature_initials` columns from migration 0068 (2026-04), explicitly intended for exactly this, but no UI anywhere has ever captured them. Real feature gap, not a wiring fix — needs Royce's call on whether to build signature capture. _(added 2026-08-17)_
 - [ ] **Masthead caption redundancy also exists on NSX, Work Order Details, and the Run-Sheet** — only dropped for ACB per Royce's explicit scoping this session. Revisit if he wants it dropped everywhere. _(added 2026-08-17)_
 - [ ] **Secondary Injection load fix not click-tested live post-deploy** — verified via code trace (label-prefix mismatch confirmed against live DB data) plus a regenerated sample report, not by an actual technician reopening a check with saved SI data and watching the fields populate. Worth Royce doing that once. _(added 2026-08-17)_
-
----
-
-## eq-solves-service: ACB/NSX check saves could wipe a technician's readings on a dropped connection — fixed and shipped live (2026-08-18)
-*A tech reported a check "wouldn't save / then deleted all the info" at site CA1, suspected offline-related. Root-caused: the ACB/NSX visual-check and electrical-reading saves deleted existing readings then inserted the new ones as two separate server calls — a dropped connection between them left the delete committed with nothing to replace it. Existing offline-safety measures (the banner, the pre-save connectivity check) can't catch this, since the failure window is between two server calls, not before the first one.*
-
-**Deferred:**
-- [ ] **Not click-tested live by a real technician** — verified via `tsc`/`next build` and a live database check, not by an actual on-site ACB/NSX save. Draft-autosave (`lib/hooks/useDraftAutosave.ts`) has since been wired into ACB/NSX/RCD with a restore/discard banner, confirmed live 2026-09-07 — worth including in this click-test too. _(added 2026-08-18)_
 
 ---
 
