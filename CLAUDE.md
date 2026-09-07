@@ -226,6 +226,7 @@ This contract points; it doesn't restate. Authoritative files:
 | Reflection protocol (mandatory pre-finalization self-critique) | [rules/reflection-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/reflection-protocol.md) |
 | Decision protocol (on-demand steelman/pre-mortem/value/feasibility pass) | [rules/decision-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/decision-protocol.md) |
 | Gap protocol (light centering pass — one-sentence problem, four blunt questions, one next move) | [rules/gap-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/gap-protocol.md) |
+| Tidy protocol (on-demand substrate pressure-release pass — prunes rule/file bloat, never on a mandatory cadence) | [rules/tidy-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/tidy-protocol.md) |
 | Deploy topology protocol (verify which repo actually serves a URL/path before assuming, building, or deploying) | [rules/deploy-topology-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/deploy-topology-protocol.md) |
 | Entity boundary protocol (classify every repo/credential touched by entity — EQ vs SKS — before acting) | [rules/entity-boundary-protocol.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/entity-boundary-protocol.md) |
 | EQ Brand (Design Brief v1.3) | [rules/brand-eq.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/rules/brand-eq.md) |
