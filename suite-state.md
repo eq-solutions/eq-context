@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-07)
 
 **eq-field:**
-- #934 v3.5.689 — FIX: team-less person's roster row (leave included) vanished under any team-pill filter
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -113,7 +112,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,966 | ✓ 1,966 |
+| Operational | app_data.field_schedule | 1,969 | ✓ 1,969 |
 | Operational | app_data.field_timesheets | 408 | ✓ 408 |
 | Safety | public.prestarts | 236 | ✓ 236 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
