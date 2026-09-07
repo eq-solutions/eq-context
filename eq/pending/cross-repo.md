@@ -79,11 +79,6 @@ status: live
 
 ---
 
-## eq-shell + eq-field: Internal Document Sign-off Register — T4 (DB permission gate) closed end to end by a concurrent session earlier today (2026-08-20)
-Full build/merge/dispatch narrative already in today's session log (three separate chapters) — not re-duplicated here. One-line summary for anyone scanning just this file: `documents`/`document_audiences`/`document_categories` no longer grant `authenticated` any direct access (was full CRUD, tenant-RLS only, walkable via Shell's own tenant-JWT minting) — migration `0252`, merged as [PR #1470](https://github.com/eq-solutions/eq-shell/pull/1470), dispatched live and independently re-verified (zero `authenticated` grants remain on either tenant plane). Fully done, nothing open here.
-
----
-
 ## eq-field + eq-shell: access-control cleanup — Pipeline/Teams/Apprentices/Email Templates get their own permission switches, then a real gap in Shell's Access Control page found and closed (2026-08-16)
 
 - [ ] **A real, bigger idea from Royce — one single screen for all access control, not two separate systems** — discussed and deliberately not built today; needs a proper design pass first (grouping ~86 total switches sensibly is its own problem), not a same-day PR. _(added 2026-08-16)_
@@ -95,10 +90,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 
 ## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15)
 *Started from one question — "what happens if a user changes mobile numbers, can an admin update it?" — and followed it all the way down. The answer was no: the admin screen only changed Shell's copy of the number, so the next sign-in created a brand-new account and left every licence stranded on the old one. Fixing that opened up the wider question of who can be helped at all when a number is lost, which turned into a full audit of every way into the apps. Every number below was read from the live databases, not from a document.*
-
----
-
-## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15)
 
 **Deferred:**
 - [ ] **Where the 7 deleted test logins came from was never explained.** Each had a Core identity naming SKS but no company invite, so the sign-up fault repaired this session cannot have created them. Creation stopped on its own at the end of June and none have appeared since. Harmless now they're gone, but the door that made them is still unidentified. _(added 2026-08-15)_

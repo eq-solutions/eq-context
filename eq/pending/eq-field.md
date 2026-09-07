@@ -36,18 +36,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Timesheets day/date header text was low-contrast grey on navy — FIXED, merged, live (2026-09-07)
-*Royce: "the colour of the day and dates doesnt stand out - dark grey on navy," reported alongside the Sharon Maroni issue above.*
-
-- [x] **Root cause:** `.sp-htick` (`timesheets-spans.js`, the "Week as spans" day-header strip) used `var(--ink-3)` (#6B7280 grey) — correct for text on a light surface, but this element sits inside the navy `.ts-table thead th`. Only the "today" column, which has its own sky-blue background, used white text correctly.
-- [x] **Fix:** default tick text is now white; the date sub-label opacity bumped `.6` → `.75`, matching the ratio this repo's own earlier WCAG pass (`base.css`) already established as safe on this exact background (~8:1).
-- [x] [PR #935](https://github.com/eq-solutions/eq-field/pull/935) (v3.5.689), merged, confirmed live — verified via `getComputedStyle` before/after on the actual deploy preview, not just reasoned from the CSS.
-
-**Notes:**
-- Unrelated to the Sharon Maroni RLS issue above beyond being reported in the same message — pure client-side CSS, no schema/auth touched.
-- Full technical detail: `sessions/2026-09-07.md`.
-
----
 
 ## eq-field: Timesheets raw RLS error fixed; write-side RLS assumption corrected; EQ-FIELD-1B triaged, not a bug (2026-09-07)
 *Royce reported Anthony Hartley got a raw Postgres error trying to save his own timesheet: `new row violates row-level security policy "timesheets_own_read"` (shortened in relay — the real policy is `timesheets_own_crew_read`). Traced live via Postgres/edge logs on ehow before writing anything.*
@@ -275,12 +263,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field/eq-context: field_managers not in the shared-object drift registry (2026-09-01)
-*Found auditing the incident-alert-recipients work: `app_data.field_managers` (view) and `field_managers_digest_iu` (trigger function) on ehow can be fully replaced by either eq-field's hand-applied migrations or eq-shell's governed pipeline — same risk shape as the 3 confirmed prior incidents in `IDENTITY-MODEL.md` §3.3.3 — but neither object is actually registered, so the nightly `check_shared_object_drift.py` doesn't protect them.*
-
-- [~] **Register both objects in `eq/identity/shared-db-objects.json`** — spawned as `task_1e2c8b07`, Royce started it running in a separate local session 2026-09-01, in progress, not yet reported back.
-
----
 
 ## eq-field: TAFE Holidays staleness alert on Dashboard — PR open, not merged (2026-09-01)
 *Royce, exploratory: "is there a clever way to ensure tafe holidays update?" The `tafe_holidays` date ranges (Edit Roster → TAFE Holidays) are hand-typed and nothing prompts anyone before NSW TAFE's next term break needs entering. Presented 3 directions via `AskUserQuestion` (staleness warning / auto-import from TAFE NSW's calendar, flagged unverified-feasible / leave manual); Royce picked the staleness warning.*
@@ -1024,13 +1006,6 @@ Net: on a deep-linked `?tab=leave` view — exactly how Core embeds Field — `l
 
 ---
 
-## ⏩ Session close — 2026-07-08 (eq-field) — SKS tenant logo unblocked (v3.5.270, shipped + live)
-
-*Royce reported the SKS logo not rendering on `field.eq.solutions/?tenant=sks`. Root cause: the Content-Security-Policy `img-src` directive never listed the canonical Supabase host, so the browser refused the logo image. Fixed, merged, and deployed to production this session.*
-
-- **Note:** the 3 unrelated files from the earlier eq-field session (`sks-pipeline-resource.js`, `audit.js`, `eq-service-sites.js`) were deliberately left uncommitted — this PR touched only the 5 CSP/version files.
-
----
 
 ## ⏩ Session close — 2026-07-08 (eq-field) — chip `task_3e6d4e89` executed: schedule-shim bug class fixed in 4 spots, 1 deeper Revert bug newly found; nothing committed/deployed yet
 
