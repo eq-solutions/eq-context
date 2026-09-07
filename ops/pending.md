@@ -32,40 +32,12 @@ A second, unrelated session today hit `core.hooksPath` resolving to the wrong-bu
 
 ## `/tidy` protocol built; `/brief`'s stale-digest gap found and fixed live (2026-09-07)
 
-Royce asked whether the substrate had gotten too structured and was limiting judgment —
-diagnosed with real numbers rather than assumed: of the 15 most recent `eq-context`
-commits at session start, 14 were automated bookkeeping (7× session-close, 3× nightly
-digest, 2× nightly suite-state-refresh) and 1 was product work; `eq/pending.md` had
-already regrown to 4,919 lines across shards three weeks after its 491KB crisis-split.
-Built `rules/tidy-protocol.md` + `/tidy` as a Royce-triggered-only (never automatic)
-pressure-release pass — measure standing-file sizes, classify every CLAUDE.md/rules rule
-as HARD/PREFERENCE/SCAR TISSUE, enforce size budgets, propose cuts with sign-off rather
-than editing unilaterally.
-
-Running `/brief eq-context` to clear the write-gate for that file surfaced a live instance
-of the exact problem being diagnosed: the brief's Health section was sourced from a local
-`digest.md` confirmed (via `git show origin/main:digest.md`) to be ~7 hours / 2 commits
-stale — real Needs You count was 9, not the 7 reported. The 2 misses: this file's own F10
-entry above, and a Sentry alert promoted from the existing Live Errors table. Root-caused
-and fixed in `/brief` itself (shared by `/gap`/`/decide`/`/reflect`, all four fixed):
-a `$ARGUMENTS`-into-empty-heading templating bug that produced self-contradicting text,
-no check that `digest.md` was current before presenting it, and a Step 2 that depended on
-`system/worktree-registry.md` (368.5KB / 647 lines — exceeds a single file-read), now
-using live `git worktree list` instead. Also pushed to `Milmlow/claude-code-config`
-(`~/.claude` is a live git repo as of the "New machine bridged" session above — the fixes
-had to land there too, not just eq-context's `tools/commands/brief.md` backup).
-
 - [ ] **The actual classification pass (steps 2–6 of `rules/tidy-protocol.md`) hasn't run
   yet** — protocol exists, baseline sizes logged in its own Pass Log table, but nobody's
   gone rule-by-rule through CLAUDE.md + `rules/*.md` to actually propose cuts. Run `/tidy`
   when there's time to spend on it. _(added 2026-09-07)_
 - [ ] `worktree-registry.md` (368.5KB / 647 lines) — investigation spawned, Royce started
   it running (`task_d0ceeaf5`). _(added 2026-09-07)_
-- [ ] Nightly digest/suite-state-refresh firing 2-3× on the same day instead of once —
-  investigation spawned, Royce started it running (`task_43c901bf`); the "fix(docs):
-  correct nightly-only framing" commit that landed upstream mid-session may already be
-  part of that task's output — worth checking before assuming it's still fully open.
-  _(added 2026-09-07)_
 
 ---
 

@@ -1,11 +1,18 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
+
+## [2026-09-07] Nightly digest/suite-state-refresh "duplicate" commits root-caused (not a bug); misleading "nightly" framing fixed
+
+**Built by:** Claude Code
+
+- **Root-caused the recurring "fires 2-5× a day" pattern**: `notify-substrate.yml` (present in eq-shell/eq-service/eq-field/eq-cards) fires `repository_dispatch` on every push to each repo's own `main`; `gh run list` confirmed 13 of the last 15 runs on both `digest-refresh.yml` and `suite-state-refresh.yml` were dispatch-triggered, not the `schedule` cron. Deliberate real-time-refresh design, already correctly serialized by a shared `concurrency` group — no missing guard, no duplicate cron, no session faking the bot (`eq-suite-bot` authored+committed every commit, matching the workflow's own `git config` step).
+- **Fixed the actual defect**: `suite-state.md` + `refresh_suite_state.py` still described this as "nightly" in 4 spots, left over from before dispatch was wired up (`digest.md`'s own framing was already correct). Fixed the generator + the 2 hand-maintained spots (frontmatter `scope:`, Crons table row) its regexes never touch. `_LEGACY_FIELD_TABLE_RE` deliberately left pinned to the old wording — it's a historical-shape repair pattern for the 2026-08-16 heading-less incident, not a mirror of current output; `test_field_block.py` catches this if changed (caught it here before push). 40/40 tests green, verified live via a manual `suite-state-refresh.yml` run (22s, clean, hand-fix matched the corrected generator's output byte-for-byte). Same correction also applied to `C:\Projects\CLAUDE.md` (umbrella, outside this repo). Commit [`5701927f`](https://github.com/eq-solutions/eq-context/commit/5701927f6b056bba69ed56130b6b2d890ae152f2).
 
 ## [2026-09-06] F10 mechanism 4 closed — core.hooksPath now self-heals on a fresh clone
 
