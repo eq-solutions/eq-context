@@ -77,7 +77,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1811 Delete retired AdminDocumentUpload.tsx
 - #1810 feat(equipment): give the asset detail drawer its own URL
 - #1809 fix(quotes): remove board-only Closed column from EQ Ops kanban
 - #1804 chore(intake): re-vendor eq-intake to eq-solves-intake@81bd49a
