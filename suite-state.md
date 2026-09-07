@@ -77,9 +77,9 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1806 fix(migrations): renumber 0303_tidy_read_entity_columns -> 0304
 - #1805 fix(deps): close 3 Dependabot advisories (browserslist, fflate)
 - #1804 chore(intake): re-vendor eq-intake to eq-solves-intake@81bd49a
-- #1803 feat(staff): restrict the Manager field to Royce until the SKS backfill lands
 - #1801 Documents: split sign-off register into tier-scoped pages
 - #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
@@ -107,7 +107,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | new | 2026-09-07 |
+| eq-shell | building | 2026-09-07 |
 | eq-field | ready | 2026-09-07 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
