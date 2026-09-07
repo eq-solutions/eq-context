@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T09:14:13Z",
+  "generated_at": "2026-09-07T10:04:22Z",
   "generated_by": "eq-context session 2026-09-01, seeded from live pg_get_viewdef/pg_get_functiondef queries against ehow via the Supabase MCP (see eq-field investigation this same session)",
   "plane": "ehow",
   "objects": {
@@ -21,8 +21,8 @@
       "schema": "app_data",
       "name": "field_people_iud",
       "kind": "function",
-      "sha256": "b914a2ea8ba4eb0bf96b63860d382ae2104b13c648db55709660d46b468f25e5",
-      "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\n    declare v_name text; v_first text; v_last text; v_sid uuid; v_tid uuid;\n            v_can_licences boolean; v_can_labour_hire boolean; v_can_people boolean;\n            v_secret text; v_worker_id uuid; v_push_body jsonb;\n    begin\n  "
+      "sha256": "8d7b0604f2cfafbaae8ef34adf78486e7f6af561afb4377346d952e77140d59d",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\n    declare v_name text; v_first text; v_last text; v_sid uuid; v_tid uuid;\n            v_can_licences boolean; v_can_labour_hire boolean; v_can_people boolean;\n            v_actor_id uuid;\n            v_secret text; v_worker_id uuid; v_"
     },
     "app_data.field_people_removed_iud": {
       "schema": "app_data",
