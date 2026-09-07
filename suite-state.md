@@ -77,8 +77,9 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1809 fix(quotes): remove board-only Closed column from EQ Ops kanban
+- #1808 feat(staff): give the staff detail panel its own URL
 - #1807 feat(customers): give the customer detail view its own URL
-- #1806 fix(migrations): renumber 0303_tidy_read_entity_columns -> 0304
 - #1805 fix(deps): close 3 Dependabot advisories (browserslist, fflate)
 - #1804 chore(intake): re-vendor eq-intake to eq-solves-intake@81bd49a
 - #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
@@ -87,9 +88,6 @@ _If this file is >48h old, the cron is broken._
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
 - #1696 chore(deps): bump @sentry/react from 10.53.1 to 10.71.0
 - #1695 chore(deps): bump papaparse and @types/papaparse
-
-**eq-solves-intake:**
-- #123 fix(deps): override browserslist to close eq-shell Dependabot #204/#205
 
 ---
 
@@ -110,7 +108,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | building | 2026-09-07 |
+| eq-shell | new | 2026-09-07 |
 | eq-field | ready | 2026-09-07 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
