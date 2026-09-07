@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,17 @@ status: live
 # EQ Service — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-solves-service: new-PC environment setup + full Dependabot/CI-health batch cleared, PR #791 (report reissue) shipped live (2026-09-07)
+*Fresh PC — verified the dev environment (deps, Node/npm, git/gh auth all fine; `.env.local` had to be rebuilt from scratch since it's gitignored and never travels with a clone). Cleared the 5 aging Dependabot PRs (#810–#814), which surfaced two real, unrelated problems along the way: 4 dead permission keys from the `@eq-solutions/roles` v2.7.0 bump (cross-checked live against eq-shell — 3 belong to its user-admin surface, 1 is dead suite-wide, same as eq-shell's own baseline already treats it) and a fresh high-severity `npm audit` advisory against `browserslist` (pre-existing in the lockfile before today, unrelated to any of the bumps — fixed via `overrides` rather than npm's own suggested fix, which would have downgraded the whole service-worker toolkit; PR #830). Also resolved a 16-day-stale merge conflict on #791 and shipped it — that path now sends real customer email in production.*
+
+**Deferred:**
+- [ ] **`SUPABASE_SERVICE_ROLE_KEY` still missing from `.env.local` on this PC** — not retrievable via `netlify env:pull` in any context (checked directly with `netlify env:get`, both dev and production come back "No value set"). Blocks most server actions locally. Needs Royce to grab it from the Supabase dashboard (project `ehow` → Settings → API → `service_role`) himself. _(added 2026-09-07)_
+- [ ] **`EQ_SECRET_SALT` / `EQ_SERVICE_JWT_SECRET` exist in Netlify but production-context only** — not pulled into local dev; Royce's call whether local should reuse the real production shared-HMAC value or stay on the `SUPABASE_JWT_SECRET` fallback. _(added 2026-09-07)_
+- [ ] **`.claude/launch.json` for local dev-server preview was never finished** — the first attempt tripped the brief-gate before the tier question was answered; work moved to the Dependabot batch instead and it was never revisited. _(added 2026-09-07)_
+- [ ] **PR #791 is now live in production but its click-through still hasn't happened** — blocked all session on the missing service-role key above; see the 2026-08-20 entry below for the original build's own still-open click-test item. _(added 2026-09-07)_
 
 ---
 
@@ -91,7 +102,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-solves-service: the "don't send the same report twice" guard was dead code — fixed, merged, live; prerequisite for Tier C offline writes (2026-08-20)
 
 **Deferred:**
-- [~] **Sending a corrected report is impossible from the app — fix built, PR open, deliberately not merged.** Added a revision-reason box to the Send Report screen (only appears when a report has already gone out once before), backed by a new check so the screen can ask the server whether a reason is needed instead of guessing. 7 new automated tests. eq-service [PR #791](https://github.com/eq-solutions/eq-service/pull/791) — held back on purpose: this path emails real customers, so it needs your explicit go-ahead rather than shipping on a "fix this" instruction. _(added 2026-08-20, updated 2026-08-21)_
 - [ ] **Not click-tested live by Royce** — verified by typecheck, full build, 444 unit tests, CI, and Netlify commit-ancestry, not by actually opening the Send Report modal and issuing a report. The path has zero production rows, so a live click-through would be the first real exercise it has ever had. _(added 2026-08-20)_
 
 ---

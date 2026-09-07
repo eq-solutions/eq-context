@@ -1,13 +1,19 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-09-07 (PRs #811/#813/#812/#814/#810 MERGED + LIVE — dependency backlog cleared; #830 MERGED + LIVE — audit fix; #791 MERGED + LIVE — report reissue reason now askable from the UI)
+- Cleared 5 aging Dependabot PRs: vitest, @types/leaflet, posthog-node, resend (straightforward version bumps), and the `@eq-solutions/roles`+`@eq-solutions/ui` group (#810), which needed a real fix first — v2.7.0 introduced 4 permission keys (`admin.assign_role`, `admin.delete_user`, `reports.manage`, `service.do_work`) with no call site in this repo, tripping the permission-enforcement drift guard. Verified live against eq-shell before whitelisting in `tests/lib/utils/permission-enforcement-baseline.json`: 3 belong to eq-shell's own user-admin/GM-report surface, `service.do_work` is dead suite-wide (already in eq-shell's own baseline too).
+- A fresh high-severity npm audit advisory against `browserslist` (transitive via `@serwist/next`, pre-existing before today's merges — confirmed already in the lockfile at the commit before any of them) also surfaced, blocking `main`'s CI. Fixed via [PR #830](https://github.com/eq-solutions/eq-service/pull/830) — `overrides` pinning `browserslist` to `^4.28.9` rather than npm's own suggested fix, which would have downgraded `@serwist/next` itself (9.5.12→9.4.1, a real risk to the service-worker build) for no reason a patch-level browserslist bump doesn't already cover.
+- [PR #791](https://github.com/eq-solutions/eq-service/pull/791) (open since 2026-08-20, deliberately held back pending explicit go-ahead since it emails real customers) merged after resolving a 16-day-stale conflict against main's own `Alert`-component refactor, verified against the full test suite (707/707) first. Reissuing a report now asks for a reason instead of silently failing. Live in production; not yet click-tested by a real user.
+- All merges clean beyond the repo's already-documented, pre-existing `Integration tests (Supabase local)` migration-replay gap (non-required check).
 
 ## 2026-09-05 (PR #828 MERGED + LIVE — attachment signed-URL action hardened against storage-RLS drift)
 - Follow-up from the 2026-09-04 attachment-upload fix below, found during a broader security review of the same feature (Royce: "anything obvious we can improve? are the files secure?"). `getAttachmentUrlAction` accepted a caller-supplied storage path with zero app-layer tenant check, relying entirely on the `storage.objects` SELECT policy — the exact policy class just shown able to drift silently out-of-band (see below). Added a one-line tenant-prefix guard; no behavior change for real callers, both existing call sites already only pass same-tenant paths.
