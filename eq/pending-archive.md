@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -13,6 +13,53 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-solves-service: 13 fully-closed eq-service backlog sections rotated out in one pass — full live audit, not a blind sweep (rotated 2026-09-07)
+*Live-verified every open item in `eq/pending/eq-solves-service.md` (3 parallel audit passes covering the whole file, plus one item checked directly) before pruning anything — each of the 13 sections below had every one of its own open items independently confirmed done via a live check (PR merge state, a grep against current code, a direct SQL query, or — for closed decisions — the decision itself already being recorded with no follow-up question left). Nothing here was assumed done from staleness alone.*
+
+### eq-solves-service: PR #821's other spawned follow-up — ConfirmDialog focus-trap adoption still open (2026-09-01)
+- [x] **Adopt `useFocusTrap` in `ConfirmDialogModal`.** DONE — `ConfirmDialog.tsx` now calls `useFocusTrap<HTMLDivElement>(true, onCancel, destructive ? cancelBtnRef : confirmBtnRef)`, hook extended with the needed `initialFocusRef` param, wired to Cancel/Confirm. _(added 2026-08-31, confirmed done 2026-09-07)_
+
+### eq-solves-service: CLAUDE.md's StatusBadge description was stale — verified against the live kit, fixed (2026-08-31)
+- [x] **Fix committed but not pushed.** DONE — same branch/commit shipped as PR #819, MERGED 2026-08-31. _(added 2026-08-31, confirmed done 2026-09-07)_
+
+### eq-solves-service: PR #619 turned out to have 3 migration-number collisions, not 1 — all fixed (PR #806, merged + live 2026-08-23)
+- [x] **Root cause `0197_report_settings_per_tier.sql` legacy-column bug.** DONE — PR #823 (commit `0eafa69`, 2026-09-01) added the missing `report_show_*` columns to the from-scratch fixture; today's CI shows migration 0197 applying clean. _(added 2026-08-23, confirmed done 2026-09-07)_
+
+### eq-solves-service: found and fixed why the automated test database could never fully build itself from scratch — proof PR open, not merged (2026-08-21)
+- [x] **3 colliding migration-number pairs (issue #800).** DONE — all three (0192/0193/0203) fixed and renamed to 0228/0229/0230 by PR #806 (merged 2026-08-23), confirmed present on disk.
+- [x] **`asset_local` third wall.** DONE — PR #797 (merged 2026-08-20) fixed it; today's CI shows migrations completing past this point with no `asset_local` error. _(added 2026-08-21, confirmed done 2026-09-07)_
+
+### eq-solves-service: worktree/branch/stash graveyard cleared — 8 stranded branches, 23 orphaned folders, and 3 stale stashes, every one confirmed already-shipped before removal (2026-08-21)
+- [x] **Leftover worktree folder (`acb-check-report-wiring-1baa7e`) stuck.** DONE — `.claude/worktrees/` no longer exists on this checkout at all; `git worktree list` shows only the main worktree. _(added 2026-08-21, confirmed done 2026-09-07)_
+
+### eq-service: finished the security-headers cleanup, cleared the dependency backlog, found the npm audit gate isn't fully fixable (2026-07-27)
+- [x] **Still-red security scanner check.** DONE — `npm audit --audit-level=high` returns 0 findings today (all severities), via the 2026-09-07 Dependabot cleanup + the `browserslist` override fix (PR #830); CI is green. _(added 2026-07-27, confirmed done 2026-09-07)_
+
+### EQ Service: Compliance Report logo follow-through, worktree bug re-hit and cleaned up, "wrong report" question resolved (2026-07-23)
+- [x] **2 leftover folders stuck.** DONE — `worktree-registry.md` documents both cleared in its 2026-07-27 cleanup round; `.claude/worktrees` doesn't exist on this checkout. _(added 2026-07-23, confirmed done 2026-09-07)_
+
+### eq-solves-service: cleared two dead files, then closed out the two HIGH security warnings from the last audit (2026-07-22)
+- [x] **2 HIGH warnings, no fix available at the time.** DONE — `npm audit --audit-level=high` returns 0 findings today; upstream releases since have closed the gap.
+- [x] **Shared checkout collides with concurrent sessions.** DONE — `worktree-registry.md`'s `detect-fake-worktree` guard (shipped 2026-07-23, extended 2026-08-05) plus the established registry convention now fully covers this repo. _(added 2026-07-22, confirmed done 2026-09-07)_
+
+### eq-solves-service: found why two sessions kept colliding on the same files, and closed the door on it happening again (2026-07-23)
+- [x] **This session's own fake-folder assignment still not a real private copy.** DONE — `worktree-registry.md`'s round-3 entry (2026-07-27) confirms it was cleared; `.claude/worktrees` doesn't exist on this checkout. _(added 2026-07-23, confirmed done 2026-09-07)_
+
+### EQ Service: the automated safety check has been failing on everything, for everyone (2026-07-21)
+- [x] **Four lesser flaws, framework/spreadsheet-library downgrade needed to fix.** DONE — `npm audit` (all severities) returns 0 findings today; both flagged chains are gone via since-landed dependency updates. _(added 2026-07-21, confirmed done 2026-09-07)_
+
+### eq-solves-service: cold-start loading-time deep dive — found + fixed a bug in the app's own anti-slowness system, plus a smaller database-call cleanup (2026-07-21, MERGED + LIVE)
+- [x] **Declined for now: rough shell instantly while slow parts load.** DONE — closed decision record, Royce already said leave it, no outstanding question. _(declined 2026-07-21, archived 2026-09-07)_
+
+### EQ Service reports — now render each tenant's real brand, and auto-update (2026-07-14, BUILT + MERGED + LIVE)
+- [x] **Trim the old manual SKS colour copy.** DONE — no hardcoded SKS tenant ID/colour literals remain in `lib/reports/colours.ts`/`report-branding.ts`; `logo-variants.ts` now implements a fully generic tenant-settings-driven on-dark logo. _(added 2026-07-14, confirmed done 2026-09-07)_
+
+### Session close — 2026-06-29 — SKS data reset + maintenance check page perf
+*`service.assets` view does NOT filter on `active = true` — it only filters by `service_enabled` site; soft-delete is invisible to the view; hard-delete was the right call for the reset.*
+- [x] **SKS contract scope reimport.** DONE — live: `service.contract_scopes` holds 145 rows across 8 SKS sites, real reimported data. _(added 2026-06-29, confirmed done 2026-09-07)_
 
 ---
 
