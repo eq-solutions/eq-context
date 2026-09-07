@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-09-07
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live
@@ -25,6 +25,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 - [system/onboarding.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/onboarding.md) — first-time tutorial
 - [system/failures.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/failures.md) — the guard-ratchet failure ledger
 - [system/worktree-registry.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/worktree-registry.md) — active/stale git worktrees, check before creating one
+- [system/worktree-registry-archive.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/worktree-registry-archive.md) — full pruning history, split out 2026-09-07 (was 368.5KB inline); reference only
 - [system/incident-claims.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/incident-claims.md) — same-day claim lock so 2-3 concurrent sessions don't independently chase the same flagged finding; checked automatically by `hooks/session_start.py` against digest.md's "Needs you" list
 - [system/dr-backups.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/dr-backups.md) — offsite backup coverage across projects
 - [system/infra-redundancy-scoping-2026-08-11.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infra-redundancy-scoping-2026-08-11.md) — suite-wide single points of failure outside the DB-backup picture (Netlify account, Supabase org, DNS, auth hub, crons) — scoping only, no fixes built
@@ -52,6 +53,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `punch-list.md` | Capped active work queue, curated by Royce — separate from tier `pending.md` |
 | `failures.md` | Guard-ratchet failure ledger |
 | `worktree-registry.md` | Active/stale git worktrees |
+| `worktree-registry-archive.md` | Full pruning history (reference only) |
 | `incident-claims.md` | Same-day claim lock so concurrent sessions don't duplicate investigation of the same flagged finding |
 | `dr-backups.md` | Offsite backup coverage |
 | `infra-redundancy-scoping-2026-08-11.md` | Suite-wide single points of failure outside DB backups (Netlify/Supabase/DNS/auth-hub/crons) |
