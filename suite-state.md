@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-07)
 
+**eq-cards:**
+- #343 fix(cards): wallet info-density cleanup + worker-sync dob fix
+
 **eq-field:**
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
@@ -88,7 +91,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -98,7 +101,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-06 |
+    | eq-service | building | 2026-09-07 |
 | eq-shell | ready | 2026-09-06 |
 | eq-field | ready | 2026-09-07 |
 
@@ -112,8 +115,8 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,969 | ✓ 1,969 |
-| Operational | app_data.field_timesheets | 408 | ✓ 408 |
+| Operational | app_data.field_schedule | 1,980 | ✓ 1,980 |
+| Operational | app_data.field_timesheets | 409 | ✓ 409 |
 | Safety | public.prestarts | 236 | ✓ 236 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
