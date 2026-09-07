@@ -9,12 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-09-07 (PR #1795, MERGED + LIVE — invite-resend `email_delivered` fix; Sentry sourcemap upload gated to close a live sourcemap leak)
-- Resend-invite path no longer hardcodes `email_delivered: false` on a successful resend.
-- `vite.config.ts`: `sourcemap` generation now gated on `SENTRY_AUTH_TOKEN` being set, not just the post-upload cleanup — closes a gap where a missing token meant unminified `.js.map` files shipped to production unremoved. Confirmed live on core.eq.solutions post-merge: no `sourceMappingURL` in the bundle, `.js.map` request falls through to the SPA shell.
-
-## 2026-09-07 (PR #1806, MERGED + LIVE — migration ledger collision resolved, `0303_tidy_read_entity_columns` renumbered to `0304`)
-- PR #1796 and PR #1797 both merged claiming migration number `0303`; renumbered the later-merged file. No content change, filename only — both migrations independently idempotent.
+## 2026-09-07 (PR #1805, MERGED + LIVE — 3 of 5 open Dependabot alerts closed)
+- **[PR #1805](https://github.com/eq-solutions/eq-shell/pull/1805)** — `pnpm.overrides` for `browserslist` (`^4.28.7`, closes GitHub alerts #206/#207, both high) and `posthog-js>fflate` (`^0.4.9`, closes #201, moderate). Both transitive; the fflate override is scoped to the posthog-js edge so it doesn't touch the already-safe `fflate@0.8.3` resolved under `@react-pdf/renderer`.
+- Branch was cut before [PR #1803](https://github.com/eq-solutions/eq-shell/pull/1803) merged, so it initially failed the required "Schema drift + anon-grant + policy-lint" check (that check evaluates live state, not this branch's diff — #1803's orphan-perm fix wasn't in it yet). Fixed with `gh pr update-branch` rather than a re-run, then re-verified full CI green before merging.
+- Alerts #204/#205 (same browserslist advisory, vendored `eq-intake/eq-platform` copy) not closed here — upstream `eq-solves-intake` itself is still unpatched. See `eq/pending/eq-shell.md` for the open item and `task_bb2405d7`.
 
 ## 2026-09-07 (PR #1796 + PR #1803, MERGED + LIVE — real Manager/reporting-line field added to Staff, restricted to Royce until the SKS backfill lands)
 - **[PR #1796](https://github.com/eq-solutions/eq-shell/pull/1796)** — new `manager_id` self-referencing column on `app_data.staff` (migration `0303`, ehow/SKS plane only). Manager field (view + edit) added to the Staff page (`SplitPanel.tsx` desktop, `StaffPage.tsx`'s `MobileSheet` mobile), a native `<select>` sourced from the already-loaded roster matching this repo's existing person-picker convention (no new typeahead component). Server-side validation in `entity-patch.ts`: rejects self-reference and cross-tenant manager assignment. Migration dispatched to ehow via `tenant-migrate.yml`, confirmed live.
