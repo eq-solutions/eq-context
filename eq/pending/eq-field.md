@@ -13,6 +13,39 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Sharon Maroni couldn't see anyone's timesheets — the "supervisors see every crew" fix from 2026-09-04 never reached the database — FIXED, merged, live (2026-09-07)
+*Royce: Sharon Maroni (Office Manager, `is_supervisor` flagged, supervises zero teams) reported she couldn't see any of "the guys'" timesheets. Investigated against live ehow/jvkn before touching anything.*
+
+- [x] **Root cause: the 2026-09-04 "supervisors see every crew" fix (section further down this file, [PR #910](https://github.com/eq-solutions/eq-field/pull/910)/v3.5.668) was client-side only** — confirmed via `git show 07c98b10 --stat`: zero `.sql` files touched. `permission-matrix.js` has granted every supervisor `field.view_all_crews` since that day, but the database RLS function (`app_data.eq__timesheets_caller_has_broad_read`, hardened 2026-08-24, PR #768) still checked `eq_role='manager'` only — never `'supervisor'`. The client has been assuming unscoped reads the database was silently narrowing back down, for 3 days, for every supervisor who wasn't already a manager.
+- [x] **Immediate fix for Sharon:** granted her `field.view_all_crews` directly via a new Shell security group (`shell_control.security_groups`/`user_security_groups` on jvkn) — live same session, takes effect on her next sign-in. No code change.
+- [x] **Full DB reconciliation, [PR #936](https://github.com/eq-solutions/eq-field/pull/936):** `eq__timesheets_caller_has_broad_read()` and `eq__leave_caller_has_broad_read()` now grant broad read to any supervisor with a resolved staff identity, matching the client. Requires a resolved identity — does not reopen the "unresolved identity" hole 2026-08-24 deliberately closed (verified: a simulated unresolved-supervisor JWT still returns false).
+- [x] **Second, independent bug found and fixed in the same migration:** `leave_requests_own_crew_read` had been silently calling the wrong (more lenient) RLS function since some point after 2026-08-23 — the correct function (`eq__leave_caller_has_broad_read`, built for it that day, PR #756) was never actually wired to the policy. `20260831_field_permission_denials_enforce.sql` had already found this and documented it without fixing it. Repointed as part of PR #936.
+- [x] **Named blast radius, reviewed by Royce before applying:** 10 SKS supervisors gain (or formally keep) tenant-wide read on both tables — Sharon Maroni, David Boyd, Collin Toohey, Jack Cluff, Todd Wilson, Anthony Hartley, Kurt Sticker, Rumen Iliev, William Brown, Richard Brown. Verified post-apply with 6 real claims-shape tests in rolled-back transactions (manager, unresolved-supervisor, Sharon, David Boyd, employee, leave-magic-link) — all matched the pre-apply prediction.
+- [ ] **David Boyd's original 2026-09-04 complaint (section further down this file) was likely never actually fixed until today** — his account is `supervisor` role with 2 `team_supervisors` rows, no `extra_perms` grant, so the client-only 2026-09-04 fix would not have changed what he could actually read. Not confirmed against his live session either before or after — inferred from his DB state and the (now-fixed) RLS logic. _(added 2026-09-07)_
+- [ ] **Rhys Scott can't be fixed by this migration** — job title "Site Supervisor", Field's own `is_supervisor` flag is true, but his actual Shell-granted role is `employee`, not `supervisor` — he never reaches the new branch. Needs a Shell-side role correction. _(added 2026-09-07)_
+- [ ] **Two "Richard Brown" identities exist for SKS in Shell** — one resolves to a staff record, one doesn't. Likely the same duplicate-identity class already tracked as EQ-SHELL-14. Not investigated. _(added 2026-09-07)_
+- [ ] **How `leave_requests_own_crew_read` reverted to the wrong function between 2026-08-23 and 2026-08-31 is unknown** — no migration file shows a reversion. The mechanism that caused it once isn't ruled out from happening again. _(added 2026-09-07)_
+- [ ] **Not click-tested live by any of the 10 named people** — verified via transactional claims simulation (a more precise test of the RLS boundary itself), not a real signed-in session. _(added 2026-09-07)_
+
+**Notes:**
+- Directly completes the open item this file already flagged on 2026-09-04 ("every SKS employee's timesheet hours AND leave-request details are now visible to every supervisor org-wide") — that claim was NOT actually true at the database level until this session; see the "supervisors now see every crew" section further down, now closed out.
+- Full technical detail, including the complete blast-radius table and all verification output: `sessions/2026-09-07.md` and two same-day entries in eq-field's own `docs/reflection-log.md`.
+
+---
+
+## eq-field: Timesheets day/date header text was low-contrast grey on navy — FIXED, merged, live (2026-09-07)
+*Royce: "the colour of the day and dates doesnt stand out - dark grey on navy," reported alongside the Sharon Maroni issue above.*
+
+- [x] **Root cause:** `.sp-htick` (`timesheets-spans.js`, the "Week as spans" day-header strip) used `var(--ink-3)` (#6B7280 grey) — correct for text on a light surface, but this element sits inside the navy `.ts-table thead th`. Only the "today" column, which has its own sky-blue background, used white text correctly.
+- [x] **Fix:** default tick text is now white; the date sub-label opacity bumped `.6` → `.75`, matching the ratio this repo's own earlier WCAG pass (`base.css`) already established as safe on this exact background (~8:1).
+- [x] [PR #935](https://github.com/eq-solutions/eq-field/pull/935) (v3.5.689), merged, confirmed live — verified via `getComputedStyle` before/after on the actual deploy preview, not just reasoned from the CSS.
+
+**Notes:**
+- Unrelated to the Sharon Maroni RLS issue above beyond being reported in the same message — pure client-side CSS, no schema/auth touched.
+- Full technical detail: `sessions/2026-09-07.md`.
+
+---
+
 ## eq-field: Timesheets raw RLS error fixed; write-side RLS assumption corrected; EQ-FIELD-1B triaged, not a bug (2026-09-07)
 *Royce reported Anthony Hartley got a raw Postgres error trying to save his own timesheet: `new row violates row-level security policy "timesheets_own_read"` (shortened in relay — the real policy is `timesheets_own_crew_read`). Traced live via Postgres/edge logs on ehow before writing anything.*
 
@@ -116,19 +149,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-field: supervisors now see every crew's Timesheets/Leave by default, not just their own — FIXED, merged, live (2026-09-04)
-*Royce, live: David Boyd (Supervisor/Leading Hand, member of "Amazon Syd 53" + "Vans" only) opened Timesheets and saw several people on other crews (CT Team, Equinix) render as empty "+Add" cells. Verified against ehow directly before touching anything — their hours were fully submitted the whole time (Dylan Lieu, Jessica Robinson, Marcus De La Fuente, Terry Su, Tara Demamiel all fully entered), just excluded from David's own crew-scoped read.*
-
-- [x] **Confirmed not a bug — v1.7's crew-scoping model (2026-07-22) working exactly as designed.** `field.view_all_crews` was manager-only; a supervisor's Timesheets/Leave reads are filtered (`crewFilterFragment`, `permissions.js`) to just the crews they run/belong to. David's crews don't include CT Team or Equinix, so those people's real, submitted hours were silently excluded from his fetch entirely — rendering as indistinguishable-from-"not done yet" empty cells.
-- [x] **Royce's call this session, reversing that 2026-07-22 default:** "supervisors need to be able to see all employees and filter by teams — our teams change dynamically, it's easier if they can see everyone." `permission-matrix.js` v2.9 adds `field.view_all_crews` to the `supervisor` role (was manager-only). No other logic changed — the existing manager-tier code path (unscoped fetch, team pills narrow the *display*) now applies to supervisors too. Per-person Shell overrides can still narrow an individual supervisor back down if ever needed.
-- [x] **`tests/crew-scoping.test.js` reworked, not weakened** — its ~34 existing tests all exercise the crew-scoping *algorithm* itself (team unions, fail-open, the pill override), which is unchanged; `reset()` now strips the new grant back out of the loaded matrix by default so those tests keep proving the algorithm works correctly for a supervisor who doesn't hold it (still reachable via a Shell override). 2 new tests confirm the grant itself against the real, unmodified matrix. 36/36 passing.
-- [x] eq-field [PR #910](https://github.com/eq-solutions/eq-field/pull/910) (v3.5.668 — renumbered from v3.5.667 on rebase, same collision-heavy day as every other PR below), merged and confirmed live (`field.eq.solutions/sw.js` shows v3.5.668).
-- [ ] **Real privacy tradeoff, said plainly, not relitigated:** every SKS employee's timesheet hours AND leave-request details are now visible to every supervisor org-wide, not just their own crew's chain. Royce made the call explicitly, aware of the tradeoff — recorded here so it's on the record, not just in a commit message. _(added 2026-09-04)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: sign in as a supervisor (not a manager) and confirm Timesheets/Leave now show every crew, with the team pills still narrowing correctly. _(added 2026-09-04)_
-
-**Notes:**
-- Resolves the crew-scoping question this file itself flagged and deferred on 2026-09-02 (see "approved leave not appearing on Weekly Roster" below) — that entry's "if the person checking isn't a full manager, check crew-scoping" note can no longer explain a missing row for any supervisor going forward.
-- Same session also shipped My Schedule's "For Workbench" line (2 entries below) — diagnosing David's Timesheets report is what surfaced the crew-scoping gap in the first place.
-- Full technical detail: `eq/changelog/eq-field.md` (2026-09-04 entry) and `sessions/2026-09-04.md`.
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: sign in as a supervisor (not a manager) and confirm Timesheets/Leave now show every crew, with the team pills still narrowing correctly. _(added 2026-09-04; the database side reached parity with this client-side behavior on 2026-09-07, see that section above — a live UI click-through as a real supervisor still hasn't happened either side of that fix)_
 
 ---
 
