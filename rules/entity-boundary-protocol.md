@@ -1,3 +1,12 @@
+---
+title: Entity Boundary Protocol
+owner: Royce Milmlow
+last_updated: 2026-09-07
+scope: Full protocol for /entity-boundary-guard — classify every repo/credential touched by entity (EQ vs SKS) before acting
+read_priority: reference
+status: live
+---
+
 # Entity Boundary Protocol
 
 **Trigger:** any task that touches repos, credentials, or data from both EQ Solutions and SKS Technologies in the same change; any task selecting a deploy target; any task reading or writing a Supabase key.

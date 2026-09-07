@@ -1,3 +1,12 @@
+---
+title: Deploy Topology Protocol
+owner: Royce Milmlow
+last_updated: 2026-09-07
+scope: Full protocol for /deploy-topology-verify — which repo serves a URL, verified live, not assumed from naming
+read_priority: reference
+status: live
+---
+
 # Deploy Topology Protocol
 
 **Trigger:** any task that names a live URL (`core.eq.solutions`, `field.eq.solutions`, `service.eq.solutions`, `sks-nsw-labour.netlify.app`, `eq.solutions`), asks "which repo serves X", or precedes a deploy/build decision.
