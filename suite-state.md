@@ -66,9 +66,19 @@ _If this file is >48h old, the cron is broken._
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
 **eq-service:**
+- #836 chore(deps): bump zod from 4.4.3 to 4.5.4
+- #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
+- #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
+- #833 chore(deps): bump resend from 6.21.0 to 6.26.0
+- #832 chore(deps): bump @eq-solutions/roles from v2.7.5 to v2.7.7 in the eq-design-system group
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1793 feat(staff): redesign Teams (formerly Org Chart) for scale and accuracy
+- #1791 fix(security): a revoked session can no longer mint credentials or be laundered into a fresh one
+- #1790 fix(security): block reset-user-pin from targeting a platform_admin
+- #1789 fix(security): warn loudly when ENFORCE_IFRAME_ORIGIN isn't 'true'
+- #1788 docs(env): document the full .env.example surface, including two load-bearing keys
 - #1786 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1785 fix(field-iframe): don't alarm on stall/draw notices while the tab is backgrounded
 - #1783 chore(intake): auto re-vendor eq-intake/eq-platform
@@ -99,7 +109,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | ready | 2026-09-06 |
+| eq-shell | building | 2026-09-07 |
 | eq-field | ready | 2026-09-07 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
