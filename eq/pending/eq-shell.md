@@ -25,6 +25,19 @@ _(added 2026-09-07)_
 
 ---
 
+## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07)
+*Full review of eq-shell (security, unfinished work, quality) plus a reconciliation pass across all ~50 open GitHub issues — 9 closed with live-code evidence (2 of the first 3 spot-checked P0/P1 security issues turned out already fixed weeks ago, just never closed — real open count is meaningfully smaller than the raw total, but only an audit like this one can say by how much). Fixed the two the review found still genuinely open: #709 (reset-user-pin could target a platform_admin — full escalation path via the reset link + accept-pin-reset's auto-sign-in) and #870 (a revoked session could still mint credentials, or get laundered into a fresh un-revoked one via switch-tenant). Also shipped the `.env.example` completion (closes #713) and an `ENFORCE_IFRAME_ORIGIN` drift warning. All 4 PRs (#1788-#1791) merged and confirmed live via deploy-ancestry check, not just merge-API success — Netlify skipped 3 of the 4 individual builds mid-session under tonight's exceptionally heavy concurrent-merge volume (multiple other sessions landing PRs on this repo in real time, including the sibling #1785 fix directly above); each skipped commit's ancestry was independently confirmed before treating it as live.*
+
+- [ ] **None of tonight's 4 fixes have been click-tested live by a person** — verified via full test suite + lint + an independent merge-readiness audit only. Worth a real pass once convenient: try resetting a platform_admin's PIN as a regular manager (should 403 `cannot-reset-platform-admin`); try switching tenant on a session that's been logged out/revoked elsewhere (should 401, not succeed).
+- [ ] **#870's own narrower remaining edge, deliberately not fixed**: a manager can still reset a same-tenant co-member who also belongs to a second tenant and inherit that person's other-tenant access via the resulting session. Needs a decision on how a reset-triggered session should be scoped — flagged on the PR/issue, not resolved either way.
+- [ ] **#981 — fast-uri still vulnerable despite an already-shipped fix** (bumped to 4.1.2 in an earlier session, but 4 *newer* GHSAs now apply even to that version), plus 2 newly-found vulnerable packages not in the original issue (`browserslist`, `fflate`). Commented on the issue with live Dependabot evidence; not touched — this exact vendored-dependency area has a documented history (#1290) of re-vendoring silently reopening a fixed advisory, so a version bump here needs real build verification, not a quick edit.
+- [ ] **#711/SEC-71 — mandatory TOTP enforcement is genuinely client-side only**, reconfirmed live (`shell-login.ts:476-495` issues a full session regardless of the flag). The issue itself says it needs Royce's call on intended grace-period semantics before anyone implements a fix — not built.
+- Dependabot CI gap found (5 PRs blocked by a missing Dependabot-scoped secrets-store entry, not the dependency bumps themselves — traced to actual job logs, confirmed structural and recurring). Royce is handling directly via GitHub Settings, not a build item here.
+
+_(added 2026-09-07)_
+
+---
+
 ## eq-shell: Documents sign-off register — 8-angle cold code audit, PR #1772 (2026-09-05)
 
 - [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
