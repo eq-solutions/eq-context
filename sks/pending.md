@@ -9,15 +9,13 @@ status: live
 
 # SKS Pending
 
-## sks-nsw-labour: retirement decided — spun off as its own task, not yet executed (2026-09-07)
-*EQ Field's SKS timesheets went live for real on 2026-09-07 (first Monday). Royce checked observability first (Sentry clean, PostHog showing normal `timesheet_saved` activity) and pulled a live outstanding-today snapshot straight from `ehow` — then decided to retire the standalone `sks-nsw-labour` app. Asked once whether to gather usage evidence first; Royce declined: "they all know not to use it - that's enough."*
+## sks-nsw-labour: retired — repo archived, DB left active, anon-CRUD/secrets exposure NOT fixed (Royce's explicit call, 2026-09-07)
 
-- [~] **Retirement work spun off as background task `task_1b21e268`, Royce started it in a separate session — running independently, not yet reported back as of this session's close.** Scoped to: check current usage, back up `nspbmirochztcjijmcrx` before anything destructive, propose (not auto-deploy) a redirect to field.eq.solutions, propose repo/DB disposition (archive/pause, never delete without separate explicit permission). _(added 2026-09-07)_
-- [ ] **Cross-reference: the 2026-07-20 "real security hole" entry below is still open** — sks-nsw-labour's public web address reportedly allows reading/wiping roster/schedule/timesheet data with no login, and the drafted fix stages were never run ("not risking any changes" on a live app). Worth the retirement task treating this as a reason to prioritise taking it offline/redirecting rather than leaving it dormant-but-still-reachable. _(added 2026-09-07)_
-- [ ] **Cross-reference: "Track 2 RLS STEP 2" further down this file was explicitly DEFERRED "until standalone retired"** — now potentially unblocked; worth revisiting once (or as) the retirement actually lands. _(added 2026-09-07)_
+- [ ] **The anon-CRUD/secrets-exposure vulnerability from 2026-07-20 (below) is still fully open — explicitly NOT fixed this session, Royce's deliberate call after being told it doesn't go away on its own.** Confirmed live: `app_config`'s exposed `canonical_api_key_field` is a bearer token for `core.eq.solutions/.netlify/functions/canonical-api` (the ACTIVE Shell/Field system, not the retiring app) and `digest_fn_token` is seeded as a raw Supabase service-role JWT for nspbmir itself — both readable by anyone with the still-public, still-served anon key, regardless of the app's retirement status. The zero-risk, no-soak Step 0 patch (`~/.claude/plans/nspbmir-EMERGENCY-anon-select-narrowing.sql`) remains un-run. Royce was walked through the distinction (token exposure into the *active* system ≠ the retiring app's own roster data) and chose to stop spending time on this repo entirely rather than run even the isolated Step 0 fix. His call to make; flagging plainly so nobody assumes this was closed out. _(added 2026-09-07)_
+- [ ] **Cross-reference: "Track 2 RLS STEP 2" (anon SELECT lockdown on ehow, further down this file) was deferred "until standalone retired."** Ops has moved off sks-nsw-labour as of today, even though the app/DB itself is still technically live (archived repo, active DB, no hard redirect). Worth whoever picks up ehow RLS work checking whether that's enough to count as "retired" for that gate, rather than assuming either way. _(added 2026-09-07)_
 
 **Notes:**
-- Full detail on the observability check and the outstanding-today pull that prompted this decision: `sessions/2026-09-07.md`.
+- Full session detail (repo archived, DB left active not paused, PR #34 mistakenly closed then left closed per Royce's call, 43/44-table backup delivered, redirect confirmed sufficient as already-shipped): `sessions/2026-09-07.md`.
 
 ---
 
