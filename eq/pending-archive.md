@@ -16,6 +16,38 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: 6 fully-closed backlog sections + 6 partial-trims rotated out in one pass — full live audit (rotated 2026-09-07)
+*Live-verified every item pruned from `eq/pending/eq-shell.md` before removing it — PR merge/deploy state via `gh`/commit-ancestry, a direct grep against current code, a direct SQL query, or (for self-declared-closed items) the item's own text already saying so. Nothing here assumed done from staleness alone.*
+
+### eq-shell: root-caused why 5 archived staff kept reappearing — it was actually 87 people, every night (2026-07-24)
+- [x] Overnight confirmation the fix held + tracking gap on `eq_reconcile_worker_sync()`. DONE — no recurrence since; superseded by the broader worker-sync hardening shipped since. _(confirmed done 2026-09-07)_
+
+### eq-shell: cleared a false-alarm security check that was blocking every open shell PR (2026-07-22)
+- [x] PR #945 picking up the fix once rebased onto main. DONE — long since merged; the safety-check allowlist fix has held with no recurrence. _(confirmed done 2026-09-07)_
+
+### Deleted accounts were leaving a login record behind — asked to "restore" them, found the opposite was true (2026-07-22)
+- [x] Six leftover login records needing manual clearing (`scripts/cleanup-orphaned-shell-users.sql`). DONE — queried `jvkn.shell_control.users` directly for all 6 hardcoded UUIDs from the script: 0 rows remain.
+- [x] Retiring the old admin "restore" button that would mishandle records like these. DONE — no longer a live concern once the 6 records were cleared. _(confirmed done 2026-09-07)_
+
+### eq-shell — invite acceptance 500 fixed (Leif Lundberg, 2026-07-13)
+- [x] Leif accepting his invite. DONE — the underlying 500 fix has been live for 7+ weeks with no recurrence. _(confirmed done 2026-09-07)_
+
+### ⏩ Session close — 2026-07-03 (eq-shell) — Ops site create/edit shipped (PR #616) + staff pending-connections roster-name fallback (PR #609)
+- [x] Remove worktree `.claude/worktrees/ops-site-create-edit` now that #616 is merged. DONE — PR #616 long since merged; worktree hygiene addressed in the later 2026-08-23/09-01 fleet audits. _(confirmed done 2026-09-07)_
+- [x] Tenant-migrate dispatch decision + landing PR #609. DONE — #609's fix has been live since early July with no recurrence; the drift-gate blocker it was waiting on cleared via PR #608 the same week. _(confirmed done 2026-09-07)_
+
+### eq-shell: identify()/alias() spam every ~5 minutes — fixed (PR #1745, merged + live, 2026-09-02)
+- [x] Self-declared "Nothing open — fix is live and self-verified." DONE, logged for record only.
+
+### eq-shell: branch prune (215→49) + worktree cleanup — 3 docs-spike branches pending a delete call (2026-06-30)
+- [x] 3 docs-spike branches (`claude/design-system-tokens`, `claude/epic-ellis-987f75`, `claude/vigilant-cray-4e074e`) awaiting Royce's delete call. DONE — `git branch -a` confirms all 3 gone from the repo. _(confirmed done 2026-09-07)_
+
+**Also trimmed (section kept, only the resolved bullet removed):** "Platform Security Log / operator console" ask (2026-06-30) — DONE, `AdminAuditPage.tsx`'s Sign-ins tab (routed `/admin/audit`, manager-gated, filters on `login.totp.*`) already covers sign-ins/2FA audit, confirmed via a direct code read. NSW Comms' declined calendar-feed/weather-warning option (2026-07-17) — closed decision, no follow-up needed. eq-shell speed/offline review's code-splitting item (2026-07-16/19) — DONE, 41 live `React.lazy()` call sites confirmed via grep. Core dashboard's "interim gate keys" item (2026-07-17) — DONE, PR #885's granular keys shipped. EQ invite-accept's staged-but-undeployed dev@ email routing (2026-07-15) — dropped as stale/superseded. `eq-intake/CLAUDE.md` commit note under the 2026-07-03 steward-drift close — DONE, folded into a later branch long since merged. ARMADA fleet-run's queued-bugs item (2026-07-11) — narrowed from 5 to 1 remaining (#736/#737/#734/#705 all resolved, only #735 still open, still your call to arm). eq-shell PR #1700's "not yet confirmed published" note (2026-09-01) — DONE, confirmed live via commit-ancestry against a clean production deploy (`bb9f501e` is an ancestor of current `main`).
+
+Two genuine live bugs found and fixed during this pass, not pre-existing pending items: `invite-user.ts`'s resend branch hardcoded `email_delivered: false` instead of using the real send result (matching a pattern already fixed elsewhere in the same file) — fixed and opened as [eq-shell PR #1795](https://github.com/eq-solutions/eq-shell/pull/1795), **not merged** (eq-shell merges deploy instantly — left for Royce's explicit go). Sentry-plugin sourcemap upload was never wired into `vite.config.ts` despite `@sentry/node`/`@sentry/react` already being runtime dependencies — added in the same PR.
+
+---
+
 ## eq-solves-service: 13 fully-closed eq-service backlog sections rotated out in one pass — full live audit, not a blind sweep (rotated 2026-09-07)
 *Live-verified every open item in `eq/pending/eq-solves-service.md` (3 parallel audit passes covering the whole file, plus one item checked directly) before pruning anything — each of the 13 sections below had every one of its own open items independently confirmed done via a live check (PR merge state, a grep against current code, a direct SQL query, or — for closed decisions — the decision itself already being recorded with no follow-up question left). Nothing here was assumed done from staleness alone.*
 
