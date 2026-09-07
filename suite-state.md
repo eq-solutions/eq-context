@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-06 (nightly cron)_
+_Last verified: 2026-09-07 (nightly cron)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,9 +58,10 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-06)
+## Open PRs (as of 2026-09-07)
 
 **eq-field:**
+- #934 v3.5.689 — FIX: team-less person's roster row (leave included) vanished under any team-pill filter
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -82,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-09-06)
+## System Health (as of 2026-09-07)
 
     **CI on main:**
 
@@ -99,20 +100,20 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-06 |
-| eq-shell | building | 2026-09-06 |
-| eq-field | ready | 2026-09-06 |
+| eq-shell | ready | 2026-09-06 |
+| eq-field | ready | 2026-09-07 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-06)
+## Field Data Plane — SKS tenant (as of 2026-09-07)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 1,970 | ✓ 1,970 |
+| Operational | app_data.field_schedule | 1,966 | ✓ 1,966 |
 | Operational | app_data.field_timesheets | 408 | ✓ 408 |
 | Safety | public.prestarts | 236 | ✓ 236 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
@@ -120,7 +121,7 @@ _If this file is >48h old, the cron is broken._
 _Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-06)
+## Product Pulse (as of 2026-09-07)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
