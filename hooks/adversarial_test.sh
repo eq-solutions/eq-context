@@ -18,6 +18,12 @@ set -u
 R="$(cd "$(dirname "$0")/.." && pwd)"
 pass=0; fail=0
 
+# Resolve a working Python — don't trust `python3` on PATH blindly. On Windows
+# it can be the Microsoft Store app-execution-alias stub: present on PATH, but
+# it prints an install prompt and exits non-zero instead of "command not found".
+PY=python3
+python3 --version >/dev/null 2>&1 || PY=python
+
 # Windows-style, forward-slash form of $R — use this (never raw $R) wherever a
 # JSON test payload embeds a path under R for pre_tool_use.py to parse. Git
 # Bash/MSYS auto-translates POSIX-looking ENV VARS (like EQ_MOUNT_ROOT below)
@@ -51,7 +57,7 @@ export EQ_MOUNT_ROOT="$RW"
 
 t() {  # name | json | expected_exit
   printf "  %-56s" "$1"
-  echo "$2" | python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1
+  echo "$2" | "$PY" "$R/hooks/pre_tool_use.py" >/dev/null 2>&1
   e=$?
   if [ "$e" = "$3" ]; then echo "PASS"; pass=$((pass+1))
   else echo "*** FAIL *** (exit $e, expected $3)"; fail=$((fail+1)); fi
@@ -87,7 +93,7 @@ git -C "$F7DIR" commit -q -m seed
 
 tf7() {  # name | force_guard_env | expected_exit  (fixture already has a NUL-corrupted uncommitted file)
   printf "  %-56s" "$1"
-  (cd "$F7DIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit -am x"}}' | EQ_FORCE_GUARD="$2" python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
+  (cd "$F7DIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit -am x"}}' | EQ_FORCE_GUARD="$2" "$PY" "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
   e=$?
   if [ "$e" = "$3" ]; then echo "PASS"; pass=$((pass+1))
   else echo "*** FAIL *** (exit $e, expected $3)"; fail=$((fail+1)); fi
@@ -122,7 +128,7 @@ git -C "$F9DIR" commit -q -m seed
 # blocked by that unrelated rule and misread as a regression. Caught live 2026-08-05.
 tf9() {  # name | git-command | expected_exit  (fixture IS "the shared checkout")
   printf "  %-56s" "$1"
-  (cd "$F9DIR" && echo "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"$2\"}}" | EQ_CONTEXT="$F9DIR" EQ_FORCE_GUARD=0 python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
+  (cd "$F9DIR" && echo "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"$2\"}}" | EQ_CONTEXT="$F9DIR" EQ_FORCE_GUARD=0 "$PY" "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
   e=$?
   if [ "$e" = "$3" ]; then echo "PASS"; pass=$((pass+1))
   else echo "*** FAIL *** (exit $e, expected $3)"; fail=$((fail+1)); fi
@@ -160,13 +166,13 @@ printf 'resolved\n' > "$MDIR/shared.md"
 git -C "$MDIR" add -A
 
 printf "  %-56s" "bare commit COMPLETING an in-progress merge -> allowed"
-(cd "$MDIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit --no-edit"}}' | EQ_CONTEXT="$MDIR" EQ_FORCE_GUARD=0 python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
+(cd "$MDIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit --no-edit"}}' | EQ_CONTEXT="$MDIR" EQ_FORCE_GUARD=0 "$PY" "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
 e=$?
 if [ "$e" = "0" ]; then echo "PASS"; pass=$((pass+1)); else echo "*** FAIL *** (exit $e, expected 0)"; fail=$((fail+1)); fi
 
 rm -f "$MDIR/.git/MERGE_HEAD"
 printf "  %-56s" "CONTROL: same staged state w/o MERGE_HEAD -> still BLOCKED"
-(cd "$MDIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit --no-edit"}}' | EQ_CONTEXT="$MDIR" EQ_FORCE_GUARD=0 python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
+(cd "$MDIR" && echo '{"tool_name":"Bash","tool_input":{"command":"git commit --no-edit"}}' | EQ_CONTEXT="$MDIR" EQ_FORCE_GUARD=0 "$PY" "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
 e=$?
 if [ "$e" = "2" ]; then echo "PASS"; pass=$((pass+1)); else echo "*** FAIL *** (exit $e, expected 2)"; fail=$((fail+1)); fi
 rm -rf "$MDIR"
@@ -174,7 +180,7 @@ rm -rf "$MDIR"
 echo "=== F9 controls — same ops OUTSIDE the shared checkout must NOT be blocked ==="
 tf9o() {  # name | git-command | expected_exit  (fixture is NOT "the shared checkout")
   printf "  %-56s" "$1"
-  (cd "$F9DIR" && echo "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"$2\"}}" | EQ_CONTEXT="${F9DIR}-not-the-shared-one" EQ_FORCE_GUARD=0 python3 "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
+  (cd "$F9DIR" && echo "{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"$2\"}}" | EQ_CONTEXT="${F9DIR}-not-the-shared-one" EQ_FORCE_GUARD=0 "$PY" "$R/hooks/pre_tool_use.py" >/dev/null 2>&1)
   e=$?
   if [ "$e" = "$3" ]; then echo "PASS"; pass=$((pass+1))
   else echo "*** FAIL *** (exit $e, expected $3)"; fail=$((fail+1)); fi
@@ -191,7 +197,7 @@ t "cat .git/HEAD (read-only inspection)"      '{"tool_name":"Bash","tool_input":
 t "file outside the mount"                    '{"tool_name":"Edit","tool_input":{"file_path":"/tmp/scratch.md"}}' 0
 
 echo "=== F1 / F3 — SessionStart gate must SPEAK ==="
-out="$(EQ_CONTEXT="$R" python3 "$R/hooks/session_start.py" 2>/dev/null)"
+out="$(EQ_CONTEXT="$R" "$PY" "$R/hooks/session_start.py" 2>/dev/null)"
 printf "  %-56s" "gate reports freshness"
 echo "$out" | grep -q "FRESHNESS" && { echo "PASS"; pass=$((pass+1)); } || { echo "*** FAIL ***"; fail=$((fail+1)); }
 printf "  %-56s" "gate reports goals status (F3)"
