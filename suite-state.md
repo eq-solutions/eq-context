@@ -74,14 +74,10 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
+- #1794 fix(shell): extract HubSidebar's icon maps into their own module
 - #1791 fix(security): a revoked session can no longer mint credentials or be laundered into a fresh one
 - #1790 fix(security): block reset-user-pin from targeting a platform_admin
-- #1789 fix(security): warn loudly when ENFORCE_IFRAME_ORIGIN isn't 'true'
-- #1788 docs(env): document the full .env.example surface, including two load-bearing keys
-- #1786 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1783 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1769 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1739 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
