@@ -18,7 +18,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 
 **Deferred:**
-- [ ] **Whether Conor/Nelson can actually see their licences now is still unconfirmed.** Sentry wasn't authorized in this session (needed to check issue 144338444 for a recurrence), and there's no way to sign in as either worker to check directly. Two soft signals only, neither a real confirmation: both workers' Supabase auth sessions were refreshing successfully as of this session's close, and the Sentry digest snapshot showed no new occurrences since the original one. Needs either Royce checking with them directly, or Sentry authorized so the issue can be watched for a recurrence. _(added 2026-09-02)_
+- [ ] **Whether Conor/Nelson can actually see their licences now is still unconfirmed.** Sentry wasn't authorized in this session (needed to check issue 144338444 for a recurrence), and there's no way to sign in as either worker to check directly. Two soft signals only, neither a real confirmation: both workers' Supabase auth sessions were refreshing successfully as of this session's close, and the Sentry digest snapshot showed no new occurrences since the original one. Needs either Royce checking with them directly, or Sentry authorized so the issue can be watched for a recurrence. _(added 2026-09-02, deferred 2026-09-07 via /triage — still needs Royce's direct check or Sentry access, nothing new to add)_
 
 **Notes:**
 - **GitHub MCP still 404s on this repo specifically** — confirmed via a failed read (`list_pull_requests`), not just the write (`create_pull_request`), so it's a real access gap, not a fluke. Same issue already documented in the 2026-08-27 `/auth/handoff` entry further down this file, still unresolved 6 days later. `gh` CLI used throughout instead, same fallback as that session.
@@ -72,7 +72,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Self-serve tenant provisioning doesn't collect tier/modules upfront** — the provision-link form (eq-shell's `AdminTenantsPage.tsx`) only takes org name/phone/email; tier and modules get set afterward via a separate Edit step. Real gap, wrong sprint — three-tenants-ever doesn't justify the slot right now. _(added 2026-08-30)_
-- [ ] **Whether to generate a real EQ self-join link/QR for the meeting, swapped in for the Sample ID Sheet's generic search-and-apply flow** — asked Royce directly; no answer yet as of this close. `AdminSelfJoinLinks.tsx` is ready to use as-is — pick a role/label/expiry and click Create, a 30-second admin action whenever he wants it done. _(added 2026-09-02)_
 
 **Notes:**
 - A third live DB write this session (the Prestart fix's two view migrations, tracked under `eq/pending/eq-field.md`) hit the identical auto-mode classifier wall as the `accepts_applications` flip — three for three, consistent, not a fluke. Royce can loosen it via a Bash permission rule if this keeps recurring; not done by default.

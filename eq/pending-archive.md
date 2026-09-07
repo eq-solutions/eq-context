@@ -8876,3 +8876,10 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 - [x] **`netlify link`/`netlify env:list`/`netlify dev` all need `--filter eq-shell`** on netlify-cli 27.5.x, or they hang on an interactive monorepo-project picker (the pnpm workspace's packages read as separate "projects" to this CLI version) — fatal in a non-interactive session. Added to `CLAUDE.md`'s gotchas table. _(added 2026-09-07, documented 2026-09-07)_
 
 ---
+
+## eq-cards: self-join QR for the exec-demo meeting — dismissed via /triage (2026-09-07)
+*Originally from the 2026-08-30 → 09-02 "live-meeting onboarding kit" section — `eq/pending/eq-cards.md`.*
+
+- [ ] **Whether to generate a real EQ self-join link/QR for the meeting, swapped in for the Sample ID Sheet's generic search-and-apply flow** — asked Royce directly; no answer yet as of this close. `AdminSelfJoinLinks.tsx` is ready to use as-is — pick a role/label/expiry and click Create, a 30-second admin action whenever he wants it done. _(added 2026-09-02, dismissed 2026-09-07 via /triage — no reason given)_
+
+---
