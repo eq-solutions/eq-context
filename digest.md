@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-07 09:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-07 09:44 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-07 09:23 UTC → 2026-09-07 09:28 UTC)
+## Since last refresh (2026-09-07 09:28 UTC → 2026-09-07 09:44 UTC)
 
-- Merged: eq-shell [#1785](https://github.com/eq-solutions/eq-shell/pull/1785) fix(field-iframe): don't alarm on stall/draw notices while t
-- Merged: eq-shell [#1781](https://github.com/eq-solutions/eq-shell/pull/1781) fix(quotes): give closed-lost quotes a lane on the EQ Ops bo
-- Merged: eq-shell [#1779](https://github.com/eq-solutions/eq-shell/pull/1779) fix(auth): re-check tenant membership at JWT mint time, not 
-- Merged: eq-shell [#1777](https://github.com/eq-solutions/eq-shell/pull/1777) fix(onboarding): daily sweep catches starters whose Shell lo
-- Merged: eq-shell [#1773](https://github.com/eq-solutions/eq-shell/pull/1773) fix(auth): revoke org_memberships when a shell login is deac
-- Merged: eq-shell [#1771](https://github.com/eq-solutions/eq-shell/pull/1771) fix(quotes): revoke stray authenticated grant on eq__log_quo
-- Merged: eq-shell [#1770](https://github.com/eq-solutions/eq-shell/pull/1770) fix(auth): fail closed in resolvePrincipal(), the last tenan
-- Merged: eq-shell [#1768](https://github.com/eq-solutions/eq-shell/pull/1768) fix(auth): fail closed on the last tenant_role_overrides fai
+- Merged: eq-shell [#1793](https://github.com/eq-solutions/eq-shell/pull/1793) feat(staff): redesign Teams (formerly Org Chart) for scale a
+- Merged: eq-shell [#1788](https://github.com/eq-solutions/eq-shell/pull/1788) docs(env): document the full .env.example surface, including
+- Merged: eq-shell [#1782](https://github.com/eq-solutions/eq-shell/pull/1782) docs(auth): clarify tenant-membership.ts's intentional users
+- Merged: eq-shell [#1780](https://github.com/eq-solutions/eq-shell/pull/1780) fix(onboarding): exclude personal tenants from the onboardin
+- Merged: eq-shell [#1778](https://github.com/eq-solutions/eq-shell/pull/1778) fix(auth): stop tenant_config/tenant_routing timeouts from f
+- Merged: eq-shell [#1776](https://github.com/eq-solutions/eq-shell/pull/1776) feat(security): detect drift between tenant rosters and user
+- Merged: eq-shell [#1775](https://github.com/eq-solutions/eq-shell/pull/1775) fix(auth): licence-visibility reads no longer trust org_memb
+- Merged: eq-shell [#1774](https://github.com/eq-solutions/eq-shell/pull/1774) fix(cards): fill staff.user_id when Cards worker link resolv
 
 ## ⚠ Needs you (10)
 
@@ -32,32 +32,32 @@ _2026-09-07 09:28 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff stalled at "booted" (10s, no 'accepted' yet](https://eq-solutions.sentry.io/issues/145052767/)
-- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
-## 🙋 Waiting on you (259)
+## 🙋 Waiting on you (261)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
 - **eq-shell** · **Quotes-search fix ([PR #1754](https://github.com/eq-solutions/eq-shell/pull/1754)) — list/table view not click-tested**, only board view. Confirmed live: with the "Open" tab active, searching `SKS-17512` (Invoiced-stage only) still surfaced it under Invoiced, with the "search covers every stage, not just the tab selected" notice showing correctly. _(added 2026-09-05)_
 - **eq-shell** · **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05)_
+- **eq-shell** · **3 of the 4 fixes verified only via `tsc -b --force` + eslint + `pnpm test` (including a negative-proof test per fix: fails on the pre-fix code, passes on the fix) — not a real click-through.** Only PR #1760's rate-limit reordering got an end-to-end live check (real HTTP requests against its deploy preview, cross-checked against the live `rate_limit_buckets`/`audit_log` tables). Worth a real pass on the other three: trigger `update_site`/`add_site` with an inactive contact and confirm it's rejected before any write lands; delete a user with linked staff/worker records and confirm the purge stays inside one tenant; open a PR with a deliberately colliding migration prefix and confirm CI fails it. _(added 2026-09-04)_
 - **eq-shell** · **Not click-tested live** — verified via `pnpm exec tsc -b --force` and `eslint` (both clean) plus an independent merge-readiness audit before merging. This machine's Node 24 breaks `vite build`/`netlify dev` for this repo (pre-existing, unrelated to this change), so no live click-through was possible. Worth a real pass: KPI numbers match the table's own counts, per-team rows sum to the roster totals, mobile view unchanged. _(added 2026-09-02)_
 - **eq-shell** · **Not click-tested live** — PR #1708's own test plan flags this: build/tests/lint clean, but nobody's archived a real staff-linked account and watched the new checkbox clear it. _(added 2026-09-01)_
-- **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01)_
+- **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment, and Vite/`netlify dev` are unreliable under this machine's Node 24 (existing memory), so no attempt was made to fake it. Worth a real pass: open a customer with a Field-enabled site and confirm the pill now shows on; toggle the pill off and confirm every owned site follows; check a customer with zero sites shows the toggle disabled with the right tooltip; same 3 checks on the separate App activation admin page. _(added 2026-09-01; re-attempted 2026-09-07 — still blocked, in-app Browser shows the sign-in screen and Claude in Chrome has zero connected browsers in this environment; `/decide` recommended Royce run the 6 checks himself (~5 min) and report back, or connect Claude in Chrome so a session can test it directly next time)_
 - **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, `eslint`, an 8-angle automated review, and Netlify deploy-preview smoke tests; no Shell session/credentials in this environment. Worth a real pass covering both PRs (#1683, #1685): panel opens in place with a shareable `?open=` URL; a formal entry opens with full detail, rating deltas, and (where attached) a source document; saving without answering "happy and engaged" is blocked and scrolls to the field; engagement tags render with color; a person with no `start_date` is flagged "missing a start date" but NOT also "overdue"; a hollow historical review shows its summary and one "no structured answers" note instead of ~20 blank fields. _(added 2026-08-30)_
 - **eq-shell** · **Not click-tested live** — same environment limitation as most of this session's other work (no Shell credentials); `netlify dev` also produced no output at all this time, which may just be the existing known Node-version flakiness rather than a new distinct failure. Verify via each PR's deploy preview or live: Resourcing's two new rating columns render "No ratings yet"; a Check-in entry shows the new weakness-improvement question; Edit pre-fills every field correctly and saves in place; the close/reopen icon toggles the "Open" tag. _(added 2026-09-01)_
 - **eq-shell** · **Not click-tested live by a person** — every PR this session verified via `pnpm run build`/`eslint`/`pnpm run test`/live DB queries only, never an actual signed-in click-through. Worth a real pass: upload a document, assign/change its category from each of the 3 tabs, create a new reference-only category via the new toggle, confirm the routing actually changes. _(added 2026-08-30)_
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment; verified via `tsc -b --force`, the full test suite, and a merge-readiness audit reproducing the production build end-to-end. Worth a real pass: approve a Cards application with a start date set and confirm it lands; add someone via Shell's "Add to roster" with a start date and confirm it lands; confirm the Resourcing page's new count and filter tab work. _(added 2026-08-30)_
-- **eq-shell** · **PR #1675 (Cards-approve dedup fix) not click-tested live** — `findExistingStaff()`'s active-only matching bug (this section's earlier entry) is now fixed and merged, but no real end-to-end test: deactivate a Cards worker's staff row, re-approve a second application for the same person, confirm reactivation instead of a duplicate. No Cards/Shell browser session available in this environment. _(added 2026-08-30)_
-_…and 247 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 249 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 14 | 6d |
-| eq-solves-service | ✓ success | 33d ago | 6 | 2d |
+| eq-shell | ✓ success | 0d ago | 10 | 6d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 2d |
 | eq-field | ✓ success | 0d ago | 3 | 4d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -66,7 +66,7 @@ _…and 247 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | new | 2026-09-07 |
+| eq-shell | building | 2026-09-07 |
 
 ## Live errors (Sentry)
 
@@ -83,6 +83,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-07 | eq-shell | [#1788](https://github.com/eq-solutions/eq-shell/pull/1788) docs(env): document the full .env.example surface, including two  |
+| 2026-09-07 | eq-shell | [#1793](https://github.com/eq-solutions/eq-shell/pull/1793) feat(staff): redesign Teams (formerly Org Chart) for scale and ac |
 | 2026-09-07 | eq-shell | [#1785](https://github.com/eq-solutions/eq-shell/pull/1785) fix(field-iframe): don't alarm on stall/draw notices while the ta |
 | 2026-09-07 | eq-shell | [#1792](https://github.com/eq-solutions/eq-shell/pull/1792) chore(intake): re-vendor eq-intake to eq-solves-intake@6e1e2f2 |
 | 2026-09-07 | eq-solves-service | [#831](https://github.com/eq-solutions/eq-service/pull/831) fix(security): allow EQ's R2 logo bucket in the report-only CSP i |
@@ -96,14 +98,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-06 | eq-solves-service | [#810](https://github.com/eq-solutions/eq-service/pull/810) chore(deps): bump the eq-design-system group across 1 directory w |
 | 2026-09-06 | eq-solves-service | [#830](https://github.com/eq-solutions/eq-service/pull/830) fix(deps): override browserslist to close 2 high-severity advisor |
 | 2026-09-06 | eq-solves-service | [#814](https://github.com/eq-solutions/eq-service/pull/814) chore(deps): bump resend from 6.18.1 to 6.21.0 |
-| 2026-09-06 | eq-solves-service | [#812](https://github.com/eq-solutions/eq-service/pull/812) chore(deps): bump posthog-node from 5.46.1 to 5.49.2 |
-| 2026-09-06 | eq-solves-service | [#813](https://github.com/eq-solutions/eq-service/pull/813) chore(deps-dev): bump @types/leaflet from 1.9.21 to 1.9.22 |
-_Showing 15 of 84 · full record in [sessions/](sessions/)_
+_Showing 15 of 80 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (268 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-shell** (269 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-cards** (62 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (68 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (18 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -135,7 +135,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1394 | 201 / 79 | 4 | 78 |
-| [eq-cards](eq/pending/eq-cards.md) | 337 | 48 / 16 | 0 | 9 |
+| [eq-cards](eq/pending/eq-cards.md) | 336 | 46 / 17 | 0 | 9 |
 | [eq-field](eq/pending/eq-field.md) | 1284 | 176 / 71 | 50 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 391 | 49 / 20 | 0 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 140 | 13 / 5 | 0 | 17 |
@@ -147,7 +147,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 53 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 493 | 95 / 13 | 0 | 62 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 595 | 50 / 4 | 2 | 13 |
+| [OPS](ops/pending.md) | 590 | 50 / 4 | 2 | 13 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-07 09:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-07 09:44 UTC._
