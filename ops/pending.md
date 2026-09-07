@@ -32,16 +32,11 @@ A second, unrelated session today hit `core.hooksPath` resolving to the wrong-bu
 
 ## Pending-file budgets still unenforced (2026-09-07)
 
-`/tidy`'s classification pass (full write-up archived — see `ops/pending-archive.md`)
-found the substrate's growth is concentrated in exactly the files already known to be
-purely additive: `eq/pending/*.md`, `system/lessons.md`, `system/failures.md`.
-`system/worktree-registry.md` and `suite-state.md` both already prove the pattern that
-would fix this (a stated eviction/size budget written into the file itself); nothing
-else has one yet.
-
-- [ ] **Give `lessons.md`, `failures.md`, and any `eq/pending/<repo>.md` past ~500 lines
-  the same stated-budget-and-evict pattern `suite-state.md` and `worktree-registry.md`
-  already use.** Not done by this pass — a bigger, structural change, not a quick trim.
+- [ ] `eq/pending/<repo>.md` shards past ~500 lines (eq-shell.md: 1,394, eq-field.md:
+  1,284) still have no per-shard ceiling — they already have automated per-item
+  eviction (`rotate_pending.py`, nightly), unlike `lessons.md`/`failures.md` before
+  today (both now budgeted — `rules/tidy-protocol.md` Pass Log row (c)), so the gap
+  here is narrower: a number to check shard size against, not a missing mechanism.
   _(added 2026-09-07)_
 
 ---
