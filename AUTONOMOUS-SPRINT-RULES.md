@@ -1,7 +1,7 @@
 ---
 title: Autonomous Sprint — Rules
 owner: Royce Milmlow
-last_updated: 2026-08-15
+last_updated: 2026-09-07
 scope: Diverge-proof conventions for all parallel autonomous agent work across EQ repos
 read_priority: critical
 status: live
@@ -62,7 +62,7 @@ not alternatives to it:
 ## 4. Coordination (kills two-sessions-in-one-repo)
 - **Claim before you start.** In `SPRINT-BOARD.md`, set the item's `owner` + `branch` + `status: in-progress` before touching code. If an item or its repo is already claimed and you'd edit the same files, pick another item or coordinate.
 - **One owner per repo-area at a time** where files overlap. Hotspots seen: `eq-shell/src/pages/TenantHome.tsx` (PRs #64/#65/#68/#69).
-- **Re-vendor protocol:** changes to `@eq/*` packages (in `eq-intake`) must be re-vendored into `eq-shell` to take effect — do the re-vendor *after* in-flight `eq-shell` PRs settle, and as its own commit.
+- **Re-vendor protocol:** changes to `@eq/*` packages (in `eq-solves-intake`) must be re-vendored into `eq-shell` to take effect — do the re-vendor *after* in-flight `eq-shell` PRs settle, and as its own commit.
 
 ## 5. Consume, don't copy (kills drift)
 - Use `@eq-solutions/tokens` (public, git-dep) for all design tokens — never vendor or hardcode brand colours. CI drift-guards enforce this where copies are unavoidable (Field, Cards).

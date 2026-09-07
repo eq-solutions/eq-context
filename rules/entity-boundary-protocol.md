@@ -21,7 +21,7 @@ SKS Technologies and EQ Solutions are separate legal entities sharing one Claude
 
    | Entity | Repos |
    |---|---|
-   | EQ Solutions | eq-cards, eq-intake, eq-shell, eq-field, eq-solves-service, eq-roles, eq-ui, eq-design-tokens, eq-context, eq-solves-assets |
+   | EQ Solutions | eq-cards, eq-solves-intake, eq-shell, eq-field, eq-solves-service, eq-roles, eq-ui, eq-design-tokens, eq-context, eq-solves-assets |
    | SKS Technologies | sks-nsw-labour |
 
    If a task's file list spans both rows, stop and flag it before continuing — this is the case the rule exists for.
