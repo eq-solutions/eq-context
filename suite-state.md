@@ -77,16 +77,19 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1807 feat(customers): give the customer detail view its own URL
 - #1806 fix(migrations): renumber 0303_tidy_read_entity_columns -> 0304
 - #1805 fix(deps): close 3 Dependabot advisories (browserslist, fflate)
 - #1804 chore(intake): re-vendor eq-intake to eq-solves-intake@81bd49a
-- #1801 Documents: split sign-off register into tier-scoped pages
 - #1795 fix(invite): resend path stops hardcoding email_delivered false; wire up sourcemap upload
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
 - #1696 chore(deps): bump @sentry/react from 10.53.1 to 10.71.0
 - #1695 chore(deps): bump papaparse and @types/papaparse
+
+**eq-solves-intake:**
+- #123 fix(deps): override browserslist to close eq-shell Dependabot #204/#205
 
 ---
 
