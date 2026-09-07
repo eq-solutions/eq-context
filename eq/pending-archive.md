@@ -8883,3 +8883,10 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 - [ ] **Whether to generate a real EQ self-join link/QR for the meeting, swapped in for the Sample ID Sheet's generic search-and-apply flow** — asked Royce directly; no answer yet as of this close. `AdminSelfJoinLinks.tsx` is ready to use as-is — pick a role/label/expiry and click Create, a 30-second admin action whenever he wants it done. _(added 2026-09-02, dismissed 2026-09-07 via /triage — no reason given)_
 
 ---
+
+## eq-cards: punch-list #4 screenshots ask — dismissed via /triage, moot (2026-09-07)
+*Originally from the 2026-08-16 "punch-list #4 partially shipped" section — `eq/pending/eq-cards.md`.*
+
+- [ ] Get Royce's "first-open popup / info overload" screenshots (mentioned as sent separately, never received/incorporated), scope what's still missing against what PR #235 already shipped, build the remainder. _(added 2026-08-16, dismissed 2026-09-07 via /triage — screenshots never arrived; the info-density fix (PR #343) shipped 2026-09-07 from the scoping doc alone, without them. The companion "update punch-list.md's note" bullet stays open in eq-cards.md — that correction is still owed regardless.)_
+
+---
