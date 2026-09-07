@@ -1,7 +1,7 @@
 ---
 title: EQ Intake — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: EQ Intake engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -27,8 +27,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - First drafted the migration in this repo's own `sql/` staging folder (`065_...`, commit `9abd761`) before finding eq-shell's `SCHEMA-GOVERNANCE.md`: this repo's `sql/` folder is the explicitly-deprecated pre-One-Pipe pattern for tenant schema. Re-authored properly as eq-shell `supabase/tenant-migrations/0303_tidy_read_entity_columns.sql` — a new function (`eq_tidy_read_entity_columns`), not a signature change to the existing one (would create an ambiguous Postgres overload on any existing 1-arg call). [PR #1797](https://github.com/eq-solutions/eq-shell/pull/1797), merged.
 
 **Deferred:**
-- [ ] **Dispatch `tenant-migrate.yml` to actually apply migration 0303** — merging the PR is inert for tenant data; a separate `workflow_dispatch` is the real apply step, no approval gate, fleet-wide by default unless scoped via `slug`. Recommend `slug=ehow` for a first run. Royce's call, not attempted. _(added 2026-09-07)_
-- [ ] **Wire `health-score.ts` / `licence-expiry-check.ts` / `decay-detect.ts` to the new `eq_tidy_read_entity_columns` RPC** — blocked on the migration above actually being live (calling it sooner would just throw). _(added 2026-09-07)_
+- [x] **Dispatch `tenant-migrate.yml` to actually apply migration 0303** — done same day: renamed to `0304` first (first-come-first-served numbering collided with a concurrent PR's own `0303_staff_manager_id.sql`), dispatched via `workflow_dispatch` scoped to `slug=ehow`, confirmed live by direct query (ledger row + `pg_proc` catalog grant), not just dispatch-API success. zaap (EQ tenant) deliberately not dispatched — its callers stay on the fallback path. _(added 2026-09-07, closed 2026-09-07)_
+- [x] **Wire `health-score.ts` / `licence-expiry-check.ts` / `decay-detect.ts` to the new `eq_tidy_read_entity_columns` RPC** — done: new shared `read-entity-columns.ts` helper calls the projected RPC and falls back to the original full-row RPC when it errors (covers zaap, which never got the migration). All 3 callers wired, each requesting only the columns it actually reads; `duplicate-detect.ts` deliberately left on the full-row RPC (needs every column for its completeness tie-break). eq-solves-intake `main` @ `81bd49a`. Re-vendored into eq-shell as [PR #1804](https://github.com/eq-solutions/eq-shell/pull/1804), merged `8520fdc6`, confirmed live via Netlify deploy record. _(added 2026-09-07, closed 2026-09-07)_
 - [ ] **The demo-vs-real confusion itself is still unfixed** — `eq-intake-demo`'s `App.tsx` still stacks the "engineering scenarios... not the product" banner directly under "the actual product," and `mock-supabase.ts` still silently no-ops on RPCs it doesn't implement. Options laid out in the review (make the demo say what it is / wire it to real Supabase read-only / leave it) — Royce's call on which, if any. _(added 2026-09-07)_
 
 **Notes (load-bearing):**

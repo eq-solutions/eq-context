@@ -34,6 +34,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: RPC column-projection for EQ Intake — migration renumbered, dispatched to SKS, client wiring shipped (2026-09-07)
+*Continuation of the same-day duplicate-scan perf fix (PR #1792) and its companion migration (PR #1797, originally `0303_tidy_read_entity_columns.sql`) — full narrative in `eq/pending/eq-solves-intake.md`. This entry covers the eq-shell-specific tail: the migration's numbering collision, its live dispatch, and the client wiring that consumes it.*
+
+- **Migration renamed `0303`→`0304`** by a concurrent PR ([#1806](https://github.com/eq-solutions/eq-shell/pull/1806)) after a first-come-first-served collision with an unrelated same-day migration (`0303_staff_manager_id.sql`, the reporting-line feature below) — both landed the same numeric prefix independently. Confirmed safe: both sides' SQL idempotent, the live function unaffected by the filename-only rename.
+- **Dispatched `tenant-migrate.yml` to `slug=ehow`** (SKS only, not fleet-wide) — confirmed live by direct query against ehow, not just dispatch-API success: `app_data._eq_migrations` ledger row present, `pg_proc` shows `eq_tidy_read_entity_columns` with `authenticated` EXECUTE granted. zaap (EQ tenant) deliberately not dispatched — its callers fall back to the original full-row RPC.
+- eq-shell [PR #1804](https://github.com/eq-solutions/eq-shell/pull/1804) — re-vendored eq-solves-intake@`81bd49a` (the 3 column-projectable callers — health score, licence-expiry, decay-detect — now wired to the new RPC via a shared fallback helper; duplicate-detect stays on the full-row RPC, it needs every column for its completeness tie-break). Squash-merged `8520fdc6`, confirmed live via Netlify deploy record (`state: ready`, `published_at` populated, `commit_ref` exact match).
+- Real CI hiccup along the way: the branch was cut before [PR #1803](https://github.com/eq-solutions/eq-shell/pull/1803)'s permission-key fix landed on `main`, so the required "Schema drift + anon-grant + policy-lint" check failed against live state that this branch's diff didn't yet include. Fixed by merging fresh `main` into the branch and re-pushing (`30b8c655`) rather than re-running the stale check — `gh run rerun --failed` replays the original merge-ref, not a fresh merge against current main, so it wouldn't have picked up the fix.
+
+- [ ] **Not click-tested live by a person** — verified via full build/test/lint, live DB queries (ledger + catalog), and production deploy-ancestry only. Worth a real pass: open `/intake`'s Health score, Decay, and Licence-expiry views for the SKS tenant and confirm they still show correct data now that they're reading a narrower column set. _(added 2026-09-07)_
+- [ ] **Dispatching migration 0304 to the EQ/zaap tenant** — not requested; zaap's callers deliberately stay on the original full-row RPC via the fallback. Revisit only if zaap's own perf becomes a concern. _(added 2026-09-07)_
+
+---
+
 ## eq-shell: real reporting-line ("Manager") field added to Staff, restricted to Royce only until the SKS backfill lands (2026-09-07)
 *Continuation of a want flagged twice before (2026-08-30, HR folder audit — see `sks/pending.md`) and never actioned: Shell's Staff → Org Chart page only ever held rostering/crew-grouping data (`app_data.teams`), never a real management-reporting hierarchy. Royce confirmed via AskUserQuestion he wants the real thing, seeded from his own separate SKS interactive org-chart tool's JSON export.*
 
