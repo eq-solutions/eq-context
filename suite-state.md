@@ -77,7 +77,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1812 chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca45
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
