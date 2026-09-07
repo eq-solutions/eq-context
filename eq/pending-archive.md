@@ -16,6 +16,26 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## cross-repo: 4 fully-closed sections rotated out, 1 stale duplicate header merged — full live audit (rotated 2026-09-07)
+*Live-verified every item pruned from `eq/pending/cross-repo.md` before removing it — a Supabase advisors query, a direct SQL query against live zaap, or (for a section already carrying its own "Fully done"/"SUPERSEDED" framing) the section's own text. Nothing here assumed done from staleness alone.*
+
+### eq-shell + eq-field: Internal Document Sign-off Register — T4 (DB permission gate) (2026-08-20)
+- [x] Migration `0252` / PR #1470 revoking `authenticated`'s direct grant on `documents`/`document_audiences`/`document_categories`. Already self-declared "Fully done, nothing open here" at the time it was written — archived as pure housekeeping, no new check needed.
+
+### Session close — 2026-06-30 (part d) — Activity-log link triggers + Field/Service site-view reconcile
+- [x] **Platform Security Log / operator console** (sign-ins/2FA audit, jvkn, `admin-audit.ts`). DONE — same item as eq-shell.md's identical 2026-06-30 ask, confirmed via a direct code read: `AdminAuditPage.tsx`'s Sign-ins tab (routed `/admin/audit`, manager-gated, filters on `login.totp.*`) already covers it. _(confirmed done 2026-09-07)_
+
+### EQ Shell + EQ Intake — Phase 2 architecture critique + intake dedupe-on-ingest spec (2026-05-19/20)
+- [x] The whole section already carried its own "⚠ SUPERSEDED (2026-05-30) ... kept for record only" banner — the two-plane architecture and the removed GTM validation gate it was written against are both long gone. Archived wholesale rather than re-litigated line by line. One item inside it wasn't just stale-by-context — **DONE and independently re-checked**: the "toggle leaked-password protection on eq-canonical" manual step (originally diagnosed 2026-05-19, still flagged unconfirmed as of a 2026-07-27 correction) — a fresh `get_advisors` security scan against `jvknxcmbtrfnxfrwfimn` today shows zero leaked-password/auth-config findings of any kind (only `authenticated_security_definer_function_executable` and `rls_enabled_no_policy` rows remain), confirming the toggle is now on. _(confirmed done 2026-09-07)_
+- Also removed in the same pass: the two empty "— CLOSED 2026-07-27, see below" stub headers this section's own correction note had left behind (`eq-demo-canonical — security advisor cleanup`, `sks-canonical-eq provisioning`) — both had nothing under them.
+
+### Deferred (added 2026-07-03)
+- [x] **Approve eq-shell fleet dispatch for 0158 (`field_people` fix).** DONE — queried zaap directly: `app_data.field_people` shows `security_invoker: "on"`. _(confirmed done 2026-09-07)_
+
+**Also fixed in the same pass, not a done-item:** a verbatim duplicate section header ("eq-cards + eq-shell: changing your mobile number used to split you into two accounts", 2026-08-15) appeared twice back-to-back — the first copy was an empty intro-only duplicate with no body. Merged into the one substantive copy; no content lost.
+
+---
+
 ## eq-shell: 6 fully-closed backlog sections + 6 partial-trims rotated out in one pass — full live audit (rotated 2026-09-07)
 *Live-verified every item pruned from `eq/pending/eq-shell.md` before removing it — PR merge/deploy state via `gh`/commit-ancestry, a direct grep against current code, a direct SQL query, or (for self-declared-closed items) the item's own text already saying so. Nothing here assumed done from staleness alone.*
 

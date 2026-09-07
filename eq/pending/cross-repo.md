@@ -77,11 +77,6 @@ status: live
 
 ---
 
-## eq-shell + eq-field: Internal Document Sign-off Register — T4 (DB permission gate) closed end to end by a concurrent session earlier today (2026-08-20)
-Full build/merge/dispatch narrative already in today's session log (three separate chapters) — not re-duplicated here. One-line summary for anyone scanning just this file: `documents`/`document_audiences`/`document_categories` no longer grant `authenticated` any direct access (was full CRUD, tenant-RLS only, walkable via Shell's own tenant-JWT minting) — migration `0252`, merged as [PR #1470](https://github.com/eq-solutions/eq-shell/pull/1470), dispatched live and independently re-verified (zero `authenticated` grants remain on either tenant plane). Fully done, nothing open here.
-
----
-
 ## eq-field + eq-shell: access-control cleanup — Pipeline/Teams/Apprentices/Email Templates get their own permission switches, then a real gap in Shell's Access Control page found and closed (2026-08-16)
 
 - [ ] **A real, bigger idea from Royce — one single screen for all access control, not two separate systems** — discussed and deliberately not built today; needs a proper design pass first (grouping ~86 total switches sensibly is its own problem), not a same-day PR. _(added 2026-08-16)_
@@ -93,10 +88,6 @@ Full build/merge/dispatch narrative already in today's session log (three separa
 
 ## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15)
 *Started from one question — "what happens if a user changes mobile numbers, can an admin update it?" — and followed it all the way down. The answer was no: the admin screen only changed Shell's copy of the number, so the next sign-in created a brand-new account and left every licence stranded on the old one. Fixing that opened up the wider question of who can be helped at all when a number is lost, which turned into a full audit of every way into the apps. Every number below was read from the live databases, not from a document.*
-
----
-
-## eq-cards + eq-shell: changing your mobile number used to split you into two accounts — fixed, and a second way in shipped (2026-08-15)
 
 **Deferred:**
 - [ ] **Where the 7 deleted test logins came from was never explained.** Each had a Core identity naming SKS but no company invite, so the sign-up fault repaired this session cannot have created them. Creation stopped on its own at the end of June and none have appeared since. Harmless now they're gone, but the door that made them is still unidentified. _(added 2026-08-15)_
@@ -712,21 +703,6 @@ Agency field + roster on/off toggle in Core (#753), Field honours `on_roster` (#
 - [ ] **Decide the pilot offer** — firm as guest in existing tenant vs their own tenant (changes the demo + the portability framing) _(needs Royce's call) (added 2026-06-30)_
 ---
 
-## ⏩ Session close — 2026-06-30 (part d) — Activity-log link triggers + Field/Service site-view reconcile
-
-**Completed (eq-shell, merged + deployed):**
-
-**Completed (eq-field + DB):**
-
-**Audit truth (reconciled):**
-- Site selection in **both** Field and Service ALREADY honors the activation flags — `service.sites` filters `service_enabled`, `field_sites` filters `field_enabled`. Earlier "Field not wired" was a STALE-CHECKOUT error (local eq-field was 11 commits behind origin). Defaults clean: `active`/`field_enabled`/`service_enabled` all default `true`, NOT NULL → new sites visible in both apps automatically.
-
-**Also completed (part e — continued):**
-
-**Deferred (added 2026-06-30) — next session (prompt written in sessions/2026-06-30.md part e):**
-- [ ] **Platform Security Log / operator console** — sign-ins/2FA audit (jvkn, admin-audit.ts reads it); deferred by decision _(added 2026-06-30)_
----
-
 ## ⏩ Session close — 2026-06-30 (handoff hardening) — Shell→Service: shared contract + canaries + secret probe
 
 **Completed (merged + deployed):**
@@ -787,119 +763,7 @@ creds 779→737, invites 37→58 since 06-03; `0028_contact_customer_links` IS p
 
 ---
 
-## EQ Shell + EQ Intake
-
-> **⚠ SUPERSEDED (2026-05-30) — the architecture + gate notes in this section are STALE; `suite-state.md` carries current reality** (`STATE.md`, cited here originally, is archived as of 2026-07-12). (1) The **two-plane** model is current, NOT "single canonical": browser → `eq-canonical` (control plane) + tenant data **server-only** in `eq-canonical-internal` (`zaapmfdkgedqupfjtchl`). The "Two-Supabase obsolete / single canonical" copy below is itself now obsolete. (2) The **GTM validation gate was REMOVED** — do NOT block Shell Phase 2 (or any EQ work) on outside-customer validation (see `ops/decisions.md` + memory `feedback_gtm_intent`). Historical detail below kept for record only.
-
-**Status as of 2026-05-20:** Phase 1.E + 1.F shipped (single canonical
-Supabase, Intake module live at `/core/intake`, Unified Identity, RLS
-swept to `app_metadata`). Phase 2 paused — no further shell modules
-until the GTM validation gate clears (see EQ GTM PRIORITY section
-below) OR a paying customer specifically asks for one.
-
-**Two-Supabase architecture is OBSOLETE** as of Phase 1.E (2026-05-19).
-Current state:
-
-- `eq-canonical` (`jvknxcmbtrfnxfrwfimn`) — single canonical project
-  holding both shell control tables (`tenants`, `users`,
-  `module_entitlements`) and tenant application data (13 canonical
-  entity tables incl. `licences` added 2026-05-20 part-c). Region
-  `ap-southeast-2`.
-- `eq-shell-control` (`hxwitoveffxhcgjvubbd`) — **DECOMMISSIONED**
-  2026-05-19 per `sessions/2026-05-19.md`.
-- `sks-canonical-eq` — planned, not provisioned. Gated on GTM
-  validation gate, not on shell readiness.
-
-### Critique action items — deferred to Phase 2 resumption
-
-Three external-model critiques (Claude / Grok / ChatGPT) shopped
-2026-05-20 part-d. The actions below are real risks the architecture
-carries today. They DO NOT ship until Phase 2 resumes (GTM gate
-clears, or a paying customer requests a new module). Priority order
-= highest blast-radius first.
-
-- [ ] **Dual-secret support in `verify-shell-session`** for
-      `SUPABASE_JWT_SECRET` rotation. Same rationale.
-- [ ] **`revoked_sessions` table** + shorten JWT TTL from 1 hour to
-      ~30 minutes. Without this you cannot kill an active session
-      before its TTL expires.
-- [ ] **Schema split** — `shell_control.*` (tenants/users/
-      module_entitlements) vs `app_data.*` (canonical entities) in
-      the same `eq-canonical` project. `CREATE SCHEMA` +
-      `search_path` update. Free now, saves ~3 weeks when a regional
-      secondary is needed.
-- [ ] **Per-domain RPC decomposition** — split
-      `eq_intake_commit_batch` before it accumulates 5 module
-      branches. Per-entity validators in a shared library; per-domain
-      RPCs call the library. Currently 1 mega-RPC handles all
-      mutation; this is the chokepoint all three critiques flagged.
-- [ ] **Canonical → Field one-way sync rule** documented + enforced
-      with a Supabase trigger for shared concepts (staff, sites,
-      schedule_entries). Never the reverse. Otherwise dual-write
-      pain during iframe-purgatory becomes uncontrolled.
-- [ ] **Token-mint audit log** (tenant_id, IP, timestamp) with a
-      Sentry threshold alert per `https://mcp.sentry.dev/mcp/eq-solutions/eq-shell`.
-      Today there's no detection mechanism for a stolen salt.
-- [ ] **Build-time hash check** for the vendored `@eq/*` packages so
-      a stale vendor can't silently ship through Netlify.
-- [ ] **`STABLE SECURITY DEFINER` wrapper** for the `tenant_id` UUID
-      cast read in every RLS predicate (perf optimisation for the
-      day load matters).
-- [ ] **Iframe retirement deadline decision** — Grok pushed 9 months,
-      Claude said 3 years is a roadmap not purgatory, ChatGPT said
-      4 years is the modal failure mode. Pick a number, write it
-      somewhere, hold to it. Not a code task; a strategic decision
-      Royce makes when Phase 2 resumes.
-
-Full critique synthesis + the items already shipped (so we don't
-re-litigate them) is in [sessions/2026-05-20-part-d.md](../../sessions/2026-05-20-part-d.md).
-
-### Substrate-drift note (2026-05-20 part-d)
-
-The `eq-shell/README.md` Phase 2 row said "Tender Pipeline first"
-through 2026-05-20. This was a stale claim — Tender Pipeline is a
-Field sub-module, not a flagship shell module. The README has been
-corrected. Going forward: when writing critique prompts or briefing
-external models against the shell, read the substrate actively, do
-not just copy what the README says — and check for drift signals
-(passing pivots that have hardened into "platform doctrine"
-language).
-
-### Dedupe-on-ingest skill (intake feature)
-
-Decision logged 2026-05-19 in `ops/decisions.md` ("Dedupe Is Intake's
-Job, Not Per-App"). When EQ Intake ingests a CRM export, the
-collapse-dupes step (e.g. "47 rows of Equinix Australia Pty Ltd →
-1 customer + 47 sites") happens inside intake via the Confirm-UI,
-not inside the app reading the data. Implementation detail to be
-added to `eq-intake/CONFIRM-UI-SPEC.md` as a new section.
-
-- [ ] **Extend `eq-intake/CONFIRM-UI-SPEC.md`** with a "Dedupe
-      confirmation step" section (confidence tiers, screen sketch,
-      signature caching). Companion to the existing column-mapping
-      confirmation spec.
-- [ ] **Implement the dedupe step in the intake pipeline** — runs
-      AFTER column-mapping is confirmed, BEFORE the commit_batch
-      call. Two confidence tiers (HIGH = exact normalized name
-      match, MEDIUM = fuzzy match needing review).
-- [ ] **Test against the SimPRO bundle** — 524 customer-site rows
-      should collapse to ~150 unique customer rows + 524 site rows
-      in canonical.
-
-### EQ Shell Phase 1.B (Netlify wire-up) — DONE
-
-### eq-demo-canonical — security advisor cleanup (open) — CLOSED 2026-07-27, see below
-
-Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
-
-- [ ] **Toggle leaked-password protection** in eq-canonical (`jvknxcmbtrfnxfrwfimn`) dashboard → Authentication → Settings → enable HaveIBeenPwned check. **(Royce manual step, never confirmed done)** **Correction 2026-07-27: this had 3 duplicate copies elsewhere in this file, all closed as redundant during the backlog cull — but the cull mechanically closed all matching lines including this one, the copy meant to stay as the single live tracker. Reopened here; the underlying toggle is still unconfirmed.**
-
-### sks-canonical-eq provisioning (gated, not started) — CLOSED 2026-07-27, see below
-
----
-
 ## Deferred (added 2026-07-03)
-- [ ] **Approve eq-shell fleet dispatch for 0158 (`field_people` fix)** — dispatched (run visible in eq-shell Actions), paused on the `production` environment's human-approval gate. _(needs your call — approve, then verify `app_data.field_people` shows `security_invoker=on` on zaap)_
 - [ ] **E2E/integration test coverage for the flows that broke today** — recommended as the "deeper fix" alternative to the live-audit path (which Royce chose instead: "yes" to the quick audit, not this). None of today's ~6 shipped bugs (0170 semicolon, notify race, batch-resolve UUID strictness, job_plan_id UUID strictness, the 3 security_invoker regressions) were caught by `tsc`/`next build`/CI — every one needed a human to click through the real feature or an agent to run a live-data audit. Worth a scoped decision on whether to build real E2E coverage (at minimum: create→resolve defect, create→assign job-plan) so this class of regression is caught automatically next time, not just audited reactively. _(needs your call on scope/priority)_
 
 ## eq-cards / eq-shell / eq-solves-service: full outstanding-Sentry sweep (7 issues), Richard Brown's jvkn identity actually merged, silent PIN-reset lockout fixed and shipped (2026-08-17)
