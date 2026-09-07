@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T01:34:00Z",
+  "generated_at": "2026-09-07T09:14:13Z",
   "generated_by": "eq-context session 2026-09-01, seeded from live pg_get_viewdef/pg_get_functiondef queries against ehow via the Supabase MCP (see eq-field investigation this same session)",
   "plane": "ehow",
   "objects": {
@@ -56,7 +56,7 @@
       "schema": "app_data",
       "name": "eq__guard_timesheet_status",
       "kind": "function",
-      "sha256": "abafee3cbebb4f8b25d7ac2b14fd6eb091be8925fa18be343fb35d4d158c54cc",
+      "sha256": "12fa3c445fe51cadc4072dae2181f0ea3045b2220cfc1cff1107b8863750a42d",
       "preview": "CREATE OR REPLACE FUNCTION app_data.eq__guard_timesheet_status()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'app_data', 'pg_temp'\nAS $function$\nDECLARE\n  v_claims  jsonb;\n  v_role    text;\n  v_eq_role text;\n  v_is_mgr  boolean;\n  v_is_appr boolean;\n  v_uid     uuid;\n  v_staff   uuid;\n  v_old     text;\n  v_new     text;\nBEGIN\n  v_claims := nullif(current_setting('request.jwt.claims', tr"
     },
     "app_data.eq__guard_leave_status": {
