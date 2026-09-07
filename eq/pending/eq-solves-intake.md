@@ -15,6 +15,28 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-intake: full product review + duplicate-scan perf fix shipped live; RPC column-projection drafted (2026-09-07)
+*Royce: "I want to get on top of eq intake once and for all... it takes >30 seconds to load... I do not see what it does." Full review found the real cause: the screen he'd been opening (`@eq/intake-demo`, standalone `pnpm dev`) is a component test harness that happens to share its "One-screen Intake — the actual product" banner with the genuinely real, production-wired copy mounted inside eq-shell at `/intake` — same source file, two contexts, no visual difference between them. The engine underneath (validation, fuzzy matching, AI layer) verified independently solid — tiered models, human-confirms-everything, injection-hardened prompts, a health score that already caught and fixed a real false-positive against live SKS data. Full write-up delivered to Royce as a file.*
+
+*Redirected into a live perf bug once Royce opened the real screen and hit it — screenshotted "Scan for possible duplicates" hanging on real data.*
+
+**Completed:**
+- `duplicate-detect.ts` — the O(n²) fuzzy-dedup pass rebuilt both records' bigram sets from scratch on every pairwise comparison instead of once per candidate. Live assets table is 2,854 rows (confirmed against ehow) — ~4M wasted rebuilds. Fixed; full suite green (164 tests); benchmarked side-by-side against the original: ~7.7s → ~1.3s for the comparison pass, ~8.7s → ~1.7s full scan, byte-identical output verified. eq-solves-intake `main` @ `6e1e2f2`.
+- Re-vendored into eq-shell ([PR #1792](https://github.com/eq-solutions/eq-shell/pull/1792)), merged, confirmed live on core.eq.solutions via deploy-ancestry check.
+- Diagnosed the other half of "every button takes an eternity": `eq_tidy_read_entity` fetches every column of every row, called independently by 4 separate functions (health score, licence-expiry, duplicate scan, stale-record check) with no sharing between them. Fix designed as column projection, not literal pagination — all 4 callers need a whole-table fact (a completeness fraction, a full staleness count), so LIMIT/OFFSET wouldn't cut payload. `duplicate-detect.ts`'s completeness tie-break deliberately excluded from projection — it needs every column.
+- First drafted the migration in this repo's own `sql/` staging folder (`065_...`, commit `9abd761`) before finding eq-shell's `SCHEMA-GOVERNANCE.md`: this repo's `sql/` folder is the explicitly-deprecated pre-One-Pipe pattern for tenant schema. Re-authored properly as eq-shell `supabase/tenant-migrations/0303_tidy_read_entity_columns.sql` — a new function (`eq_tidy_read_entity_columns`), not a signature change to the existing one (would create an ambiguous Postgres overload on any existing 1-arg call). [PR #1797](https://github.com/eq-solutions/eq-shell/pull/1797), merged.
+
+**Deferred:**
+- [ ] **Dispatch `tenant-migrate.yml` to actually apply migration 0303** — merging the PR is inert for tenant data; a separate `workflow_dispatch` is the real apply step, no approval gate, fleet-wide by default unless scoped via `slug`. Recommend `slug=ehow` for a first run. Royce's call, not attempted. _(added 2026-09-07)_
+- [ ] **Wire `health-score.ts` / `licence-expiry-check.ts` / `decay-detect.ts` to the new `eq_tidy_read_entity_columns` RPC** — blocked on the migration above actually being live (calling it sooner would just throw). _(added 2026-09-07)_
+- [ ] **The demo-vs-real confusion itself is still unfixed** — `eq-intake-demo`'s `App.tsx` still stacks the "engineering scenarios... not the product" banner directly under "the actual product," and `mock-supabase.ts` still silently no-ops on RPCs it doesn't implement. Options laid out in the review (make the demo say what it is / wire it to real Supabase read-only / leave it) — Royce's call on which, if any. _(added 2026-09-07)_
+
+**Notes (load-bearing):**
+- **eq-shell vendors this repo, it doesn't depend on it live** — `eq-shell/eq-intake/` is a physical copy (`scripts/revendor-intake.mjs`), not a submodule, because this repo is private and Netlify can't clone private submodules for the build. A push here does nothing to production until someone re-vendors.
+- **GitHub MCP connector can't reach `eq-solutions/eq-shell`** — 404 on both reads and writes, confirmed live 2026-09-07; `gh` CLI works fine with the same account. Use `gh` for anything GitHub-side on eq-shell specifically.
+
+---
+
 ## eq-solves-intake: the data-cleaning queue actually shrinks as you work it now, plus a bad-merge error fixed (2026-08-16)
 *Royce flagged three problems with the review queue from screenshots: decided duplicate rows just sat there cluttering the list forever with no way to fix a wrong answer, a duplicate-contacts merge threw a raw error on screen, and the "unknown trade" list had no way to fix several people at once. Built and merged, then self-reviewed the same work and fixed six more bugs the review turned up before calling it done.*
 

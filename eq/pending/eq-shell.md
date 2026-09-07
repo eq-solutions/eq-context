@@ -15,6 +15,36 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: re-vendored eq-intake perf fix (PR #1792) + new column-projected tidy RPC (PR #1797) — both merged (2026-09-07)
+*Downstream of an eq-solves-intake perf investigation (full story in that repo's own pending.md) — Royce hit a real freeze on "Scan for possible duplicates" at `/intake` on live SKS data, screenshotted it, and the trail led through an O(n²) dedup fix there, then here for the two changes that actually needed to land in this repo.*
+
+**Completed:**
+- [PR #1792](https://github.com/eq-solutions/eq-shell/pull/1792) — re-vendored `eq-intake/eq-platform` from eq-solves-intake@6e1e2f2 (the dedup perf fix, plus 2 already-reviewed intake-demo-only commits). Build+test clean (583 tests, 581 pass), merged, confirmed live via deploy-ancestry (`23c45cbc`, published — not just merge-API success).
+- [PR #1797](https://github.com/eq-solutions/eq-shell/pull/1797) — new migration `supabase/tenant-migrations/0303_tidy_read_entity_columns.sql`, adding `public.eq_tidy_read_entity_columns(table, columns)` alongside the existing full-row `eq_tidy_read_entity` (left untouched — a signature change would have created an ambiguous Postgres overload on any existing 1-arg call). Fleet-wide, no `Plane:` header — schema shape, belongs on every tenant. All CI green (typecheck/test/lint, gitleaks, migration ledger hygiene, function-grants, schema-drift/policy-lint, the read-only plan job). Merged (`da11d54d`).
+- Along the way: an initial draft of the migration had been staged in eq-solves-intake's own `sql/` folder — that repo's pre-One-Pipe legacy pattern, per this repo's own `SCHEMA-GOVERNANCE.md`. Re-authored properly here instead once that doc surfaced mid-session.
+
+**Deferred:**
+- [ ] **Migration 0303 not yet dispatched** — same boat as the open 0302 item below: merging lands the file, but `tenant-migrate.yml`'s apply is a separate, explicit `workflow_dispatch` with no approval gate, fleet-wide by default unless scoped via `slug`. Both 0302 and 0303 are now pending the same dispatch. Recommend `slug=ehow` for a first run given 0303 was purpose-built for SKS's data volume, though it's schema-only and safe fleet-wide too. Royce's call. _(added 2026-09-07)_
+- [ ] **eq-intake's client-side callers not yet wired to 0303's new RPC** — tracked in eq-solves-intake's own pending.md, blocked on the dispatch above.
+
+**Notes (load-bearing):**
+- **GitHub MCP connector 404s on this repo specifically** (both reads and writes) — confirmed live 2026-09-07. `gh` CLI works fine, same account. Use `gh` for eq-shell PR/API work until that connector's access is fixed.
+- **Primary checkout was mid-edit from a concurrent session throughout tonight** (its branch shifted twice over the session: `fix/field-handoff-stall-visibility` → `fix/pin-reset-platform-admin-escalation` → `fix/hub-sidebar-fast-refresh-exports`). All of tonight's work here was done from isolated `git worktree add` checkouts off `origin/main`, never the primary directory, to avoid colliding with it.
+
+---
+
+## eq-shell: EQ Field handoff stall-notice false alarms on backgrounded tabs — PR #1785 merged, live; 3 Sentry issues closed (2026-09-07)
+*Triage of Sentry issue EQ-SHELL-20 ("handoff stalled at 'booted'") found an already-open, unmerged fix rather than new work — [PR #1785](https://github.com/eq-solutions/eq-shell/pull/1785). Root cause: a backgrounded tab throttles/coalesces the stall-notice `setTimeout` (shipped 2026-09-04, #1758) instead of cancelling it, so it can fire real minutes after Field actually booted fine. Fix gates the alarm behind a live `document.hidden` check plus a `visibilitychange` re-arm.*
+
+- Merged PR #1785 (squash `953de61a`) on Royce's "merge if safe," after a clean merge-readiness audit (all 5 required checks green, `mergeStateStatus: CLEAN`, single-file diff matching the PR description exactly, no auth-adjacent risk). Confirmed live on core.eq.solutions via commit-ancestry against the deploy actually marked `currentDeploy` (`a7ae2cd3`, published 09:35:44 UTC) — the merge commit's own build showed a misleading `state: error` / `"Skipped"` (superseded by PR #1793 landing ~30s later, not a real failure); verified per `rules/deployment.md`'s prescribed method rather than trusting the build status at face value.
+- Resolved the 3 Sentry issues sharing this alarm's code path: EQ-SHELL-20 (145052767, "booted"), EQ-SHELL-21 (145332293, "never reported rendered"), EQ-SHELL-1Z (145002211, "minting").
+- [ ] **EQ-SHELL-1Z may not have been the same bug.** Its one event only overshot the 10s notice threshold by ~0.5s — normal timer jitter, not the multi-second-plus gap EQ-SHELL-20/21 showed. Resolved anyway (shared code path, Sentry auto-reopens on recurrence), but if it recurs, treat it as a possible genuine slow-mint issue (token-exchange's own documented p95 is 5.25s) rather than assuming backgrounding again.
+- [ ] **Not click-tested live** — same standing gap as the PR's own test plan: nobody has backgrounded a real tab mid-handoff past 10s and confirmed no notice/Sentry event fires while hidden, and that a still-stuck handoff still alarms promptly (with accurate elapsed time) on return to the tab. No Shell session/credentials in this environment.
+
+_(added 2026-09-07)_
+
+---
+
 ## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07)
 *Full review of eq-shell (security, unfinished work, quality) plus a reconciliation pass across all ~50 open GitHub issues — 9 closed with live-code evidence (2 of the first 3 spot-checked P0/P1 security issues turned out already fixed weeks ago, just never closed — real open count is meaningfully smaller than the raw total, but only an audit like this one can say by how much). Fixed the two the review found still genuinely open: #709 (reset-user-pin could target a platform_admin — full escalation path via the reset link + accept-pin-reset's auto-sign-in) and #870 (a revoked session could still mint credentials, or get laundered into a fresh un-revoked one via switch-tenant). Also shipped the `.env.example` completion (closes #713) and an `ENFORCE_IFRAME_ORIGIN` drift warning. All 4 PRs (#1788-#1791) merged and confirmed live via deploy-ancestry check, not just merge-API success — Netlify skipped 3 of the 4 individual builds mid-session under tonight's exceptionally heavy concurrent-merge volume (multiple other sessions landing PRs on this repo in real time); each skipped commit's ancestry was independently confirmed before treating it as live.*
 
