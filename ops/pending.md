@@ -41,6 +41,16 @@ A second, unrelated session today hit `core.hooksPath` resolving to the wrong-bu
 
 ---
 
+## Substrate assessment (7/10) -> 2 tools built: `safe_commit.py`, `check_budgets.py` (2026-09-07)
+
+- [ ] **Wire `check_budgets.py` into CI** (a GitHub Actions workflow step) so an
+  over-budget file fails a PR automatically instead of only being caught when
+  someone happens to run it by hand. Deliberately not done unprompted --
+  modifying CI pipelines is exactly the kind of structural change that needs
+  Royce's own call, not an assistant's unilateral addition. _(added 2026-09-07)_
+
+---
+
 ## EQ_CONTEXT_PAT (GitHub Actions secret) expired — ROTATED & CONFIRMED LIVE 2026-09-05. Workstation-PAT compromise (separate, older) still open (2026-09-03)
 
 Royce flagged `github.com/settings/personal-access-tokens/17800873` as expired and asked whether it matters. Live-verified rather than assumed: triggered all 3 dependent workflows manually.
