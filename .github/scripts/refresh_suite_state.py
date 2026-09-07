@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 Refresh suite-state.md from live systems.
-Run nightly via GitHub Action. Zero LLM inference — deterministic only.
+Runs on every EQ-repo merge (repository_dispatch from notify-substrate.yml in
+eq-shell/eq-service/eq-field/eq-cards) + a nightly backstop, both via GitHub
+Action. Zero LLM inference — deterministic only.
 
 Decision extraction uses ARCH: convention: any PR body line starting with
 "ARCH:" is an architectural decision and gets appended automatically.
@@ -221,10 +223,15 @@ def render_field_block(fc, today):
 | Safety | public.prestarts | {_n('prestarts'):,} | {_field_status(fc.get('prestarts'))} |
 | Safety | public.toolbox_talks | {_n('toolbox_talks'):,} | {_field_status(fc.get('toolbox_talks'))} |
 | Safety | public.site_audits | {_n('site_audits'):,} | {_field_status(fc.get('site_audits'))} |
-_Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_"""
+_Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_"""
 
 
 _LEGACY_FIELD_TABLE_RE = (
+    # Pinned to the exact historical (pre-fix) wording on purpose -- this is a
+    # one-time repair pattern for that specific 2026-08-16 heading-less shape,
+    # not a mirror of the current footer text above. Must NOT be updated when
+    # the live footer text changes, or this repair path stops matching real
+    # legacy content (caught by test_field_block.py's "legacy shape" cases).
     r"\| Layer \| View / Table \| Rows \| Status \|.*?"
     r"_Auto-refreshed nightly\. ✓ = has data · ⚠ = empty \(no data yet\) · ✗ = table missing_"
 )
@@ -459,7 +466,7 @@ if __name__ == "__main__":
     # 7a. Timestamp
     content = re.sub(
         r"_Last verified:.*?\n",
-        f"_Last verified: {TODAY} (nightly cron)_\n",
+        f"_Last verified: {TODAY} (auto-refreshed on merge + nightly backstop)_\n",
         content,
     )
 

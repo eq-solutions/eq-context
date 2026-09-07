@@ -2,13 +2,13 @@
 title: EQ Suite — Current State
 owner: Royce Milmlow
 last_updated: 2026-09-07
-scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed nightly by GitHub Action.
+scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed on merge (repository_dispatch from EQ repos) + nightly backstop by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-07 (nightly cron)_
+_Last verified: 2026-09-07 (auto-refreshed on merge + nightly backstop)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -117,7 +117,7 @@ _If this file is >48h old, the cron is broken._
 | Safety | public.prestarts | 236 | ✓ 236 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
-_Auto-refreshed nightly. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
+_Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
 ## Product Pulse (as of 2026-09-07)
@@ -163,7 +163,7 @@ _No flips this run._
 |------|--------|-------|
 | CANONICAL_PULL_CRON_ENABLED | true | Pulls canonical → service |
 | PRE_VISIT_BRIEF_CRON_ENABLED | true | Emails tech night before job. Fires when checks exist. |
-| Suite state refresh | Nightly ~9pm | This file |
+| Suite state refresh | On EQ-repo merge (repository_dispatch, real-time) + nightly backstop 8pm AEST | This file |
 
 ---
 
