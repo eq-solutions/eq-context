@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-07)
 
-**eq-cards:**
-- #343 fix(cards): wallet info-density cleanup + worker-sync dob fix
-
 **eq-field:**
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
@@ -91,7 +88,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? in_progress |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -101,7 +98,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-07 |
+    | eq-service | ready | 2026-09-07 |
 | eq-shell | ready | 2026-09-06 |
 | eq-field | ready | 2026-09-07 |
 
