@@ -2,7 +2,7 @@
 title: Claude Code Command Backups — Index
 owner: Royce Milmlow
 last_updated: 2026-09-07
-scope: Explains why brief/close/housekeep are mirrored here and decide/gap/reflect/tidy aren't
+scope: Explains why brief/close/housekeep are mirrored here and decide/deploy-topology-verify/entity-boundary-guard/gap/reflect/tidy aren't
 read_priority: reference
 status: live
 ---
@@ -24,16 +24,19 @@ which is exactly the failure mode the rest of this repo works hard to avoid
 
 ## Why only these four
 
-Claude Code auto-discovers commands from `~/.claude/commands/*.md`. Seven exist
-today: `brief`, `close`, `decide`, `gap`, `housekeep`, `reflect`, `tidy`.
+Claude Code auto-discovers commands from `~/.claude/commands/*.md`. Nine exist
+today: `brief`, `close`, `decide`, `deploy-topology-verify`, `entity-boundary-guard`,
+`gap`, `housekeep`, `reflect`, `tidy`.
 
-Four of them (`decide.md`, `gap.md`, `reflect.md`, `tidy.md`) are already safe without
-being copied here — each is a short trigger whose real logic lives in a
-tracked rule file:
+Six of them (`decide.md`, `deploy-topology-verify.md`, `entity-boundary-guard.md`,
+`gap.md`, `reflect.md`, `tidy.md`) are already safe without being copied here — each
+is a short trigger whose real logic lives in a tracked rule file:
 
 | Command | Backed by |
 |---|---|
 | `/decide` | `rules/decision-protocol.md` |
+| `/deploy-topology-verify` | `rules/deploy-topology-protocol.md` |
+| `/entity-boundary-guard` | `rules/entity-boundary-protocol.md` |
 | `/gap` | `rules/gap-protocol.md` |
 | `/reflect` | `rules/reflection-protocol.md` |
 | `/tidy` | `rules/tidy-protocol.md` |

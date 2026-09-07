@@ -504,3 +504,52 @@ fix (it was) — this collision is real and pre-existing, breaking the `Integrat
 - [x] **`suite-state.md`'s "Import/write-time tooling" table had a third, unrelated drift**, found while researching the above — said Shell's Contacts dedup "reimplements Intake's fuzzy matcher instead of importing it," the opposite of the corrected `decisions.md` framing and of `eq/products.md`'s already-correct line. Spawned as background task `task_a96eac2e`; Royce started it in a separate session the same day, which fixed it and merged — [eq-context PR #200](https://github.com/eq-solutions/eq-context/pull/200), commit `9a3df2f3`.
 
 ---
+
+## Two new skills built end-to-end and shipped: /deploy-topology-verify + /entity-boundary-guard (2026-09-07, rotated 2026-09-07)
+
+Started from a "what skills should we be using" research question, not a pre-existing pending
+item. Anthropic's own Claude Code team's published lessons name verification skills as the
+category with "the most measurable impact on Claude's output quality" internally — mapped that
+to two concrete gaps this substrate didn't cover yet: which repo actually serves a URL (two
+confirmed incidents already in this file's own history — the `core.eq.solutions/sks/field`
+mixup, the `.netlify.app` naming traps), and which entity (EQ vs SKS) owns a repo/credential
+before acting.
+
+Built as the real house convention (found by reading `/brief`, not assumed): thin trigger at
+`~/.claude/commands/<name>.md` + full protocol at `eq-context/rules/<name>-protocol.md` —
+`rules/deploy-topology-protocol.md` + `rules/entity-boundary-protocol.md`, both indexed in
+`CLAUDE.md`'s "Where Things Live" table. eq-context [PR #220](https://github.com/eq-solutions/eq-context/pull/220), merged `617d69a5`. Live-tested: `/deploy-topology-verify` invoked
+directly, confirmed it loads and behaves exactly as authored.
+
+Two of this repo's own guards caught real problems mid-build rather than being routed around:
+the brief-gate forced an actual `/brief eq-context` before any write; the F13 content guard
+caught a first-draft paraphrase that misstated eq-shell's deploy posture (fixed by removing the
+restatement entirely and pointing solely at `rules/deployment.md` — a better design, not a
+patch). Also cleared an unrelated pre-existing `index-drift` orphan found in passing
+(`rules/tidy-protocol.md`, from a different concurrent session's already-merged `938e24f2`,
+never indexed) — fixed with Royce's explicit go-ahead rather than assumed in scope.
+
+All work done from isolated worktrees off fresh `origin/main` — the shared primary checkout
+was dirty with concurrent work the entire session and was never touched, matching the
+F9-avoidance pattern several other sessions today independently used.
+
+**Correction (2026-09-07, same day):** the original version of this entry logged a "durability
+backup gap," claiming the two new trigger files needed mirroring into `eq-context/tools/commands/`
+the way `/brief`/`/gap`/`/decide` etc. are. That was wrong — written without reading
+`tools/commands/README.md` first. That README documents that only commands whose *entire* logic
+lives in the command file itself get backed up there (`/brief`, `/close`, `/housekeep`); commands
+built as a thin trigger over a tracked `rules/*-protocol.md` file (`/decide`, `/gap`, `/reflect`,
+`/tidy`) are already safe without a copy, since the real content is already committed elsewhere.
+`/deploy-topology-verify` and `/entity-boundary-guard` are built in exactly that second shape —
+no gap, no action needed. Added both to the README's table instead of copying them.
+
+Not a new item, kept for context: `sessions/2026-09-07.md` had 3 broken internal links (to
+`rules/non-negotiables.md`, `rules/deployment.md`, `eq/pending/eq-shell.md`) from a different
+concurrent session's entries — targets all confirmed to exist, so this reads as a path-resolution
+mismatch (a bare repo-root-style href from inside `sessions/` needs a `../` prefix to actually
+resolve — see the working example above, `[...](../rules/...)`), not a missing file. Left alone
+rather than guess-edited into someone else's live same-day log.
+
+No open items.
+
+---
