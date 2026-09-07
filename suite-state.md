@@ -74,13 +74,11 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1793 feat(staff): redesign Teams (formerly Org Chart) for scale and accuracy
 - #1791 fix(security): a revoked session can no longer mint credentials or be laundered into a fresh one
 - #1790 fix(security): block reset-user-pin from targeting a platform_admin
 - #1789 fix(security): warn loudly when ENFORCE_IFRAME_ORIGIN isn't 'true'
 - #1788 docs(env): document the full .env.example surface, including two load-bearing keys
 - #1786 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1785 fix(field-iframe): don't alarm on stall/draw notices while the tab is backgrounded
 - #1783 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1769 chore(intake): auto re-vendor eq-intake/eq-platform
 - #1739 chore(intake): auto re-vendor eq-intake/eq-platform
@@ -109,7 +107,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | building | 2026-09-07 |
+| eq-shell | new | 2026-09-07 |
 | eq-field | ready | 2026-09-07 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
