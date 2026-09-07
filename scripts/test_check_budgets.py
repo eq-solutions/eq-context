@@ -2,7 +2,7 @@
 """Unit tests for check_budgets.py's pure parsing logic. No git, no fixtures on disk."""
 import unittest
 
-from check_budgets import extract_budget
+from check_budgets import extract_budget, is_budget_marker_exempt
 
 
 class ExtractBudgetTests(unittest.TestCase):
@@ -56,6 +56,22 @@ class ExtractBudgetTests(unittest.TestCase):
         self.assertEqual(extract_budget(worktree_registry), 150)
         self.assertEqual(extract_budget(lessons), 500)
         self.assertEqual(extract_budget(failures), 400)
+
+
+class BudgetMarkerExemptTests(unittest.TestCase):
+    def test_session_logs_exempt_wholesale(self):
+        self.assertTrue(is_budget_marker_exempt("sessions/2026-09-07.md"))
+        self.assertTrue(is_budget_marker_exempt("sessions/2026-01-01.md"))
+
+    def test_machinery_doc_exempt(self):
+        # Describes what check_budgets.py does; never declares its own budget.
+        self.assertTrue(is_budget_marker_exempt("system/machinery.md"))
+
+    def test_real_budgeted_files_not_exempt(self):
+        self.assertFalse(is_budget_marker_exempt("system/failures.md"))
+        self.assertFalse(is_budget_marker_exempt("system/lessons.md"))
+        self.assertFalse(is_budget_marker_exempt("system/worktree-registry.md"))
+        self.assertFalse(is_budget_marker_exempt("eq/pending/eq-shell.md"))
 
 
 if __name__ == "__main__":
