@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: EQ Field handoff stall-notice false alarms on backgrounded tabs — PR #1785 merged, live; 3 Sentry issues closed (2026-09-07)
+*Triage of Sentry issue EQ-SHELL-20 ("handoff stalled at 'booted'") found an already-open, unmerged fix rather than new work — [PR #1785](https://github.com/eq-solutions/eq-shell/pull/1785). Root cause: a backgrounded tab throttles/coalesces the stall-notice `setTimeout` (shipped 2026-09-04, #1758) instead of cancelling it, so it can fire real minutes after Field actually booted fine. Fix gates the alarm behind a live `document.hidden` check plus a `visibilitychange` re-arm.*
+
+- Merged PR #1785 (squash `953de61a`) on Royce's "merge if safe," after a clean merge-readiness audit (all 5 required checks green, `mergeStateStatus: CLEAN`, single-file diff matching the PR description exactly, no auth-adjacent risk). Confirmed live on core.eq.solutions via commit-ancestry against the deploy actually marked `currentDeploy` (`a7ae2cd3`, published 09:35:44 UTC) — the merge commit's own build showed a misleading `state: error` / `"Skipped"` (superseded by PR #1793 landing ~30s later, not a real failure); verified per `rules/deployment.md`'s prescribed method rather than trusting the build status at face value.
+- Resolved the 3 Sentry issues sharing this alarm's code path: EQ-SHELL-20 (145052767, "booted"), EQ-SHELL-21 (145332293, "never reported rendered"), EQ-SHELL-1Z (145002211, "minting").
+- [ ] **EQ-SHELL-1Z may not have been the same bug.** Its one event only overshot the 10s notice threshold by ~0.5s — normal timer jitter, not the multi-second-plus gap EQ-SHELL-20/21 showed. Resolved anyway (shared code path, Sentry auto-reopens on recurrence), but if it recurs, treat it as a possible genuine slow-mint issue (token-exchange's own documented p95 is 5.25s) rather than assuming backgrounding again.
+- [ ] **Not click-tested live** — same standing gap as the PR's own test plan: nobody has backgrounded a real tab mid-handoff past 10s and confirmed no notice/Sentry event fires while hidden, and that a still-stuck handoff still alarms promptly (with accurate elapsed time) on return to the tab. No Shell session/credentials in this environment.
+
+_(added 2026-09-07)_
+
+---
+
 ## eq-shell: Documents sign-off register — 8-angle cold code audit, PR #1772 (2026-09-05)
 
 - [ ] **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
