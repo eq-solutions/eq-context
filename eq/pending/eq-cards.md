@@ -13,6 +13,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: new-PC session — finished the Wallet info-density punch-list item, found + fixed a live worker-sync bug, full /triage pass on the waiting-on-you bucket (2026-09-07)
+*First session on Royce's new PC. Verified the dev environment (Flutter installed, PATH stale from the app launching before the update — self-resolving on restart; full `pub get`/codegen/analyze/test loop green, 467/467) before touching code. Asked "is this ready to work on" turned into: finish punch-list #4 (see `system/punch-list.md`, closed this session), then "can you see if people are using Cards, any issues" turned into finding and fixing a real live bug, then a full `/triage` pass on eq-cards' waiting-on-you bucket (16 items, all resolved — deferred/dismissed/spawned/acted-on, see this file's other 2026-09-07 edits).*
+
+**Shipped, eq-cards [PR #343](https://github.com/eq-solutions/eq-cards/pull/343), merged + deployed:**
+1. Wallet info-density finish (search-bar 6-item threshold, ID card → top "Show ID" strip, licence-detail metadata cap) — full write-up in `system/punch-list.md`'s Closed section, item 4.
+2. `workers-canonical-sync` `dob_locked_to_cards` merge fix — same PR, unrelated bug found while checking live usage numbers. 105/105 workers synced clean on a live re-fire post-deploy (was silently failing for the ~10 workers who had a Cards-entered date of birth, every night, for at least 3 days).
+
+**Notes:**
+- **Real usage confirmed live, not assumed:** 251 licences total (106 registered workers), 2 added today, 19 in 7 days, 60 in 30 days. OCR used by 6 distinct people in the last week.
+- Root-caused the sync bug from the edge function's own logs (`function_logs` source, not just the bare `worker_sync_dispatch` status-code ledger) — the dispatch table alone only shows a bare 500 with no message; the actual Postgres error (`22023`, the constraint name and message) only shows up in the function's own runtime logs.
+- `.dart-defines.prod.json` still needs a Sentry DSN + PostHog key from Royce to run against real infra locally — Supabase URL/anon key were pulled live via MCP and handed over already; the app runs fine without the other two (both gate cleanly on empty string in `main.dart`).
+- Every eq-context write this session went through an isolated clone (`git clone` to scratchpad, edit, commit, rebase onto fresh `origin/main`, push), never the shared checkout directly — origin drifted 1→30 commits over the session's length, consistent with what several other concurrent sessions today independently converged on the same day (see other 2026-09-07 session-log entries).
+
+---
+
 ## eq-cards: Wallet "can't load licences" root-caused to a stale client session — fixed, merged, deployed live; wallet nudge stack also consolidated (2026-09-02)
 *Royce: couldn't see licences on two SKS labour-hire workers' phones (Conor Horgan, then Nelson Sareto) when checking Core. Verified live before building anything: both workers' data checked out completely clean on both ends (ehow `app_data.staff`/`licences` and jvkn `workers`/`licences`) — no duplicate records (ruling out the Aug-30 dedup bug that named these exact two workers), correct cross-plane links both directions, valid non-private licences, active org memberships. Root cause: the wallet's licence fetch trusts whatever Supabase session object is cached with no live-check or refresh — a session that goes stale while the Shell iframe tab is backgrounded (GoTrue's own refresh timer lagging) fails straight to the "Sign in again" error screen instead of self-healing. Matches a same-day Sentry `AuthRetryableFetchException` (issue 144338444) and the identical failure class already fixed once in this codebase (`not_provisioned_screen.dart`, EQ-CARDS-1C).*
 
@@ -189,6 +204,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 **Deferred:**
 - [ ] **Not clicked through live** — verified against real production data directly, not by an actual admin opening the screen and watching Manager disappear from the list. Worth two minutes on a real admin account. _(added 2026-08-16)_
 - [ ] **Cards' own copy of the shared role/permission rulebook is a few versions behind** — old enough that it doesn't know about the new narrower "who can change someone's role" permission at all. Not required for this fix (handled a different way instead, described above) but worth catching up eventually so Cards can check permissions the same direct way Shell does. _(added 2026-08-16)_
+- [ ] **The audit trail this fix added has never actually fired** — checked live via `/triage` on 2026-09-07: zero `audit_log` rows matching a role-change action since this shipped, three weeks ago. Two explanations, can't distinguish from this alone: nobody's changed anyone's role in that window (plausible for a team this size), or the audit write isn't actually wired up. Worth a single synthetic test (change a role, confirm a row lands) before trusting the silence. _(added 2026-09-07)_
 
 ---
 

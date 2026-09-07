@@ -34,21 +34,10 @@ actually being worked **right now**.
 
 ---
 
-## Active (1)
+## Active (0)
 
-### 4. Cards info density — simplify/collapse
-Not tracked anywhere before today. Brain dump: "Cards is very heavy on
-information — look at simplifying or collapsing info unless a user clicks
-around." **Needs scoping first** — which screens, what collapses by default.
-
-**Scoped 2026-08-11, not built:** `eq/cards-info-density-scoping-2026-08-11.md`
-— Wallet (home tab) is the real target (up to 7 stacked nudge cards for a
-new/mid-setup worker, plus urgent items rendering twice); proposed fix is a
-collapsible "To do" summary + de-dupe, sized Medium. One small companion fix
-on the licence-detail screen (uncapped metadata rows), sized Small.
-Everything else checked is fine as-is. **Royce is sending screenshots of the
-first-open popup/info overload separately** — reconcile against this scope
-before building, don't build from this doc alone.
+Nothing active right now — item 4 (below) closed this session. Empty is
+honest; see "Never fill a slot in this file because it looks empty" below.
 
 ---
 
@@ -73,6 +62,31 @@ draws.
 ---
 
 ## Closed
+
+### 4. Cards info density — simplify/collapse
+**Closed 2026-09-07, confirmed by Royce (built, merged, deployed).** The
+headline fix (collapsing the stacked nudge cards, de-duping "Needs
+attention") had already shipped 2026-08-11 and in PR #342 (2026-09-02) —
+this session's own investigation found the scoping doc had just never been
+marked done. Finished the three pieces that were still genuinely open:
+search/filter bar now hides under 6 licences (was ≤2), the Wallet ID card
+moved from the bottom of the list to a compact "Show ID" strip near the
+top, and licence-detail metadata rows now cap at 2 with a "Show more"
+expander. Shipped as eq-cards [PR #343](https://github.com/eq-solutions/eq-cards/pull/343),
+merged and deployed same session. **The screenshots this entry was waiting
+on never arrived** — built from the 2026-08-11 scoping doc alone, same as
+the doc itself said not to do; flagged, not silently ignored (see
+`eq/pending/eq-cards.md`'s 2026-09-07 entry). Worth a look if the shipped
+result doesn't match what the screenshots would have shown.
+
+Same PR also carried an unrelated live bug fix found while investigating
+Cards usage that session: `workers-canonical-sync` was rejected on merge
+for every Cards-linked worker whose profile carried a date of birth (a
+`dob_locked_to_cards` constraint on Shell's side, added after this
+function's code was written) — silently blocking their address/phone/
+emergency-contact sync too, not just the birthdate. Fixed and verified
+live: re-fired the nightly reconcile for all 105 linked workers post-fix,
+105/105 succeeded.
 
 ### 3. Mobile polish (Field/Cards) — verified fine, no bug found
 **Closed 2026-08-11.** Checked all three real candidates at 375px via a
