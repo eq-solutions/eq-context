@@ -1,8 +1,8 @@
 ---
 title: Claude Code Command Backups — Index
 owner: Royce Milmlow
-last_updated: 2026-09-06
-scope: Explains why brief/close/housekeep are mirrored here and decide/gap/reflect aren't
+last_updated: 2026-09-07
+scope: Explains why brief/close/housekeep are mirrored here and decide/gap/reflect/tidy aren't
 read_priority: reference
 status: live
 ---
@@ -22,12 +22,12 @@ same session (or note the drift) — otherwise this backup silently goes stale,
 which is exactly the failure mode the rest of this repo works hard to avoid
 (see `system/failures.md`).
 
-## Why only these three
+## Why only these four
 
-Claude Code auto-discovers commands from `~/.claude/commands/*.md`. Six exist
-today: `brief`, `close`, `decide`, `gap`, `housekeep`, `reflect`.
+Claude Code auto-discovers commands from `~/.claude/commands/*.md`. Seven exist
+today: `brief`, `close`, `decide`, `gap`, `housekeep`, `reflect`, `tidy`.
 
-Three of them (`decide.md`, `gap.md`, `reflect.md`) are already safe without
+Four of them (`decide.md`, `gap.md`, `reflect.md`, `tidy.md`) are already safe without
 being copied here — each is a short trigger whose real logic lives in a
 tracked rule file:
 
@@ -36,6 +36,7 @@ tracked rule file:
 | `/decide` | `rules/decision-protocol.md` |
 | `/gap` | `rules/gap-protocol.md` |
 | `/reflect` | `rules/reflection-protocol.md` |
+| `/tidy` | `rules/tidy-protocol.md` |
 
 The three copied into this folder (`brief.md`, `close.md`, `housekeep.md`)
 have no such split — the entire protocol, including incident-specific detail
@@ -47,6 +48,6 @@ in use — this folder is the only full copy outside the local machine.
 ## Restoring onto a new machine
 
 Copy these three files into `~/.claude/commands/` on the new machine
-(`decide.md`, `gap.md`, `reflect.md` are short enough to recreate from
+(`decide.md`, `gap.md`, `reflect.md`, `tidy.md` are short enough to recreate from
 scratch by hand from the table above, or copy them from the working machine
 the same way if convenient).

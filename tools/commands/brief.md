@@ -1,7 +1,7 @@
 ---
 title: "/brief command backup — Session Gate (Rule 0.6)"
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 scope: Durability backup of Royce's user-level Claude Code /brief command — source of truth is ~/.claude/commands/brief.md, not this file
 read_priority: reference
 status: live
@@ -20,6 +20,15 @@ When this skill is invoked, run the following steps IN ORDER. Do not skip any st
 
 Read `C:\Projects\eq-context\digest.md`.
 
+**Check its currency before trusting it — a fresh-looking stamp is not the same as
+current content (this is failure F1: the substrate has served stale content with no
+error before).** Run `git -C C:/Projects/eq-context log HEAD..origin/main --oneline -- digest.md`.
+If that returns anything, say so plainly in the brief's Health section ("digest.md is
+N commits behind origin/main as of this read — treat below as a lower bound, not
+current truth") instead of presenting its contents as unconditionally current. One
+extra git call — it's what would have caught a stale brief going out unflagged on
+2026-09-07.
+
 Extract and display:
 - **Needs you** section — if non-empty, list each item with its emoji prefix
 - **Pulse** section — CI status per repo, any stale worktrees, aging PRs
@@ -31,7 +40,13 @@ If digest.md is missing or unreadable, state that explicitly and continue.
 
 ## Step 2 — Check worktree registry
 
-Read `C:\Projects\eq-context\system\worktree-registry.md`.
+Run `git -C C:/Projects/$ARGUMENTS worktree list` — this is the authoritative, live
+source. **Do not rely on `system/worktree-registry.md` for current state** (per root
+`CLAUDE.md`'s own "Active locked worktrees" line) — as of 2026-09-07 it's also grown to
+368.5KB / 647 lines, past what a normal file-read can load in one call, so treating it
+as this step's primary mechanism silently fails rather than just being stale. Read it
+only for historical narrative the live command won't show (why a worktree exists, who
+owns it).
 
 List any active worktrees for the target repo (`$ARGUMENTS`). If one exists, surface it — working from a second worktree on the same repo creates conflicts.
 
@@ -168,7 +183,7 @@ Do not write code, edit files, or make tool calls beyond the reads above until R
 
 ---
 
-## Defaults when $ARGUMENTS is empty
+## Defaults when no repo is given
 
 If no repo is given, ask:
 
