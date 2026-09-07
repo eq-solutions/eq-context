@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -18,7 +18,7 @@ for operational support: tax, entities, infrastructure, substrate.
 
 A brand-new Windows PC's first eq-context session found `core.hooksPath` completely unset (git clone can't populate local config for itself — a structurally different shape from F10's 3 earlier "wrong value" mechanisms, already guarded at rung 4). `hooks/session_start.py`'s HOOKS check now runs the fix itself and re-verifies instead of only printing when it finds every scope unset; a wrong-but-set value (mechanisms 1-3) still only warns, unchanged. Added a "First-time setup" step to `system/onboarding.md` + `README.md` for the human/non-Claude-Code path, labeled the never-adopted `.pre-commit-config.yaml` rather than deleting it (Royce's call), and fixed `scripts/pre-commit-secrets.sh`'s own stale install instructions, which pointed straight at the `.git/hooks` shadow-copy shape that caused the 2026-08-04 incident. 4 new adversarial cases, full suite 150/150. Full detail: `system/failures.md` F10. eq-context commit `bcfbcbcb`.
 
-No open items — closed same session. One unrelated bug found in passing, not bundled in: `hooks/adversarial_test.sh` fails 0/36 on any machine where `python3` resolves to the Windows Store app-execution-alias stub rather than a real interpreter (confirmed on this machine; doesn't affect CI, which only runs the Python suite). Spun off as its own task — Royce already started it running.
+No open items — closed same session. One unrelated bug found in passing, not bundled in: `hooks/adversarial_test.sh` fails 0/36 on any machine where `python3` resolves to the Windows Store app-execution-alias stub rather than a real interpreter (confirmed on this machine; doesn't affect CI, which only runs the Python suite). Spun off as its own task — Royce already started it running. **Fixed 2026-09-07** — the runner now resolves a working interpreter (tries `python3`, falls back to `python` if it doesn't actually execute) instead of hardcoding `python3`; 36/36 verified, eq-context commit `cc22cfc4`. Fully closed, no open items remain.
 
 ---
 
