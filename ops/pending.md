@@ -14,6 +14,50 @@ for operational support: tax, entities, infrastructure, substrate.
 
 ---
 
+## Two new skills built end-to-end and shipped: /deploy-topology-verify + /entity-boundary-guard (2026-09-07)
+
+Started from a "what skills should we be using" research question, not a pre-existing pending
+item. Anthropic's own Claude Code team's published lessons name verification skills as the
+category with "the most measurable impact on Claude's output quality" internally — mapped that
+to two concrete gaps this substrate didn't cover yet: which repo actually serves a URL (two
+confirmed incidents already in this file's own history — the `core.eq.solutions/sks/field`
+mixup, the `.netlify.app` naming traps), and which entity (EQ vs SKS) owns a repo/credential
+before acting.
+
+Built as the real house convention (found by reading `/brief`, not assumed): thin trigger at
+`~/.claude/commands/<name>.md` + full protocol at `eq-context/rules/<name>-protocol.md` —
+`rules/deploy-topology-protocol.md` + `rules/entity-boundary-protocol.md`, both indexed in
+`CLAUDE.md`'s "Where Things Live" table. eq-context [PR #220](https://github.com/eq-solutions/eq-context/pull/220), merged `617d69a5`. Live-tested: `/deploy-topology-verify` invoked
+directly this session, confirmed it loads and behaves exactly as authored.
+
+Two of this repo's own guards caught real problems mid-build rather than being routed around:
+the brief-gate forced an actual `/brief eq-context` before any write; the F13 content guard
+caught a first-draft paraphrase that misstated eq-shell's deploy posture (fixed by removing the
+restatement entirely and pointing solely at `rules/deployment.md` — a better design, not a
+patch). Also cleared an unrelated pre-existing `index-drift` orphan found in passing
+(`rules/tidy-protocol.md`, from a different concurrent session's already-merged `938e24f2`,
+never indexed) — fixed with Royce's explicit go-ahead rather than assumed in scope.
+
+All work done from isolated worktrees off fresh `origin/main` — the shared primary checkout
+was dirty with concurrent work the entire session and was never touched, matching the
+F9-avoidance pattern several other sessions today independently used.
+
+- [ ] **Durability backup gap** — the two new trigger files aren't yet mirrored into
+  `eq-context/tools/commands/` the way `/brief`/`/gap`/`/decide` etc. are (their own
+  frontmatter calls that copy a durability backup, source of truth staying
+  `~/.claude/commands/`). Deliberately skipped as optional this session; low cost whenever
+  someone picks it up. _(added 2026-09-07)_
+
+Note, not a new item: `sessions/2026-09-07.md` currently has 3 broken internal links (to
+`rules/non-negotiables.md`, `rules/deployment.md`, `eq/pending/eq-shell.md`) from a different
+concurrent session's entries — targets all confirmed to exist, so this reads as a path-resolution
+mismatch (a bare repo-root-style href from inside `sessions/` needs a `../` prefix to actually
+resolve — see this file's own working example a few hundred lines down), not a missing file.
+Left alone rather than guess-edited into someone else's live same-day log; already visible via
+the `health` CI check.
+
+---
+
 ## F10 mechanism 4 closed — core.hooksPath now self-heals on a fresh clone (2026-09-06)
 
 A brand-new Windows PC's first eq-context session found `core.hooksPath` completely unset (git clone can't populate local config for itself — a structurally different shape from F10's 3 earlier "wrong value" mechanisms, already guarded at rung 4). `hooks/session_start.py`'s HOOKS check now runs the fix itself and re-verifies instead of only printing when it finds every scope unset; a wrong-but-set value (mechanisms 1-3) still only warns, unchanged. Added a "First-time setup" step to `system/onboarding.md` + `README.md` for the human/non-Claude-Code path, labeled the never-adopted `.pre-commit-config.yaml` rather than deleting it (Royce's call), and fixed `scripts/pre-commit-secrets.sh`'s own stale install instructions, which pointed straight at the `.git/hooks` shadow-copy shape that caused the 2026-08-04 incident. 4 new adversarial cases, full suite 150/150. Full detail: `system/failures.md` F10. eq-context commit `bcfbcbcb`.
