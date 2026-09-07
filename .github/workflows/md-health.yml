@@ -40,6 +40,19 @@ jobs:
       - name: Prune ratchet — self-test
         run: python scripts/test_prune_ratchet.py
 
+      # The three **Budget:** notes written into worktree-registry.md/lessons.md/
+      # failures.md (2026-09-07) were prose, not enforcement -- exactly what
+      # rules/agentic-coding.md §3 warns against ("prefer a structural guard
+      # over a documented rule"). This is the enforcement: reads each file's own
+      # Budget: line and fails when its current size is over. Discovers budgeted
+      # files automatically (scans for the marker), so a future /tidy pass that
+      # budgets a new file needs nothing added here.
+      - name: File-size budgets
+        run: python scripts/check_budgets.py
+
+      - name: File-size budgets — self-test
+        run: python scripts/test_check_budgets.py
+
       # The other half of pruning. prune_ratchet stops the substrate GROWING;
       # this stops it quietly going WRONG. Only 'state' files are clocked —
       # records and generated files are classified out, which is what keeps the
