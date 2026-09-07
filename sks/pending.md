@@ -1,13 +1,25 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## sks-nsw-labour: retirement decided — spun off as its own task, not yet executed (2026-09-07)
+*EQ Field's SKS timesheets went live for real on 2026-09-07 (first Monday). Royce checked observability first (Sentry clean, PostHog showing normal `timesheet_saved` activity) and pulled a live outstanding-today snapshot straight from `ehow` — then decided to retire the standalone `sks-nsw-labour` app. Asked once whether to gather usage evidence first; Royce declined: "they all know not to use it - that's enough."*
+
+- [~] **Retirement work spun off as background task `task_1b21e268`, Royce started it in a separate session — running independently, not yet reported back as of this session's close.** Scoped to: check current usage, back up `nspbmirochztcjijmcrx` before anything destructive, propose (not auto-deploy) a redirect to field.eq.solutions, propose repo/DB disposition (archive/pause, never delete without separate explicit permission). _(added 2026-09-07)_
+- [ ] **Cross-reference: the 2026-07-20 "real security hole" entry below is still open** — sks-nsw-labour's public web address reportedly allows reading/wiping roster/schedule/timesheet data with no login, and the drafted fix stages were never run ("not risking any changes" on a live app). Worth the retirement task treating this as a reason to prioritise taking it offline/redirecting rather than leaving it dormant-but-still-reachable. _(added 2026-09-07)_
+- [ ] **Cross-reference: "Track 2 RLS STEP 2" further down this file was explicitly DEFERRED "until standalone retired"** — now potentially unblocked; worth revisiting once (or as) the retirement actually lands. _(added 2026-09-07)_
+
+**Notes:**
+- Full detail on the observability check and the outstanding-today pull that prompted this decision: `sessions/2026-09-07.md`.
+
+---
 
 ## Edit Person "Birthday" (day+month) was silently unsaveable for 45 of 81 active SKS staff — root-caused + fixed live (2026-08-24)
 
