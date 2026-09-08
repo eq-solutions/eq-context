@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -46,10 +46,6 @@ naming conventions, two holding real unpushed commits.*
 - [ ] **Two orphaned worktrees still carry real unpushed commits** — an eq-shell Documents-feature
   close writeup, and a 2026-09-08 session-close commit. Spawned as background review tasks
   (content needs a look before landing, not a mechanical push). _(added 2026-09-08)_
-- [ ] **`guard.js`'s `stale-main-gate` worktree regex misses the `-wt-` infix pattern** — only
-  recognizes the suffix form and nested `.claude/worktrees/`. A different rule in the same file
-  already handles the broader shape correctly. Spawned as a background task (guard.js is Royce's
-  own user-level tool, not part of this repo). _(added 2026-09-08)_
 - [ ] **`close.md` Step 0's fallback for "already isolated in a different repo's worktree, now
   also closing out eq-context" is unverified** — the harness independently blocks a plain `git -C
   <other-repo>` redirect from inside an isolated worktree session, confirmed live twice this
