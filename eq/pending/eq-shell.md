@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,18 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,394 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-shell: Sentry sweep — EQ-SHELL-22/1P (stale-chunk crash tied to the 09-08 merge train), EQ-SHELL-1R (Field handoff timeout points at eq-field, handoff prompt written), EQ-SHELL-T/V cross-checked (2026-09-09)
+*Royce asked for a Sentry sweep of eq-shell's unresolved issues (org `eq-solutions`). 5 unresolved, all culprit `/sks/field`; two pairs turned out to be the same underlying event reported twice. Cross-checked against this file's own EQ-SHELL-T/V entry above (written earlier the same day, different session) rather than re-investigating it — still consistent, nothing new to add there.*
+
+- **EQ-SHELL-22 + EQ-SHELL-1P are one event, not two** (same trace_id, same user — may.ung@sks.com.au, Firefox iOS/iPhone — same timestamp 2026-09-08T10:38:36Z / 20:38:36+10:00): `'text/html' is not a valid JavaScript MIME type` mid-`React.lazy()` chunk load on `/sks/field`. Timing correlates almost exactly with a 9-merge run to `main` that evening (19:10-21:06+10:00, each auto-deploying in 2-4s) — the crash lands between merges `a1f4a89d8` (20:24:25) and `dfac72680` (20:39:12). Reads as the standard stale-chunk-hash pattern: her already-loaded page referenced a JS chunk a later deploy in that train invalidated before the lazy `import()` ran. One user, one occurrence, self-resolves on refresh — a structural side-effect of merge=auto-deploy during a fast merge train, not a code defect. No fix proposed; logged for visibility only.
+- **EQ-SHELL-1R ("EQ Field handoff auto-recovery (timeout)") — shell side is healthy, the stall is downstream.** Its breadcrumb trail (`mint-start` → `mint-ok`, 200, 947ms server time, `ttl_s:60` → `src-set` → 30s `watchdog` fires waiting for the iframe to report loaded → `recover`, reason `timeout`) shows the shell-side token mint completing in under a second every time. The stall is eq-field's own load/handshake not finishing inside the 30s window. Last occurrence 2026-09-07T22:28+10:00 — *after* all three of that day's auth-stall fixes (`a68bca41d`, `6ee65e2b8`, `953de61a0` — the same ones that closed out EQ-SHELL-T/V above), so it's a distinct problem, not a recurrence of what those fixed. 3 occurrences since 2026-08-18, 2 users, substatus regressed.
+- **EQ-SHELL-T/V** — re-pulled via this sweep, last-seen dates (2026-09-06 20:41) match the entry above exactly, no new occurrences. Nothing to add; that entry's own two follow-ups (watch trend to ~09-14, watch the replay for the 5-clean-401s-then-hang anomaly) still stand.
+
+- [ ] **EQ-SHELL-1R needs an eq-field-rooted session — handoff prompt given to Royce this session (2026-09-09), not yet run.** No eq-field source access from an eq-shell-rooted session to go further than the breadcrumb read above. _(added 2026-09-09)_
+- [ ] **EQ-SHELL-22/1P — single occurrence, watch only.** If frequency climbs on future merge trains, the standard fix is a version-mismatch reload prompt (detect a stale asset-manifest/chunk 404 and prompt a hard refresh), not anything route-specific. Not worth building at n=1. _(added 2026-09-09)_
 
 ---
 
