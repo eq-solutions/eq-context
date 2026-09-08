@@ -71,9 +71,9 @@ see `tools/commands/close.md` Step 5 and `system/failures.md` -> F16.
 Found live 2026-09-08, before this convention existed — three orphans, three
 different naming schemes, illustrating exactly the problem F16 fixes:
 
-`C:\Projects\eq-context\.claude\worktrees\land-documents-feature-20260908 (eq-context)` | `chore/land-documents-feature-20260908` | 1 unpushed commit: "docs: land eq-shell Documents-feature close (PR #1801/#1811/#1813) — was staged in root, never pushed" | found 2026-09-08 | **NOT TOUCHED** — real, valuable work; needs review + push, not deletion.
-
 `C:\Projects\eq-context-close-2026-09-08-wt (eq-context)` | `claude/close-2026-09-08` | 1 unpushed commit: "chore: session close 2026-09-08 [skip ci]" | found 2026-09-08 | **NOT TOUCHED** — real unpushed close commit; needs review + push.
+
+(`land-documents-feature-20260908`, the third orphan, reviewed and resolved 2026-09-08 — its content was already independently landed on `origin/main`, so it was not pushed. Worktree and branch removed. Full detail: `system/worktree-registry-archive.md`.)
 
 ---
 

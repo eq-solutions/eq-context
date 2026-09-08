@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry -- Pruning Archive
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: Full history of pruned/removed git worktrees and deleted branches, moved out of system/worktree-registry.md 2026-09-07 -- that file had grown to 647 lines / 368.5KB (single-line table entries up to 7,300 characters), past the Read tool's 256KB limit, which is what forced /brief's Step 2 to stop depending on it. Nothing here is actionable -- pure historical record. Append-only: log new prune rounds here directly (see Protocol in worktree-registry.md), not in the live file.
 read_priority: reference
 status: archived
@@ -69,6 +69,16 @@ Royce shared a screenshot of `C:\Projects` in Explorer and asked what the extra 
 **Fixed at the source, not worked around again:** Royce set `LongPathsEnabled` to `1` himself (system-settings change, out of scope for Claude Code to make even with permission) via an elevated PowerShell session, confirmed live via registry read. **Takes effect after a reboot, not yet rebooted as of this entry.** Once active, `git worktree remove` should stop failing on long paths for every future teardown, on any repo, from any session — no more recurring manual sweeps needed for this specific cause. The 22 folders found this round were the existing backlog under the OLD (broken) behavior; deleted via plain recursive delete same as every other round, confirmed clean first.
 
 If orphaned top-level `-wt` folders start reappearing in `eq-shell`/`eq-solves-service`/`eq-intake` again AFTER a reboot, this diagnosis was wrong (or incomplete) and needs revisiting — don't assume the fix worked, verify live.
+
+---
+
+## 2026-09-08 — `land-documents-feature-20260908` resolved: superseded, not landed
+
+One of the three eq-context-own orphans found earlier the same day (F16; see the "eq-context's own worktrees" section in the live registry) — `.claude/worktrees/land-documents-feature-20260908` (`chore/land-documents-feature-20260908`), holding one unpushed commit (`a9015500`, "docs: land eq-shell Documents-feature close (PR #1801/#1811/#1813) — was staged in root, never pushed"). Flagged "NOT TOUCHED — needs review + push, not deletion" when first logged; reviewed rather than mechanically pushed.
+
+Fetched `origin/main` fresh and diffed all three files the commit touched (`eq/changelog/eq-shell.md`, `eq/pending/eq-shell.md`, `sessions/2026-09-08.md`) against current tip: all three already carried an independently-reconstructed version of the same PR #1801/#1811/#1813 close write-up — down to the same SEC-1 correction paragraph appearing near-verbatim in both the worktree's own commit and `origin/main`'s live `sessions/2026-09-08.md`. `origin/main`'s own session log explicitly names this exact worktree as a known, unlanded orphan ("needs review, not a mechanical push") and separately records that its own Documents-feature entries were "backfilled ... by a separate reconciliation session ... reconstructed fresh against current origin/main" — the same recovery this worktree's own commit message describes performing. Two independent recovery attempts reconstructed the same underlying session notes from the same dirty-root incident; `origin/main`'s got there first.
+
+Landing `a9015500` as-is would have re-added a second, near-duplicate changelog entry, pending entry, and session-log section for the same three PRs — exactly the kind of duplication `f4fdca74` ("reconcile sessions/2026-09-08.md — merge 4 same-day entries") had to clean up earlier the same day. Not pushed. Worktree removed (`git worktree remove`, clean tree, no `--force` needed) and the `chore/land-documents-feature-20260908` branch deleted. Row removed from the live registry's "eq-context's own worktrees" section, pointing here.
 
 ---
 
