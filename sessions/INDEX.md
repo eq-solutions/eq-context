@@ -1,8 +1,9 @@
 # Session Index
-_150 logs · reverse-chronological · auto-generated_
+_151 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-09-09 | [guard.js worktree-naming gap closed (rules 1/1b/1c/10, `-wt-` infix)](2026-09-09.md) |
 | 2026-09-08 | [Customers/Staff/Equipment gained their own URL; 3 PRs merged + live (work done 2026-09-07, closed after midnight)](2026-09-08.md) |
 | 2026-09-07 | [Labour-hire licence-photo fix re-verified live; full roster audited, no other worker exposed](2026-09-07.md) |
 | 2026-09-06 | [Resumed and shipped the `?tenant=demo` fix, caught two more bugs in the same class before merge](2026-09-06.md) |
