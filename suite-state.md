@@ -88,7 +88,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? queued |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -98,7 +98,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-08 |
+    | eq-service | ready | 2026-09-08 |
 | eq-shell | building | 2026-09-08 |
 | eq-field | ready | 2026-09-08 |
 
