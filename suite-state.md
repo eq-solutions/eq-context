@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-08)
 
 **eq-field:**
+- #943 v3.5.697 — Home: drop the "EQ Field" eyebrow label
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -99,7 +100,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | ready | 2026-09-08 |
+| eq-shell | building | 2026-09-08 |
 | eq-field | ready | 2026-09-08 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
