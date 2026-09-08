@@ -1,13 +1,19 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-08 (PR #1823 MERGED + LIVE — sidebar/nav extended to touch tablets up to 1024px wide)
+- Same cross-suite iPad audit as eq-service's #837. Shell's sidebar/hamburger-drawer (native pages) and icon-rail/MobileTabBar (embedded Field/Service/Cards iframe pages) only ever had a phone breakpoint and a desktop breakpoint — every iPad width rendered full desktop density under touch input.
+- Mirrored eq-field's own same-day fix (PR #942) exactly: extended each relevant `max-width:767px` query into `max-width: 767px, (pointer: coarse) and (hover: none) and (max-width: 1024px)`. Landscape iPad (1024px+) deliberately out of scope, matching eq-field's precedent.
+- Scope grew mid-build once `MobileTabBar` turned out to be shared across 4 pages (the iframe wrapper, TenantHome, Comms, QuotesNative), each with its own companion CSS — flagged to Royce and extended to all 4 rather than shipping a fix that would've broken 3 of them. 4 files touched (`App.css`, `MobileTabBar.css`, `index.css`, `comms.css`), pure CSS, no logic/auth changes.
+- Full merge-readiness check run first (required-checks state, staleness, conflicts, auth risk) given this repo's merge-is-the-deploy rule. Worked from a dedicated worktree, not the shared root checkout (itself mid-task on unrelated work, 9 other concurrent worktrees active at the time).
 
 ## 2026-09-08 (PR #1817 + PR #1819, MERGED + LIVE — Conversations can be backdated, Casual notes get attachments)
 - New `occurred_at date` column (migration `0306`, both tenant planes) is now the date every conversation entry displays and sorts by — `created_at` stays an untouched audit stamp. Date picker added to all three logging templates (Casual, Check-in, Development Review), capped at today. Casual notes gained the same source-document attachment UI Formal entries already had (only reachable once a note's been saved once — no `conversation_id` exists before that). Resourcing dashboard's "last chat"/overdue/sort logic (`staff-resourcing.ts`, `StaffResourcingPage.tsx`) switched from `created_at` to `occurred_at` to match, or it would've shown a stale date the moment anyone backdated an entry.

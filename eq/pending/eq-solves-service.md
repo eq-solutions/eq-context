@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-09
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,18 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-solves-service: embedded Shell nav bar was unusable on iPad — found via a cross-suite iPad audit, fixed, merged, live (2026-09-08)
+*Royce asked what options exist for using Claude/EQ via iPad, which led to checking whether the EQ apps themselves render properly on one. They don't — none of EQ Field, EQ Service, or EQ Shell had ever been designed for a width between phone and desktop. Checked all three live; EQ Field turned out to already be fixed by a parallel session. This repo's specific problem: the nav bar shown when Service is embedded in Shell (Field/Service iframe mode) had no wrap or scroll handling, so every iPad width cut off the last link(s) with no way to reach them.*
+
+- Added `overflow-x-auto` to the embedded nav bar and `shrink-0` to each link so it scrolls instead of silently clipping — the underlying `md:` breakpoint itself was deliberately left untouched, since it's the same boundary Shell's own mobile nav hands off at; moving it would have opened a real gap instead of closing one. [PR #837](https://github.com/eq-solutions/eq-service/pull/837), merged, confirmed live via exact commit-ref match on the Netlify deploy record.
+- Verified via an isolated reproduction of the actual classes at real iPad widths (768px and 1400px, before/after comparison) — not a live authenticated click-through, no Shell/demo credentials in this environment.
+
+**Deferred:**
+- [ ] **Dashboard's `grid-cols-4` tiles and the shared Table component don't reflow at any width** — a separate, real gap found during the same audit, out of scope for the nav fix. _(added 2026-09-08)_
+- [ ] **Not click-tested live by a person** — no Shell/demo credentials in this environment. Worth a real pass at iPad width once convenient. _(added 2026-09-08)_
 
 ---
 

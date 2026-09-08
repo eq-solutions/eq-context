@@ -1,13 +1,18 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-09
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-09-08 (PR #837 MERGED + LIVE — embedded Shell nav bar now scrolls on tablet widths)
+- The nav bar shown when Service is embedded in Shell (Field/Service iframe mode) had no wrap/scroll/shrink handling — every iPad width (768-1194px) rendered it cut off, with the last link(s) completely unreachable. Added `overflow-x-auto` to the nav and `shrink-0` to each link; the `md:` breakpoint itself untouched, since it's the same boundary Shell's own MobileTabBar hands off at.
+- Found via a cross-suite iPad audit — eq-field and eq-shell had the same underlying gap, fixed separately the same day (see eq-field's and eq-shell's own changelogs).
+- Verified via an isolated reproduction of the exact classes at 768px and 1400px (before/after), not a live authenticated session — no Shell/demo credentials in this environment.
 
 ## 2026-09-07 (PRs #811/#813/#812/#814/#810 MERGED + LIVE — dependency backlog cleared; #830 MERGED + LIVE — audit fix; #791 MERGED + LIVE — report reissue reason now askable from the UI)
 - Cleared 5 aging Dependabot PRs: vitest, @types/leaflet, posthog-node, resend (straightforward version bumps), and the `@eq-solutions/roles`+`@eq-solutions/ui` group (#810), which needed a real fix first — v2.7.0 introduced 4 permission keys (`admin.assign_role`, `admin.delete_user`, `reports.manage`, `service.do_work`) with no call site in this repo, tripping the permission-enforcement drift guard. Verified live against eq-shell before whitelisting in `tests/lib/utils/permission-enforcement-baseline.json`: 3 belong to eq-shell's own user-admin/GM-report surface, `service.do_work` is dead suite-wide (already in eq-shell's own baseline too).

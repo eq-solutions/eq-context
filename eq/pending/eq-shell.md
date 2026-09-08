@@ -15,6 +15,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: sidebar/nav had no tablet tier — the same cross-suite iPad audit that fixed eq-service's embedded nav, extended to all 4 MobileTabBar consumers, merged, live (2026-09-08)
+*Continuation of the same iPad audit (see eq-solves-service.md and eq-field's own already-shipped fix, PR #942). This repo's shell chrome — the sidebar/hamburger-drawer on native pages and the icon-rail/MobileTabBar swap on embedded iframe pages — had exactly the same gap: only a phone breakpoint and a desktop breakpoint, nothing between. Scoped to 2 mechanisms at brief time; discovered mid-build that MobileTabBar is actually shared across 4 pages (the Field/Service/Cards iframe wrapper, TenantHome, Comms, QuotesNative), each with its own companion CSS — flagged the expanded scope to Royce before proceeding rather than either quietly growing the diff or shipping a fix that would've broken 3 of those 4 pages.*
+
+- Mirrored eq-field's just-shipped technique exactly: extended every relevant `max-width:767px` media query into `max-width: 767px, (pointer: coarse) and (hover: none) and (max-width: 1024px)` (comma = OR, same rule body) so touch tablets up to 1024px wide get the existing mobile treatment instead of full desktop density. Landscape iPad (1024px+) deliberately out of scope, matching eq-field's own precedent. One new block added (not an extension) to hide the icon-rail specifically under the same touch+width condition, since its selector is more specific than the bare hide-rule and would otherwise win.
+- Touched `src/App.css`, `src/components/MobileTabBar.css`, `src/index.css` (QuotesNative), `src/modules/comms/comms.css` — 4 files, pure CSS, no logic/auth/routing changed. [PR #1823](https://github.com/eq-solutions/eq-shell/pull/1823), squash-merged, confirmed live via exact commit-ref match on the Netlify deploy record (~6min build, the heaviest of the three apps).
+- Ran a full merge-readiness check first given this repo's merge-is-the-deploy rule: all 5 required checks green, no drift despite today's high PR volume, no auth-adjacent risk, no deploy race in flight.
+- Worked from a dedicated worktree (`eq-shell-wt-tablet-breakpoint`, removed after merge) rather than the shared root checkout, which was itself mid-task on unrelated work (`feat/bulk-multi-document-push`) — 9 other concurrent worktrees were active on this repo at the time.
+
+**Deferred:**
+- [ ] **Not click-tested live by a person** — verified via a clean `pnpm exec tsc -b` plus an isolated before/after reproduction of the actual CSS cascade at 768px and 1400px, not a real authenticated session on a physical iPad. No Shell/demo credentials in this environment. _(added 2026-09-08)_
+- [ ] **The 900px sidebar-narrow tweak and `records-redesign.css`'s 1080px CRM-pane collapse** — separate, pre-existing breakpoints found during the same investigation, not part of this gap, not touched. _(added 2026-09-08)_
+
+---
+
 ## eq-shell: Sentry sweep — EQ-SHELL-22/1P (stale-chunk crash tied to the 09-08 merge train), EQ-SHELL-1R (Field handoff timeout points at eq-field, handoff prompt written), EQ-SHELL-T/V investigation continued — new repro context found, still unresolved (2026-09-09)
 *Royce asked for a Sentry sweep of eq-shell's unresolved issues (org `eq-solutions`), then asked for a portable session-brief for EQ-SHELL-T/V, then to run it. Re-added below after this whole section was silently overwritten between its first write and now — a concurrent session's own `safe_commit.py` push was built from a copy of this file predating that first write; the script replaces named-file bytes wholesale, it does not content-merge (its own docstring says as much). Flagged as a task, not fixed inline: `safe_commit.py` has no same-file concurrent-edit detection.*
 
