@@ -15,6 +15,30 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: iPad renders full desktop density under touch — phone breakpoint extended to touch tablets, FIXED, merged, live (PR #942, v3.5.696, 2026-09-08)
+*Royce shared an iPad screenshot: the nav was a mix of the phone top-strip and the full desktop sidebar at once, and asked to debug the iPad mobile view. Traced the nav-mix to a stale service-worker cache on his device (not a code bug — `/styles/` is served cache-first, a plain reload doesn't refetch it); current `mobile.css`/`base.css` on `origin/main` were already internally consistent. Separately, a PostHog device-mix check (SKS project, 90 days) showed iPad-pattern traffic real but small (~6-53 of 969 unique visitors) — informed the decision to extend the existing phone components rather than build a bespoke tablet design.*
+
+- [x] **Root cause of the original nav-mix bug: stale service-worker cache, not a live bug** — `sw.js`'s `CACHE_FIRST_PATHS` serves `/styles/` straight from Cache Storage; a reload re-asks the same stale-controlling worker rather than fetching fresh CSS. iOS Safari is known to lag on swapping in a new service worker in the background. No code fix — told Royce to clear site data (Settings → Safari → Advanced → Website Data) to force it.
+- [x] **[PR #942](https://github.com/eq-solutions/eq-field/pull/942), v3.5.696, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): touch devices up to 1024px wide now get the same mobile treatment as phone — `.eqf-mcard` dashboard/job-numbers/leave cards, Timesheets card-stack, roster person-strips, sidebar/nav swap. Reuses the existing ≤768px components verbatim — **explicitly not a new tablet tier**, per Royce's own correction mid-session ("I don't want a third view").
+- [x] **Gated on `(pointer:coarse) and (hover:none)`, not a plain width bump** — a narrow mouse-driven desktop window stays on the desktop layout; only touch devices in the 769–1024px range are affected. Verified on the deploy preview via direct `matchMedia` check at 820px (no touch): new rule correctly evaluates `false`. Same distinguishing pattern the shell-mode nav restore already used (v3.5.457).
+- [x] **Deliberately not touched:** the two Leaflet-map desktop-only hides (`mobile.css` ~L1098/L1119) — iPad has room for a 280px map; hiding it there would be a regression, not "give iPad the mobile view."
+- [ ] **The actual touch+1024px case (real iPad) is unverified** — this environment's Browser pane only emulates touch below 768px width, confirmed empirically (not just assumed) by checking `matchMedia('(pointer:coarse)')` at 820px, which reports `false` here regardless of viewport shape. Needs Royce's own iPad, post cache-clear, to confirm. _(added 2026-09-08)_
+- [ ] **Landscape iPad (1024–1366px) intentionally out of scope** — narrower ask this pass; widen later if actually wanted. _(added 2026-09-08)_
+
+**Notes:**
+- Full technical trace (the CSS cascade dead-end that led to the service-worker diagnosis, the PostHog device-mix query and its exact numbers): `sessions/2026-09-08.md`.
+- A separate, unrelated request surfaced at the very end of the session — see the "comment field for each photo" entry directly below.
+
+---
+
+## eq-field: "comment field for each photo" request — scope unclear, paused before building (2026-09-08)
+*Royce: "I want a comment field for each photo." Investigated first rather than guessing: Prestart/Toolbox/Diary/Incidents already have a per-photo "Caption" field (shared `createPhotoController` in `site-reports-shared.js`); Site Audits (`audits.js`) has zero photo support at all. Asked which he meant — he clarified he meant something else: commenting on this session's own iPad-verification screenshots, not an in-app feature.*
+
+- [ ] **Not built — paused on Royce's explicit instruction** ("dismissed — do not proceed, wait for next instruction") before the image-sourcing follow-up was answered. Real constraint surfaced: this environment has no tool to save a Browser-pane screenshot to a local file, so a published review page can't embed the exact images already shown in chat — would need either fresh screenshots retaken live, or Royce uploading the specific images he means. _(added 2026-09-08)_
+- [ ] **Site Audits has no photo support at all** (not even without captions) — a separate, genuinely open gap if that turns out to be what's actually wanted. _(added 2026-09-08)_
+
+---
+
 ## eq-field: Copy-to-clipboard for staff contact info — shipped, then corrected same-day per live feedback (PRs #938/#939, v3.5.692→v3.5.693, 2026-09-08)
 *Royce: routinely copying staff phone numbers/emails out of both Contacts and Weekly Roster, one field at a time. First pass built a bulk "copy everyone visible" action on both screens; Royce's live correction right after it shipped ("i meant click and copy individual phone numbers / emails not the whole list") led to a same-day rework.*
 
