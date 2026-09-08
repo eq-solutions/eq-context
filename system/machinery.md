@@ -130,6 +130,17 @@ exist as separate workflows rather than as steps.
 | `backup-eq-canonical.yml` · `verify-backup-eq-canonical.yml` · `restore-drill-eq-canonical.yml` | `eq-canonical` — browser control plane |
 | `backup-eq-canonical-internal.yml` · `verify-backup-eq-canonical-internal.yml` · `restore-drill-eq-canonical-internal.yml` | `eq-canonical-internal` — server-only tenant data plane |
 
+**Code backup** — `backup-code.yml` (nightly 01:00 UTC): `git bundle --all` per
+active EQ repo (eq-shell/eq-field/eq-service/eq-cards/eq-solves-intake/
+eq-context — list lives in the workflow's own `REPOS` env, not here) → same R2
+bucket, `code/` prefix. Closes the gap named in `dr-backups.md`'s own
+follow-ups (redundancy review item 4, 2026-09-08). Deliberately has no
+`verify-`/`restore-drill-` siblings yet — a git bundle's integrity is
+`git bundle verify`-checkable and its restore is a plain `git clone`, a much
+smaller failure surface than a Postgres dump restore, so the DB jobs' 3-stage
+rigor wasn't judged proportionate to build here yet. **Not yet armed** —
+needs `CODE_BACKUP_PAT` added (see the workflow's own header for exact scope).
+
 ---
 
 ## Adding a machine

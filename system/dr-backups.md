@@ -1,7 +1,7 @@
 ---
 title: Disaster Recovery — platform backups
 owner: Royce Milmlow
-last_updated: 2026-08-11
+last_updated: 2026-09-08
 scope: Platform-level DR — offsite backups + restore verification for the shared EQ Supabase DBs
 read_priority: high
 status: live
@@ -256,7 +256,12 @@ moved to `--use-copy`.
   and `restore-drill-eq-canonical-internal.yml` now exist, parameterising the proven ehow pattern
   per project, and both have a green first proving run (see "Proving restorability" above and the
   Status line, top of this doc). All three platform planes are now restore-proven, not just ehow.
-- **Code repos have no backup coverage** (found 2026-08-11) — this doc, and every job it describes,
-  covers Supabase DBs and storage only. No repo is mirrored, exported, or otherwise backed up beyond
-  GitHub's own hosting durability plus whatever exists as local clones. Worth a decision on whether
-  that's an accepted risk (GitHub's durability is genuinely strong) or a real gap to close.
+- ~~**Code repos have no backup coverage**~~ **CLOSED 2026-09-08** — [`backup-code.yml`](../.github/workflows/backup-code.yml)
+  now takes a nightly `git bundle --all` of every active EQ repo (eq-shell/eq-field/eq-service/eq-cards/
+  eq-solves-intake/eq-context) to the same R2 bucket, `code/` prefix — reusing this doc's existing
+  infrastructure rather than provisioning anything new. Redundancy review item 4
+  (`system/redundancy-review-2026-09-08.md`). **Written but not yet armed** — needs `CODE_BACKUP_PAT`
+  added before it can run; every attempt fails loudly until then, same posture as this doc's own
+  jobs before their first arming pass. No verify-/restore-drill sibling built yet, deliberately — see
+  `system/machinery.md`'s entry for why a bundle's smaller failure surface didn't seem to justify the
+  DB jobs' full 3-stage rigor on this first pass.

@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live
@@ -29,6 +29,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 - [system/incident-claims.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/incident-claims.md) — same-day claim lock so 2-3 concurrent sessions don't independently chase the same flagged finding; checked automatically by `hooks/session_start.py` against digest.md's "Needs you" list
 - [system/dr-backups.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/dr-backups.md) — offsite backup coverage across projects
 - [system/infra-redundancy-scoping-2026-08-11.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/infra-redundancy-scoping-2026-08-11.md) — suite-wide single points of failure outside the DB-backup picture (Netlify account, Supabase org, DNS, auth hub, crons) — scoping only, no fixes built
+- [system/redundancy-review-2026-09-08.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/redundancy-review-2026-09-08.md) — cross-cutting score across all four redundancy layers (data DR, infra SPOFs, bus-factor, substrate) — synthesis + net-new live findings, points at the others rather than restating them
 - [system/substrate-facts.yml](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-facts.yml) — CI-checked live/deleted status manifest, drives digest.md's drift check
 - [system/task-brief-template.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/task-brief-template.md) — Rule 0.6 session-gate brief template
 - [system/tenant-routing-master-key-rotation.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/tenant-routing-master-key-rotation.md) — tenant_routing key rotation runbook
@@ -57,6 +58,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 | `incident-claims.md` | Same-day claim lock so concurrent sessions don't duplicate investigation of the same flagged finding |
 | `dr-backups.md` | Offsite backup coverage |
 | `infra-redundancy-scoping-2026-08-11.md` | Suite-wide single points of failure outside DB backups (Netlify/Supabase/DNS/auth-hub/crons) |
+| `redundancy-review-2026-09-08.md` | Cross-cutting score across all four redundancy layers — data DR, infra SPOFs, bus-factor, substrate |
 | `substrate-facts.yml` | CI-checked live/deleted status manifest |
 | `task-brief-template.md` | Rule 0.6 session-gate brief template |
 | `tenant-routing-master-key-rotation.md` | tenant_routing key rotation runbook |
