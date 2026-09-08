@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 10:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 10:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-08 10:40 UTC → 2026-09-08 10:41 UTC)
+## Since last refresh (2026-09-08 10:41 UTC → 2026-09-08 10:54 UTC)
 
-- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
-- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
-- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
-- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
-- Merged: eq-shell [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the S
-- Merged: eq-shell [#1800](https://github.com/eq-solutions/eq-shell/pull/1800) fix(security): bump fast-uri past 4 newer SSRF/host-confusio
-- Merged: eq-shell [#1798](https://github.com/eq-solutions/eq-shell/pull/1798) feat(staff): reframe Resourcing around conversations happeni
-- Merged: eq-shell [#1797](https://github.com/eq-solutions/eq-shell/pull/1797) feat(intake): add eq_tidy_read_entity_columns for column-pro
+- Merged: eq-shell [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view
+- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
+- Merged: eq-shell [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL
+- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
+- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
+- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
+- Merged: eq-shell [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd4
+- Merged: eq-shell [#1802](https://github.com/eq-solutions/eq-shell/pull/1802) fix(auth): don't clear a cached session on a pure verify-she
 
 ## ⚠ Needs you (8)
 
@@ -32,10 +32,11 @@ _2026-09-08 10:41 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 7d** — eq-shell [#1695](https://github.com/eq-solutions/eq-shell/pull/1695) "chore(deps): bump papaparse and @types/papaparse"
 - 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
-## 🙋 Waiting on you (278)
+## 🙋 Waiting on you (279)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **No signal anywhere that an entry was backdated** — once `occurred_at` differs from `created_at`, the UI shows the chosen date as if it were contemporaneous, with nothing like "logged 4d later." Named during the critique as a real product gap, not fixed — Royce's call whether it's worth a small label. _(added 2026-09-08)_
 - **eq-shell** · **Not click-tested live by a person** — no Shell credentials in this environment (confirmed again at close: hit the real login wall navigating to `/sks/admin/documents/mine` directly). Worth a real pass, in order of importance: (1) as a Viewer-tier account, confirm `my-signoffs`' Network response never contains another person's name or email — the one check that actually matters; (2) as Assigner, the person/site matrix renders real data and bulk push/remind actually create/notify; (3) as Manager (`documents.manage` without `documents.assign` — not a stock role, needs a custom Access Control group grant to even test), confirm `admin/documents` redirects to the library instead of a dead end, and the Upload tab's "pushing needs assign permission" copy shows instead of a silently missing step.
 - **eq-shell** · **`PdfBackfillButton` relocated, not re-verified live** — moved from the Reference-library tab (where it landed by accident, per that component's own dated comment) onto the new `admin/documents` List page, matching Royce's original 2026-09-02 placement call. Not click-tested.
 - **eq-shell** · **Not click-tested live** — same auth-wall limitation as most of this file's open items: `/sks/ops` is behind `RequireSession`, no way to sign in from this environment. Worth a real pass: confirm the board shows only the 5 pipeline-stage columns, confirm lost/cancelled/expired/superseded quotes are still reachable via Table + the status_stage filter. _(added 2026-09-08)_
@@ -47,8 +48,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **#711/SEC-71 — mandatory TOTP enforcement is genuinely client-side only**, reconfirmed live (`shell-login.ts:476-495` issues a full session regardless of the flag). The issue itself says it needs Royce's call on intended grace-period semantics before anyone implements a fix — not built.
 - **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
 - **eq-shell** · **PR #1774's own write path not click-tested** — checked the Worker Invites hub (`/sks/admin/workers`) for a real Cards application/invite to approve against: none pending (28 already Claimed/processed, 1 unclaimed Pending, 1 pre-existing worker mid-Cards-flow). Waiting on Royce to flag one when it arrives, or ask for a periodic check instead. _(added 2026-09-05)_
-- **eq-shell** · **Quotes-search fix ([PR #1754](https://github.com/eq-solutions/eq-shell/pull/1754)) — list/table view not click-tested**, only board view. Confirmed live: with the "Open" tab active, searching `SKS-17512` (Invoiced-stage only) still surfaced it under Invoiced, with the "search covers every stage, not just the tab selected" notice showing correctly. _(added 2026-09-05)_
-_…and 266 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 267 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -83,6 +83,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-08 | eq-shell | [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view |
 | 2026-09-08 | eq-shell | [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAudience |
 | 2026-09-08 | eq-shell | [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabilize oc |
 | 2026-09-08 | eq-shell | [#1818](https://github.com/eq-solutions/eq-shell/pull/1818) fix(documents): scope site/customer tags to Person, make Role mul |
@@ -97,12 +98,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-08 | eq-field | [#939](https://github.com/eq-solutions/eq-field/pull/939) v3.5.693 — Contacts: click-to-copy is now per-field, not a bulk b |
 | 2026-09-08 | eq-field | [#938](https://github.com/eq-solutions/eq-field/pull/938) v3.5.691 — Contacts + Roster: copy phone/email straight to the cl |
 | 2026-09-08 | eq-field | [#937](https://github.com/eq-solutions/eq-field/pull/937) v3.5.691 — Preferred Name placeholder simplified |
-| 2026-09-08 | eq-cards | [#345](https://github.com/eq-solutions/eq-cards/pull/345) fix(security): close 4 findings from an adversarial security pass |
 _Showing 15 of 82 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (286 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (291 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (238 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (66 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -134,7 +134,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1471 | 201 / 90 | 5 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1488 | 205 / 91 | 5 | 78 |
 | [eq-cards](eq/pending/eq-cards.md) | 355 | 48 / 17 | 0 | 9 |
 | [eq-field](eq/pending/eq-field.md) | 1216 | 175 / 68 | 28 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 378 | 49 / 18 | 0 | 20 |
@@ -186,4 +186,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 10:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 10:54 UTC._
