@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -551,5 +551,12 @@ resolve — see the working example above, `[...](../rules/...)`), not a missing
 rather than guess-edited into someone else's live same-day log.
 
 No open items.
+
+---
+
+## EQ_CONTEXT_PAT (GitHub Actions secret) expired — ROTATED & CONFIRMED LIVE 2026-09-05. Workstation-PAT compromise (separate, older) still open (2026-09-03) (rotated 2026-09-08 — open items remain in pending.md)
+
+- [x] **Rotate/reissue the PAT and update the `EQ_CONTEXT_PAT` GitHub Actions secret** on `eq-solutions/eq-context`. _(added 2026-09-03)_ **DONE 2026-09-05** — Royce rotated it (secret timestamp 01:57 UTC); confirmed live, not just by timestamp: `jwt-contract-drift.yml` (zero-fallback, the cleanest test) succeeded at 02:10 UTC, first success since 2026-09-02, and the next `digest.md` regen (02:14 UTC) shows real Pulse data again across all 5 repos (eq-shell ✓/7 PRs, eq-service ✓/6, eq-field ✓/3, eq-cards ✓/0, eq-solves-intake ✓/0) — no more "? unknown"/"0".
+- [x] **Harden `refresh_digest.py`/the suite-state generator to fail loudly instead of silently zeroing cross-repo data** when `GH_TOKEN` is rejected. _(added 2026-09-03)_ **Already shipped independently** — a concurrent/later session built this exact fix before I circled back: eq-context [PR #202](https://github.com/eq-solutions/eq-context/pull/202) (`12a530f`), merged 2026-09-05. `refresh_digest.py` now records every 401/403, retries once with the runner's own `GITHUB_TOKEN`, and surfaces a 🔴 "GitHub token rejected" Needs-you item instead of silently reporting "unknown"/"0 open PRs". Confirmed live in the digest content itself.
 
 ---

@@ -162,16 +162,6 @@ _(added 2026-09-05)_
 
 ---
 
-## eq-shell: Collin Toohey's duplicate identity fully deleted, closing a live symptom the 2026-08-02 fix didn't catch (2026-09-05)
-*Follow-up to `shell_control.audit_log` 4186 / `identity_collision_flags` ef5d8ae0 (Sentry EQ-SHELL-Z, 2026-08-02) — that fix deactivated stub account `38859cae` + its tenant membership but deliberately left the duplicate `public.workers` row `bf26e8c4` in place ("harmless, no staff_id link"). A review-clock pass on `eq/active.md` surfaced the dormant row again; re-checked live rather than assumed still-harmless.*
-
-- [x] **Re-swept every table with a `worker_id`/`user_id`/`cards_worker_id`/`new_user_id` column across jvkn/ehow/zaap (~30 tables)** — confirmed zero references to `bf26e8c4` or `38859cae` anywhere (credentials, invites, licences, assignments, inductions, `app_data.staff.cards_worker_id` on both ehow and zaap all clean). The 2026-08-02 "harmless" call was still correct on the data side.
-- [x] **Found what that fix couldn't have caught: the stub account was still authenticating.** `auth.sessions` showed a new session minted on `38859cae` 2026-09-04T02:18:07 — 20s after a normal session on Collin's real account (`1becb454`), same iPhone, same IP. The 2026-08-07 `handle_phone_dedup`/`link_pending_invites` trigger fix (PR #1270/#1272/#1273) stops a *new* duplicate row from being created on a collision; it doesn't stop an *already-existing* dormant account from still resolving in parallel with the real one. No new data resulted (workers.dup untouched, membership stayed inactive) — but Collin was intermittently still hitting a dead-end identity.
-- [x] **Royce's call (delete vs. ban vs. leave): full delete.** Deleted `auth.users` `38859cae` — `ON DELETE CASCADE` automatically removed `public.workers.bf26e8c4`, `public.profiles.38859cae`, and `identity_collision_flags.ef5d8ae0` in the same action (confirmed 0 rows remaining for all four, plus `auth.identities`/`auth.sessions`). Manually deleted the orphaned `user_tenant_memberships` row (no FK, didn't cascade). Collin's real account/worker/staff records (`1becb454` / `7514e57d` / ehow `staff_id 3c9714bd`) confirmed untouched throughout. Logged as `shell_control.audit_log` id 10300, matching the 2026-08-02 entries' convention so the cascade-deleted `identity_collision_flags` content isn't lost.
-- [x] Also corrected the stale `eq/active.md` "Collin Toohey fresh invite" Gated item — his real account has 15+ genuine sessions June→September, so that concern reads as moot.
-
----
-
 ## eq-shell: EQ Field white-pane stall — shipped, click-tested live; the follow-on fixes for both remaining gaps also shipped same day (2026-09-04/05)
 
 - [ ] **Watch EQ-SHELL-T/V in Sentry for a few more days before calling them closed.** Both PRs (#1758, #1764) that plausibly explain every occurrence so far are live as of 2026-09-04 evening; check back ~2026-09-08 for any new occurrence with a timestamp after both deploys. If clean, close both issues in Sentry and tick this row. eq-field's own side of the durable fix ([#917](https://github.com/eq-solutions/eq-field/pull/917)) and a dead-code follow-up it exposed ([#919](https://github.com/eq-solutions/eq-field/pull/919)) are both merged+live too — full detail in `eq/changelog/eq-field.md`. _(added 2026-09-05)_

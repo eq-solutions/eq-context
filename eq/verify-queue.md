@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2629,5 +2629,11 @@ a bug rather than just deleting the line.
 **From:** eq-solves-service: ACB/NSX check saves could wipe a technician's readings on a dropped connection — fixed and shipped live (2026-08-18)
 
 - [ ] **Not click-tested live by a real technician** — verified via `tsc`/`next build` and a live database check, not by an actual on-site ACB/NSX save. Draft-autosave (`lib/hooks/useDraftAutosave.ts`) has since been wired into ACB/NSX/RCD with a restore/discard banner, confirmed live 2026-09-07 — worth including in this click-test too. _(added 2026-08-18)_
+
+---
+
+**From:** eq-field: Timesheet "who approved this" was blank for every SKS approval — FIXED, merged, live (2026-09-05)
+
+- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Verified instead against real production data (the live query results above), which is a stronger check for this specific bug than a single manual click would have been. _(added 2026-09-05)_
 
 ---
