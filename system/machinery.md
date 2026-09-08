@@ -37,7 +37,7 @@ not, which is the point.
 |---|---|---|
 | `session_start.py` | The session gate: SYNC (F1), FRESHNESS (F1), NEEDS YOU, GOALS (F3), RATCHET, CLAIMS, HOOKS (F10), ISOLATE (F16 — worktree-first reminder for this shared checkout). Prints unprompted before the tier question. | SessionStart |
 | `substrate_sync.py` | Keeps the clone current and says so loudly when it is behind `origin/main`. Replaced an inline blob that swallowed its own pull failures (F1). | UserPromptSubmit |
-| `pre_tool_use.py` | Blocks writes that would reproduce a known failure — mount-corruption (F2/F6), F7, F9, F10, F12, F13, F15, and F16 (built + tested, gated off by default pending confirmation — see F16). Prevention, not documentation. | PreToolUse |
+| `pre_tool_use.py` | Blocks writes that would reproduce a known failure — mount-corruption (F2/F6), F7, F9, F10, F12, F13, F15, and F16. Prevention, not documentation. | PreToolUse |
 | `session_end.py` | Stop gate — the bookend to `session_start.py`; enforces the §10 session-end protocol (dirty/unpushed/log-gap) and flags any eq-context worktree left carrying unlanded work (F16). | Stop |
 | `auto_pr_guard.py` | Leash for an auto-PR-finding agent. Inert for normal sessions — exits before reading stdin unless `EQ_AUTO_PR_MODE=1`. | PreToolUse |
 | `ratchet_rules.py` | **Not a hook** — the single definition of "is this guard overdue for promotion", imported by both `session_start.py` and `.github/scripts/guard_ratchet.py`. Two copies had already drifted. | imported |
@@ -129,17 +129,6 @@ exist as separate workflows rather than as steps.
 | `backup-ehow.yml` · `verify-backup-ehow.yml` · `restore-drill-ehow.yml` | `ehow` — sks-canonical, the live DB for Service + Field |
 | `backup-eq-canonical.yml` · `verify-backup-eq-canonical.yml` · `restore-drill-eq-canonical.yml` | `eq-canonical` — browser control plane |
 | `backup-eq-canonical-internal.yml` · `verify-backup-eq-canonical-internal.yml` · `restore-drill-eq-canonical-internal.yml` | `eq-canonical-internal` — server-only tenant data plane |
-
-**Code backup** — `backup-code.yml` (nightly 01:00 UTC): `git bundle --all` per
-active EQ repo (eq-shell/eq-field/eq-service/eq-cards/eq-solves-intake/
-eq-context — list lives in the workflow's own `REPOS` env, not here) → same R2
-bucket, `code/` prefix. Closes the gap named in `dr-backups.md`'s own
-follow-ups (redundancy review item 4, 2026-09-08). Deliberately has no
-`verify-`/`restore-drill-` siblings yet — a git bundle's integrity is
-`git bundle verify`-checkable and its restore is a plain `git clone`, a much
-smaller failure surface than a Postgres dump restore, so the DB jobs' 3-stage
-rigor wasn't judged proportionate to build here yet. **Not yet armed** —
-needs `CODE_BACKUP_PAT` added (see the workflow's own header for exact scope).
 
 ---
 

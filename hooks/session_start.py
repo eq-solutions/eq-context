@@ -26,7 +26,7 @@ costs no ceremony. Prints, unprompted, at every session start:
                    edit/commit against THIS shared checkout, and to land substrate
                    changes via scripts/safe_commit.py rather than a raw commit/push.
                    The informational half of failure F16; pre_tool_use.py carries
-                   the (currently proposed, not yet active) enforcement half.
+                   the enforcement half (active, blocks Edit/Write in the bare root).
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
 Fails open but loud: a silent guard is the bug we are fixing.
@@ -429,12 +429,13 @@ else:
 # eq-context), and every one of those sessions still writes to eq-context's
 # bare root at close (CLAUDE.md Section 10) regardless of what it worked on.
 # Every sibling repo with this kind of multi-session traffic (eq-field,
-# eq-shell, eq-cards) already enforces isolate-first; this repo never has,
-# and system/failures.md -> F16 has the live evidence (a 100+-commit-behind
-# root, three abandoned worktrees in three different naming conventions,
-# found 2026-09-08). Purely informational — unlike pre_tool_use.py's F16
-# check (proposed, gated off by default), this never gates anything; it is
-# the "loud but not blocking" half of the same fix.
+# eq-shell, eq-cards) already enforces isolate-first; this repo didn't until
+# 2026-09-08 (system/failures.md -> F16 has the live evidence: a
+# 100+-commit-behind root, three abandoned worktrees in three different
+# naming conventions). Purely informational — pre_tool_use.py's F16 check
+# is the enforcement half; this is the "loud, every session, unprompted"
+# half, same relationship FRESHNESS/HOOKS above already have with their own
+# enforcement mechanisms.
 out.append(
     f"ISOLATE    before any edit or commit in THIS shared checkout ({ROOT}):\n"
     "           EnterWorktree                              (one call, no setup)\n"

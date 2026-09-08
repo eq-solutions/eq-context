@@ -58,31 +58,30 @@ Blocks the failures prose could not stop:
       Scope boundary, stated plainly: git verbs (commit landing on the wrong
       branch) are a known, smaller, real risk left OPEN by this pass — see
       system/failures.md -> F15.
-  F16 PROPOSED, NOT YET ACTIVE. The SHARED eq-context checkout itself — the
-      repo this very file lives in — never got F15's treatment, despite being
-      the single most concurrently-written repo in the suite (every EQ/SKS
-      session writes here at close, CLAUDE.md Section 10). Live evidence
-      found 2026-09-08: the bare root 100+ commits behind origin/main
-      carrying a ~33-file uncommitted pile with no single owner; three
-      separate orphaned worktrees in three different, ad-hoc naming
-      conventions (nested .claude/worktrees/, <repo>-<topic>-wt,
-      <repo>-wt-<topic>), two of them holding real never-pushed commits; and
-      close.md's own documented Step 5 (`git commit -m "..."` with no `--`
-      pathspec) directly contradicts F9(a)'s existing bare-commit guard
-      above, meaning every session following that doc verbatim would already
-      be blocked and forced to improvise on the spot. Same mechanism as F15
-      (eq_context_bare_root_path() mirrors eq_cards_bare_root_path() exactly)
-      but deliberately NOT wired active by default: unlike eq-cards, this
-      repo's documented close protocol (now fixed alongside this guard, see
-      tools/commands/close.md) still has sessions on other machines/clones
-      editing the bare root directly until they pull that fix, and — unlike
-      every prior F-numbered guard in this file — this one was built without
-      Royce having asked for it turned on for this specific repo yet (F15 was
-      built FROM his own in-session instruction; this is a proposal ahead of
-      one). Gated on EQ_CONTEXT_ROOT_GUARD=1 (opt-IN, inverted from
-      EQ_CARDS_ROOT_OK's opt-OUT shape — flagged there and here so the two
-      don't get mentally swapped) so the code is real and adversarially
-      tested today, but inert until confirmed. See system/failures.md -> F16.
+  F16 The SHARED eq-context checkout itself — the repo this very file lives
+      in — never got F15's treatment, despite being the single most
+      concurrently-written repo in the suite (every EQ/SKS session writes
+      here at close, CLAUDE.md Section 10). Live evidence found 2026-09-08:
+      the bare root 100+ commits behind origin/main carrying a ~33-file
+      uncommitted pile with no single owner; three separate orphaned
+      worktrees in three different, ad-hoc naming conventions (nested
+      .claude/worktrees/, <repo>-<topic>-wt, <repo>-wt-<topic>), two of them
+      holding real never-pushed commits; and close.md's own documented Step 5
+      (`git commit -m "..."` with no `--` pathspec) directly contradicted
+      F9(a)'s existing bare-commit guard above, meaning every session
+      following that doc verbatim was already being blocked and forced to
+      improvise on the spot. Same mechanism as F15
+      (eq_context_bare_root_path() mirrors eq_cards_bare_root_path()
+      exactly). Shipped in two stages same day: built adversarially tested
+      but gated inactive first (EQ_CONTEXT_ROOT_GUARD=1 opt-in), specifically
+      because close.md's own Steps 2-4 still wrote the bare root directly at
+      the time; activated unconditionally once tools/commands/close.md was
+      restructured (a new Step 0: isolate into a worktree before Steps 1-4
+      touch any file) so nothing in the documented close protocol still
+      needs bare-root Edit/Write access. Royce's explicit choice via
+      AskUserQuestion — "restructure close.md first, then activate" — over
+      shipping inactive or activating immediately and accepting the
+      close.md-Steps-2-4 breakage. See system/failures.md -> F16.
 
 Scope: F2/F6/the git-lock block are Linux sandbox (Cowork) only — on the Beelink
 (Windows) Claude Code writes and runs git natively; neither bug applies there, so
@@ -1028,37 +1027,35 @@ def main():
                 f"  system/failures.md -> F15.\n"
             )
 
-    # --- F16 (PROPOSED, NOT ACTIVE by default): eq-context's own bare-root --
+    # --- F16: eq-context's own bare-root guard -----------------------------
     # Same mechanism as F15 above, mirrored for the repo hosting this file.
-    # Deliberately gated OFF unless EQ_CONTEXT_ROOT_GUARD=1 — see this file's
-    # module docstring (F16) for why this one shipped inert rather than live:
-    # unbuilt confirmation from Royce for THIS repo specifically, and other
-    # machines/clones still running the unfixed close.md until they pull it.
-    # Real, adversarially tested code either way — flip EQ_CONTEXT_ROOT_GUARD
-    # to "1" (or change the default below once confirmed) to activate.
-    if tool in EDIT_TOOLS and os.environ.get("EQ_CONTEXT_ROOT_GUARD") == "1":
+    # Active unconditionally, same as F15 — see this file's module docstring
+    # (F16) for the two-stage shipping history (built gated-off first, since
+    # tools/commands/close.md's own Steps 2-4 still wrote the bare root
+    # directly at the time; activated once that doc was restructured to
+    # isolate first, per Royce's explicit choice).
+    if tool in EDIT_TOOLS:
         path16 = ti.get("file_path") or ti.get("notebook_path") or ""
         if eq_context_bare_root_path(path16) and os.environ.get("EQ_CONTEXT_ROOT_OK") != "1":
             block(
-                f"BLOCKED by pre_tool_use (F16, PROPOSED — active because "
-                f"EQ_CONTEXT_ROOT_GUARD=1).\n\n"
+                f"BLOCKED by pre_tool_use (F16, rung 4).\n\n"
                 f"  {tool} in the SHARED eq-context checkout ({SHARED_EQ_CONTEXT}).\n"
-                f"  Every EQ/SKS session writes here at close (CLAUDE.md Section 10),\n"
-                f"  and until now this repo had no enforced isolate-first convention —\n"
-                f"  unlike eq-field/eq-shell/eq-cards, which all block this exact\n"
-                f"  pattern already (see F15 above). A direct edit here can collide\n"
-                f"  with a concurrent session, or simply be left uncommitted/unpushed\n"
-                f"  if this session ends before the final push — the actual, evidenced\n"
-                f"  failure mode: a 100+-commit-behind root carrying a 30-file pile,\n"
-                f"  and three abandoned worktrees in three different naming\n"
-                f"  conventions, all found live on 2026-09-08.\n\n"
+                f"  Every EQ/SKS session writes here at close (CLAUDE.md Section 10);\n"
+                f"  a direct edit here can collide with a concurrent session, or\n"
+                f"  simply be left uncommitted/unpushed if this session ends before\n"
+                f"  the final push — the actual, evidenced failure mode: a\n"
+                f"  100+-commit-behind root carrying a 30-file pile, and three\n"
+                f"  abandoned worktrees in three different naming conventions, all\n"
+                f"  found live on 2026-09-08.\n\n"
                 f"  Work in your own worktree instead — one call, no clone/setup:\n"
                 f"    EnterWorktree\n\n"
-                f"  Landing a substrate change (pending.md, session log, changelog)?\n"
-                f"  Use scripts/safe_commit.py, not a raw commit/push in this root —\n"
-                f"  it fetches, branches off a fresh origin/main in a scratch worktree,\n"
-                f"  copies in exactly the files you name, commits, and pushes with\n"
-                f"  fetch+rebase retry on a race. See tools/commands/close.md Step 5.\n\n"
+                f"  Following tools/commands/close.md? Its Step 0 isolates first —\n"
+                f"  go back and run that, then Steps 1-4 land in the worktree it\n"
+                f"  creates, never here. Landing any other substrate change (a doc\n"
+                f"  fix, a one-off edit)? Use scripts/safe_commit.py, not a raw\n"
+                f"  commit/push in this root — it fetches, branches off a fresh\n"
+                f"  origin/main in a scratch worktree, copies in exactly the files\n"
+                f"  you name, commits, and pushes with fetch+rebase retry on a race.\n\n"
                 f"  Deliberately investigating or fixing the bare root itself? Read-only\n"
                 f"  commands (git status/log/diff, cat) are never blocked — set\n"
                 f"  EQ_CONTEXT_ROOT_OK=1 for the rare case that needs a direct edit.\n\n"

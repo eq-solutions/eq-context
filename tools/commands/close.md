@@ -14,6 +14,40 @@ Run every step IN ORDER. Do not skip. This is the last thing that happens in a s
 
 ---
 
+## Step 0 — Isolate first
+
+Never write directly into the shared `C:\Projects\eq-context` root — Steps 2–5 below all
+land in a dedicated worktree instead. This closes failure F16 (`system/failures.md`): before
+it, every session wrote pending.md/session-log/changelog straight into the bare root, which
+is exactly how a ~33-file uncommitted pile and three orphaned worktrees accumulated there.
+
+**Already isolated for this close** (you ran `EnterWorktree` or `git worktree add` earlier
+this session, for this repo)? Skip straight to Step 1 — don't create a second one.
+
+**Otherwise, create a scratch worktree off fresh `origin/main`:**
+```
+git -C C:/Projects/eq-context fetch origin main --quiet
+git -C C:/Projects/eq-context worktree add C:/Projects/eq-context-wt-close-<SESSION_ID> -b claude/close-<SESSION_ID> origin/main
+```
+`<SESSION_ID>` = this session's id (the GUID directory in the scratchpad path — same value
+Step 6 already uses for the brief flag) — keeps concurrent sessions' close-worktrees from
+colliding on a name. Every path in Steps 2–4 below is `<WORKTREE>\...`, where `<WORKTREE>` =
+`C:\Projects\eq-context-wt-close-<SESSION_ID>`.
+
+`EnterWorktree` (harness-native — one call, automatic cwd-switch and exit-time cleanup) works
+too and is simpler, **provided this session hasn't already isolated into a worktree for
+something else** — that's its own constraint, it refuses to create a second one.
+
+**Already mid-task in a worktree for a DIFFERENT repo's feature work, now closing out
+eq-context too?** Verified live 2026-09-08: the harness independently blocks a plain `git -C
+<other-repo>` redirect from inside an isolated worktree session ("a worktree-isolated
+session's git operations must target its own worktree") — so the manual form above may not
+be a working escape hatch either, not just `EnterWorktree`. Not fully resolved this pass —
+if you hit this, `ExitWorktree` (`action: "keep"`, preserving the other repo's in-progress
+work) back to the session's original directory first, then run Step 0 from there normally.
+
+---
+
 ## Step 1 — Inventory what happened
 
 Scan this session's conversation for:
@@ -28,14 +62,15 @@ Hold this list mentally — it drives steps 2–4.
 
 ## Step 2 — Update the active tier's pending.md
 
-Determine the active tier from the session context:
-- EQ work → `C:\Projects\eq-context\eq\pending\<repo>.md` (e.g. `eq-shell.md`, `eq-field.md`,
+Determine the active tier from the session context. All paths are inside `<WORKTREE>` from
+Step 0 — never the bare `C:\Projects\eq-context` root:
+- EQ work → `<WORKTREE>\eq\pending\<repo>.md` (e.g. `eq-shell.md`, `eq-field.md`,
   `eq-cards.md`) — **not** `eq\pending.md`. That file was split into one file per repo on
   2026-08-17 and is now just a 28-line index pointing here; at least 6 sessions on
   2026-08-25 alone hit the stale instruction, read the index, and self-corrected. If the
   repo doesn't cleanly match one of the listed files, use `eq\pending\cross-repo.md`.
-- SKS work → `C:\Projects\eq-context\sks\pending.md` (not split — still one file)
-- OPS work → `C:\Projects\eq-context\ops\pending.md` (not split — still one file)
+- SKS work → `<WORKTREE>\sks\pending.md` (not split — still one file)
+- OPS work → `<WORKTREE>\ops\pending.md` (not split — still one file)
 - If cross-tier, update both.
 
 Read the file. Then:
@@ -71,9 +106,12 @@ Write the updated file.
 
 ## Step 3 — Write the session log
 
-Write to `C:\Projects\eq-context\sessions\YYYY-MM-DD.md` where YYYY-MM-DD = today.
+Write to `<WORKTREE>\sessions\YYYY-MM-DD.md` where YYYY-MM-DD = today.
 
-If a file for today already exists, append a `---` divider and add below it.
+If a file for today already exists, append a `---` divider and add below it. Since
+`<WORKTREE>` was branched from **fresh** `origin/main` in Step 0, what you see here is
+exactly what's already landed — never a mix of landed and another session's still-uncommitted
+entries the way reading the bare root's working tree could show.
 
 Format:
 
@@ -101,7 +139,7 @@ Keep it tight. Future sessions read this to avoid re-deriving context.
 
 Only run this step if a product file changed this session (eq-shell, eq-service, eq-field, eq-cards, etc.).
 
-Update the relevant changelog at `C:\Projects\eq-context\eq\changelog\<product>.md` (create if missing):
+Update the relevant changelog at `<WORKTREE>\eq\changelog\<product>.md` (create if missing):
 
 ```markdown
 ## YYYY-MM-DD
@@ -124,10 +162,11 @@ worktrees in three different naming conventions, two of them holding real unpush
 
 `safe_commit.py` fetches fresh `origin/main`, commits your named files in a throwaway
 scratch worktree, and pushes with fetch+rebase retry on a race — the whole point of this
-step, done safely, in one call:
+step, done safely, in one call. Run it FROM `<WORKTREE>` (Step 0) so its relative file
+arguments resolve there, not against the bare root:
 
 ```
-python C:/Projects/eq-context/scripts/safe_commit.py -m "chore: session close YYYY-MM-DD [skip ci]" eq/pending.md eq/changelog/<product>.md sessions/YYYY-MM-DD.md
+cd C:/Projects/eq-context-wt-close-<SESSION_ID> && python C:/Projects/eq-context/scripts/safe_commit.py -m "chore: session close YYYY-MM-DD [skip ci]" eq/pending/<repo>.md eq/changelog/<product>.md sessions/YYYY-MM-DD.md
 ```
 (scope the session log to **today's file** — not the whole `sessions\` dir, a concurrent
 agent may have its own file there — and add `sks/pending.md` / `ops/pending.md` too ONLY if
@@ -146,14 +185,23 @@ retries) it leaves the commit safe on a local branch inside the scratch worktree
 with the exact push command to finish by hand once things settle — read its own output
 rather than improvising.
 
-**Known scope boundary, stated plainly:** Steps 2–4 above still edit this shared root's
-working tree directly before this step runs. `safe_commit.py` makes the *landing* atomic and
-race-safe regardless, but two sessions editing the exact same file in the exact same close
-window could still clobber each other's in-progress edit before either reaches this step —
-a smaller, pre-existing risk this fix does not close. Isolating Steps 1–4 into a worktree too
-(`EnterWorktree`) closes it fully and is the natural next step once this is confirmed in
-practice — not done in this pass to keep the fix minimal and testable. See `system/failures.md`
--> F16.
+**F16 closed in full by this version of the step**: Steps 2–4 now write into `<WORKTREE>`
+from Step 0, never the bare root — so `hooks/pre_tool_use.py`'s F16 guard (blocks Edit/Write
+in the bare root, `EnterWorktree` as the escape valve) runs active by default with nothing
+in this protocol left for it to conflict with. See `system/failures.md` -> F16.
+
+---
+
+## Step 5.5 — Clean up the worktree
+
+Now that the push succeeded, remove the scratch worktree from Step 0 — leaving it behind is
+exactly how F16's three orphans accumulated in the first place:
+```
+git -C C:/Projects/eq-context worktree remove C:/Projects/eq-context-wt-close-<SESSION_ID> --force
+git -C C:/Projects/eq-context branch -D claude/close-<SESSION_ID>
+```
+Entered via `EnterWorktree` instead? `ExitWorktree` with `action: "remove"` does the same
+thing in one call.
 
 ---
 
