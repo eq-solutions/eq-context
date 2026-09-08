@@ -8,21 +8,21 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 21:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 21:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-08 21:20 UTC → 2026-09-08 21:25 UTC)
+## Since last refresh (2026-09-08 21:25 UTC → 2026-09-08 21:40 UTC)
 
-- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
-- Merged: eq-shell [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL
-- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
-- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
-- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
-- Merged: eq-shell [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd4
-- Merged: eq-shell [#1795](https://github.com/eq-solutions/eq-shell/pull/1795) fix(invite): resend path stops hardcoding email_delivered fa
-- Merged: eq-field [#950](https://github.com/eq-solutions/eq-field/pull/950) v3.5.701 — Prestart export: stop claiming compliance items w
-- ✅ Needs you: 9 → 8
+- Merged: eq-shell [#1816](https://github.com/eq-solutions/eq-shell/pull/1816) fix(migrations): drop document_register before document_sign
+- Merged: eq-shell [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an ex
+- Merged: eq-shell [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load 
+- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
+- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
+- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
+- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
+- Merged: eq-shell [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages
+- ✅ Needs you: 8 → 7
 
-## ⚠ Needs you (8)
+## ⚠ Needs you (7)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
@@ -31,7 +31,6 @@ _2026-09-08 21:25 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [TypeError: this[#methodPromises].getOrInsertComputed is not ](https://eq-solutions.sentry.io/issues/145786350/)
-- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (284)
 
@@ -57,7 +56,7 @@ _…and 272 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✓ success | 0d ago | 6 | 3d |
-| eq-field | ✓ success | 0d ago | 4 | 6d |
+| eq-field | ✓ success | 0d ago | 3 | 6d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -65,7 +64,7 @@ _…and 272 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-08 |
+| eq-shell | ready | 2026-09-08 |
 
 ## Live errors (Sentry)
 
@@ -194,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 21:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 21:40 UTC._
