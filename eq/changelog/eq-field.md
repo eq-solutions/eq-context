@@ -1,13 +1,19 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-09-08 (PR #940 MERGED, v3.5.694 — Weekly Roster: search now matches site too, not just name)
+- Royce's live feedback on `core.eq.solutions/sks/field?tab=roster`: "search needs to be everything no just name (site aswell)." `#roster-search` only matched `p.name`.
+- `_rosterApplySearchSiteSort()` (`scripts/roster.js`) now also matches any site code on the person's visible-week schedule — the same fold-into-one-field technique `renderEditor()`'s `_editorMatchesFilters` already shipped for Edit Roster's `#editor-search` (v3.5.629). Explicit day-key list, not `Object.values(s)` — a schedule row also carries `id`/`updated_at`, which would otherwise leak into the substring search. The separate exact-match `#roster-site` dropdown is untouched.
+- Concurrent-PR version collision: PR #939 (below) merged as v3.5.693 first, the same number this branch had also picked. Caught via `git fetch origin main` before push; rebased onto the new `main`, resolved a conflict in `index.html`'s changelog banner (both PRs prepended an entry at the same spot), retargeted to v3.5.694, re-ran the full test/lint/bundle/cache-buster gate before re-pushing.
+- Full suite 46/46 green, `eslint@9` 0 errors (same 955-warning baseline), bundles/cache-busters clean. Verified against demo/SEED data on a local static server and again on the real Netlify deploy preview before merge: site-code search correctly surfaces everyone rostered there that week across every group section, name search and the `#roster-site` dropdown unaffected. Not click-tested against a real SKS session (no Shell credentials in this environment). Merged, confirmed live: `field.eq.solutions/sw.js` shows v3.5.694.
 
 ## 2026-09-08 (PR #939 MERGED, v3.5.693 — Contacts: click-to-copy is per-field, not a bulk button)
 - Same-day correction to PR #938 below: Royce, immediately after v3.5.692 shipped, "i meant click and copy individual phone numbers / emails not the whole list."

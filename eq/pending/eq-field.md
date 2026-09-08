@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,18 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,284 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-field: Weekly Roster search now matches site, not just name (PR #940, v3.5.694, 2026-09-09)
+*Royce's live feedback on core.eq.solutions/sks/field?tab=roster: "search needs to be everything no just name (site aswell)." Spawned as background task `task_3e851158`.*
+
+- [x] **v3.5.694 ([PR #940](https://github.com/eq-solutions/eq-field/pull/940)):** the free-text search box now also matches any site a person is rostered to that week, not just their name — mirrors the fix Edit Roster's own search already got (v3.5.629). The separate exact-match site dropdown is untouched. Merged, verified live (production `field.eq.solutions/sw.js` confirmed serving v3.5.694).
+- [x] **Concurrent-PR version collision caught before merge:** PR #939 landed as v3.5.693 first, same number this branch had also picked. Rebased onto the new `main`, resolved the changelog-banner conflict, retargeted to v3.5.694, re-ran the full test/lint/bundle/cache-buster gate before re-pushing.
+- [ ] **Not click-tested against a real SKS session** — no Shell/Core credentials in this environment (SKS is Core-only). Verified instead against demo/SEED data via a local static server and the real Netlify deploy preview: typing a site code correctly surfaces everyone rostered there that week; name search and the existing site-filter dropdown are unaffected. Worth a real pass on live SKS roster data. _(added 2026-09-09)_
+
+**Notes:**
+- A `preview_start`-driven local server can silently serve stale/wrong-directory content when pointed at a git worktree (observed: some files fresh, others reflecting the shared root's older commit, even after clearing the service worker and caches). Root cause not fully pinned down; worked around by running `npx serve` directly against the worktree's absolute path instead. Saved as a durable memory (`feedback_worktree_preview_start_staleness.md`, this Claude session's eq-field memory) so a future session doesn't lose time to the same trap.
 
 ---
 
@@ -26,7 +38,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Notes:**
 - Full technical detail (the `_rv9ApplyPostRender()` DOM-rebuild gotcha that silently stripped the first version's Roster button, the hand-merged `core-bundle-*.js` build step, the `check-cache-busters.mjs` tag mechanism): `sessions/2026-09-08.md` and eq-field's own `docs/reflection-log.md` (two entries, 2026-09-08).
-- Two unrelated Roster requests surfaced in the same live-feedback message (search should match site codes not just name; sticky day/date header like Timesheets) — spawned as separate background tasks, both started by Royce in independent sessions, not yet reported back. Tracked here so they're not lost if those sessions don't self-file: `task_3e851158` (search-by-site), `task_09f4cb3a` (sticky header).
+- Two unrelated Roster requests surfaced in the same live-feedback message (search should match site codes not just name; sticky day/date header like Timesheets) — spawned as separate background tasks, both started by Royce in independent sessions. `task_3e851158` (search-by-site) shipped as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (v3.5.694) — see the dedicated section above. `task_09f4cb3a` (sticky header) not yet reported back; tracked here so it isn't lost if that session doesn't self-file.
 
 ---
 
