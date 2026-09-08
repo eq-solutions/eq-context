@@ -1,7 +1,7 @@
 ---
 title: OPS — Decisions Log
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: Append-only log of key decisions across all tiers and the reasoning at the time
 read_priority: standard
 status: live
@@ -27,6 +27,8 @@ For the current built state of each system, see [system/architecture.md](https:/
 **Decision:** eq-shell (Netlify) + jvkn (eq-canonical, Supabase) remain the single mandatory hub for minting every session across the EQ suite — Field, Service, and Cards included, not just Shell itself. No degraded-mode fallback is built: a Shell/jvkn outage hard-fails every new login, and sessions already open expire in 60 seconds with no way to renew until it's back.
 
 **Why:** A single identity hub is what makes the suite one coherent product — every tenant, role, and permission grant lives in exactly one place (confirmed in code via `token-exchange.ts`, first flagged in `system/infra-redundancy-scoping-2026-08-11.md` finding #4). The realistic alternative is several independent auth systems that can silently disagree with each other — a worse redundancy problem than the one being accepted here. Checked live before accepting, not assumed: the suite's ~27 "auth-stall" Sentry events (EQ-SHELL-T `verify-timeout` / EQ-SHELL-V `session-spinner-timeout`) were pulled directly and turned out to be one user's one stall (same trace_id, same replay), on the Shell↔Field iframe handoff for `/sks/field` specifically — a narrower, already-partially-addressed mechanism (see `suite-state.md`'s Key Decisions log, 2026-07-10 iframe self-heal entry), not evidence that the general Shell/jvkn login cascade is already failing silently at scale.
+
+**Correction, 2026-09-09 — "already-partially-addressed" overstated it.** A prior sprint (`eq/sprints/2026-08-18-needs-you-triage.md` item 4) had already root-caused this exact EQ-SHELL-T/V pair via git archaeology — not the iframe handoff, but a timing mismatch between `App.tsx`'s `BlockingSpinner` watchdog (20s) and `RequireSession`'s up-to-30s two-attempt retry sequence — and the fix (raise `WATCHDOG_MS` to 35s) shipped the same day, [eq-shell PR #1433](https://github.com/eq-solutions/eq-shell/pull/1433). Confirmed live in this session (2026-09-09): both issues kept occurring for **nearly three weeks after that fix landed**, through 2026-09-06. The underlying accept-the-single-hub decision above is unaffected by this correction — it stands on the architecture argument, not on this mechanism being fully solved — but the supporting claim that this specific issue was settled was wrong. Scoped as a fresh item: `eq/sprints/2026-09-09-redundancy-review-followups.md`.
 
 **Alternatives considered:**
 - Federated / multiple independent auth systems — rejected: trades one clear, monitorable SPOF for several sources of truth that can drift apart, which is harder to reason about, not easier.
