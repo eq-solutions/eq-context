@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -56,6 +56,27 @@ before editing, or spin up a real worktree elsewhere instead.
 
 ---
 
+## eq-context's own worktrees (added 2026-09-08, failure F16)
+
+**Convention:** a sibling folder in `C:\Projects`, named `eq-context-wt-<topic>` —
+matches the dominant live pattern already used by eq-shell/eq-solves-intake (7
+folders, checked 2026-09-08) over eq-field's documented-but-currently-unused
+`<repo>-<topic>-wt` variant, and over EnterWorktree's own default nested
+`.claude/worktrees/<name>` location (still fine to use — `EnterWorktree` with
+`path:` can register a sibling folder you created by hand, getting cwd-switch +
+exit-time keep/remove without fighting this convention). Branch: `claude/<topic>`.
+Land substrate changes via `scripts/safe_commit.py`, never a raw commit/push —
+see `tools/commands/close.md` Step 5 and `system/failures.md` -> F16.
+
+Found live 2026-09-08, before this convention existed — three orphans, three
+different naming schemes, illustrating exactly the problem F16 fixes:
+
+`C:\Projects\eq-context\.claude\worktrees\land-documents-feature-20260908 (eq-context)` | `chore/land-documents-feature-20260908` | 1 unpushed commit: "docs: land eq-shell Documents-feature close (PR #1801/#1811/#1813) — was staged in root, never pushed" | found 2026-09-08 | **NOT TOUCHED** — real, valuable work; needs review + push, not deletion.
+
+`C:\Projects\eq-context-close-2026-09-08-wt (eq-context)` | `claude/close-2026-09-08` | 1 unpushed commit: "chore: session close 2026-09-08 [skip ci]" | found 2026-09-08 | **NOT TOUCHED** — real unpushed close commit; needs review + push.
+
+---
+
 ## Active (do not touch)
 
 `C:\Projects\eq-field\.claude\worktrees\documents-to-sign-feature-3035a3 (eq-field)` | `claude/apprentices-tab-security-603749` (folder name is now stale — was detached HEAD when first logged) | re-checked live minutes after first being logged here, already reclaimed by another session for unrelated work | 2026-08-28 | **NOT TOUCHED** — no longer the mystery-commit case originally flagged (that HEAD is gone, replaced by real work on a real branch). Ordinary active work now, same as the two rows below — logged here only because this file's own age-out sweep hasn't run yet.
@@ -71,7 +92,7 @@ before editing, or spin up a real worktree elsewhere instead.
 
 ## Stale (verify branch merged before pruning)
 
-_None currently._
+`C:\Projects\eq-context-wt-session-close-20260908 (eq-context)` | `chore/session-close-2026-09-08` | verified 2026-09-08: HEAD (497ab569) == origin/main HEAD at time of check — its own commit already landed some other way; pure leftover. | found 2026-09-08 | Safe to prune whenever convenient — nothing to lose.
 
 ---
 

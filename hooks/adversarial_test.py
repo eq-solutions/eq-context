@@ -977,5 +977,54 @@ te("EQ_CARDS unset — dormant against the real default path with no fixture poi
    edit_at(os.path.join(NOGIT_CWD, "lib", "main.dart")), 0, {"EQ_FORCE_GUARD": "0"})
 
 print()
+print("=== F16 (PROPOSED) - dormant by default against the REAL default path ===")
+# Deliberately the literal hardcoded default (matching pre_tool_use.py's own
+# `os.environ.get("EQ_CONTEXT", r"C:\Projects\eq-context")`), NOT this suite's
+# own ROOT (which is wherever adversarial_test.py happens to run from — a
+# worktree or CI clone, not necessarily C:\Projects\eq-context itself). This
+# section proves the guard stays inert everywhere until explicitly turned on.
+REAL_DEFAULT_CLAUDE_MD = r"C:\Projects\eq-context\CLAUDE.md"
+te("edit to the real default root — no EQ_CONTEXT_ROOT_GUARD set at all",
+   edit_at(REAL_DEFAULT_CLAUDE_MD), 0, {"EQ_FORCE_GUARD": "0"})
+te("edit to the real default root — EQ_CONTEXT_ROOT_GUARD explicitly 0",
+   edit_at(REAL_DEFAULT_CLAUDE_MD), 0, {"EQ_FORCE_GUARD": "0", "EQ_CONTEXT_ROOT_GUARD": "0"})
+
+# For the rest, a throwaway fixture + EQ_CONTEXT override — same reasoning as
+# F15's own cards_root fixture: self-contained, machine-independent, doesn't
+# assume C:\Projects\eq-context exists or is clean on whatever host runs this.
+context_root = tempfile.mkdtemp(prefix="eq_context_f16_")
+CONTEXT_ENV = {"EQ_CONTEXT": context_root, "EQ_FORCE_GUARD": "0", "EQ_CONTEXT_ROOT_GUARD": "1"}
+
+print("=== F16 (PROPOSED) - active once EQ_CONTEXT_ROOT_GUARD=1 (must BLOCK) ===")
+te("Edit an existing tracked file directly under the bare root",
+   edit_at(os.path.join(context_root, "CLAUDE.md")), 2, CONTEXT_ENV)
+te("Write a brand-new file under the bare root (F16, unlike F12, does not exempt new files)",
+   {"tool_name": "Write", "tool_input": {"file_path": os.path.join(context_root, "system", "brand-new-file.md")}},
+   2, CONTEXT_ENV)
+te("MultiEdit under the bare root",
+   {"tool_name": "MultiEdit", "tool_input": {"file_path": os.path.join(context_root, "system", "lessons.md")}},
+   2, CONTEXT_ENV)
+te("Windows backslash path form",
+   edit_at(context_root.replace("/", "\\") + "\\CLAUDE.md"), 2, CONTEXT_ENV)
+te("blocks with the sandbox guard ON too (not sandbox-scoped, same as F9/F12/F15)",
+   edit_at(os.path.join(context_root, "CLAUDE.md")), 2, dict(CONTEXT_ENV, EQ_FORCE_GUARD="1"))
+te("dormant with EQ_CONTEXT_ROOT_GUARD unset even though EQ_CONTEXT points at the fixture",
+   edit_at(os.path.join(context_root, "CLAUDE.md")), 0, {"EQ_CONTEXT": context_root, "EQ_FORCE_GUARD": "0"})
+
+print("=== F16 (PROPOSED) - the sanctioned escape valves and controls (must NOT block) ===")
+te("EnterWorktree's own location (.claude/worktrees/*) is exempt",
+   edit_at(os.path.join(context_root, ".claude", "worktrees", "my-slot", "CLAUDE.md")), 0, CONTEXT_ENV)
+te("a manually created SIBLING worktree (eq-context-wt-<topic>) needs no special case",
+   edit_at(os.path.join(os.path.dirname(context_root), "eq-context-wt-some-topic", "CLAUDE.md")), 0, CONTEXT_ENV)
+te("EQ_CONTEXT_ROOT_OK=1 escape hatch for a deliberate root task",
+   edit_at(os.path.join(context_root, "CLAUDE.md")), 0, dict(CONTEXT_ENV, EQ_CONTEXT_ROOT_OK="1"))
+te("a sibling directory sharing the name as a PREFIX, not the real repo",
+   edit_at(context_root + "-other-repo/CLAUDE.md"), 0, CONTEXT_ENV)
+te("a completely different repo — control, F16 must stay dormant",
+   edit_at(os.path.join(NOGIT_CWD, "CLAUDE.md")), 0, CONTEXT_ENV)
+te("Bash git status against the bare root — F16 checks Edit/Write only, not git verbs",
+   bash_at("git status", context_root), 0, CONTEXT_ENV)
+
+print()
 print("  {} passed, {} failed".format(passed, failed))
 sys.exit(1 if failed else 0)

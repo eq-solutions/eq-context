@@ -22,6 +22,11 @@ costs no ceremony. Prints, unprompted, at every session start:
                    the HOOKS section below — since it's structurally different
                    from the other three: never configured, not misdirected, and
                    nothing about `git clone` can populate local config for itself.
+  7. ISOLATE     — unconditional reminder to isolate (EnterWorktree) before any
+                   edit/commit against THIS shared checkout, and to land substrate
+                   changes via scripts/safe_commit.py rather than a raw commit/push.
+                   The informational half of failure F16; pre_tool_use.py carries
+                   the (currently proposed, not yet active) enforcement half.
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
 Fails open but loud: a silent guard is the bug we are fixing.
@@ -416,6 +421,26 @@ elif wt_n is not None and local_n is not None and wt_n != local_n:
     )
 else:
     out.append("HOOKS      ok — core.hooksPath resolves to .githooks")
+
+# --- 7. ISOLATE (F16 — every session's first write to this shared root) -----
+# Fires unconditionally, on every session, on any repo — same reasoning
+# NEEDS YOU/GOALS/RATCHET/HOOKS above already use: this hook is wired at
+# USER scope (fires for every session start, not only one that opens
+# eq-context), and every one of those sessions still writes to eq-context's
+# bare root at close (CLAUDE.md Section 10) regardless of what it worked on.
+# Every sibling repo with this kind of multi-session traffic (eq-field,
+# eq-shell, eq-cards) already enforces isolate-first; this repo never has,
+# and system/failures.md -> F16 has the live evidence (a 100+-commit-behind
+# root, three abandoned worktrees in three different naming conventions,
+# found 2026-09-08). Purely informational — unlike pre_tool_use.py's F16
+# check (proposed, gated off by default), this never gates anything; it is
+# the "loud but not blocking" half of the same fix.
+out.append(
+    f"ISOLATE    before any edit or commit in THIS shared checkout ({ROOT}):\n"
+    "           EnterWorktree                              (one call, no setup)\n"
+    "           scripts/safe_commit.py -m \"...\" <files>    (land a substrate change)\n"
+    "           system/failures.md -> F16 · system/worktree-registry.md"
+)
 
 print("=== EQ SESSION GATE (local clone — never the URL) ===")
 print("\n".join(out))

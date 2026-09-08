@@ -1,7 +1,7 @@
 ---
 title: "/brief command backup — Session Gate (Rule 0.6)"
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: Durability backup of Royce's user-level Claude Code /brief command — source of truth is ~/.claude/commands/brief.md, not this file
 read_priority: reference
 status: live
@@ -49,6 +49,12 @@ only for historical narrative the live command won't show (why a worktree exists
 owns it).
 
 List any active worktrees for the target repo (`$ARGUMENTS`). If one exists, surface it — working from a second worktree on the same repo creates conflicts.
+
+**If `$ARGUMENTS` is `eq-context` itself:** isolate before writing anything — `EnterWorktree`
+(one call, no clone/setup), and land any substrate change via `python
+C:/Projects/eq-context/scripts/safe_commit.py -m "..." <files>`, never a raw commit/push
+against this shared checkout. See `system/failures.md` -> F16 and the SessionStart gate's own
+ISOLATE line, which repeats this on every session regardless of target repo.
 
 ---
 

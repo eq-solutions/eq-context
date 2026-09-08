@@ -1,7 +1,7 @@
 ---
 title: Machinery Index
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: Every executable file in the substrate — hooks, scripts, CI workflows — and what each one actually does. The prose tiers have per-file tables enforced by index_drift; until 2026-08-15 the machinery had none.
 read_priority: reference
 status: live
@@ -35,10 +35,10 @@ not, which is the point.
 
 | File | What it does | Fires |
 |---|---|---|
-| `session_start.py` | The session gate: SYNC (F1), FRESHNESS (F1), NEEDS YOU, GOALS (F3), RATCHET, CLAIMS, HOOKS (F10). Prints unprompted before the tier question. | SessionStart |
+| `session_start.py` | The session gate: SYNC (F1), FRESHNESS (F1), NEEDS YOU, GOALS (F3), RATCHET, CLAIMS, HOOKS (F10), ISOLATE (F16 — worktree-first reminder for this shared checkout). Prints unprompted before the tier question. | SessionStart |
 | `substrate_sync.py` | Keeps the clone current and says so loudly when it is behind `origin/main`. Replaced an inline blob that swallowed its own pull failures (F1). | UserPromptSubmit |
-| `pre_tool_use.py` | Blocks writes that would reproduce a known failure — mount-corruption (F2/F6), F7, F9, F10, and the F13 deploy-posture claim. Prevention, not documentation. | PreToolUse |
-| `session_end.py` | Stop gate — the bookend to `session_start.py`; enforces the §10 session-end protocol. | Stop |
+| `pre_tool_use.py` | Blocks writes that would reproduce a known failure — mount-corruption (F2/F6), F7, F9, F10, F12, F13, F15, and F16 (built + tested, gated off by default pending confirmation — see F16). Prevention, not documentation. | PreToolUse |
+| `session_end.py` | Stop gate — the bookend to `session_start.py`; enforces the §10 session-end protocol (dirty/unpushed/log-gap) and flags any eq-context worktree left carrying unlanded work (F16). | Stop |
 | `auto_pr_guard.py` | Leash for an auto-PR-finding agent. Inert for normal sessions — exits before reading stdin unless `EQ_AUTO_PR_MODE=1`. | PreToolUse |
 | `ratchet_rules.py` | **Not a hook** — the single definition of "is this guard overdue for promotion", imported by both `session_start.py` and `.github/scripts/guard_ratchet.py`. Two copies had already drifted. | imported |
 | `settings.template.json` | The wiring itself. Logic lives in this repo; only wiring lives in the live settings file. | — |

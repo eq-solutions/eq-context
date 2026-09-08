@@ -1,7 +1,7 @@
 ---
 title: "/close command backup — Session End Protocol"
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-08
 scope: Durability backup of Royce's user-level Claude Code /close command — source of truth is ~/.claude/commands/close.md, not this file
 read_priority: reference
 status: live
@@ -112,36 +112,48 @@ Update the relevant changelog at `C:\Projects\eq-context\eq\changelog\<product>.
 
 ## Step 5 — Commit and push to GitHub
 
-Stage ONLY the files this session actually changed. Scope the session log to **today's
-file** (not the whole `sessions\` dir — a concurrent agent may have its own file there),
-and INCLUDE any changelog you touched in Step 4 (this is the step most often forgotten):
+Land ONLY the files this session actually changed, via `scripts/safe_commit.py` — **never**
+a raw `git add`/`commit`/`push` directly against this shared checkout. That raw sequence is
+the anti-pattern that produced failure F16 (`system/failures.md`): a bare `git commit -m
+"..."` with no `--` pathspec here is exactly what `hooks/pre_tool_use.py`'s own F9(a) guard
+blocks, forcing every session to improvise a fix under time pressure at the very end of a
+session — and when that final step is skipped, fails, or the session ends before it runs,
+the work is left stranded uncommitted in this shared root or in an orphaned worktree (found
+live 2026-09-08: a 100+-commit-behind root carrying a ~33-file pile, three abandoned
+worktrees in three different naming conventions, two of them holding real unpushed commits).
+
+`safe_commit.py` fetches fresh `origin/main`, commits your named files in a throwaway
+scratch worktree, and pushes with fetch+rebase retry on a race — the whole point of this
+step, done safely, in one call:
 
 ```
-git -C C:/Projects/eq-context add eq/pending.md eq/changelog/<product>.md sessions/YYYY-MM-DD.md
-#   ^ add sks/pending.md / ops/pending.md too ONLY if you changed them
-git -C C:/Projects/eq-context commit -m "chore: session close YYYY-MM-DD [skip ci]"
-git -C C:/Projects/eq-context push origin main
+python C:/Projects/eq-context/scripts/safe_commit.py -m "chore: session close YYYY-MM-DD [skip ci]" eq/pending.md eq/changelog/<product>.md sessions/YYYY-MM-DD.md
 ```
+(scope the session log to **today's file** — not the whole `sessions\` dir, a concurrent
+agent may have its own file there — and add `sks/pending.md` / `ops/pending.md` too ONLY if
+you changed them; INCLUDE any changelog from Step 4, the file most often forgotten)
 
-**Use forward slashes exactly as shown, both in the `-C` path and the file arguments.** If
-these run through the Bash tool (Git Bash/POSIX sh), a backslash-separated path silently
-corrupts — bash treats `\` as its escape character, so `C:\Projects\eq-context` collapses to
-`C:Projectseq-context` with no error until git fails on the mangled path. Confirmed live,
-recurring 2026-08-16 through 2026-08-31 — see the identical fix in `brief.md` Step 3.
+**Use forward slashes in the invocation path exactly as shown** — a backslash-separated path
+run through the Bash tool (Git Bash/POSIX sh) silently corrupts, since bash treats `\` as its
+escape character (confirmed live, recurring 2026-08-16 through 2026-08-31 — see the identical
+note in `brief.md` Step 3). List exactly the files this session touched, never a whole
+directory or a glob — `safe_commit.py` stages precisely the paths you name, so there's no
+`git add -A` equivalent to reach for even under pressure.
 
-Leave files you did NOT touch unstaged (e.g. `IDENTITY-MODEL.md`, `worktree-registry.md`
-edited by other agents) — never `git add -A`.
+On success it prints `Live on origin/main: <sha>` — confirm that line before continuing. On
+a repeated non-fast-forward race (rare: `origin/main` moving faster than its 5 built-in
+retries) it leaves the commit safe on a local branch inside the scratch worktree it names,
+with the exact push command to finish by hand once things settle — read its own output
+rather than improvising.
 
-**If the push fails (non-fast-forward)** a concurrent session pushed first. Do NOT rely on
-`git pull --ff-only` — it ABORTS when your local commit has diverged. Rebase instead:
-```
-git -C C:/Projects/eq-context fetch origin main
-git -C C:/Projects/eq-context stash --include-untracked   # only if you have unrelated unstaged changes
-git -C C:/Projects/eq-context rebase origin/main
-git -C C:/Projects/eq-context stash pop                   # only if you stashed
-git -C C:/Projects/eq-context push origin main
-```
-Confirm the push succeeded before continuing.
+**Known scope boundary, stated plainly:** Steps 2–4 above still edit this shared root's
+working tree directly before this step runs. `safe_commit.py` makes the *landing* atomic and
+race-safe regardless, but two sessions editing the exact same file in the exact same close
+window could still clobber each other's in-progress edit before either reaches this step —
+a smaller, pre-existing risk this fix does not close. Isolating Steps 1–4 into a worktree too
+(`EnterWorktree`) closes it fully and is the natural next step once this is confirmed in
+practice — not done in this pass to keep the fix minimal and testable. See `system/failures.md`
+-> F16.
 
 ---
 
