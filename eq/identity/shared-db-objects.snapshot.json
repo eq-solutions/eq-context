@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-07T10:04:22Z",
-  "generated_by": "eq-context session 2026-09-01, seeded from live pg_get_viewdef/pg_get_functiondef queries against ehow via the Supabase MCP (see eq-field investigation this same session)",
+  "generated_at": "2026-09-08T09:27:44Z",
+  "generated_by": "eq-context session 2026-09-08 -- rebaseline after confirming field_people_iud's drift is migrations 0273/0274 (eq-shell PR #1567/#1572, 2026-08-24, merged+dispatched+verified live) plus eq-cards PR #325 (2026-08-27) on the receiving side -- reviewed, intentional, shipped work that was never rebaselined, not an unreviewed change. Live defs fetched via the Supabase MCP (not the raw Management API token), hashed with this script's own normalize()/fingerprint().",
   "plane": "ehow",
   "objects": {
     "app_data.field_people": {
@@ -21,7 +21,7 @@
       "schema": "app_data",
       "name": "field_people_iud",
       "kind": "function",
-      "sha256": "8d7b0604f2cfafbaae8ef34adf78486e7f6af561afb4377346d952e77140d59d",
+      "sha256": "7ac4eb924cf2575e41d029e41538a395a8639481c2b7006fdb1f79ec7a26d76c",
       "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\n    declare v_name text; v_first text; v_last text; v_sid uuid; v_tid uuid;\n            v_can_licences boolean; v_can_labour_hire boolean; v_can_people boolean;\n            v_actor_id uuid;\n            v_secret text; v_worker_id uuid; v_"
     },
     "app_data.field_people_removed_iud": {
