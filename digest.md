@@ -8,27 +8,26 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 09:17 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 09:37 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-08 09:11 UTC → 2026-09-08 09:17 UTC)
+## Since last refresh (2026-09-08 09:17 UTC → 2026-09-08 09:37 UTC)
 
-- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
-- Merged: eq-shell [#1802](https://github.com/eq-solutions/eq-shell/pull/1802) fix(auth): don't clear a cached session on a pure verify-she
-- Merged: eq-shell [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages
-- Merged: eq-shell [#1799](https://github.com/eq-solutions/eq-shell/pull/1799) fix(customers): update the customer Field/Service pill live 
-- Merged: eq-shell [#1797](https://github.com/eq-solutions/eq-shell/pull/1797) feat(intake): add eq_tidy_read_entity_columns for column-pro
-- Merged: eq-shell [#1796](https://github.com/eq-solutions/eq-shell/pull/1796) feat(staff): add a real Manager (reporting-line) field, SKS 
-- Merged: eq-shell [#1794](https://github.com/eq-solutions/eq-shell/pull/1794) fix(shell): extract HubSidebar's icon maps into their own mo
-- Merged: eq-shell [#1790](https://github.com/eq-solutions/eq-shell/pull/1790) fix(security): block reset-user-pin from targeting a platfor
-- ✅ Needs you: 15 → 14
+- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
+- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
+- Merged: eq-shell [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the S
+- Merged: eq-shell [#1800](https://github.com/eq-solutions/eq-shell/pull/1800) fix(security): bump fast-uri past 4 newer SSRF/host-confusio
+- Merged: eq-shell [#1798](https://github.com/eq-solutions/eq-shell/pull/1798) feat(staff): reframe Resourcing around conversations happeni
+- Merged: eq-shell [#1791](https://github.com/eq-solutions/eq-shell/pull/1791) fix(security): a revoked session can no longer mint credenti
+- Merged: eq-shell [#1789](https://github.com/eq-solutions/eq-shell/pull/1789) fix(security): warn loudly when ENFORCE_IFRAME_ORIGIN isn't 
+- Merged: eq-shell [#1788](https://github.com/eq-solutions/eq-shell/pull/1788) docs(env): document the full .env.example surface, including
+- ✅ Needs you: 14 → 13
 
-## ⚠ Needs you (14)
+## ⚠ Needs you (13)
 
-- 🔴 **Open security finding** — SEC-1 (P0 — live PII leak) — Public key reads `people`, `timesheets`, `leave_requests`, `audit_log` · [security-register.md](ops/security-register.md)
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `shared-object-drift.yml` 7 consecutive scheduled run(s) failed, no success in recent history · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
-- 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-08.md](sessions/2026-09-08.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-04.md](sessions/2026-09-04.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — four distinct mechanisms, one sym · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
@@ -63,7 +62,7 @@ _…and 263 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 5 | 7d |
 | eq-solves-service | ✓ success | 1d ago | 6 | 3d |
-| eq-field | ✓ success | 0d ago | 3 | 5d |
+| eq-field | ✓ success | -1d ago | 3 | 5d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -89,6 +88,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-08 | eq-shell | [#1816](https://github.com/eq-solutions/eq-shell/pull/1816) fix(migrations): drop document_register before document_signoffs  |
 | 2026-09-08 | eq-shell | [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an export  |
 | 2026-09-08 | eq-shell | [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load PDF l |
+| 2026-09-08 | eq-field | [#940](https://github.com/eq-solutions/eq-field/pull/940) v3.5.694 — Weekly Roster: search now matches site too, not just n |
 | 2026-09-08 | eq-field | [#939](https://github.com/eq-solutions/eq-field/pull/939) v3.5.693 — Contacts: click-to-copy is now per-field, not a bulk b |
 | 2026-09-08 | eq-field | [#938](https://github.com/eq-solutions/eq-field/pull/938) v3.5.691 — Contacts + Roster: copy phone/email straight to the cl |
 | 2026-09-08 | eq-field | [#937](https://github.com/eq-solutions/eq-field/pull/937) v3.5.691 — Preferred Name placeholder simplified |
@@ -100,7 +100,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-07 | eq-shell | [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx |
 | 2026-09-07 | eq-shell | [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL |
 | 2026-09-07 | eq-shell | [#1795](https://github.com/eq-solutions/eq-shell/pull/1795) fix(invite): resend path stops hardcoding email_delivered false;  |
-| 2026-09-07 | eq-shell | [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL |
 _Showing 15 of 78 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -195,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 09:17 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 09:37 UTC._
