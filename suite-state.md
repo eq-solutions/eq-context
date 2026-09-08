@@ -64,8 +64,8 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #949 v3.5.699 — Timesheets: guard _isPhoneViewport() against the same lazy-load race as EQ-FIELD-1G
-- #948 fix: sign 404 (signoff not found) now reports to Sentry
+- #951 fix(sign-documents): add a Reset zoom button to the inline PDF viewer
+- #949 v3.5.701 — Timesheets: guard _isPhoneViewport() against the same lazy-load race as EQ-FIELD-1G
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -77,13 +77,6 @@ _If this file is >48h old, the cron is broken._
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
 - #832 chore(deps): bump @eq-solutions/roles from v2.7.5 to v2.7.7 in the eq-design-system group
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
-
-**eq-shell:**
-- #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.6
-- #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.87.0
-- #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
-- #1696 chore(deps): bump @sentry/react from 10.53.1 to 10.73.0
-- #1695 chore(deps): bump papaparse and @types/papaparse
 
 ---
 
@@ -117,9 +110,9 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 71 | ✓ 71 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,106 | ✓ 2,106 |
-| Operational | app_data.field_timesheets | 467 | ✓ 467 |
-| Safety | public.prestarts | 241 | ✓ 241 |
+| Operational | app_data.field_schedule | 2,109 | ✓ 2,109 |
+| Operational | app_data.field_timesheets | 470 | ✓ 470 |
+| Safety | public.prestarts | 242 | ✓ 242 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -134,7 +127,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 13 |  |
+| Prestarts created | 14 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
