@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 07:50 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 07:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-07 19:56 UTC → 2026-09-08 07:50 UTC)
+## Since last refresh (2026-09-08 07:50 UTC → 2026-09-08 07:58 UTC)
 
-- Merged: eq-shell [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load 
-- Merged: eq-shell [#1799](https://github.com/eq-solutions/eq-shell/pull/1799) fix(customers): update the customer Field/Service pill live 
-- Merged: eq-shell [#1797](https://github.com/eq-solutions/eq-shell/pull/1797) feat(intake): add eq_tidy_read_entity_columns for column-pro
-- Merged: eq-shell [#1796](https://github.com/eq-solutions/eq-shell/pull/1796) feat(staff): add a real Manager (reporting-line) field, SKS 
-- Merged: eq-shell [#1794](https://github.com/eq-solutions/eq-shell/pull/1794) fix(shell): extract HubSidebar's icon maps into their own mo
-- Merged: eq-shell [#1793](https://github.com/eq-solutions/eq-shell/pull/1793) feat(staff): redesign Teams (formerly Org Chart) for scale a
-- Merged: eq-shell [#1790](https://github.com/eq-solutions/eq-shell/pull/1790) fix(security): block reset-user-pin from targeting a platfor
-- Merged: eq-shell [#1789](https://github.com/eq-solutions/eq-shell/pull/1789) fix(security): warn loudly when ENFORCE_IFRAME_ORIGIN isn't 
-- ⚠ Needs you: 14 → 15 (new items)
+- Merged: eq-shell [#1800](https://github.com/eq-solutions/eq-shell/pull/1800) fix(security): bump fast-uri past 4 newer SSRF/host-confusio
+- Merged: eq-shell [#1798](https://github.com/eq-solutions/eq-shell/pull/1798) feat(staff): reframe Resourcing around conversations happeni
+- Merged: eq-shell [#1791](https://github.com/eq-solutions/eq-shell/pull/1791) fix(security): a revoked session can no longer mint credenti
+- Merged: eq-shell [#1788](https://github.com/eq-solutions/eq-shell/pull/1788) docs(env): document the full .env.example surface, including
+- Merged: eq-field [#937](https://github.com/eq-solutions/eq-field/pull/937) v3.5.691 — Preferred Name placeholder simplified
+- Merged: eq-field [#936](https://github.com/eq-solutions/eq-field/pull/936) fix(security): supervisor role gets tenant-wide read on Time
+- Merged: eq-field [#935](https://github.com/eq-solutions/eq-field/pull/935) v3.5.689 — FIX: Timesheets day/date header text was low-cont
+- Merged: eq-field [#934](https://github.com/eq-solutions/eq-field/pull/934) v3.5.689 — FIX: team-less person's roster row (leave include
 
 ## ⚠ Needs you (15)
 
@@ -38,7 +37,7 @@ _2026-09-08 07:50 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 7d** — eq-shell [#1696](https://github.com/eq-solutions/eq-shell/pull/1696) "chore(deps): bump @sentry/react from 10.53.1 to 10.73.0"
 - 🟠 **PR aging 7d** — eq-shell [#1695](https://github.com/eq-solutions/eq-shell/pull/1695) "chore(deps): bump papaparse and @types/papaparse"
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/)
-- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
+- 🟠 **Product signal flipped** — Toolbox talks created crossed zero↔nonzero overnight · [suite-state.md](suite-state.md) Product Pulse · [failures.md](system/failures.md) F4
 
 ## 🙋 Waiting on you (272)
 
@@ -64,7 +63,7 @@ _…and 260 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 5 | 7d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 3d |
-| eq-field | ✓ success | 1d ago | 3 | 5d |
+| eq-field | ✓ success | 0d ago | 4 | 5d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -72,7 +71,7 @@ _…and 260 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-08 |
+| eq-shell | ready | 2026-09-08 |
 
 ## Live errors (Sentry)
 
@@ -88,6 +87,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | Merged | Repo | PR |
 |--------|------|----|
 | 2026-09-08 | eq-shell | [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load PDF l |
+| 2026-09-08 | eq-field | [#937](https://github.com/eq-solutions/eq-field/pull/937) v3.5.691 — Preferred Name placeholder simplified |
 | 2026-09-07 | eq-shell | [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kanban |
 | 2026-09-07 | eq-shell | [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles |
 | 2026-09-07 | eq-shell | [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca45 |
@@ -101,7 +101,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-07 | eq-shell | [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, fflate) |
 | 2026-09-07 | eq-shell | [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages |
 | 2026-09-07 | eq-shell | [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the SKS ba |
-| 2026-09-07 | eq-shell | [#1802](https://github.com/eq-solutions/eq-shell/pull/1802) fix(auth): don't clear a cached session on a pure verify-shell-se |
 _Showing 15 of 76 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -196,4 +195,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 07:50 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 07:58 UTC._
