@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #946 v3.5.699 — Timesheets: cut the completion-chasing chrome
 - #943 v3.5.698 — Home: drop the "EQ Field" eyebrow label
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
@@ -117,9 +116,9 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 71 | ✓ 71 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,103 | ✓ 2,103 |
+| Operational | app_data.field_schedule | 2,106 | ✓ 2,106 |
 | Operational | app_data.field_timesheets | 467 | ✓ 467 |
-| Safety | public.prestarts | 240 | ✓ 240 |
+| Safety | public.prestarts | 241 | ✓ 241 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -134,7 +133,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 12 |  |
+| Prestarts created | 13 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
