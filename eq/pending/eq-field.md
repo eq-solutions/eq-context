@@ -15,18 +15,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Weekly Roster search now matches site, not just name (PR #940, v3.5.694, 2026-09-09)
-*Royce's live feedback on core.eq.solutions/sks/field?tab=roster: "search needs to be everything no just name (site aswell)." Spawned as background task `task_3e851158`.*
-
-- [x] **v3.5.694 ([PR #940](https://github.com/eq-solutions/eq-field/pull/940)):** the free-text search box now also matches any site a person is rostered to that week, not just their name — mirrors the fix Edit Roster's own search already got (v3.5.629). The separate exact-match site dropdown is untouched. Merged, verified live (production `field.eq.solutions/sw.js` confirmed serving v3.5.694).
-- [x] **Concurrent-PR version collision caught before merge:** PR #939 landed as v3.5.693 first, same number this branch had also picked. Rebased onto the new `main`, resolved the changelog-banner conflict, retargeted to v3.5.694, re-ran the full test/lint/bundle/cache-buster gate before re-pushing.
-- [ ] **Not click-tested against a real SKS session** — no Shell/Core credentials in this environment (SKS is Core-only). Verified instead against demo/SEED data via a local static server and the real Netlify deploy preview: typing a site code correctly surfaces everyone rostered there that week; name search and the existing site-filter dropdown are unaffected. Worth a real pass on live SKS roster data. _(added 2026-09-09)_
-
-**Notes:**
-- A `preview_start`-driven local server can silently serve stale/wrong-directory content when pointed at a git worktree (observed: some files fresh, others reflecting the shared root's older commit, even after clearing the service worker and caches). Root cause not fully pinned down; worked around by running `npx serve` directly against the worktree's absolute path instead. Saved as a durable memory (`feedback_worktree_preview_start_staleness.md`, this Claude session's eq-field memory) so a future session doesn't lose time to the same trap.
-
----
-
 ## eq-field: Copy-to-clipboard for staff contact info — shipped, then corrected same-day per live feedback (PRs #938/#939, v3.5.692→v3.5.693, 2026-09-08)
 *Royce: routinely copying staff phone numbers/emails out of both Contacts and Weekly Roster, one field at a time. First pass built a bulk "copy everyone visible" action on both screens; Royce's live correction right after it shipped ("i meant click and copy individual phone numbers / emails not the whole list") led to a same-day rework.*
 
@@ -38,7 +26,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Notes:**
 - Full technical detail (the `_rv9ApplyPostRender()` DOM-rebuild gotcha that silently stripped the first version's Roster button, the hand-merged `core-bundle-*.js` build step, the `check-cache-busters.mjs` tag mechanism): `sessions/2026-09-08.md` and eq-field's own `docs/reflection-log.md` (two entries, 2026-09-08).
-- Two unrelated Roster requests surfaced in the same live-feedback message (search should match site codes not just name; sticky day/date header like Timesheets) — spawned as separate background tasks, both started by Royce in independent sessions. `task_3e851158` (search-by-site) shipped as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (v3.5.694) — see the dedicated section above. `task_09f4cb3a` (sticky header) not yet reported back; tracked here so it isn't lost if that session doesn't self-file.
+- Two unrelated Roster requests surfaced in the same live-feedback message (search should match site codes not just name; sticky day/date header like Timesheets) — spawned as separate background tasks, both started by Royce in independent sessions. **Both have now reported back, same day:** search-by-site shipped as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (`task_3e851158`); the sticky header has its own section directly below (`task_09f4cb3a`).
+
+---
+
+## eq-field: Weekly Roster + Edit Roster — sticky day/date header, matching Timesheets — FIXED, merged, live (PR #941, v3.5.695, 2026-09-08)
+*Royce, comparing screenshots of Weekly Roster against Timesheets: the day/date header scrolled away with the rest of a long crew list on Roster/Edit Roster, unlike Timesheets' already-sticky one — "easy to lose track of which day column is which." One of two Roster requests from the same live-feedback message the copy-to-clipboard section above flagged as spawned background tasks (`task_09f4cb3a`) — this is that task reporting back.*
+
+- [x] **`.roster-grid thead th` (base.css) and Edit Roster's single `dayHeaderHtml` row both get `position: sticky; top: 0` plus their own opaque background** — same mechanism Timesheets already uses (`base.css` ~1217), including the "needs its own background or rows show through" gotcha.
+- [x] **Sticky needs a bounded scroller under it** — added `#page-roster .table-scroll` / `#page-editor .table-scroll` `max-height` rules so each crew group's box (Weekly Roster) or the one shared grid (Edit Roster) is what scrolls, not the whole page. Groups already large enough to virtualize (150+ people) keep their own inline 480px bound, untouched.
+- [x] **Verified click-tested, not just code-reviewed** — locally (static server, `?tenant=demo`, Demo Supervisor) AND on the actual Netlify deploy preview before merge: Weekly Roster By-Crew + Grid views, Edit Roster desktop + mobile (375px). Weekly Roster's mobile view confirmed unaffected (separate day-switcher render, no table).
+- [x] **Two concurrent-PR version collisions caught before merge** — `origin/main` claimed v3.5.693 (#939) and then v3.5.694 (#940) while this branch was open; rebased twice, renumbered to v3.5.695 both times, re-ran the full test/lint/bundle/cache-buster gate after each rebase rather than re-tag-and-hope.
+- [ ] **Not click-tested against a 150+-person virtualized roster or the SKS tenant's real (larger) dataset** — demo data tops out at 18 people. Virtualized groups' scroll box is untouched by this change (inline style still wins over the new class rule), so risk is judged low, but worth a real look on a bigger roster. _(added 2026-09-08)_
+
+**Notes:**
+- Sibling task from the same live-feedback message, `task_3e851158` (Roster search should also match site code, not just name), separately shipped same-day as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (v3.5.694) by another concurrent session — confirmed via `origin/main`'s own commit log, not investigated further by this session.
+- Full technical detail (the `overflow-x:auto` implicitly coupling to `overflow-y:auto` and silently trapping `position:sticky` — the CSS gotcha that shaped the final bounded-scroller design over a simpler page-level-sticky alternative): `sessions/2026-09-08.md`.
 
 ---
 
