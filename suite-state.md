@@ -61,13 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-08)
 
 **eq-field:**
-- #942 v3.5.696 — iPad joins the phone/mobile layout, not a new tablet tier
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
 **eq-service:**
-- #837 fix(nav): let the embedded Shell nav bar scroll on tablet widths
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
@@ -90,7 +88,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? queued |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -100,7 +98,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-08 |
+    | eq-service | building | 2026-09-08 |
 | eq-shell | building | 2026-09-08 |
 | eq-field | ready | 2026-09-08 |
 
