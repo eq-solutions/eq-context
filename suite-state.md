@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #947 fix: log signoff-not-found on sign action's 404 branch
 - #946 v3.5.699 — Timesheets: cut the completion-chasing chrome
 - #943 v3.5.698 — Home: drop the "EQ Field" eyebrow label
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
