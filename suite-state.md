@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
+- #948 fix: sign 404 (signoff not found) now reports to Sentry
 - #943 v3.5.698 — Home: drop the "EQ Field" eyebrow label
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
@@ -78,8 +79,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
-- #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
+- #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.6
+- #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.87.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
 - #1696 chore(deps): bump @sentry/react from 10.53.1 to 10.73.0
 - #1695 chore(deps): bump papaparse and @types/papaparse
@@ -103,8 +104,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | ready | 2026-09-08 |
-| eq-field | ready | 2026-09-08 |
+| eq-shell | new | 2026-09-08 |
+| eq-field | new | 2026-09-08 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
