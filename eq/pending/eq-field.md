@@ -15,6 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: SKS shell-embedded boot could hang silently past Shell's 30s watchdog — Sentry EQ-SHELL-1R root-caused, FIXED, merged, live (PR #944, v3.5.697, 2026-09-09)
+*Continuation of a Task Brief opened against Sentry [EQ-SHELL-1R](https://eq-solutions.sentry.io/issues/EQ-SHELL-1R) "EQ Field handoff auto-recovery (timeout)" — 3 occurrences since 2026-08-18, all tenant `sks`, 2 users. Shell's own mint/watchdog side was already verified healthy in a prior pass; this session's job was finding what's actually slow in eq-field's own load path.*
+
+- [x] **Root cause: two fetches in the SKS shell-token verify path had no timeout** — `scripts/auth-shell-handoff.js`'s `_verifyShellToken()`/`_consumeShellCookie()` (client) and `netlify/functions/_shared/field-person.js`'s `resolveFieldPerson()` (server, called only for the `sks` tenant — matches 3/3 occurrences; `eq` never hits it). A rare transient stall anywhere in that chain hung `checkAccess()` forever with zero postMessage telemetry, silently exceeding Shell's 30s watchdog. Confirmed live via Sentry breadcrumbs: Shell's mint completes in 1.6s every time, then 33.7s of total silence.
+- [x] **Ruled out a chronic slow-query cause before concluding anything** — checked live against ehow: `field_person_by_user_id` filters an indexed column (`staff_user_id_idx`) on a 109-row table. This is a rare transient stall, not a slow query.
+- [x] **Fix mirrors the existing pattern**, not a new one: wrapped both fetches in `_fetchWithTimeout` (8s client / 5s server, nested) — the same helper the parallel canonical-config chain (`app-state.js`) already uses. On timeout, both fall into their existing catch blocks — no new postMessage kind, no change to the Shell-side contract.
+- [ ] **Not click-tested against a real SKS/Core shell-embedded session** — no Shell credentials in this environment. Verified instead: full demo-tenant boot end-to-end on the deploy preview (zero console errors), all 45 tests, lint clean, bundle/cache-buster checks green. _(added 2026-09-09)_
+
+**Notes:**
+- Full technical detail: `sessions/2026-09-09.md` and `eq/changelog/eq-field.md` (2026-09-09 entry).
+
+---
+
 ## eq-field: iPad renders full desktop density under touch — phone breakpoint extended to touch tablets, FIXED, merged, live (PR #942, v3.5.696, 2026-09-08)
 *Royce shared an iPad screenshot: the nav was a mix of the phone top-strip and the full desktop sidebar at once, and asked to debug the iPad mobile view. Traced the nav-mix to a stale service-worker cache on his device (not a code bug — `/styles/` is served cache-first, a plain reload doesn't refetch it); current `mobile.css`/`base.css` on `origin/main` were already internally consistent. Separately, a PostHog device-mix check (SKS project, 90 days) showed iPad-pattern traffic real but small (~6-53 of 969 unique visitors) — informed the decision to extend the existing phone components rather than build a bespoke tablet design.*
 
