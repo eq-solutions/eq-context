@@ -8,23 +8,22 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 21:17 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 21:20 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-08 21:07 UTC → 2026-09-08 21:17 UTC)
+## Since last refresh (2026-09-08 21:17 UTC → 2026-09-08 21:20 UTC)
 
-- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
-- Merged: eq-shell [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL
-- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
-- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
-- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
-- Merged: eq-shell [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd4
-- Merged: eq-shell [#1795](https://github.com/eq-solutions/eq-shell/pull/1795) fix(invite): resend path stops hardcoding email_delivered fa
-- Merged: eq-field [#948](https://github.com/eq-solutions/eq-field/pull/948) fix: sign 404 (signoff not found) now reports to Sentry
-- ✅ Needs you: 13 → 10
+- Merged: eq-shell [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an ex
+- Merged: eq-shell [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load 
+- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
+- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
+- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
+- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
+- Merged: eq-shell [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the S
+- Merged: eq-shell [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages
+- ✅ Needs you: 10 → 9
 
-## ⚠ Needs you (10)
+## ⚠ Needs you (9)
 
-- 🔴 **CI cancelled** — eq-shell `main`
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-08.md](sessions/2026-09-08.md) · [failures.md](system/failures.md)
@@ -33,7 +32,7 @@ _2026-09-08 21:17 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **PR aging 8d** — eq-shell [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) "chore(deps): bump unpdf from 0.12.1 to 0.12.2"
 - 🟠 **Sentry new error** — `eq-field` [TypeError: this[#methodPromises].getOrInsertComputed is not ](https://eq-solutions.sentry.io/issues/145786350/)
-- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (284)
 
@@ -57,9 +56,9 @@ _…and 272 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ⚠ cancelled | 0d ago | 1 | 8d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 3d |
-| eq-field | ✓ success | 0d ago | 5 | 6d |
+| eq-shell | ✓ success | 0d ago | 1 | 8d |
+| eq-solves-service | ✓ success | 35d ago | 6 | 3d |
+| eq-field | ✓ success | 0d ago | 4 | 6d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -67,7 +66,7 @@ _…and 272 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | new | 2026-09-08 |
+| eq-shell | building | 2026-09-08 |
 
 ## Live errors (Sentry)
 
@@ -77,10 +76,10 @@ _…and 272 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 13 | 2026-09-06 |
 | eq-field | [TypeError: this[#methodPromises].getOrInsertComputed is not a function](https://eq-solutions.sentry.io/issues/145786350/) | 4 | 2026-09-08 |
 | eq-shell | [TypeError: 'text/html' is not a valid JavaScript MIME type.](https://eq-solutions.sentry.io/issues/145673876/) | 2 | 2026-09-08 |
+| eq-field | [ReferenceError: Can't find variable: _isPhoneViewport](https://eq-solutions.sentry.io/issues/145668949/) | 2 | 2026-09-08 |
 | eq-shell | [EQ Field accepted the handoff but never reported 'rendered' (16s)](https://eq-solutions.sentry.io/issues/145332293/) | 2 | 2026-09-08 |
 | eq-cards | [minified:B2: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 2 | 2026-09-08 |
 | eq-shell | [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/) | 2 | 2026-09-08 |
-| eq-field | [ReferenceError: _isPhoneViewport is not defined](https://eq-solutions.sentry.io/issues/145668949/) | 1 | 2026-09-08 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -196,4 +195,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 21:17 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 21:20 UTC._
