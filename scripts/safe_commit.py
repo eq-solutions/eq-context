@@ -15,6 +15,18 @@ thing it touches there, on a successful push, is unstaging the files just
 pushed (see --no-unstage), so `git status` doesn't misleadingly show
 already-shipped work as still pending.
 
+Before touching anything, it also checks each requested file for upstream
+divergence: if origin/main's current copy differs from what the caller's own
+HEAD had for that path, someone else has pushed a change to it since the
+caller last synced. Copying the caller's (now-stale) bytes over a scratch
+worktree branched fresh off that same origin/main would silently discard the
+other push, so this refuses and prints a diff instead, unless --force. This is
+the same failure shape as system/failures.md F12 (a blind overwrite of a
+concurrent session's already-pushed edits), reached here through a mechanism
+F12's own cp/mv/xcopy guard can't see: this script's copy step is a Python
+`write_bytes` call into a scratch worktree, never a shell copy command against
+the bare checkout.
+
 Usage:
     python scripts/safe_commit.py -m "commit message" path/to/file1 path/to/file2
 
@@ -22,15 +34,26 @@ Usage:
         Do everything up to (not including) the push; leaves the scratch
         worktree in place for inspection instead of tearing it down.
 
-This does NOT resolve content conflicts. If origin/main's own copy of a file has
-diverged from what the caller intends, that's still the caller's call to make
-(check with `git log HEAD..origin/main -- <file>` first) -- this script only
-removes the *mechanical* risk of committing from a stale or dirty shared
-checkout, not the judgment call of whether the content itself is still right.
+    python scripts/safe_commit.py --force -m "..." path/to/file
+        Skip the upstream-divergence check below and overwrite origin/main's
+        current copy of the requested file(s) with the caller's bytes
+        regardless. For a deliberate wholesale replace -- not the default,
+        because the default is what turns the other failure mode loud
+        instead of silent.
+
+This does NOT resolve content conflicts. When origin/main has moved since the
+caller's own HEAD for a requested file, the script refuses to proceed and
+prints what changed (`git log HEAD..origin/main -- <file>` shows the full
+history) -- reconciling the content is still the caller's call to make. The
+divergence check only looks at paths requested on this invocation, and only
+against the caller's own HEAD as the baseline, not a full three-way merge --
+it catches "the file moved upstream since I last read it," not every possible
+conflict shape.
 """
 from __future__ import annotations
 
 import argparse
+import difflib
 import secrets
 import subprocess
 import sys
@@ -52,6 +75,12 @@ def repo_root(start: Path) -> Path:
     return Path(run(["git", "rev-parse", "--show-toplevel"], cwd=start).stdout.strip())
 
 
+def show_at_ref(root: Path, ref: str, rel: str) -> bytes | None:
+    """Raw bytes of `rel` at `ref` in `root`, or None if it doesn't exist there."""
+    result = subprocess.run(["git", "show", f"{ref}:{rel}"], cwd=str(root), capture_output=True)
+    return result.stdout if result.returncode == 0 else None
+
+
 def resolve_files(files: list[str], caller_cwd: Path, root: Path) -> dict[str, bytes]:
     """Validate every requested path exists and read its current bytes now,
     before anything else (a fetch, a rebase) can change under us."""
@@ -68,6 +97,49 @@ def resolve_files(files: list[str], caller_cwd: Path, root: Path) -> dict[str, b
         rel = src.resolve().relative_to(root.resolve())
         out[str(rel).replace("\\", "/")] = src.read_bytes()
     return out
+
+
+def check_upstream_divergence(root: Path, file_contents: dict[str, bytes], force: bool) -> bool:
+    """Compare origin/main's current copy of each requested file against what
+    the caller's own HEAD had for that path -- a proxy for the base the caller
+    last read/edited from. If they differ, origin/main moved since then;
+    blindly copying the caller's bytes over a scratch worktree branched fresh
+    off that same origin/main would silently discard whatever changed there.
+    Returns False (having already printed why) if the caller should stop,
+    unless --force."""
+    conflicts: list[tuple[str, bytes | None, bytes | None]] = []
+    for rel in sorted(file_contents):
+        base = show_at_ref(root, "HEAD", rel)
+        upstream = show_at_ref(root, "origin/main", rel)
+        if base == upstream:
+            continue  # origin/main hasn't moved past the caller's own HEAD for this file
+        if file_contents[rel] == upstream:
+            continue  # caller's bytes already match origin/main -- nothing would be lost
+        conflicts.append((rel, base, upstream))
+
+    if not conflicts:
+        return True
+
+    print(
+        f"SAFETY CHECK FAILED: origin/main has moved since your HEAD for "
+        f"{len(conflicts)} requested file(s) -- committing now would silently "
+        "overwrite whatever changed there. Re-merge first (`git log HEAD..origin/main "
+        "-- <file>` shows the history), or rerun with --force to overwrite anyway.",
+        file=sys.stderr,
+    )
+    for rel, base, upstream in conflicts:
+        print(f"\n--- {rel} (your HEAD -> origin/main) ---", file=sys.stderr)
+        before = (base or b"").decode("utf-8", errors="replace").splitlines(keepends=True)
+        after = (upstream or b"").decode("utf-8", errors="replace").splitlines(keepends=True)
+        sys.stderr.writelines(
+            difflib.unified_diff(before, after, fromfile="your HEAD", tofile="origin/main")
+        )
+
+    if force:
+        print("\n--force given -- overwriting origin/main's changes anyway.", file=sys.stderr)
+        return True
+
+    return False
 
 
 def main() -> int:
@@ -87,6 +159,11 @@ def main() -> int:
         help="don't unstage the pushed files in the caller's own checkout afterward",
     )
     parser.add_argument(
+        "--force", action="store_true",
+        help="skip the upstream-divergence check and overwrite origin/main's current "
+        "copy of the requested file(s) regardless",
+    )
+    parser.add_argument(
         "--max-retries", type=int, default=5,
         help="max fetch+rebase+push retries on a non-fast-forward race (default 5)",
     )
@@ -101,6 +178,9 @@ def main() -> int:
 
     print("Fetching origin/main...")
     run(["git", "fetch", "origin", "main", "--quiet"], cwd=root)
+
+    if not check_upstream_divergence(root, file_contents, args.force):
+        return 1
 
     stamp = time.strftime("%Y%m%d-%H%M%S")
     wt_name = f"safe-commit-{stamp}-{secrets.token_hex(3)}"
