@@ -108,7 +108,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 71 | ✓ 71 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,109 | ✓ 2,109 |
+| Operational | app_data.field_schedule | 2,123 | ✓ 2,123 |
 | Operational | app_data.field_timesheets | 470 | ✓ 470 |
 | Safety | public.prestarts | 242 | ✓ 242 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
@@ -123,7 +123,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
-| Maintenance checks created | 1 | ⚠ FLIPPED |
+| Maintenance checks created | 1 |  |
 | Maintenance checks completed | 0 |  |
 | Prestarts created | 12 |  |
 | Toolbox talks created | 0 |  |
@@ -131,7 +131,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Non-system writes (`audit_log`) | 0 |  |
 | Active users (Shell sign-ins, jvkn) | 49 |  |
 
-⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**
+_No flips this run._
 ---
 
 ## Architecture: What Owns What
