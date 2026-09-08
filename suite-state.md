@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
     | Assets | 2,842 | app_data.assets |
     | Tenants | 1 (SKS Technologies) | service.tenants |
     | Users | 5 | service.tenant_members |
-    | Maintenance checks | 38 | service.maintenance_checks |
+    | Maintenance checks | 39 | service.maintenance_checks |
     | Defects | 3 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -108,8 +108,8 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 71 | ✓ 71 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,123 | ✓ 2,123 |
-| Operational | app_data.field_timesheets | 470 | ✓ 470 |
+| Operational | app_data.field_schedule | 2,259 | ✓ 2,259 |
+| Operational | app_data.field_timesheets | 474 | ✓ 474 |
 | Safety | public.prestarts | 242 | ✓ 242 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
@@ -123,13 +123,13 @@ crossing since the last run, not a raw count. Machine-generated only; see
 
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
-| Maintenance checks created | 1 |  |
+| Maintenance checks created | 2 |  |
 | Maintenance checks completed | 0 |  |
 | Prestarts created | 12 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 49 |  |
+| Active users (Shell sign-ins, jvkn) | 50 |  |
 
 _No flips this run._
 ---
