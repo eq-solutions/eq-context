@@ -8,21 +8,21 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 18:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 18:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-08 15:52 UTC → 2026-09-08 18:52 UTC)
+## Since last refresh (2026-09-08 18:52 UTC → 2026-09-08 18:59 UTC)
 
-- Merged: eq-shell [#1823](https://github.com/eq-solutions/eq-shell/pull/1823) fix(responsive): let iPad join the phone breakpoint instead 
-- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
-- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
-- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
-- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
-- Merged: eq-shell [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the S
-- Merged: eq-shell [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages
-- Merged: eq-shell [#1800](https://github.com/eq-solutions/eq-shell/pull/1800) fix(security): bump fast-uri past 4 newer SSRF/host-confusio
-- ⚠ Needs you: 6 → 7 (new items)
+- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
+- Merged: eq-shell [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL
+- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
+- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
+- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
+- Merged: eq-shell [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd4
+- Merged: eq-shell [#1802](https://github.com/eq-solutions/eq-shell/pull/1802) fix(auth): don't clear a cached session on a pure verify-she
+- Merged: eq-shell [#1799](https://github.com/eq-solutions/eq-shell/pull/1799) fix(customers): update the customer Field/Service pill live 
+- ✅ Needs you: 7 → 6
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (6)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🟠 **PR aging 8d** — eq-shell [#1699](https://github.com/eq-solutions/eq-shell/pull/1699) "chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5"
@@ -30,7 +30,6 @@ _2026-09-08 18:52 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 8d** — eq-shell [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) "chore(deps): bump unpdf from 0.12.1 to 0.12.2"
 - 🟠 **PR aging 8d** — eq-shell [#1696](https://github.com/eq-solutions/eq-shell/pull/1696) "chore(deps): bump @sentry/react from 10.53.1 to 10.73.0"
 - 🟠 **PR aging 8d** — eq-shell [#1695](https://github.com/eq-solutions/eq-shell/pull/1695) "chore(deps): bump papaparse and @types/papaparse"
-- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (280)
 
@@ -56,7 +55,7 @@ _…and 268 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 5 | 8d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 3d |
-| eq-field | ✓ success | 0d ago | 4 | 6d |
+| eq-field | ✓ success | 0d ago | 5 | 6d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -64,7 +63,7 @@ _…and 268 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-08 |
+| eq-shell | ready | 2026-09-08 |
 
 ## Live errors (Sentry)
 
@@ -94,10 +93,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-08 | eq-shell | [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an export  |
 | 2026-09-08 | eq-shell | [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load PDF l |
 | 2026-09-08 | eq-solves-service | [#837](https://github.com/eq-solutions/eq-service/pull/837) fix(nav): let the embedded Shell nav bar scroll on tablet widths |
+| 2026-09-08 | eq-field | [#944](https://github.com/eq-solutions/eq-field/pull/944) v3.5.697 — Shell handoff: fix silent SKS boot hang past Shell's 3 |
 | 2026-09-08 | eq-field | [#942](https://github.com/eq-solutions/eq-field/pull/942) v3.5.696 — iPad joins the phone/mobile layout, not a new tablet t |
 | 2026-09-08 | eq-field | [#941](https://github.com/eq-solutions/eq-field/pull/941) v3.5.695 — Weekly Roster + Edit Roster: sticky day/date header |
 | 2026-09-08 | eq-field | [#940](https://github.com/eq-solutions/eq-field/pull/940) v3.5.694 — Weekly Roster: search now matches site too, not just n |
-| 2026-09-08 | eq-field | [#939](https://github.com/eq-solutions/eq-field/pull/939) v3.5.693 — Contacts: click-to-copy is now per-field, not a bulk b |
 _Showing 15 of 80 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -186,4 +185,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 18:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 18:59 UTC._
