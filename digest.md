@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 10:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 10:40 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-08 10:13 UTC → 2026-09-08 10:25 UTC)
+## Since last refresh (2026-09-08 10:25 UTC → 2026-09-08 10:40 UTC)
 
-- Merged: eq-shell [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabili
-- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
-- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
-- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
-- Merged: eq-shell [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the S
-- Merged: eq-shell [#1800](https://github.com/eq-solutions/eq-shell/pull/1800) fix(security): bump fast-uri past 4 newer SSRF/host-confusio
-- Merged: eq-shell [#1798](https://github.com/eq-solutions/eq-shell/pull/1798) feat(staff): reframe Resourcing around conversations happeni
-- Merged: eq-shell [#1796](https://github.com/eq-solutions/eq-shell/pull/1796) feat(staff): add a real Manager (reporting-line) field, SKS 
+- Merged: eq-shell [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAud
+- Merged: eq-shell [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL
+- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
+- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
+- Merged: eq-shell [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd4
+- Merged: eq-shell [#1802](https://github.com/eq-solutions/eq-shell/pull/1802) fix(auth): don't clear a cached session on a pure verify-she
+- Merged: eq-shell [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages
+- Merged: eq-shell [#1799](https://github.com/eq-solutions/eq-shell/pull/1799) fix(customers): update the customer Field/Service pill live 
 
 ## ⚠ Needs you (8)
 
@@ -55,8 +55,8 @@ _…and 266 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 5 | 7d |
-| eq-solves-service | ✓ success | 1d ago | 6 | 3d |
-| eq-field | ✓ success | 0d ago | 3 | 5d |
+| eq-solves-service | ✓ success | 1d ago | 7 | 3d |
+| eq-field | ✓ success | 0d ago | 4 | 5d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -73,7 +73,9 @@ _…and 266 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 14 | 2026-09-06 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 13 | 2026-09-06 |
 | eq-cards | [minified:B2: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 2 | 2026-09-08 |
+| eq-shell | [TypeError: 'text/html' is not a valid JavaScript MIME type.](https://eq-solutions.sentry.io/issues/145673876/) | 1 | 2026-09-08 |
 | eq-field | [ReferenceError: _isPhoneViewport is not defined](https://eq-solutions.sentry.io/issues/145668949/) | 1 | 2026-09-08 |
+| eq-shell | [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/) | 1 | 2026-09-08 |
 | eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 1 | 2026-09-07 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
@@ -81,6 +83,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-08 | eq-shell | [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAudience |
 | 2026-09-08 | eq-shell | [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabilize oc |
 | 2026-09-08 | eq-shell | [#1818](https://github.com/eq-solutions/eq-shell/pull/1818) fix(documents): scope site/customer tags to Person, make Role mul |
 | 2026-09-08 | eq-shell | [#1817](https://github.com/eq-solutions/eq-shell/pull/1817) feat(staff): backdate conversations, Casual notes attach a source |
@@ -95,7 +98,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-08 | eq-cards | [#345](https://github.com/eq-solutions/eq-cards/pull/345) fix(security): close 4 findings from an adversarial security pass |
 | 2026-09-07 | eq-shell | [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kanban |
 | 2026-09-07 | eq-shell | [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles |
-| 2026-09-07 | eq-shell | [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca45 |
 _Showing 15 of 81 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -145,7 +147,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 55 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 491 | 93 / 14 | 0 | 62 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 590 | 50 / 4 | 2 | 13 |
+| [OPS](ops/pending.md) | 633 | 53 / 4 | 2 | 13 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -184,4 +186,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 10:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 10:40 UTC._
