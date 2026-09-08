@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
     | Assets | 2,842 | app_data.assets |
     | Tenants | 1 (SKS Technologies) | service.tenants |
     | Users | 5 | service.tenant_members |
-    | Maintenance checks | 37 | service.maintenance_checks |
+    | Maintenance checks | 38 | service.maintenance_checks |
     | Defects | 3 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #951 fix(sign-documents): add a Reset zoom button to the inline PDF viewer
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -96,7 +95,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | building | 2026-09-08 |
+| eq-shell | ready | 2026-09-08 |
 | eq-field | ready | 2026-09-08 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
@@ -124,15 +123,15 @@ crossing since the last run, not a raw count. Machine-generated only; see
 
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
-| Maintenance checks created | 0 |  |
+| Maintenance checks created | 1 | ⚠ FLIPPED |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 13 |  |
+| Prestarts created | 12 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
 | Active users (Shell sign-ins, jvkn) | 49 |  |
 
-_No flips this run._
+⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**
 ---
 
 ## Architecture: What Owns What
