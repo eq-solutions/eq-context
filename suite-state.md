@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #345 fix(security): close 4 findings from an adversarial security pass
 
 **eq-field:**
-- #938 v3.5.691 — Contacts + Roster: copy phone/email straight to the clipboard
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
