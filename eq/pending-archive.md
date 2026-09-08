@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -9727,5 +9727,13 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 
 ## eq-field: Weekly Roster — Roster Overview summary card removed from default view (v3.5.653, PR #896, merged + live) (rotated 2026-09-08 — open items remain in eq-field.md)
 
+
+---
+
+## eq-field: Documents to Sign — Schneider handbook "wouldn't load" traced to a silent-forever spinner (2026-08-28) (rotated 2026-09-09 — root cause confirmed + fixed, see eq-field.md's 2026-09-09 PR #952 entry)
+
+- [x] Root cause of Luke's specific report not confirmed live — no signer credentials in this environment to reproduce the exact fetch he hit. This closes a real, verified gap in the same code path; needs a retry on a fresh tab to confirm it actually resolves his report. _(added 2026-08-28)_
+- [x] Two PRs collided on the same version number this session — #821 and #822 both opened as "v3.5.592", neither merged as of 2026-08-28. This session used v3.5.593 to avoid the clash; whichever of #821/#822 merges next will need to renumber. Worth a glance next session before picking a version. _(added 2026-08-28)_
+- [x] Still genuinely root-cause-unknown — v3.5.595's telemetry hasn't caught a real event yet as of 2026-08-30. Next step depends entirely on a real Sentry event from an affected device, not further code changes. _(added 2026-08-30 — resolved 2026-09-09: Sentry EQ-FIELD-1K caught the real event, root cause confirmed as a Samsung Internet Map.getOrInsertComputed gap, fixed via PR #952)_
 
 ---
