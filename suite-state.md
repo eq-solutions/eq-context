@@ -74,6 +74,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1817 feat(staff): backdate conversations, Casual notes attach a source doc
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
@@ -112,7 +113,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 73 | ✓ 73 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,001 | ✓ 2,001 |
+| Operational | app_data.field_schedule | 2,029 | ✓ 2,029 |
 | Operational | app_data.field_timesheets | 449 | ✓ 449 |
 | Safety | public.prestarts | 239 | ✓ 239 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
