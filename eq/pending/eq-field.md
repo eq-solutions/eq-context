@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,21 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,284 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-field: Copy-to-clipboard for staff contact info — shipped, then corrected same-day per live feedback (PRs #938/#939, v3.5.692→v3.5.693, 2026-09-08)
+*Royce: routinely copying staff phone numbers/emails out of both Contacts and Weekly Roster, one field at a time. First pass built a bulk "copy everyone visible" action on both screens; Royce's live correction right after it shipped ("i meant click and copy individual phone numbers / emails not the whole list") led to a same-day rework.*
+
+- [x] **v3.5.692 ([PR #938](https://github.com/eq-solutions/eq-field/pull/938)):** bulk "📋 Copy" button on Contacts (copies name/phone/email for the current filtered list) + per-group bulk-copy icons on Roster (desktop: whole group; mobile: only people rostered on for the selected day). Merged, verified live.
+- [x] **Concurrent-PR version collision caught before merge:** PR #937 landed as v3.5.691 first, same number this branch had also picked. Rebased, retargeted to v3.5.692, re-ran the full test/lint/bundle/cache-buster gate before re-pushing — not just re-tagged and hoped.
+- [x] **v3.5.693 ([PR #939](https://github.com/eq-solutions/eq-field/pull/939)), same-day correction:** removed the bulk Contacts button and Roster's bulk icons entirely; added a small per-field "📋" copy icon next to each individual phone/email in Contacts (desktop + mobile), sitting alongside the existing tel:/mailto: link rather than replacing it. Merged, verified live.
+- [x] **Feedback saved as durable memory** (`feedback_copy_individual_not_bulk.md`, this Claude session's eq-field memory) so a future "make copying contact info easier" request in EQ Field defaults to per-field, not bulk.
+- [ ] **Roster still has no way to quickly grab a person's number** — it never showed individual phone/email per row (only shift/site codes), so the per-field pattern doesn't map there; removed outright rather than invent new UI a second guess might also get wrong. Flagged to Royce: the more likely real fix is linking a person's name through to Contacts, not a roster-side copy icon. Not built, no decision yet. _(added 2026-09-08)_
+
+**Notes:**
+- Full technical detail (the `_rv9ApplyPostRender()` DOM-rebuild gotcha that silently stripped the first version's Roster button, the hand-merged `core-bundle-*.js` build step, the `check-cache-busters.mjs` tag mechanism): `sessions/2026-09-08.md` and eq-field's own `docs/reflection-log.md` (two entries, 2026-09-08).
+- Two unrelated Roster requests surfaced in the same live-feedback message (search should match site codes not just name; sticky day/date header like Timesheets) — spawned as separate background tasks, both started by Royce in independent sessions, not yet reported back. Tracked here so they're not lost if those sessions don't self-file: `task_3e851158` (search-by-site), `task_09f4cb3a` (sticky header).
 
 ---
 

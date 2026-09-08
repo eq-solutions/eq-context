@@ -1,13 +1,26 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-06
+last_updated: 2026-09-08
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-09-08 (PR #939 MERGED, v3.5.693 — Contacts: click-to-copy is per-field, not a bulk button)
+- Same-day correction to PR #938 below: Royce, immediately after v3.5.692 shipped, "i meant click and copy individual phone numbers / emails not the whole list."
+- Removed the Contacts toolbar's bulk "Copy" button and Roster's per-group bulk-copy icons entirely. Roster never showed individual phone/email per row (only shift/site codes), so there's no per-field target to give it an equivalent — left without a replacement rather than guessed at a second shape.
+- Added a small copy icon next to each individual phone number and email in Contacts (desktop table + mobile cards, `_fieldCopyBtn`/`_personPhone`/`_personEmail` in `people.js`) — click it, that one value copies. Sits alongside the existing `tel:`/`mailto:` link rather than replacing it, so tap-to-call/tap-to-email is unchanged.
+- `copyContactsToClipboard()` (utils.js) replaced with `copyFieldValue()`, same clipboard-write + `execCommand('copy')` fallback, now scoped to one value read off a `data-copy` attribute rather than a formatted list embedded in the onclick string. `contactsCopied` analytics event replaced with `contactFieldCopied`.
+- Full suite 46/46 green, `eslint@9` 0 errors (same 955-warning baseline), bundles/cache-busters clean (`utils.js`/`analytics.js` re-bundled into `core-bundle-a2.js`/`a1.js`). Click-tested live on the deploy preview before merge: correct per-row copy value and toast, no accidental `tel:`/`mailto:` navigation, zero leftover Roster copy elements in the DOM. Merged, confirmed live: `field.eq.solutions/sw.js` shows v3.5.693.
+
+## 2026-09-08 (PR #938 MERGED, v3.5.692 — Contacts + Roster: copy phone/email to clipboard)
+- Royce: routinely copying staff phone numbers and emails out of both Contacts and Weekly Roster, one field at a time. First pass (superseded same-day by PR #939 above): a bulk "📋 Copy" button on the Contacts toolbar (copies name/phone/email for everyone the current search/filters show) and a bulk-copy icon in each Roster group header (desktop: the whole filtered group; mobile: only people rostered on for the selected day, reusing the crew-section's existing on/off count).
+- Shared `copyContactsToClipboard()` (utils.js) formatted each person as "Name — phone — email" and wrote the block to the clipboard, falling back to a hidden-textarea + `execCommand('copy')` when the async Clipboard API is unavailable or denied.
+- Concurrent-PR version collision: PR #937 merged as v3.5.691 first, the same number this branch had also picked. Caught via `gh pr view --json mergeable` = `CONFLICTING` before any broken push; rebased onto the new `main`, retargeted every version reference (`APP_VERSION`, `sw.js` CACHE, the changelog banner, all four static `?v=` tags) to v3.5.692, re-ran the full test/lint/bundle/cache-buster gate before force-pushing.
+- Full suite 46/46 green, `eslint@9` 0 errors, bundles/cache-busters clean. Click-tested live on the deploy preview before merge across Contacts, Roster desktop, and Roster mobile (including the empty-list and stopPropagation-doesn't-also-collapse-the-section cases). Merged, confirmed live: `field.eq.solutions/sw.js` shows v3.5.692.
 
 ## 2026-09-06 (PR #931 MERGED, v3.5.687 — FIX: ?tenant=demo stopped resolving to the demo sandbox)
 - Resumed uncommitted WIP found sitting in a leftover local worktree from a prior session (surfaced yesterday while click-testing PR #930's own deploy preview via the documented `?tenant=demo` route). Root cause: the canonical-driven tenant-resolution rewrite made every `?tenant=` override require a matching canonical `organisations` row — `'demo'` is a pure in-memory sandbox (`_isDemoTenant()` in `supabase.js`) that was never meant to have one, so the override silently no-opped and fell through to the host-matched org (`eq`, on the eq host) instead, on both preview and production.
