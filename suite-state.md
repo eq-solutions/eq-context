@@ -64,6 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #345 fix(security): close 4 findings from an adversarial security pass
 
 **eq-field:**
+- #938 v3.5.691 — Contacts + Roster: copy phone/email straight to the clipboard
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -102,8 +103,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | building | 2026-09-08 |
-| eq-field | ready | 2026-09-07 |
+| eq-shell | ready | 2026-09-08 |
+| eq-field | ready | 2026-09-08 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
@@ -133,12 +134,12 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Maintenance checks created | 0 |  |
 | Maintenance checks completed | 0 |  |
 | Prestarts created | 12 |  |
-| Toolbox talks created | 0 | ⚠ FLIPPED |
+| Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
 | Active users (Shell sign-ins, jvkn) | 49 |  |
 
-⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**
+_No flips this run._
 ---
 
 ## Architecture: What Owns What
