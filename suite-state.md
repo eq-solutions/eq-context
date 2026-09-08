@@ -64,8 +64,8 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
+- #949 v3.5.699 — Timesheets: guard _isPhoneViewport() against the same lazy-load race as EQ-FIELD-1G
 - #948 fix: sign 404 (signoff not found) now reports to Sentry
-- #943 v3.5.698 — Home: drop the "EQ Field" eyebrow label
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
