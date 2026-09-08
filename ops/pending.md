@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-08
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,49 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## F16 built + activated — eq-context worktree-isolation enforcement; dirty-pile reconciled (2026-09-08)
+
+*Royce's task: fix eq-context's missing worktree-isolation enforcement — the root cause behind
+F9, tracked as open but nothing actually prevented it. Live evidence found first: the shared
+root ~111-132 commits behind `origin/main` across the session, carrying a ~33-38-file
+uncommitted pile with no single owner, and three orphaned worktrees in three different ad hoc
+naming conventions, two holding real unpushed commits.*
+
+- **`hooks/session_start.py`** — unconditional ISOLATE banner, every session, any repo.
+- **`hooks/pre_tool_use.py`** — F16 check (`eq_context_bare_root_path()`), mirrors the existing
+  F15 eq-cards guard: blocks Edit/Write/MultiEdit/NotebookEdit in the bare root, `EnterWorktree`
+  as the escape valve. Shipped inactive first (blast radius); Royce chose via `AskUserQuestion`
+  to restructure `close.md` first rather than leave it inactive or activate as-is accepting
+  breakage — both done same session, F16 is now live and unconditional.
+- **`hooks/session_end.py`** — new WORKTREES check at session close, already caught real orphans
+  in production the same session it shipped.
+- **`tools/commands/close.md`** (+ live source) — new Step 0 (isolate first) and Step 5 (land via
+  `scripts/safe_commit.py`, not a raw commit that was silently contradicting F9(a)'s own guard).
+- **`system/worktree-registry.md`** — standardized on `<repo>-wt-<topic>` (the convention actually
+  dominant in live use, not eq-field's documented-but-unused variant).
+- **`system/failures.md`** — new F16 entry, rung 4, full evidence + methodology.
+- **Dirty-pile fully reconciled**, Royce's explicit go-ahead (confirmed directly in chat, not
+  acted on from a peer session's relayed claim alone — see `sessions/2026-09-08.md`): all 41
+  dirty entries resolved (39 stale/superseded and discarded, 1 genuine merge — `sessions/2026-09-08.md`
+  had diverged into two disjoint entry sets — 1 newly landed, a file referenced from `README.md`
+  but never actually committed). Local `main` fast-forwarded to `origin/main`: 0 commits behind,
+  fully clean, confirmed live.
+
+**Deferred, not this session:**
+- [ ] **Two orphaned worktrees still carry real unpushed commits** — an eq-shell Documents-feature
+  close writeup, and a 2026-09-08 session-close commit. Spawned as background review tasks
+  (content needs a look before landing, not a mechanical push). _(added 2026-09-08)_
+- [ ] **`guard.js`'s `stale-main-gate` worktree regex misses the `-wt-` infix pattern** — only
+  recognizes the suffix form and nested `.claude/worktrees/`. A different rule in the same file
+  already handles the broader shape correctly. Spawned as a background task (guard.js is Royce's
+  own user-level tool, not part of this repo). _(added 2026-09-08)_
+- [ ] **`close.md` Step 0's fallback for "already isolated in a different repo's worktree, now
+  also closing out eq-context" is unverified** — the harness independently blocks a plain `git -C
+  <other-repo>` redirect from inside an isolated worktree session, confirmed live twice this
+  session. The documented workaround (`ExitWorktree` first) is untested. _(added 2026-09-08)_
 
 ---
 
