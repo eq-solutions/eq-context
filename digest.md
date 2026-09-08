@@ -8,33 +8,41 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-08 20:51 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-08 20:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-08 20:48 UTC → 2026-09-08 20:51 UTC)
+## Since last refresh (2026-09-08 20:51 UTC → 2026-09-08 20:56 UTC)
 
-- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
-- Merged: eq-shell [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL
-- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
-- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
-- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
-- Merged: eq-shell [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd4
-- Merged: eq-shell [#1802](https://github.com/eq-solutions/eq-shell/pull/1802) fix(auth): don't clear a cached session on a pure verify-she
-- Merged: eq-shell [#1798](https://github.com/eq-solutions/eq-shell/pull/1798) feat(staff): reframe Resourcing around conversations happeni
+- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
+- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
+- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
+- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
+- Merged: eq-shell [#1803](https://github.com/eq-solutions/eq-shell/pull/1803) feat(staff): restrict the Manager field to Royce until the S
+- Merged: eq-shell [#1801](https://github.com/eq-solutions/eq-shell/pull/1801) Documents: split sign-off register into tier-scoped pages
+- Merged: eq-shell [#1800](https://github.com/eq-solutions/eq-shell/pull/1800) fix(security): bump fast-uri past 4 newer SSRF/host-confusio
+- Merged: eq-shell [#1799](https://github.com/eq-solutions/eq-shell/pull/1799) fix(customers): update the customer Field/Service pill live 
+- ⚠ Needs you: 7 → 13 (new items)
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (13)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
+- 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-08.md](sessions/2026-09-08.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F10: core.hooksPath silently resolves to the wrong location — four distinct mechanisms, one sym · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **PR aging 8d** — eq-shell [#1699](https://github.com/eq-solutions/eq-shell/pull/1699) "chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5"
 - 🟠 **PR aging 8d** — eq-shell [#1698](https://github.com/eq-solutions/eq-shell/pull/1698) "chore(deps): bump react-hook-form from 7.77.0 to 7.86.0"
 - 🟠 **PR aging 8d** — eq-shell [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) "chore(deps): bump unpdf from 0.12.1 to 0.12.2"
 - 🟠 **PR aging 8d** — eq-shell [#1696](https://github.com/eq-solutions/eq-shell/pull/1696) "chore(deps): bump @sentry/react from 10.53.1 to 10.73.0"
 - 🟠 **PR aging 8d** — eq-shell [#1695](https://github.com/eq-solutions/eq-shell/pull/1695) "chore(deps): bump papaparse and @types/papaparse"
-- 🟠 **Sentry new error** — `eq-shell` [TypeError: 'text/html' is not a valid JavaScript MIME type.](https://eq-solutions.sentry.io/issues/145673876/)
+- 🟠 **Sentry new error** — `eq-field` [TypeError: this[#methodPromises].getOrInsertComputed is not ](https://eq-solutions.sentry.io/issues/145786350/)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
-## 🙋 Waiting on you (282)
+## 🙋 Waiting on you (284)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Not click-tested live by a person** — verified via a clean `pnpm exec tsc -b` plus an isolated before/after reproduction of the actual CSS cascade at 768px and 1400px, not a real authenticated session on a physical iPad. No Shell/demo credentials in this environment. _(added 2026-09-08)_
 - **eq-shell** · **EQ-SHELL-22/1P fix — small, precedented, ready to scope**: add Firefox's `"is not a valid javascript mime type"` wording to `isChunkLoadErrorMessage()` in `lib/chunkReload.ts`, same shape as the EQ-SHELL-10/1S fixes already in that file. Royce's call whether to build it now given how small it turned out to be, or leave watch-only as originally scoped. _(added 2026-09-09)_
 - **eq-shell** · **No signal anywhere that an entry was backdated** — once `occurred_at` differs from `created_at`, the UI shows the chosen date as if it were contemporaneous, with nothing like "logged 4d later." Named during the critique as a real product gap, not fixed — Royce's call whether it's worth a small label. _(added 2026-09-08)_
 - **eq-shell** · **Not click-tested live by a person** — no Shell credentials in this environment (confirmed again at close: hit the real login wall navigating to `/sks/admin/documents/mine` directly). Worth a real pass, in order of importance: (1) as a Viewer-tier account, confirm `my-signoffs`' Network response never contains another person's name or email — the one check that actually matters; (2) as Assigner, the person/site matrix renders real data and bulk push/remind actually create/notify; (3) as Manager (`documents.manage` without `documents.assign` — not a stock role, needs a custom Access Control group grant to even test), confirm `admin/documents` redirects to the library instead of a dead end, and the Upload tab's "pushing needs assign permission" copy shows instead of a silently missing step.
@@ -46,16 +54,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live by a person** — verified via full build/test/lint (591/593 passing) + live DB queries (migration applied, security-group grant confirmed, production deploy confirmed via exact commit-ref match), not an actual signed-in click-through. Worth a real pass: as Royce, confirm the Manager field shows/edits correctly on a real staff profile; as any other account, confirm it's completely absent (view and edit). _(added 2026-09-07)_
 - **eq-shell** · **None of tonight's 4 fixes have been click-tested live by a person** — verified via full test suite + lint + an independent merge-readiness audit only. Worth a real pass once convenient: try resetting a platform_admin's PIN as a regular manager (should 403 `cannot-reset-platform-admin`); try switching tenant on a session that's been logged out/revoked elsewhere (should 401, not succeed).
 - **eq-shell** · **#711/SEC-71 — mandatory TOTP enforcement is genuinely client-side only**, reconfirmed live (`shell-login.ts:476-495` issues a full session regardless of the flag). The issue itself says it needs Royce's call on intended grace-period semantics before anyone implements a fix — not built.
-- **eq-shell** · **Not click-tested live** — no Shell session/credentials in this environment. Worth a real pass: push a document to a crew and confirm it can't resolve another tenant's crew; approve a Cards application with a start date and confirm onboarding documents land automatically; confirm an archived document can't be pushed/republished via the UI. _(added 2026-09-05)_
-_…and 270 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 272 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 8d |
+| eq-shell | ✓ success | 0d ago | 6 | 8d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 3d |
-| eq-field | ✓ success | 0d ago | 5 | 6d |
+| eq-field | ✓ success | 0d ago | 4 | 6d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -63,7 +70,7 @@ _…and 270 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | ready | 2026-09-08 |
+| eq-shell | building | 2026-09-08 |
 
 ## Live errors (Sentry)
 
@@ -71,12 +78,12 @@ _…and 270 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |---------|-------|--------|-----------|
 | eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 14 | 2026-09-06 |
 | eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 13 | 2026-09-06 |
+| eq-field | [TypeError: this[#methodPromises].getOrInsertComputed is not a function](https://eq-solutions.sentry.io/issues/145786350/) | 4 | 2026-09-08 |
 | eq-shell | [TypeError: 'text/html' is not a valid JavaScript MIME type.](https://eq-solutions.sentry.io/issues/145673876/) | 2 | 2026-09-08 |
+| eq-shell | [EQ Field accepted the handoff but never reported 'rendered' (16s)](https://eq-solutions.sentry.io/issues/145332293/) | 2 | 2026-09-08 |
 | eq-cards | [minified:B2: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 2 | 2026-09-08 |
 | eq-shell | [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/) | 2 | 2026-09-08 |
-| eq-field | [TypeError: this[#methodPromises].getOrInsertComputed is not a function](https://eq-solutions.sentry.io/issues/145786350/) | 1 | 2026-09-08 |
 | eq-field | [ReferenceError: _isPhoneViewport is not defined](https://eq-solutions.sentry.io/issues/145668949/) | 1 | 2026-09-08 |
-| eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 1 | 2026-09-07 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
@@ -96,16 +103,16 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-08 | eq-shell | [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an export  |
 | 2026-09-08 | eq-shell | [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load PDF l |
 | 2026-09-08 | eq-solves-service | [#837](https://github.com/eq-solutions/eq-service/pull/837) fix(nav): let the embedded Shell nav bar scroll on tablet widths |
+| 2026-09-08 | eq-field | [#946](https://github.com/eq-solutions/eq-field/pull/946) v3.5.699 — Timesheets: cut the completion-chasing chrome |
 | 2026-09-08 | eq-field | [#947](https://github.com/eq-solutions/eq-field/pull/947) fix: log signoff-not-found on sign action's 404 branch |
-| 2026-09-08 | eq-field | [#945](https://github.com/eq-solutions/eq-field/pull/945) v3.5.698 — Roster: tap a name for phone/email, one-click copy inc |
 _Showing 15 of 79 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (296 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (298 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (244 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (66 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-solves-service** (68 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -134,10 +141,10 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1494 | 207 / 92 | 1 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1508 | 208 / 93 | 1 | 78 |
 | [eq-cards](eq/pending/eq-cards.md) | 355 | 48 / 17 | 0 | 9 |
 | [eq-field](eq/pending/eq-field.md) | 1259 | 179 / 70 | 29 | 48 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 378 | 49 / 18 | 0 | 20 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 390 | 50 / 19 | 0 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 164 | 13 / 6 | 2 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
@@ -170,6 +177,12 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-16) · **Deferred: make long lists load a page at a time** instead of everything at once (quotes, comms roster, staff, customers). _(added 2026-07-19)_
 _…and 328 more — see each file's Queue health row above._
 
+## Possible recurring failures (unconfirmed)
+
+_Session logs mention a pattern matching a known failure below, dated after its last recorded occurrence. Not yet counted — if it's real, bump `recurrences` in [failures.md](system/failures.md) and `guard-ratchet.yml` proposes promotion on its own next run._
+
+- **F5** (rung 0) — An ungoverned shadow memory overrode the canonical contract · 1 session since last recorded, most recent [2026-08-16.md](sessions/2026-08-16.md)
+
 ## Recent sessions
 
 | Date | Session |
@@ -186,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 20:51 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-08 20:56 UTC._
