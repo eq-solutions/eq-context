@@ -18,8 +18,11 @@ on:
     - cron: '0 12 * * *'
   workflow_dispatch:
   repository_dispatch:
-    # Fired by EQ repos on push to main once EQ_CONTEXT_PAT (workflow scope)
-    # is added to eq-context repo secrets and sender jobs are wired.
+    # Fired by EQ repos on push to main. EQ_CONTEXT_PAT (workflow scope) has
+    # been present in eq-context repo secrets since 2026-09-05 and sender jobs
+    # are wired — this fires live, on every EQ-repo merge, not just nightly.
+    # (Confirmed via `gh secret list` + digest.md's own commit cadence,
+    # `rules/tidy-protocol.md` Step 4, 2026-09-07.)
     types: [suite-state-changed]
 
 permissions:
