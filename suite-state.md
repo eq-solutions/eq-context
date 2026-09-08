@@ -74,7 +74,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1817 feat(staff): backdate conversations, Casual notes attach a source doc
 - #1699 chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.5
 - #1698 chore(deps): bump react-hook-form from 7.77.0 to 7.86.0
 - #1697 chore(deps): bump unpdf from 0.12.1 to 0.12.2
@@ -100,7 +99,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-07 |
-| eq-shell | ready | 2026-09-08 |
+| eq-shell | building | 2026-09-08 |
 | eq-field | ready | 2026-09-08 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
