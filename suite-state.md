@@ -64,8 +64,9 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #945 v3.5.697 — Roster: tap a name for phone/email, one-click copy included
-- #943 v3.5.697 — Home: drop the "EQ Field" eyebrow label
+- #947 fix: log signoff-not-found on sign action's 404 branch
+- #946 v3.5.699 — Timesheets: cut the completion-chasing chrome
+- #943 v3.5.698 — Home: drop the "EQ Field" eyebrow label
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -104,7 +105,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | building | 2026-09-08 |
+| eq-shell | ready | 2026-09-08 |
 | eq-field | ready | 2026-09-08 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
@@ -114,12 +115,12 @@ _If this file is >48h old, the cron is broken._
 ## Field Data Plane — SKS tenant (as of 2026-09-08)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 73 | ✓ 73 |
+| Directory | app_data.field_people | 71 | ✓ 71 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,046 | ✓ 2,046 |
+| Operational | app_data.field_schedule | 2,103 | ✓ 2,103 |
 | Operational | app_data.field_timesheets | 467 | ✓ 467 |
-| Safety | public.prestarts | 239 | ✓ 239 |
+| Safety | public.prestarts | 240 | ✓ 240 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
