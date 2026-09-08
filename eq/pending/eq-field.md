@@ -15,6 +15,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Prestart export could silently claim WHS compliance nobody confirmed — FIXED, merged, live (PR #950, v3.5.701, 2026-09-09)
+*Bug report: the Word-export of a Prestart record defaulted every one of the 8 fixed compliance statements (SWMS reviewed/approved, PPE, permits, etc.) to "Yes" (green) whenever no answer was recorded — which is always, since the capturing fields were dropped when the Prestart form was simplified. An exported record could claim a SWMS was reviewed and approved by every worker on a day nobody was ever asked — a document-accuracy/WHS issue, not cosmetic, since this file can end up in front of a client or inspector.*
+
+- [x] **Fixed `_psExportDocx`'s Measures table** (`scripts/safety.js`): a missing answer now renders "Not recorded" (gray) instead of defaulting to "Yes" (green); green is reserved for an actual recorded 'Yes'. Confirmed real Yes/No/N/A data still renders correctly — only the missing-data fallback changed.
+- [x] **Same fix extended to the Controls table**, flagged in the same report: `d.controls` is dead for the same reason, so it always printed 5 ambiguous blank rows with no way to tell "nothing to report" from "this field no longer exists." Now prints one explicit "No controls recorded for this job." line when empty; real per-job data (any older record that still has it) renders unchanged. Decided via `AskUserQuestion` — Royce chose the explicit-note option over removing the section outright or leaving the blank rows as-is.
+- [x] **Verified against the real rendering code, not just read** — loaded the actual `dx`/`SiteReportsShared.docx` helpers in-browser (the local build, then the live Netlify deploy preview after merge) and ran the exact edited logic against empty and populated test records, confirming the rendered text/colour for every branch.
+- [x] **Version renumbered twice mid-session** (v3.5.699 → 700 → 701) — two other PRs claimed the next version number while this one was in flight; rebased and re-verified `check-cache-busters.mjs` + `node --check` clean each time before re-pushing.
+- [x] **Merged on Royce's explicit "Merge it."** Production deploy took noticeably longer than the usual ~30s (queued behind the same burst of concurrent merges as the other 2026-09-09 sessions on this file) but resolved on its own — confirmed live via a direct fetch of `field.eq.solutions/scripts/safety.js` once it landed, not assumed from the merge alone.
+- [ ] **Not click-tested against a real SKS Prestart record** — no Shell/Core credentials in this environment. Verified instead against the demo tenant (confirms the current form genuinely has no measures/controls capture UI) and by executing the real export code directly against synthetic records. Worth a real pass once convenient: export an actual SKS Prestart record from Safety → Records and confirm Measures reads "Not recorded" (not "Yes") and Controls reads the new note line where nothing was captured. _(added 2026-09-09)_
+
+**Notes:**
+- Full technical detail (the exact rendering-logic trace, the per-file `?v=` cache-buster tag mechanism this session had to learn the hard way, the rebase/conflict resolution across two version collisions): `sessions/2026-09-09.md`.
+
+---
+
 ## eq-field: Screenshot review (6 SKS screens) → Home eyebrow removed + Timesheets completion-chasing chrome cut — both FIXED, merged, live (PRs #943/#946, v3.5.700/v3.5.699, 2026-09-09)
 *Royce asked whether Claude could see 6 EQ Field/SKS screenshots he'd uploaded to Google Drive that day (5 phone captures, 1 iPad photo). Downloaded, rotated/compressed the iPad photo, self-scanned all 6 for issues (15 findings across Data/Display/Voice/Note categories), published as an HTML review page for Royce to comment on (needed his explicit override — the publish classifier initially blocked it, since the page carries real SKS names/DOB/phone/leave dates, not demo content). Royce came back with two concrete asks from the page.*
 
