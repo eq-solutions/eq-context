@@ -60,14 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-09)
 
-**eq-cards:**
-- #347 fix(cards): wallet card boundary + edit profile in place
-
-**eq-field:**
-- #974 fix(ehow): field_job_numbers_src() had no caller-tenant check
-
 **eq-service:**
-- #840 fix(ehow): role-gate site-credential fns, tenant-guard get_defect_counts
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
@@ -76,7 +69,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1877 chore(deps): bump @eq-solutions/ui to v1.16.5
+- #1879 fix(security): lock field_tenant_slug to a tenant's own slug
+- #1878 fix(security): close 2 more RLS gaps found while checking tender_enrichment's siblings
 - #1875 fix(cards): let a worker cancel their own pending access request
 - #1871 fix(control-plane): mirror liveness off the data plane, not DNS
 - #1870 Fix crash on outgoing connect requests with a revoked status
@@ -89,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✗ failure |
+    | eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -99,11 +93,11 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-09 |
-| eq-shell | new | 2026-09-09 |
+    | eq-service | new | 2026-09-09 |
+| eq-shell | building | 2026-09-09 |
 | eq-field | new | 2026-09-09 |
 
-    **Migrations:** eq-service has 244 (latest: 0240) applied
+    **Migrations:** eq-service has 245 (latest: 0241) applied
 
 ---
 
