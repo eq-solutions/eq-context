@@ -72,15 +72,21 @@ one-paragraph flag.
   by 0309) and `app_data.field_job_numbers_src()` (live, backs a Field UI panel — silently
   returns zero rows on any other tenant) both carry the same hardcoded literals. Your call
   (SKS-only forever vs. real parameterisation) now covers both files, not just one.
-- **Ordering bugs — confirmed, and there's a third.** `0257`'s unguarded
-  `REVOKE ALL ON public.app_config, public.organisations FROM anon;` and `0260`'s unguarded
-  `REVOKE`s on 4 `app_data.*` tables both crash a from-scratch tenant before this pair ever
-  runs, exactly as flagged. **Third, from 0309's own header**: 0308's `app_settings` policy
-  needs `service.tenant_members`, which only 0309 creates — but 0308 is numbered lower, so it
-  fails before 0309 ever runs either. Three interlocking blockers, not two independent ones.
-  Useful mechanical fact: `migrate-tenants.mjs` sorts by filename and skips only
-  already-ledgered files — genuinely reordering the sequence (not just appending) is mechanically
-  possible, confirmed by reading the runner directly.
+- **Ordering bugs — one confirmed real for a new tenant, one was a false alarm, plus a real
+  third.** `0257`'s unguarded `REVOKE ALL ON public.app_config, public.organisations FROM
+  anon;` genuinely crashes a from-scratch tenant before this pair ever runs — confirmed, no
+  Plane header, applies fleet-wide by default. **`0260` does not apply here — corrected same
+  day (see madagins verification below).** It carries `-- Plane: ehow ONLY` and REVOKEs
+  grants on `app_data.field_teams`/`field_team_members`, views that only exist on ehow
+  (created by eq-field's own separate pipeline) — `migrate-tenants.mjs` skips it entirely for
+  any non-ehow tenant, so it can't crash a genuinely new tenant; it was never going to run
+  there. **Real third blocker, from 0309's own header**: 0308's `app_settings` policy needs
+  `service.tenant_members`, which only 0309 creates — but 0308 is numbered lower, so it fails
+  before 0309 ever runs either. Two interlocking blockers for a new tenant (0257, and the
+  internal 0308-vs-0309 ordering), not three. Useful mechanical fact either way:
+  `migrate-tenants.mjs` sorts by filename and skips only already-ledgered files — genuinely
+  reordering the sequence (not just appending) is mechanically possible, confirmed by reading
+  the runner directly.
 - **Two unverified `service.*` dependencies — confirmed real, but ehow-safe.** Grepped all 310
   tracked migrations for `service.tenants` / `service.set_updated_at()`: zero hits either way —
   neither is created by any tracked migration, and `provision-tenant-background.ts`'s automatic
@@ -94,7 +100,7 @@ one-paragraph flag.
 
 **Decisions needed from you before this goes further:**
 1. Scoping — 37 legacy objects (0308) + 2 hardcoded functions (0309): SKS/ehow-only forever, or real per-tenant parameterisation?
-2. Ordering — patch `0257`/`0260` with existence guards, or genuinely reorder the sequence (confirmed possible)?
+2. Ordering — patch `0257` (and the internal 0308-vs-0309 dependency) with existence guards, or genuinely reorder the sequence (confirmed possible)? `0260` is not part of this — it's ehow-only, never dispatched to a new tenant at all.
 3. The 2 missing `service.*` objects need their own capture migration before this pair is safe on any tenant but ehow.
 4. `sync_staff_to_field()` is dead with a live landmine in it (hardcoded org_id) — drop it from the capture, or keep it as-is?
 
@@ -109,19 +115,19 @@ scoping question above: `public.organisations`'s RLS policy uses madagins's own 
 (`dd5d8622-...`), not ehow's hardcoded literal — whoever built this adapted it per-tenant
 rather than reusing the uncommitted draft verbatim.
 
-**Not fully caught up — 11 tracked migrations still missing from the ledger**, diffed
-directly against every file in `supabase/tenant-migrations/`: `0258`-`0262`, `0266`, `0270`,
-`0273`, `0290`, `0303`. Most notably **`0260_teams_team_members_tenant_lockdown.sql`** — the
-exact migration this doc's own ordering-bug finding (above) named as crashing a from-scratch
-tenant. The gaps are scattered individually rather than one contiguous stop-point, which
-reads as a deliberate exclude-list rather than a run that failed and gave up — but that's
-inference from the ledger's shape, not confirmed with whoever actually ran this. (Checked one
-plausible false alarm: `wipe_backup` schema, recently RLS-locked on ehow via #1833 — doesn't
-exist on madagins at all, so its absence from the ledger is expected, not a gap.)
-
-Remaining open question, smaller now than "50 behind": whether/how to land the 11 excluded
-migrations on madagins, particularly `0260` — same ordering-bug shape as the legacy-baseline
-pair above, so may want the same fix applied once. **Royce's call, not this doc's.**
+**Correction, same day: the "11 missing migrations" below were a false alarm — not a gap.**
+First pass diffed the ledger against every tracked migration file and found 11 absent:
+`0258`-`0262`, `0266`, `0270`, `0273`, `0290`, `0303` — flagged as a backlog needing a
+decision, including `0260` (wrongly connected to this doc's own ordering-bug finding above).
+Checked each file's own header before proposing to dispatch any of them: **all 11 carry an
+explicit `-- Plane: ehow ONLY` (ten of them) or `-- Plane: zaap ONLY` (`0262`) header** — this
+repo's real mechanism for scoping a migration to fewer than all tenants. None of them were
+ever meant to reach madagins. `0260` specifically REVOKEs grants on `app_data.field_teams`/
+`field_team_members` — views that only exist on ehow, created by eq-field's own separate
+migration pipeline, not eq-shell's. Dispatching any of these 11 to madagins would be a
+mistake, not a fix — madagins's migration state is already complete for its own tenant scope.
+Nothing to land here. (The one earlier check that WAS valid: `wipe_backup` schema doesn't
+exist on madagins, so `0309`'s absence is separately fine, unrelated to Plane scoping.)
 
 ## 2. Re-run `check-provisioning-completeness.mjs`
 
@@ -169,6 +175,6 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 |---|---|---|---|
 | 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) merged and confirmed live** — done | — |
 | 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | **Reviewed** — 4 concrete decisions needed from you (scoping now covers 2 files, ordering has a 3rd interlocking bug, 2 missing `service.*` objects, 1 dead function to keep-or-drop) | — |
-| 1c | madagins's migration backlog | Down from 50 to 11 missing (eq-field session's fix) — most notably `0260`, same ordering bug as 1b. Your call on landing the rest | — |
+| 1c | madagins's migration backlog | **Resolved — was never real.** eq-field session's fix landed the genuine gap; the remaining "11 missing" are all Plane-scoped away from madagins (ehow/zaap only) and correctly absent | — |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | 1a merged + dispatched |
 | 3 | Triage ~71 tables / ~65 functions / 2 extensions / 2 schemas | Not started | Independent — can run anytime |
