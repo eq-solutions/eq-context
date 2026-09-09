@@ -37,11 +37,19 @@ already said.
   independently reviewed the way `0311` was.
 - **One of the two ordering blockers is fixed**: [PR #1843](https://github.com/eq-solutions/eq-shell/pull/1843)
   (merged) guards `0257`'s `REVOKE` so it no longer crashes a from-scratch tenant.
-- **The other is confirmed still open, on record as deliberately deferred**: `0311`'s own header
-  documents that migration `0260` assumes tables `0311` itself creates already exist — a
-  from-scratch tenant still fails at `0260`. PR #1842's own words: "reordering already-merged,
-  already-applied migration history is a materially bigger change than reviewing and renumbering
-  one file." Not fixed, not being fixed here.
+- **Correction: the second "blocker" isn't actually live.** `0311`'s own header (and PR #1842's
+  body) describe `0260` as assuming tables `0311` creates already exist, crashing a from-scratch
+  tenant. Traced the actual guard before building anything: `migrate-tenants.mjs`'s plane-scope
+  check reads `0260`'s own header — `-- Plane: ehow (ehowgjardagevnrluult, SKS tenant) ONLY.` —
+  and neither Madagins' ref nor its slug appears in that text, so the guard already excludes
+  `0260` from Madagins on every run. It can't crash on a tenant it's never attempted against.
+  `0260` itself is a genuine SKS-specific security fix (closes a real cross-tenant read/delete
+  bug on SKS's own `teams`/`team_members` tables, keyed to SKS's own hardcoded org UUID) — it was
+  never meant to run anywhere else. PR #1842's characterization wasn't re-checked against the
+  guard's actual code before being written down; not fixing something the tooling already
+  prevents. The one residual, smaller caveat: this protection only holds for migrations applied
+  through `migrate-tenants.mjs` itself — a hand-applied/manual apply (bypassing the tool
+  entirely, as happened elsewhere today) wouldn't get this check for free.
 - **A new prerequisite, not in the original review**: PR #1843 edited a migration file already
   recorded as applied on every tenant. `migrate-tenants.mjs` is checksum-aware — the next real
   `tenant-migrate.yml` dispatch to *any* tenant will refuse to run at all ("checksum drift")
@@ -53,7 +61,7 @@ already said.
 - [x] ~~Merge (or don't) PR #1842~~ — **merged**, by Royce directly, 2026-09-09T10:10:09Z (`6232792`). Confirmed via the merge's own CI run, not assumed: "Apply to all tenants" and "Reconcile tenant ledgers" both show `skipped`, not run — the file is in the repo now, still not applied to any database. That dispatch is still open, separate from this checkbox.
 - [ ] Say whether `0308` (public-schema half) still needs the same rescue-and-review treatment, or whether it's already been handled somewhere this pass didn't find.
 - [x] ~~Say when to run `--reconcile-ledger`~~ — **run**, via the governed `tenant-migrate.yml` dispatch (not local, no credentials handled directly), whole fleet. Result confirmed from the actual run log: zero rename/stamp/dedupe/drop-legacy on all three real tenants (eq, madagins, sks) — the ledger was already consistent everywhere, nothing needed fixing. `leave-pending` counts (eq 11, madagins 14, sks 1) are separate and unaffected — genuinely unapplied migrations, not a reconcile concern. Any future checksum-drift refusal on a real dispatch is now ruled out.
-- [ ] Decide whether `0260`'s ordering gap needs fixing now or can wait for a genuinely new from-scratch tenant to force the issue.
+- [x] ~~Decide whether `0260`'s ordering gap needs fixing~~ — **no fix needed, verified**: the plane-scope guard already excludes `0260` from any non-SKS tenant by reading its own header, traced directly against the guard's code. Nothing to build; the original concern didn't hold up under verification.
 
 ### 2. `check-tenant-drift.mjs`'s own tenant list is missing Madagins
 
