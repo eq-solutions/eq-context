@@ -1878,6 +1878,58 @@ frequently-appended file (like this register) immediately before its own
 push, and two sessions minutes apart on the same file have no way to see
 each other coming.
 
+**`task_53ac5191` resolved 2026-09-09 — `public.audit_log` vs `service.audit_logs`
+is not a cutover, it's two unrelated systems.** Traced in the spun-off session
+this row named above. `service.audit_logs` is not a stale migration nobody
+finished moving off of — it's eq-service's own live, correctly-wired audit
+trail: `lib/actions/audit.ts:36`'s `logAuditEvent()` writes it via a client
+every eq-service Supabase factory (`server.ts`, `client.ts`, `middleware.ts`,
+`admin.ts`) pins to `db: { schema: 'service' }`, called from 52 files across
+nearly every server action (the `requireUser → role check → Zod → mutation →
+logAuditEvent() → revalidatePath` pattern `AGENTS.md` documents), and read by
+the `/audit-log` page via the same schema-pinned client. Migration `0008`'s
+`public.audit_logs` → `service.audit_logs` rename
+(`00001_service_schema_pre_canonical_fixture.sql:10-15`, out-of-band, same
+class as this row's other findings) just left the migration file's own schema
+qualifier stale — the rename itself is real and current, and nothing here
+needs fixing.
+
+`public.audit_log` (singular) is a **different table, owned and actively
+written by eq-field, not eq-service.** It falls in this row's "7 unattributed
+by `CREATE TABLE` grep" bucket because the table itself is out-of-band, same
+as `acknowledgments`/`app_config` — but its write path and RLS governance are
+unambiguous: `eq-field/scripts/audit.js:68` POSTs to it directly
+(`sbFetch('audit_log', 'POST', ...)`, no schema-profile header —
+`scripts/supabase.js:815-816` confirms in-place/SKS tenants default to
+`public`), and its policy is created and still being actively extended by
+eq-field's own governed migrations — `CREATE POLICY "audit_log_modify_authed"`
+at `20260611_sks_canonical_field_sync.sql:232`, `ALTER POLICY` at
+`20260823_audit_apprentice_tables_jwt_tenant_gate.sql:73`, and the identical
+pattern applied fresh to `roster_presence` on `20260827`. eq-field's own
+`CLAUDE.md:71` documents the table by name with a real historical bug/fix
+(v3.5.295, an org_id mis-stamp). It logs EQ Field's own activity — auth/login,
+roster/timesheet edits, leave approvals, PIN changes — a different domain
+from eq-service's business-mutation log, not a competing implementation of it.
+
+**Third table, ruled out, worth recording so nobody re-checks it:** eq-shell
+has its own `app_data.audit_log` (`eq-shell/supabase/tenant-migrations/
+0146_tenant_activity_log.sql:23`), governed by **ADR-003** ("two logs,
+distinct jobs — do not reconcile," accepted by Royce 2026-07-14,
+`eq-shell/docs/adr-003-audit-log-architecture.md`). Service-role-only, RLS on
+with zero policies (deny-all) — no `audit_log_modify_authed`, not the table
+this row is about. ADR-003 enumerates exactly three write surfaces suite-wide
+and doesn't mention eq-field's `public.audit_log` at all — a fourth surface
+the ADR doesn't cover.
+
+**Net effect on this row:** the "`audit_log`/`audit_logs` split needs its own
+answer before touching either" line above is answered — they're unrelated
+systems, not a split needing reconciliation. `service.audit_logs` needs no
+fix. Status stays **OPEN** — this closes only the audit_log/audit_logs
+sub-question; the main fix-mechanism question for the ~31-table hardcoded-
+literal pattern (this row's actual subject) is untouched, and for
+`public.audit_log` specifically the answer now points at eq-field rather than
+eq-service, same direction the ownership split above already indicated.
+
 ## Clean projects (probe + advisors, 2026-06-05)
 - eq-canonical, eq-canonical-internal, sks-canonical, eq-solves-field,
   eq-substrate: public-key reads all `401`/empty (no anon read leak).
