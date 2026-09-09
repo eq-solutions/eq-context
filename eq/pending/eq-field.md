@@ -1279,20 +1279,42 @@ Items when triggered:
 
 ---
 
-## eq-field: madagins tenant — routing/provisioning coordination now resolved (eq-shell PR #1839); remaining items are ordinary follow-ups
+## eq-field: madagins tenant — schema provisioning script ran successfully live, then state changed again under a concurrent session — needs a fresh check, not another blind fix
 
-- [ ] **Add Michelle (and any other initial madagins users) as staff/Shell users.** No longer
-  blocked — see the resolution note below. Normal Shell/Core admin action (same as onboarding
-  any new SKS hire). (added 2026-09-09)
+- [ ] **Re-verify madagins's actual current state before doing anything else here.** This
+  session's provisioning script ran successfully live (Royce confirmed, no errors after a
+  `pg_net` fix) — but a check immediately before this close found `public` schema back to 0
+  tables and `jvkn.shell_control.tenant_routing`'s row for madagins gone entirely, both
+  different from what this session left. At least one other, later session was concurrently
+  working the same tenant from eq-shell's side with a broader fix in progress on an
+  uncommitted, unpushed branch (`eq-shell-wt-pgcron` / `fix/tenant-provisioning-pg-cron` —
+  see `eq/pending/eq-shell.md`). Full evidence and reasoning in `sessions/2026-09-09.md`'s
+  final entry. Needs Royce to arbitrate which session's work is current before anyone
+  dispatches or hand-applies anything else. (added 2026-09-09)
+  - **Correction (later session, same day):** this was already arbitrated — see
+    `sessions/2026-09-09.md`'s "Diagnosed why `madagins` is broken" entry. Royce: "let the
+    other sessions do their thing... they are on the right path," stood this session down
+    rather than dispatch further. Root cause there is more specific too: a wrongly-run
+    `migrate-tenants.mjs --bootstrap` falsely stamped 314 ledger rows against a schema that
+    was never actually applied — not just "state changed." A normal catch-up dispatch
+    correctly trusted that ledger and failed clean on the first real gap
+    (`public.app_config`), no further damage done. `fix/tenant-provisioning-pg-cron` is the
+    real fix already in flight. (added 2026-09-09, later same session)
+- [ ] **Add Michelle (and any other initial madagins users) as staff/Shell users.** Blocked on
+  the item above — no point adding people until the schema state is confirmed settled. Normal
+  Shell/Core admin action (same as onboarding any new SKS hire) once it is. (added 2026-09-09)
 - [ ] **Verify end-to-end** — no session has actually signed in as a real madagins user through
-  Core yet. (added 2026-09-09)
+  Core yet. Blocked on the item above. (added 2026-09-09)
 - [ ] **Also confirm `pg_net` is enabled before replaying onto any future new tenant** — a
   fresh Supabase project doesn't have it by default; both eq-field's migrations and the
-  tenant-provisioning generator (`scripts/generate-tenant-provision-sql.mjs`) assume it's
-  already there (`net.http_post` calls in `trigger_tafe_weekly_fill` and
-  `field_people_iud`'s upward-identity-push). Hit live on madagins, fixed with one
-  `CREATE EXTENSION IF NOT EXISTS pg_net;` statement — not yet folded into the generator
-  itself. (added 2026-09-09)
+  generator (`scripts/generate-tenant-provision-sql.mjs`) assume it's already there
+  (`net.http_post` calls in `trigger_tafe_weekly_fill` and `field_people_iud`'s
+  upward-identity-push). Hit live on madagins, fixed with one
+  `CREATE EXTENSION IF NOT EXISTS pg_net;` statement — still not folded into the generator
+  itself as of eq-field [PR #967](https://github.com/eq-solutions/eq-field/pull/967)
+  (auto-creates the ~18-object prerequisite block, doesn't touch extensions) or
+  [PR #966](https://github.com/eq-solutions/eq-field/pull/966) (collision-hardening pass,
+  out of that scope too). Real gap, next one to close. (added 2026-09-09)
 - [ ] **eq-field's `tenant-migrate-apply.yml` is NOT safe to fire at a new tenant as-is**, even
   once its 3 missing secrets (`SUPABASE_ACCESS_TOKEN`/`CONTROL_PROJECT_REF`/
   `EQ_SHELL_CHECKOUT_TOKEN`, absent as of 2026-08-30) are provisioned. Its plane-scope guard
@@ -1302,27 +1324,10 @@ Items when triggered:
   and would apply them verbatim, with SKS's literal IDs, to any new tenant. Real fix needs an
   ID-substitution mode for a genuinely-new tenant plane, not just header hygiene. Not built.
   (added 2026-09-09)
-- [ ] **The same by-hand classification will still be needed for parts of the next new
-  tenant's setup** — [PR #967](https://github.com/eq-solutions/eq-field/pull/967) closed the
-  ~18-object prerequisite-DDL gap (now auto-created, not just warned about — see
-  `eq/changelog/eq-field.md`), but the exclude/substitute/verbatim call on all 77 migration
-  files is still a human read-and-decide task each time. Full per-file reasoning from this
-  round is in `sessions/2026-09-09.md` — worth turning into a real script or runbook before a
-  4th tenant. (added 2026-09-09, updated 2026-09-09)
-- [ ] **Resolution + a lesson for next time:** this section's "row missing" / "state changed
-  again" history is superseded — eq-shell's own same-day comprehensive review found and fixed
-  the real root cause structurally: `organisations.id` and `shell_control.tenants.id` are
-  DIFFERENT UUIDs for the same tenant, and multiple sessions (including one rooted in
-  eq-field, independently, later the same day) queried/joined `shell_control.tenant_routing`
-  against the wrong one and got a false "missing" reading. Full fix:
-  [eq-shell PR #1839](https://github.com/eq-solutions/eq-shell/pull/1839) — backfilled the
-  missing `organisations` row and added a `trg_sync_tenants` trigger so this can't recur for
-  any future tenant. See `eq/pending/eq-shell.md`'s "Madagins tenant provisioning" entry and
-  `eq/sprints/2026-09-09-tenant-provisioning-review.md` for the full review. **Before
-  re-diagnosing anything about madagins's routing/tenant state, read those first** — an
-  eq-field session nearly wrote a bad row tonight re-discovering a problem that was already
-  found and fixed hours earlier, caught only by a live FK-constraint violation, not by
-  checking existing docs first. Re-verified directly against the correct id
-  (`shell_control.tenants.id = fc06cd56-ec63-4507-a03e-c3c552ea09a9`, not
-  `organisations.id = dd5d8622-9688-4dea-b5ed-ca42fc18487c`): `tenant_routing` is
-  `status: active`, service-role key present, no error. (added 2026-09-09)
+- [ ] **Generator (`scripts/generate-tenant-provision-sql.mjs`) still trusts file-content
+  column/constraint shape for any table it didn't itself just create** — the general version of
+  the org_id-vs-tenant_id problem eq-field [PR #966](https://github.com/eq-solutions/eq-field/pull/966)
+  fixed case-by-case (4 tables backfilled; 3 more investigated and correctly left alone once
+  PR #967's live-shape reconstruction showed they never carry org_id at all). Documented as a
+  design principle in the script's own header, not applied wholesale — next concrete failure a
+  live run surfaces is the trigger to extend it, not speculative work now. (added 2026-09-09)
