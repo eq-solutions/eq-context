@@ -1279,67 +1279,36 @@ Items when triggered:
 
 ---
 
-## eq-field: madagins tenant — schema re-verified healthy live (2nd fresh check since the "state changed again" warning below), but still touched by multiple uncoordinated concurrent sessions today — consolidate before anything else changes it
+## eq-field: madagins tenant — schema rebuilt and verified live across many concurrent sessions today; provisioning tool merged, real coordination gaps found along the way
 
-- [ ] **Fresh live check, this session, after the "state changed again" warning below: madagins is
-  currently healthy.** 37 `public`-schema tables, all 17 `app_data.field_*` views present,
-  `jvkn.shell_control.tenant_routing`'s madagins row present and correct (`status: active`,
-  pointing at `ornndtbdkxfsewspbrwk`) — none of the "0 tables / routing row gone" state the
-  session below observed. This session independently rebuilt the eq-field schema layer from
-  ehow's *live* shape (not from migration files, which are stale in multiple places — see
-  `sessions/2026-09-09.md`'s two newest entries for the full diagnosis) across two rounds:
-  `madagins_eqfield_provision_v2.sql` (blocked by the same DDL-execution restriction an earlier
-  session hit; handed to Royce as a file, same as before) then `v3.sql` after Royce's own run
-  surfaced 5 more schema gaps (3 missing `app_data.staff` columns, 1 missing `schedule_entries`
-  column, `app_data.site_projects`/`public.audit_log`/`public.toolbox_talks` missing entirely —
-  the last two a schema-mixup catch on a second pass, not a new drift finding). Royce ran v3;
-  all 13 verification checks plus all 9 triggers (17 event-rows) confirmed true, live.
-  **This does not resolve the coordination problem below** — `fix/tenant-provisioning-pg-cron`
-  is still uncommitted and may still land changes that conflict with this. Needs Royce to
-  actually reconcile or stand down that branch, not just have another session find the tenant
-  in an unknown state again. (added 2026-09-09)
-- [ ] **Re-verify madagins's actual current state before doing anything else here.** This
-  session's provisioning script ran successfully live (Royce confirmed, no errors after a
-  `pg_net` fix) — but a check immediately before this close found `public` schema back to 0
-  tables and `jvkn.shell_control.tenant_routing`'s row for madagins gone entirely, both
-  different from what this session left. At least one other, later session was concurrently
-  working the same tenant from eq-shell's side with a broader fix in progress on an
-  uncommitted, unpushed branch (`eq-shell-wt-pgcron` / `fix/tenant-provisioning-pg-cron` —
-  see `eq/pending/eq-shell.md`). Full evidence and reasoning in `sessions/2026-09-09.md`'s
-  final entry. Needs Royce to arbitrate which session's work is current before anyone
-  dispatches or hand-applies anything else. (added 2026-09-09)
-- [ ] **Add Michelle (and any other initial madagins users) as staff/Shell users.** Blocked on
-  the item above — no point adding people until the schema state is confirmed settled. Normal
-  Shell/Core admin action (same as onboarding any new SKS hire) once it is. (added 2026-09-09)
-- [ ] **Verify end-to-end** — no session has actually signed in as a real madagins user through
-  Core yet. Blocked on the item above. (added 2026-09-09)
-- [ ] **Review eq-field [PR #959](https://github.com/eq-solutions/eq-field/pull/959)**
-  (`scripts/generate-tenant-provision-sql.mjs`) — the reusable tenant-onboarding script built
-  this session, open, not merged. (added 2026-09-09)
-- [ ] **PR #959's generator doesn't yet auto-generate the ~20-object prerequisite block**
-  (`acknowledgments`, `app_config`, `audit_log`, the whole Tender Pipeline cluster,
-  `prestarts`/`toolbox_talks`/`incidents`, `apprentice_profiles`, `people_notes`,
-  `supervisor_notes`, `nomination_clashes`, `trigger_tafe_weekly_fill`,
-  `app_data.teams`/`team_members`) that eq-field's own migrations reference constantly but
-  never create anywhere in this repo's history — out-of-band original creation for SKS/EQ,
-  predates every committed migration. Confirmed live and hand-fixed for madagins this session;
-  the tool only warns about the gap today, doesn't close it. Worth folding in before a 4th
+- [ ] **Verify end-to-end — still nobody has signed into EQ Field as a real madagins user.**
+  No longer blocked (schema confirmed correct live as of 2026-09-09, including a full
+  shared-cross-repo-registry diff against ehow) — just hasn't happened yet. Worth Michelle
+  or Aditi's own real click-through. (added 2026-09-09)
+- [ ] **[PR #959](https://github.com/eq-solutions/eq-field/pull/959)'s generator still doesn't
+  auto-generate the prerequisite-object block it warns about, and the prerequisite list itself
+  was found incomplete** — `field_job_number_overrides` wasn't on it at all, only found by
+  hitting a live "relation does not exist" error. The tool also has no way to catch the class
+  of bug that hit 51 policies today (SKS's literal org_id/tenant_id baked in instead of the
+  target tenant's own, from a different script than the one it generates) — self-test only
+  checks that generation runs, not the output against a target database. Worth a hardening
+  pass — bundle a real post-apply verification query with the tool's output — before a 4th
   tenant. (added 2026-09-09)
-- [ ] **Also confirm `pg_net` is enabled before replaying onto any future new tenant** — a
-  fresh Supabase project doesn't have it by default; both eq-field's migrations and PR #959's
-  generator assume it's already there (`net.http_post` calls in `trigger_tafe_weekly_fill` and
-  `field_people_iud`'s upward-identity-push). Hit live on madagins, fixed with one
-  `CREATE EXTENSION IF NOT EXISTS pg_net;` statement. (added 2026-09-09)
-- [ ] **eq-field's `tenant-migrate-apply.yml` is NOT safe to fire at a new tenant as-is**, even
-  once its 3 missing secrets (`SUPABASE_ACCESS_TOKEN`/`CONTROL_PROJECT_REF`/
-  `EQ_SHELL_CHECKOUT_TOKEN`, absent as of 2026-08-30) are provisioned. Its plane-scope guard
-  only understands `-- Plane: <tenant> ONLY.` headers as exclusion — a few files carry that
-  header and would correctly skip for a new tenant (silently losing e.g. Teams infra), but most
-  SKS-hardcoded files have no formal header (just prose), so the guard treats them as fleet-wide
-  and would apply them verbatim, with SKS's literal IDs, to any new tenant. Real fix needs an
-  ID-substitution mode for a genuinely-new tenant plane, not just header hygiene. Not built.
-  (added 2026-09-09)
-- [ ] **The same by-hand classification will be needed for the next new tenant** unless this
-  gets automated first. Full per-file reasoning (which of the 76 files needed substitution vs.
-  exclusion, and why) is in `sessions/2026-09-09.md` — worth turning into a real script or
-  runbook before a 4th tenant, not re-derived from scratch again. (added 2026-09-09)
+- [ ] **The `security_invoker` reset-on-`CREATE OR REPLACE VIEW` bug class has now hit 4 times**
+  (eq-shell migrations 0158/0164, eq-field's own 20260728000210, and madagins today) — the
+  existing CI guard only protects committed migrations targeting ehow/zaap, with no way to
+  catch a hand-run statement against a *new* tenant's database. Worth Royce's input on whether
+  a lighter-weight live-check script (not full CI, just "run this before considering any
+  tenant provisioned") is worth building. (added 2026-09-09)
+- [ ] **eq-field's `tenant-migrate-apply.yml` is NOT safe to fire at a new tenant as-is** — its
+  plane-scope guard only understands `-- Plane: <tenant> ONLY.` headers as exclusion; most
+  SKS-hardcoded files have no formal header, so it would apply them verbatim with SKS's literal
+  IDs to any new tenant. Needs an ID-substitution mode for a genuinely-new tenant plane. Not
+  built. (added 2026-09-09)
+- [ ] **Multiple uncoordinated concurrent sessions touched this one tenant's live schema
+  throughout today** — worth Royce's attention as a pattern (at least the second time today
+  concurrent sessions produced contradictory state for the same tenant), not just this one
+  instance. No process fix proposed here. (added 2026-09-09)
+
+**Notes:** Full blow-by-blow across every session that touched this tenant today:
+`sessions/2026-09-09.md`.
