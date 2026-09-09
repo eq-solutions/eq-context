@@ -1,7 +1,7 @@
 ---
 title: EQ Context (substrate/tooling) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: EQ Context (substrate/tooling) engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -16,20 +16,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-context: EQ suite redundancy review — 4-layer score, cron root-caused (not broken), code backup built (2026-09-08)
-*Royce asked for a review of redundancy across the EQ suite. Scored four layers (data DR 9/10, infra SPOFs 5/10, human/bus-factor 3/10, substrate 6/10, overall 6/10) — full writeup `system/redundancy-review-2026-09-08.md`. Auth-hub tradeoff decided and recorded (`ops/decisions.md` 2026-09-08, after live-checking the Sentry events that could have flipped the call — they turned out to be a narrower, already-partially-fixed iframe issue, not the general cascade). `shared-object-drift.yml`'s 6 straight failures turned out to be the guard working correctly, not a broken cron — a real, reviewed, already-shipped drift on `app_data.field_people_iud` from migrations 0273/0274 that nobody rebaselined; traced to the exact PRs, all 12 registered objects re-verified live before touching anything, rebaselined, pushed, dispatched, confirmed green. `backup-code.yml` built (nightly git-bundle of 6 EQ repos → R2, reusing the existing DB-backup bucket) but not armed yet.*
 
 - [ ] **Royce to add a second Netlify team member + turn on `enforce_mfa`** — cheapest, highest-leverage item from the review; live-confirmed today the team still has 1 member and MFA off. Not started. _(added 2026-09-08)_
 - [ ] **Royce to fill `ops/bus-factor-runbook.md` §1** ("Who to contact") — needs his own knowledge of who else has access where; offered to walk through it together, not done this session. _(added 2026-09-08)_
-- [ ] **`backup-code.yml` needs `CODE_BACKUP_PAT` added** before it can run at all — fine-grained PAT, Contents:read on eq-shell/eq-field/eq-service/eq-cards/eq-solves-intake/eq-context. Every attempt currently fails loudly by design, not silently. _(added 2026-09-08)_
 - [ ] **GitHub org-admin membership still unconfirmed** — the GitHub connector available this session can't see eq-shell/eq-field/eq-cards/eq-service at all (clean 404s, likely a scoped App installation, not evidence those repos don't exist) and there's no working "list org members" path from here either. Needs Royce's own check via `github.com/orgs/eq-solutions/people`. _(added 2026-09-08)_
 - [ ] **Registrar-lock + Cloudflare account MFA status still unverified** — dashboard-only, no tool access this session either. First flagged in `system/infra-redundancy-scoping-2026-08-11.md`, still open a month later. _(added 2026-09-08)_
 - [ ] **Sentry alert-rule check on `token-exchange.ts` blocked by a dead API** — `find_alert_rules` returned `410 Gone` (the endpoint no longer exists, not a permissions block). Not chased further this pass — whether a live page/alert actually exists on this path is still genuinely unknown. _(added 2026-09-08)_
 - [ ] **This same checkout drifted past 100 commits behind `origin/main` live, during this session** — Royce started a separate, dedicated session on reconciling it ("Reconcile eq-context's dirty root checkout"); not this session's to finish. A new F16 guard (worktree-first enforcement for this shared checkout) landed on `main` from that work partway through this session — see `system/failures.md` F16. _(added 2026-09-08)_
-
-**Notes:**
-- This machine's `python3` resolves to the Windows Store app-execution-alias stub, not a real interpreter (confirmed live) — use `python` instead, matching `system/failures.md` F10's own note.
-- The GitHub connector available this session can read `eq-context`/`eq-solves-intake`/`eq-roles`/`eq-ui`/`eq-design-tokens`/`eq-contracts`/`sks-nsw-labour`/`test` but 404s cleanly on `eq-shell`/`eq-field`/`eq-service`/`eq-cards` — worth knowing before trusting it for anything product-repo-shaped. Also noticed in passing: `sks-nsw-labour` now shows `archived: true` on GitHub, consistent with its documented retirement.
-- A background task (`task_aeccccf4`) was spawned for a real, separate finding hit while checking the auth-hub Sentry events — a regressed Shell↔Field iframe-handoff stall on `/sks/field`, unresolved since 2026-07-14. Royce started it in its own session; not part of this entry's scope.
 
 ---
 
