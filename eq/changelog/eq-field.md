@@ -9,6 +9,13 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-09 (PR #961 MERGED, v3.5.708 — Role-string literals: wire up eq-roles-canon.js instead of hand-typing 'manager'/'supervisor')
+- Multi-lens review 2026-09-07 decision #13. Re-verified live before acting: `eq-roles-canon.js`'s own header claimed it was unreferenced dead code — false, `permission-matrix.js` already read `window.EQ_ROLES_CANON` for its startup guard (shipped via the `core-bundle-a1.js` hand-merge), and the server twin was already wired into `verify-pin.js`'s role validation.
+- Added named `EQ_ROLE.MANAGER`/`EQ_ROLE.SUPERVISOR` constants to both vendor files (browser + server), self-checked against the existing role array. Updated 19 real call sites across `auth.js` (10), `auth-shell-handoff.js` (2), `permissions.js` (6), `tender-pipeline.js` (1 of 8), and `verify-pin.js` (7) — the last two weren't in the review's own file list.
+- Deliberately left untouched: `permission-matrix.js`'s one literal (an intentional documented fallback), and `sks-pipeline.js`/`sks-pipeline-resource.js`/`sks-pipeline-demo.js`'s 7 literals (a different enum — tender-nomination slot type, not the employment-role vocabulary).
+- No behaviour change. Fixed two test harnesses (`crew-scoping`, `pipeline-lockdown`) that loaded `permissions.js` without `eq-roles-canon.js` first, masking two real failures via an unrelated pre-existing `try/catch`.
+- Full test suite (48 files), eslint (0 errors), bundle/cache-buster drift checks all green. Hit and resolved a version collision with concurrent PR #960 (707→708 rebase). Smoke-tested supervisor + staff demo-login on the deploy preview before merge (auth-adjacent — Royce's explicit merge approval obtained first). Merged, confirmed live: `field.eq.solutions/sw.js` shows v3.5.708.
+
 ## 2026-09-09 (PR #943 MERGED, v3.5.700 — Home: drop the "EQ Field" eyebrow label)
 - Follow-up from a screenshot review Royce asked for earlier the same session: 6 EQ Field/SKS screenshots pulled from Google Drive, self-scanned for issues, published as an HTML page for comment (required an explicit override of the auto-mode publish classifier, which initially blocked it — the page contains real SKS employee names/DOB/phone/leave dates from the `sks` tenant, not demo content). Royce's comment on the Home screenshot: "tiny bit squashed, can we get rid of EQ FIELD to give us some more room."
 - Removed the `.eqh-brand` "EQ Field" eyebrow `<div>` from `renderStaffHomeScreen()` (`scripts/home.js`) only — the greeting/date line is now the sole line in the header column, vertically centred against the settings cog by the existing flex row. `renderSupervisorHomeScreen()`'s own brand line left untouched, since it also carries the `SUPERVISOR` role chip and wasn't part of the ask.

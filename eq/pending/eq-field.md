@@ -15,6 +15,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: role-string literals (`'manager'`/`'supervisor'`) hand-typed across 5 files — wired up `eq-roles-canon.js`, FIXED, merged, live (PR #961, v3.5.708, 2026-09-09)
+*Multi-lens review decision #13 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 13): `scripts/eq-roles-canon.js` looked like the intended shared role constant, but its own header claimed it was unreferenced dead code — review flagged it as "wire up or delete."*
+
+- [x] **Re-verified live before acting — the review's framing was wrong.** `eq-roles-canon.js`'s "unreferenced" claim was false: `permission-matrix.js` already read `window.EQ_ROLES_CANON` for its startup guard (shipped via the `core-bundle-a1.js` hand-merge), and the server twin (`netlify/functions/_shared/eq-roles-canon.js`) was already wired into `verify-pin.js`'s role validation. Not dead code — just missing a named constant for the two roles actually hand-typed in privilege comparisons.
+- [x] **[PR #961](https://github.com/eq-solutions/eq-field/pull/961), v3.5.708, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): added `EQ_ROLE.MANAGER`/`EQ_ROLE.SUPERVISOR` to both vendor files, self-checked against the existing role array. Updated 19 real call sites: `auth.js` (10), `auth-shell-handoff.js` (2, not in the review's file list), `permissions.js` (6), `tender-pipeline.js` (1 of 8 — only the canonical-role one), `verify-pin.js` (7, also not in the review's list — including a `FIELD_DISPATCH_ROLES` set hardcoded next to an already-imported `EQ_ROLE_KEYS` in the same file).
+- [x] **Deliberately left untouched**, confirmed by reading each in context: `permission-matrix.js`'s one literal (an intentional documented fallback for when the canon file fails to load), and `sks-pipeline.js`/`sks-pipeline-resource.js`/`sks-pipeline-demo.js`'s 7 other literals (a different enum — tender-nomination slot type + a picker-source tag, not the employment-role vocabulary).
+- [x] **No behaviour change.** Full `tests/*.test.js` suite (48 files), eslint (0 errors), `build-bundles.mjs`/`check-cache-busters.mjs` all green. Hit and resolved a version-number collision with concurrent PR #960 (rebased 707→708). Smoke-tested both the supervisor and staff demo-login paths live on the deploy preview before merge (auth-adjacent files — merge approval confirmed with Royce first).
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`.
+
+---
+
 ## eq-field: `leave.js` balance/business-day math had zero unit coverage — extracted to `leave-rules.js`, FIXED, merged, live (PR #960, v3.5.707, 2026-09-09)
 *Multi-lens review decision #12 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 12): `_leaveGetBalances`/`_leaveBizDays` were the one piece of business logic across the five extracted-or-extractable domains (timesheets/roster/apprentices/sks-pipeline-resource/leave) with zero unit coverage, despite being payroll-adjacent.*
 
