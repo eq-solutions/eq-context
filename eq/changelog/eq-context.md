@@ -7,6 +7,14 @@ read_priority: reference
 status: live
 ---
 
+## [2026-09-10] F12's signal regex tightened (self-referential rejection excluded) — closes a five-failure precision pass
+
+**Built by:** Claude Code
+
+- **`system/failures.md`'s F12 `signal` regex** had a permanent self-referential loop (unfixed across three separate `/triage` passes): a later session's own analysis rejecting an earlier file as F9's shape, not F12's, re-triggered F12's signal against the paragraph that recorded the rejection. Excluded that exact rejection framing; both confirmed genuine incidents still match unchanged. A second false positive (`sessions/2026-08-21.md`, real incident, wrong ID, no distinguishing text of its own) added to `confirmed_in` instead, since no safe regex fix exists without risking the genuine incidents' own similarly bare phrasing.
+- Extended `.github/scripts/test_failure_recurrence_signals.py` with `test_f12()` — 5 cases, 40 total across F1/F9/F10/F12/F14, all passing. Commit [`d32f62d`](https://github.com/eq-solutions/eq-context/commit/d32f62dca860c7267403a300f05dbfeba565bf9e).
+- **Closes a same-session, five-failure signal-precision pass** (F1, F9, F10, F12, F14) — each a different flavor of the same underlying gap: a deterministic regex over free-text session logs can't perfectly separate a genuine recurrence from a session merely discussing, investigating, or narrating the failure's own history. Two durable lessons captured in the test file: verify a hand-edited regex's *performance* against the real corpus, not just its correctness (F9 caught a catastrophic-backtracking near-miss before shipping); and when a real incident has the wrong ID but no distinguishing text, `confirmed_in` — not a regex — is the honest fix (F12).
+
 ## [2026-09-10] F9's signal regex tightened (guard-fired-correctly and cross-repo exclusions); a regex near-miss caught pre-ship
 
 **Built by:** Claude Code
