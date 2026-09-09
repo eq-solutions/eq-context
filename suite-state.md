@@ -78,7 +78,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1837 fix(sidebar): open workspace switcher menu upward, not down off-screen
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -110,7 +109,7 @@ _If this file is >48h old, the cron is broken._
 ## Field Data Plane — SKS tenant (as of 2026-09-09)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 72 | ✓ 72 |
+| Directory | app_data.field_people | 76 | ✓ 76 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,262 | ✓ 2,262 |
