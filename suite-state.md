@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-service:**
-- #838 fix(canonical-members): scope every roster lookup to the actual tenant
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
@@ -74,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1860 fix(admin): add Madagins to the Field workspace dropdown
 - #1858 feat(staff): backdate signal on conversations, Casual attach-on-first-save
 - #1854 fix(check-tenant-drift): fail loud when a real tenant has no CANONICAL_PROJECTS entry
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
@@ -86,19 +86,19 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? queued |
+    | eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
-| eq-solves-intake | ✓ success |
+| eq-solves-intake | ✗ failure |
 
     **Deploys:**
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | new | 2026-09-09 |
+    | eq-service | ready | 2026-09-09 |
 | eq-shell | new | 2026-09-09 |
-| eq-field | new | 2026-09-09 |
+| eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 244 (latest: 0240) applied
 
