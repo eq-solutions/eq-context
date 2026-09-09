@@ -61,12 +61,13 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-09)
 
 **eq-cards:**
+- #352 fix(cards): sync organisations.tier from shell_control.tenants.tier
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
-- #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
+- #895 v3.5.710 -- Apprentices: 5 follow-ups from the full-module audit
 
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
@@ -78,7 +79,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1842 fix(provisioning): recover and land the app_data legacy-baseline migration (0311)
-- #1840 fix(dev): allow Vite's React-refresh preamble under the CSP
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
