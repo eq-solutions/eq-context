@@ -43,6 +43,26 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: EQ-SHELL-23 test-data account cleanup — re-landed after a same-day clobber (F17 recurrence); one residual still open (2026-09-09)
+*Original section (commit `9b04b132`, ~16:02) was wholesale-replaced twice within the next 90 seconds by other sessions' own `safe_commit.py` pushes — the same-day F17 recurrence (`system/failures.md`). Recovered via `git show 9b04b132 -- eq/pending/eq-shell.md` and reconciled against current state, not restored verbatim: the section's other original finding (Madagins provisioning root-cause) is superseded by the "tenant creation doesn't actually apply the real schema" section above plus `eq/sprints/2026-09-09-provisioning-completeness-followup.md`, both more current than this write-up was.*
+
+- **EQ-SHELL-23** ("Workers missing an active org_membership") — not a code bug, a deliberately alert-only monitor (`check-missing-org-memberships.ts`) correctly reporting a real state. Traced to "Jordan A. Sample," an SKS Apprentice test record with fake-looking address/emergency-contact fields, created 2026-09-01. Its org_membership + original 2 test licences were already cleaned up by something else at 2026-09-08 08:16 UTC, but 2 new test licences landed on the same account 2 hours later with no re-grant — that's what fired the alert. On Royce's go: `app_data.staff` deactivated (ehow) and both new licences soft-deleted (jvkn `public.licences`).
+
+- [ ] **EQ-SHELL-23 residual** — re-checked live in Sentry as of this restore: issue still `unresolved`/`new`, exactly 1 occurrence (2026-09-08T21:50 UTC), no re-fire since. Silencing it for good needs the jvkn-side shell account/tenant-membership closed too — Royce's call whether that's worth doing; not requested yet. _(added 2026-09-09, restored 2026-09-09)_
+
+---
+
+## eq-shell: labour-hire batch-intake portal copy simplified and shipped; madagins-tenant readiness audit — re-landed after a same-day clobber (F17 recurrence); RLS gap + local dev blocker still open (2026-09-09)
+*Original section (commit `b83f9524`, ~16:03) was wholesale-replaced within seconds by another session's own `safe_commit.py` push — the same-day F17 recurrence (`system/failures.md`). Recovered via `git show b83f9524 -- eq/pending/eq-shell.md`. Royce asked whether the labour-hire licence zip-intake feature works for the new `madagins` tenant, to simplify a wordy line of portal copy, and to audit + confirm readiness.*
+
+- **Feature confirmed real, working, and already production-proven for SKS** — the "drop a zip, it sorts the documents" batch intake (`BatchIntakePanel.tsx` + `labour-hire-portal-batch-*.ts` + `_shared/labour-hire-batch.ts`). Already battle-tested against real Madagins-agency zips on 2026-08-20 (PR #1490) — for the **SKS tenant**, where "Madagins" is an existing labour-hire agency with its own live portal link. **Not ready for the new, separate `madagins` tenant** provisioned that morning — blocked on the same tenant-provisioning gap tracked in the "tenant creation doesn't actually apply the real schema" section above.
+- Portal copy simplified and shipped: [PR #1831](https://github.com/eq-solutions/eq-shell/pull/1831), squash-merged, confirmed live (bundle-hash change + a real click-through on core.eq.solutions, not just merge-time trust).
+
+- [ ] **RLS gap on madagins's `app_data._eq_migrations`** (project `ornndtbdkxfsewspbrwk`) — Supabase advisor flagged RLS disabled on this table (anon-exposed). Same table the "tenant creation..." section above independently found holding 314 falsely-stamped ledger rows from the `--bootstrap` misuse — likely two symptoms of the same under-provisioned tenant, but access-control and ledger-integrity are separate fixes; this one needs its own governed-pipeline dispatch (RLS-enabled-with-no-policy + revoke public/anon/authenticated + grant service_role, added to both repos' `SERVICE_ROLE_ONLY` lists) regardless of how the ledger gets corrected. No evidence of a fix as of this restore, but re-verify live before acting — madagins's schema state has changed hands and shape several times today. Royce's call on timing. _(added 2026-09-09, restored 2026-09-09)_
+- [ ] **Local dev server CSP-vs-Vite-preamble conflict** — `netlify dev` blanks the entire SPA on load; the app's CSP `script-src` header (`netlify.toml`) blocks Vite's dev-mode inline preamble script (`@vitejs/plugin-react can't detect preamble`). Confirmed still present as of this restore: current `netlify.toml`'s `script-src` directive carries no `'unsafe-inline'` and no nonce/hash carve-out for dev. Blocks all local click-testing in this repo, not just this feature. Root cause not yet investigated. _(added 2026-09-09, restored 2026-09-09)_
+
+---
+
 ## eq-shell: Conversations reminders shipped, caused and fixed a same-day live outage, mobile verified, tests added (2026-09-09)
 *Continuation of 2026-09-08's Conversations backdating feature (`eq/sprints/2026-09-09-conversations-followup-sprint.md` has the full item-by-item follow-up sprint) — this entry covers the day's actual events: reminders shipped, broke production, fixed, then closed out the remaining open items from that sprint.*
 
