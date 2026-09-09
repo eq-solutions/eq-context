@@ -69,7 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1884 fix(token-exchange): scope platform-admin Field JWT to the picked tenant
+- #1885 docs(control-plane-ledger): record #1875's cancel-my-access-request migration
 - #1882 fix(field): make the Field-workspace picker read tenants live
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
