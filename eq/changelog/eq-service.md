@@ -9,6 +9,11 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-09-09 (PR #839 MERGED + LIVE — removed 2 stale duplicate migration files that turned out to belong to eq-field)
+- `supabase/migrations/0146_acknowledgments_rls.sql` and `0146b_acknowledgments_authenticated_write.sql` removed — orphaned duplicates of eq-field's own migration for the same tables (`public.acknowledgments`, `public.app_config`), which this repo's application code never actually reads or writes. Full investigation: [SEC-77](https://github.com/eq-solutions/eq-context/blob/main/ops/security-register.md), eq-context.
+- `service._eq_migrations` ledger rows for these files left untouched by design — `migrate-service.mjs` never cross-checks for a ledger row with no matching file, so this has no CI or apply-pipeline effect.
+- Merged by Royce via the dashboard past 2 pre-existing, unrelated failing checks (chronic `npm audit` dependency finding; this repo's chronically-broken integration-test suite) — `tsc + next build`, the real gate, was clean. Live-verified after merge via commit ancestry that the removal reached production, not just `main`.
+
 ## 2026-09-08 (PR #837 MERGED + LIVE — embedded Shell nav bar now scrolls on tablet widths)
 - The nav bar shown when Service is embedded in Shell (Field/Service iframe mode) had no wrap/scroll/shrink handling — every iPad width (768-1194px) rendered it cut off, with the last link(s) completely unreachable. Added `overflow-x-auto` to the nav and `shrink-0` to each link; the `md:` breakpoint itself untouched, since it's the same boundary Shell's own MobileTabBar hands off at.
 - Found via a cross-suite iPad audit — eq-field and eq-shell had the same underlying gap, fixed separately the same day (see eq-field's and eq-shell's own changelogs).
