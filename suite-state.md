@@ -75,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1848 feat(workers): redesign the Add worker screen (follow-up to #1844)
-- #1846 fix(entitlements): enforce module allowlist in upsertAppEntitlements
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
