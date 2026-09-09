@@ -15,6 +15,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: `tenant-migrate-apply.yml`'s 3 required secrets provisioned — pipeline still never successfully run (2026-09-09)
+
+- **`SUPABASE_ACCESS_TOKEN`, `EQ_SHELL_CHECKOUT_TOKEN`, `CONTROL_PROJECT_REF`** (jvkn) all set on this repo for the first time — the workflow existed since 2026-08-30 but had zero secrets and had never been dispatched, in any mode. `SUPABASE_ACCESS_TOKEN` is Supabase's newer scoped-token type (Organization → EQ Solutions; Database + Migrations permissions set to Write, everything else minimal) — first token pasted was invalid (`401 JWT failed verification` on a `--plan` dry run, caught before anything write-side was attempted), regenerated properly the second time.
+- **Not yet confirmed working** — a real `--plan` (or `--bootstrap`) run against the new token hasn't been re-verified as of this entry.
+
+- [ ] **`SUPABASE_ACCESS_TOKEN` on this repo expires 2027-08-09 (11 months out)** — regenerate before then (`supabase.com/dashboard/account/tokens`, same Organization/EQ Solutions scope, Database + Migrations → Write) or every `tenant-migrate-apply.yml` dispatch starts failing with a 401 again. _(added 2026-09-09)_
+- [ ] **First real run still needs the full care its own header demands**: `bootstrap=true` only after individually reconciling every migration file against each target tenant's actual live state (not the 2026-08-30 exclude-list as-is — re-derive it fresh) — and this will now include `madagins` automatically (the runner discovers every `active` tenant from `shell_control.tenant_routing`), not just zaap/ehow as the workflow's own stale naming implies. Not attempted. _(added 2026-09-09)_
+
+---
+
 ## eq-field: Contacts briefly showed zero people on load — not reproducible, self-resolved via hard refresh (2026-09-09)
 *Royce shared a screenshot of the SKS tenant's Contacts screen (via core.eq.solutions/sks/field) showing "No contacts yet" with every team pill at (0), including "All" — which reads straight off `STATE.people` with no team filter applied, so the underlying fetch had to be empty, not just filtered. Investigated the day's most recent merge (791f31b, PR #953, the Team-filter fix) as the obvious first suspect.*
 
