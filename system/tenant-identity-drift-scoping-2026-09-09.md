@@ -294,8 +294,10 @@ the same day, same root cause, already on record as unresolved. **Recommend not 
 effort** — extend it (or coordinate with whoever's driving it) for eq-service's RLS-policy finding
 (§0 item 2) once its footprint is known, rather than building a second generator.
 
-**Addendum 2026-09-09, later same session (SEC-76 verification) — a live count for finding #25.**
-While verifying §0 item 2 (now `ops/security-register.md` SEC-76), a direct `pg_policies` query
+**Addendum 2026-09-09, later same session (SEC-77 verification) — a live count for finding #25.**
+While verifying §0 item 2 (now `ops/security-register.md` SEC-77 — originally pushed as SEC-76,
+renumbered after a concurrent session's own unrelated SEC-76 finding overwrote it via a
+`safe_commit.py` full-file race; see that row's own note), a direct `pg_policies` query
 against ehow found the hardcoded-literal pattern live on **~31 tables** — this doc's own "~30+
 migrations" estimate for eq-field was in the right range; this is a live number, not a
 migration-count guess, and it turns out not to be eq-field's alone. Ownership resolved by grepping
@@ -318,7 +320,7 @@ weren't found via `CREATE TABLE` grep in either repo** (`job_numbers`, `nominati
 out-of-band, the same class as `public.audit_log` and the original `public.app_config` (both
 confirmed this session to predate migration tracking entirely on ehow), possibly just a grep miss
 — not resolved either way. Full per-table detail and eq-service's own 3-table piece
-(`acknowledgments`, `app_config`, `audit_log`): `ops/security-register.md` SEC-76.
+(`acknowledgments`, `app_config`, `audit_log`): `ops/security-register.md` SEC-77.
 
 ---
 
