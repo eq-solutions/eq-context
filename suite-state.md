@@ -105,7 +105,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,262 | ✓ 2,262 |
-| Operational | app_data.field_timesheets | 481 | ✓ 481 |
+| Operational | app_data.field_timesheets | 493 | ✓ 493 |
 | Safety | public.prestarts | 242 | ✓ 242 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
@@ -125,7 +125,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 51 |  |
+| Active users (Shell sign-ins, jvkn) | 54 |  |
 
 _No flips this run._
 ---
