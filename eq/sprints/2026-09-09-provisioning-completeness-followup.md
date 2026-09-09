@@ -39,41 +39,65 @@ sharing one worktree. Landing "the pg_cron fix" as asked did not mean landing al
 splitting it out let the small, well-understood half ship without dragging in ~4,700 lines of
 SQL that self-documents real unresolved correctness questions (see below).
 
-**pg_cron half — [PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834), open, not
-merged.** `provision-tenant-background.ts`'s new `ensureExtensions()` (idempotent
+**pg_cron half — [PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834), MERGED
+(`d9d8c89a`).** `provision-tenant-background.ts`'s new `ensureExtensions()` (idempotent
 `CREATE EXTENSION IF NOT EXISTS pg_cron`, Step 4 of new-tenant provisioning) +
-`tenant-routing.ts`'s `KNOWN_TENANT_SLUGS` warm-cache bump. Rebased clean onto current `main`
-(no unique commits existed on the branch — everything was uncommitted working-tree state,
-so this was a straight commit + rebase, no conflict). `pnpm run build` (`build:packages` +
-`tsc -b` + `vite build`) clean. **Holding at PR per this repo's merge-is-the-deploy rule** —
-needs your explicit go before merge/deploy. Note: this only prevents the pg_cron gap from
-recurring on the *next* tenant provisioned — it does not retroactively touch madagins (already
-being handled directly, per the eq-field session working that tenant today).
+`tenant-routing.ts`'s `KNOWN_TENANT_SLUGS` warm-cache bump. Rebased clean onto current `main`,
+`pnpm run build` clean, merged on your go. **Not yet live** — this repo's usual merge-deploys
+auto-publish did not fire (a same-day recurring gap, see `eq/pending/eq-shell.md`); confirm
+`core.eq.solutions` is actually serving this commit before treating it as shipped. Note: this
+only prevents the pg_cron gap from recurring on the *next* tenant provisioned — it does not
+retroactively touch madagins (handled directly by the eq-field session working that tenant).
 
 **Legacy-baseline half — still uncommitted, still in `eq-shell-wt-pgcron`, not part of #1834.**
 `0308_legacy_public_schema_baseline.sql` (37 objects) and
-`0309_app_data_legacy_baseline_and_tenant_members.sql` (63 objects) — read in full before
-landing these, they're higher-risk than they look:
-- **Numbering collision keeps getting worse, not better — third update to this same note.**
-  `0308`, `0309`, AND NOW `0310` are all taken on `main` (`0308_sites_deleted_at.sql` #1829,
-  `0309_wipe_backup_schema_rls_lockdown.sql` #1833, `0310_eq_migrations_ledger_rls_lockdown.sql`
-  — [PR #1835](https://github.com/eq-solutions/eq-shell/pull/1835), open). Target is now
-  `0311`/`0312` — **re-check yet again at actual land time**, this file's own numbers are stale
-  within hours every time someone checks. The files themselves are still sitting under their
-  original `0308_`/`0309_` names, uncommitted, in `eq-shell-wt-pgcron` — a same-day
-  eq-context commit (`49f38487`) describes them as already "renumbered to 0310/0311," which
-  the actual worktree does not bear out; don't trust that line over a live check.
-- **Both files' own headers flag real, unresolved correctness bugs**, not just style nits: most
-  RLS policies in the first file hardcode ehow's own tenant/org UUIDs as literals, so on any
-  *other* tenant these ~37 objects become permanently zero-access for real users (service_role
-  only) — the header calls this out explicitly as "Royce's call" whether that's acceptable or
-  needs real parameterisation. Separately, at least 3 migration-ordering bugs are self-documented
-  (`0257` and `0260` both still crash a from-scratch tenant *before* either of these two files
-  ever runs — landing this pair does not, by itself, fix the crash that motivated it) plus two
-  unverified `service.*` dependencies (`service.set_updated_at()`, `service.tenants`) that could
-  roll back the entire second file if either is missing on a target project.
-- These need a real review pass and Royce's input on the specific open questions above, not a
-  default merge — kept separate from #1834 deliberately.
+`0309_app_data_legacy_baseline_and_tenant_members.sql` (63 objects). A dedicated review pass
+(subagent, isolated worktree) has now been done — findings below supersede the earlier
+one-paragraph flag.
+
+- **Numbering, re-verified again**: `0308`/`0309`/`0310` all taken on `main` (PRs #1829/#1833/
+  #1835, all merged). `0311`/`0312` free as of the review — **re-check once more immediately
+  before actually renaming the files**, this number has moved three times in one afternoon and
+  will likely have moved again. The files are still sitting under their original `0308_`/`0309_`
+  names, uncommitted. (A same-day eq-context commit, `49f38487`, claimed they were already
+  "renumbered to 0310/0311" — confirmed false against the actual worktree; don't trust that
+  line.)
+- **Scoping decision — confirmed real, and wider than first flagged.** Spot-checked ~20 of
+  0308's 80 policies directly: every one hardcodes ehow's tenant_id (`7dee117c-...`) and/or
+  org_id (`00000000-...-000000000002`) as a literal — permanent zero-access for any other
+  tenant, exactly as the header said. **Not just 0308's 37 objects** — 0309 claims to have
+  audited every policy for this and come back mostly clean, but never audited function
+  *bodies*: `app_data.sync_staff_to_field()` (dead — its trigger is disabled, not even captured
+  by 0309) and `app_data.field_job_numbers_src()` (live, backs a Field UI panel — silently
+  returns zero rows on any other tenant) both carry the same hardcoded literals. Your call
+  (SKS-only forever vs. real parameterisation) now covers both files, not just one.
+- **Ordering bugs — confirmed, and there's a third.** `0257`'s unguarded
+  `REVOKE ALL ON public.app_config, public.organisations FROM anon;` and `0260`'s unguarded
+  `REVOKE`s on 4 `app_data.*` tables both crash a from-scratch tenant before this pair ever
+  runs, exactly as flagged. **Third, from 0309's own header**: 0308's `app_settings` policy
+  needs `service.tenant_members`, which only 0309 creates — but 0308 is numbered lower, so it
+  fails before 0309 ever runs either. Three interlocking blockers, not two independent ones.
+  Useful mechanical fact: `migrate-tenants.mjs` sorts by filename and skips only
+  already-ledgered files — genuinely reordering the sequence (not just appending) is mechanically
+  possible, confirmed by reading the runner directly.
+- **Two unverified `service.*` dependencies — confirmed real, but ehow-safe.** Grepped all 310
+  tracked migrations for `service.tenants` / `service.set_updated_at()`: zero hits either way —
+  neither is created by any tracked migration, and `provision-tenant-background.ts`'s automatic
+  bootstrap doesn't touch the `service` schema at all. Checked live on ehow directly: both
+  objects exist there, so 0309 is safe against ehow specifically. Any *other* tenant plane
+  without these hand-applied out-of-band will roll back the entire ~2,900-line file on its last
+  statement before `COMMIT`.
+- **New, not in either file's own notes**: `roster_presence`'s read policy (0308) checks
+  `org_id` only, with no JWT tenant_id comparison, unlike its own write policy and every other
+  table in the file — an asymmetric, quietly-weaker SELECT grant.
+
+**Decisions needed from you before this goes further:**
+1. Scoping — 37 legacy objects (0308) + 2 hardcoded functions (0309): SKS/ehow-only forever, or real per-tenant parameterisation?
+2. Ordering — patch `0257`/`0260` with existence guards, or genuinely reorder the sequence (confirmed possible)?
+3. The 2 missing `service.*` objects need their own capture migration before this pair is safe on any tenant but ehow.
+4. `sync_staff_to_field()` is dead with a live landmine in it (hardcoded org_id) — drop it from the capture, or keep it as-is?
+
+Not built or merged pending those calls — kept separate from #1834 deliberately, same as before.
 
 **Also still open, independent of either half:** `madagins` is **50 migrations behind `main`**
 (back to `0257`) — a blank dispatch would silently apply 49 other, unreviewed migrations
@@ -83,8 +107,8 @@ review, or fold into whichever of the two halves above ends up touching madagins
 
 ## 2. Re-run `check-provisioning-completeness.mjs`
 
-Depends on PR #1834 actually merging and a fresh tenant being provisioned after it (or a direct
-live check against the next provisioning run). Expect the `pg_cron` extension finding to clear.
+Depends on PR #1834 actually going live (merged, but see its "not yet live" note above) and a
+fresh tenant being provisioned after it. Expect the `pg_cron` extension finding to clear.
 **Won't clear** (separate, still open — see #3): `vector`, `pg_net`. The legacy-baseline half
 (0308/0309→0311/0312, re-verify at land time) is a separate re-run trigger of its own once/if it lands.
 
@@ -125,8 +149,8 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 
 | # | Item | Status | Depends on |
 |---|---|---|---|
-| 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) open, not merged** — awaiting your go | — |
-| 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | Uncommitted, needs review + your calls on the open questions above | — |
+| 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) merged**, not yet live (deploy pipeline broken, see `eq/pending/eq-shell.md`) | — |
+| 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | **Reviewed** — 4 concrete decisions needed from you (scoping now covers 2 files, ordering has a 3rd interlocking bug, 2 missing `service.*` objects, 1 dead function to keep-or-drop) | — |
 | 1c | madagins's 50-migration backlog | Needs your decision | — |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | 1a merged + dispatched |
 | 3 | Triage ~71 tables / ~65 functions / 2 extensions / 2 schemas | Not started | Independent — can run anytime |
