@@ -27,6 +27,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: `leave.js` balance/business-day math had zero unit coverage — extracted to `leave-rules.js`, FIXED, merged, live (PR #960, v3.5.707, 2026-09-09)
+*Multi-lens review decision #12 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 12): `_leaveGetBalances`/`_leaveBizDays` were the one piece of business logic across the five extracted-or-extractable domains (timesheets/roster/apprentices/sks-pipeline-resource/leave) with zero unit coverage, despite being payroll-adjacent.*
+
+- [x] **[PR #960](https://github.com/eq-solutions/eq-field/pull/960), v3.5.707, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): extracted into new `scripts/leave-rules.js` — pure, headless-tested, matching the exact extract-plus-test-module pattern already proven on `timesheets-rules.js`/`roster-rules.js`/`apprentices-rules.js`/`sks-pipeline-resource-rules.js`. `leave.js` keeps thin same-name wrappers, zero call-site changes.
+- [x] **New `tests/leave-rules.test.js`, 20 cases** — closes the coverage gap the review flagged. Full test suite, eslint, and cache-buster checks green before push; verified click-tested on the deploy preview (worker balance cards + supervisor Leave Requests view), not just code-reviewed.
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`.
+
+---
+
 ## eq-field: iPad renders full desktop density under touch — phone breakpoint extended to touch tablets, FIXED, merged, live (PR #942, v3.5.696, 2026-09-08)
 *Royce shared an iPad screenshot: the nav was a mix of the phone top-strip and the full desktop sidebar at once, and asked to debug the iPad mobile view. Traced the nav-mix to a stale service-worker cache on his device (not a code bug — `/styles/` is served cache-first, a plain reload doesn't refetch it); current `mobile.css`/`base.css` on `origin/main` were already internally consistent. Separately, a PostHog device-mix check (SKS project, 90 days) showed iPad-pattern traffic real but small (~6-53 of 969 unique visitors) — informed the decision to extend the existing phone components rather than build a bespoke tablet design.*
 
@@ -1257,8 +1267,25 @@ Items when triggered:
 
 ---
 
-## eq-field: madagins tenant — schema provisioning script ran successfully live, then state changed again under a concurrent session — needs a fresh check, not another blind fix
+## eq-field: madagins tenant — schema re-verified healthy live (2nd fresh check since the "state changed again" warning below), but still touched by multiple uncoordinated concurrent sessions today — consolidate before anything else changes it
 
+- [ ] **Fresh live check, this session, after the "state changed again" warning below: madagins is
+  currently healthy.** 37 `public`-schema tables, all 17 `app_data.field_*` views present,
+  `jvkn.shell_control.tenant_routing`'s madagins row present and correct (`status: active`,
+  pointing at `ornndtbdkxfsewspbrwk`) — none of the "0 tables / routing row gone" state the
+  session below observed. This session independently rebuilt the eq-field schema layer from
+  ehow's *live* shape (not from migration files, which are stale in multiple places — see
+  `sessions/2026-09-09.md`'s two newest entries for the full diagnosis) across two rounds:
+  `madagins_eqfield_provision_v2.sql` (blocked by the same DDL-execution restriction an earlier
+  session hit; handed to Royce as a file, same as before) then `v3.sql` after Royce's own run
+  surfaced 5 more schema gaps (3 missing `app_data.staff` columns, 1 missing `schedule_entries`
+  column, `app_data.site_projects`/`public.audit_log`/`public.toolbox_talks` missing entirely —
+  the last two a schema-mixup catch on a second pass, not a new drift finding). Royce ran v3;
+  all 13 verification checks plus all 9 triggers (17 event-rows) confirmed true, live.
+  **This does not resolve the coordination problem below** — `fix/tenant-provisioning-pg-cron`
+  is still uncommitted and may still land changes that conflict with this. Needs Royce to
+  actually reconcile or stand down that branch, not just have another session find the tenant
+  in an unknown state again. (added 2026-09-09)
 - [ ] **Re-verify madagins's actual current state before doing anything else here.** This
   session's provisioning script ran successfully live (Royce confirmed, no errors after a
   `pg_net` fix) — but a check immediately before this close found `public` schema back to 0
