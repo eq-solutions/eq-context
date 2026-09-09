@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: madagins migration-replay conflicts (finding #25 in the tenant-identity-drift scoping doc) — verified already resolved, not an open decision (2026-09-09)
+*Follow-up to `eq/sprints/2026-09-09-provisioning-completeness-followup.md`'s madagins verification: a subagent reconciliation pass classified 26 of eq-field's 77 migrations as "CONFLICT" against madagins's live schema (hardcoded SKS literal org_id/tenant_id vs. madagins's own). Asked to "fix it and ensure it doesn't happen for next tenant" — investigated before building anything (Rule 0.5) and found both halves already done, by Royce directly plus a separate session, not something to redo.*
+
+- **Not a bug — the reconciliation's "CONFLICT" label was comparing the wrong baseline.** Madagins's live `app_data.field_*` objects already match ehow's current shape exactly, just with madagins's own org_id (`dd5d8622-...`)/tenant_id (`fc06cd56-...`) substituted in place of SKS's — the *correct*, intended result of proper tenant-specific provisioning, not a mismatch needing a decision. Re-verified live just now (`field_leave_requests`'s 23-column shape, `app_data` object count now 132, up from ~120 earlier today) — consistent, not stale.
+- **"Ensure it doesn't happen for next tenant" is already built and battle-tested**: [eq-field#959](https://github.com/eq-solutions/eq-field/pull/959) (merged) added `scripts/generate-tenant-provision-sql.mjs` — reads all 77 migrations, classifies verbatim/substitute/exclude, emits one consolidated SQL file with SKS's literals swapped for a target tenant's own. Per its own header, Royce then hand-ran its output live against madagins repeatedly the same day, surfacing and fixing 11 real collision classes (idempotency gaps, `CREATE OR REPLACE VIEW` column-shape fragility, an `ON CONFLICT` targeting a constraint a concurrent path hadn't created yet, a misclassified file that would've aborted the whole replay, and more) — each hardened generically in the script, not patched one-off for madagins. `--self-test` passes clean today: 77 files, 33 verbatim, 31 substituted, 13 excluded.
+- **Confirmed via the wider scoping doc** (`system/tenant-identity-drift-scoping-2026-09-09.md` §6.4, finding #25): this exact item is already cross-referenced there as "already being addressed by a dedicated generator tool" — three independent threads (my reconciliation pass, that scoping doc, and Royce's own live provisioning session) converged on the same fact.
+- **Not touched, out of scope for this thread**: the 9 zaap conflicts from the same reconciliation pass are a genuinely different, pre-existing issue (real shape divergence, not a reparameterization case) — zaap isn't a "next tenant" scenario, so it doesn't fall under "ensure it doesn't happen for next tenant." Separate item if it needs one.
+
+- [ ] Nothing outstanding on this specific thread. The wider `tenant-identity-drift-scoping-2026-09-09.md` doc has ~40 findings across 6 repos, several still open (its own §0 table) — a much bigger initiative, already getting its own dedicated sessions; not pulled in here without a direct ask. _(added 2026-09-09)_
+
+---
+
 ## eq-field: two tenant-identity-drift items from Royce's "fix it now" — one built, one flagged back with a bigger discovered scope (2026-09-09)
 *§0 items 4–6 of `system/tenant-identity-drift-scoping-2026-09-09.md` were flagged for Royce's call, not spawned. Asked directly which to build; all three ("fix it now"). eq-shell's (item 6) shipped clean — see that repo's own pending file. eq-field had two, with very different outcomes once actually investigated (Rule 0.5 — verify against live before building).*
 
