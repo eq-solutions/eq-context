@@ -76,7 +76,6 @@ _If this file is >48h old, the cron is broken._
 - #1882 fix(field): make the Field-workspace picker read tenants live
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 - #1879 fix(security): lock field_tenant_slug to a tenant's own slug
-- #1870 Fix crash on outgoing connect requests with a revoked status
 
 ---
 
@@ -86,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -97,7 +96,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | new | 2026-09-09 |
+| eq-shell | building | 2026-09-09 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
