@@ -1,7 +1,7 @@
 ---
 title: OPS — Security Register
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s. This is the ONLY security-register.md in the repo — a same-named file mentioned in eq/pending.md lives in a local scratchpad/ folder for an unrelated Trust-page/SOC2 draft, not tracked in git.
 read_priority: critical
 status: live
@@ -1813,7 +1813,28 @@ that generator at all — open question whether eq-shell's own
 repos' migrations, and **7 weren't found via `CREATE TABLE` grep in
 either repo** — possibly a third instance of the same out-of-band-table
 pattern `audit_log`/`app_config` already showed. Full split and reasoning:
-the scoping doc's addendum, not duplicated here. eq-service's own real
+the scoping doc's addendum, not duplicated here.
+
+**Correction + resolution, 2026-09-10 — `tender_enrichment` specifically checked live.**
+The `CREATE TABLE` grep that attributed this table to eq-shell's `0002_remaining_tables.sql`
+was a false match — that file creates `app_data.tender_enrichments` (plural, app_data
+schema), a dead stub dropped the same day it was created (tombstone:
+`supabase/migrations/2026_06_28_drop_app_data_tender_stubs.sql`). The LIVE table is
+`public.tender_enrichment` (singular), created by a different file
+(`2026_06_28_create_tender_enrichment_nominations_phases.sql`) that was misfiled into the
+control-plane tree and tombstoned 2026-07-11 — its own header explicitly forbids moving it
+into `supabase/tenant-migrations/`, precisely so the One Pipe never touches it. **Confirmed:
+`tenant-migrate.yml` does not cover this table's RLS, by deliberate design, not oversight.**
+Its whole lifecycle (creation, the 2026-07-11 anon-lockdown fix) has always been hand-applied
+per plane. Live-checked all 3 real tenants — **all currently correct, no active bug**: ehow
+carries `te_tenant_read`/`te_tenant_write` hardcoded to SKS's own org_id/tenant_id; zaap has
+dynamic self-referential policies from eq-shell PR #1863 (migration `0314`, governed,
+`Plane: zaap ONLY`); madagins has the same hardcoded-literal shape as ehow but with its own
+UUIDs correctly substituted (cross-checked against `organisations.id`/`shell_control.tenants.id`
+on jvkn — exact match, not a lockout). **The real gap**: no tracked mechanism creates this
+table or its policies for a new plane at all — every tenant's correctness here depends on a
+human remembering the manual step. `nominations`/`tender_phases` share the identical
+lineage, not individually re-verified. Royce's call: record-only for now (no live risk today). eq-service's own real
 contribution to this list is `acknowledgments`/`app_config`/`audit_log` (3
 tables); the rest belong to eq-shell and eq-field.
 
