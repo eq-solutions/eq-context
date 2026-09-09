@@ -1,0 +1,11 @@
+{
+  "$comment": "Registry of dedicated per-tenant Supabase projects -- one row per tenant, added by hand when a tenant is created (2026-09-09 non-negotiable: every tenant gets its own dedicated Supabase project, never shared -- see global CLAUDE.md). Read by .github/workflows/backup-tenants.yml. Does NOT include the 3 shared platform planes (ehow/jvkn/zaap) -- those have their own dedicated backup-*.yml workflows already and are out of scope here.",
+  "tenants": [
+    {
+      "slug": "madagins",
+      "project_ref": "ornndtbdkxfsewspbrwk",
+      "db_url_secret": "TENANT_MADAGINS_DB_URL",
+      "created": "2026-09-09"
+    }
+  ]
+}

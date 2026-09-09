@@ -1,7 +1,7 @@
 ---
 title: Machinery Index
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: Every executable file in the substrate — hooks, scripts, CI workflows — and what each one actually does. The prose tiers have per-file tables enforced by index_drift; until 2026-08-15 the machinery had none.
 read_priority: reference
 status: live
@@ -129,6 +129,17 @@ exist as separate workflows rather than as steps.
 | `backup-ehow.yml` · `verify-backup-ehow.yml` · `restore-drill-ehow.yml` | `ehow` — sks-canonical, the live DB for Service + Field |
 | `backup-eq-canonical.yml` · `verify-backup-eq-canonical.yml` · `restore-drill-eq-canonical.yml` | `eq-canonical` — browser control plane |
 | `backup-eq-canonical-internal.yml` · `verify-backup-eq-canonical-internal.yml` · `restore-drill-eq-canonical-internal.yml` | `eq-canonical-internal` — server-only tenant data plane |
+
+**Per-tenant backup** — `backup-tenants.yml` (nightly 04:30 UTC): loops
+`eq/identity/tenant-projects.json` (one row per dedicated per-tenant Supabase
+project — the tier the 2026-09-09 non-negotiable created) and `pg_dump`s each
+to the same R2 bucket, `tenant/<slug>/` prefix. No auth capture (tenant
+projects hold operational data only; identity stays solely on jvkn). Adding a
+tenant needs a registry row + one `env:` line in the workflow + the actual
+secret — see the workflow's own header for why the middle step can't be
+automated away. **Not yet armed** — needs `TENANT_MADAGINS_DB_URL` for the one
+currently-registered tenant (`madagins`). No verify-/restore-drill sibling
+yet, same reasoning as `backup-code.yml`.
 
 ---
 

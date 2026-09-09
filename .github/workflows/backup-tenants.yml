@@ -1,0 +1,227 @@
+name: Backup tenant DBs (dedicated per-tenant Supabase → R2)
+
+# Offsite backup for dedicated per-tenant Supabase projects — the tier the
+# 2026-09-09 non-negotiable created (every tenant gets its own project, never
+# shared; only eq-canonical/jvkn is shared across tenants). The three
+# platform-plane backups (backup-ehow.yml, backup-eq-canonical.yml,
+# backup-eq-canonical-internal.yml) predate that architecture and only ever
+# covered those 3 fixed platform DBs — this job is what actually scales with
+# tenant count. Found live 2026-09-09: eq-tenant-madagins, created the same
+# day, had zero backup coverage under any existing job.
+#
+# Registry: eq/identity/tenant-projects.json lists every dedicated tenant
+# project (slug, project_ref, db_url_secret). This workflow reads it and
+# loops — adding a tenant needs THREE things, not a new workflow file:
+#   1. One line in eq/identity/tenant-projects.json
+#   2. One line in this workflow's own `env:` block below, mapping the new
+#      literal secret name to an env var (GitHub Actions cannot look up a
+#      secret by a name computed at runtime — `${{ secrets.X }}` needs a
+#      literal X at the workflow-definition level, so this one step can't be
+#      removed, only kept to a single line)
+#   3. The actual secret added in GitHub Settings → Secrets → production-ops
+#
+# No auth capture — per-tenant projects hold operational data only. Identity
+# (`shell_control.users`) lives solely on jvkn (eq-canonical), never
+# duplicated per tenant, same reasoning as eq-canonical-internal's own
+# CAPTURE_AUTH=false. Same R2 bucket as the platform backups, a
+# `tenant/<slug>/` prefix keeps it separate.
+#
+# One bad tenant does not block the others — same non-fail-fast pattern as
+# backup-code.yml: each tenant is attempted independently, failures recorded
+# to a file (never a shell variable — this loop runs inside a `| while` pipe
+# subshell, where variable assignments don't survive past the loop), and the
+# job still fails overall if anything failed, so it's never silently partial.
+#
+# Schedule: nightly 04:30 UTC — after the 3 platform jobs (02:00/03:00/04:00),
+# ahead of their 05:00–05:30 verify jobs. Manual: workflow_dispatch.
+#
+# Secrets (production-ops environment, same as the platform backup jobs):
+#   Already present: R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_ENDPOINT /
+#     R2_BUCKET_NAME, SENTRY_DSN
+#   Must be ADDED per tenant, not yet armed for eq-tenant-madagins:
+#     TENANT_MADAGINS_DB_URL — session-pooler URI for ornndtbdkxfsewspbrwk,
+#     same format as the platform jobs' own `*_DB_URL` secrets. Every attempt
+#     fails loudly, not silently, until it's set. NOT YET TESTED END TO END —
+#     first real run happens once this secret exists.
+
+on:
+  schedule:
+    - cron: '30 4 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: Tenant DBs → R2 (pg_dump per tenant)
+    runs-on: ubuntu-latest
+    environment: production-ops
+    env:
+      MONITOR_SLUG: eq-tenants-daily-backup
+      # One line per tenant registered in eq/identity/tenant-projects.json —
+      # see this file's own header for why this line can't be eliminated.
+      TENANT_MADAGINS_DB_URL: ${{ secrets.TENANT_MADAGINS_DB_URL }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Sentry check-in (start)
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          set -uo pipefail
+          if [ -z "${SENTRY_DSN:-}" ]; then
+            echo "::warning::SENTRY_DSN not set — this backup run is UNMONITORED. Add SENTRY_DSN (production-ops) to arm cron alerting."
+            exit 0
+          fi
+          KEY="${SENTRY_DSN#https://}"; KEY="${KEY%%@*}"
+          REST="${SENTRY_DSN#*@}"; HOST="${REST%%/*}"; PID="${REST##*/}"
+          BASE="https://${HOST}/api/${PID}/cron/${MONITOR_SLUG}/${KEY}"
+          CID=$(curl -sS -X POST "${BASE}/" \
+            -H 'Content-Type: application/json' \
+            -d '{"status":"in_progress","monitor_config":{"schedule":{"type":"crontab","value":"30 4 * * *"},"checkin_margin":300,"max_runtime":45,"timezone":"UTC"}}' \
+            | jq -r '.id // empty') || true
+          echo "SENTRY_BASE=$BASE" >> "$GITHUB_ENV"
+          echo "SENTRY_CID=$CID"  >> "$GITHUB_ENV"
+          echo "Sentry monitor '${MONITOR_SLUG}' checked in (in_progress), id=${CID:-none}"
+
+      - name: Set backup date
+        run: echo "BACKUP_DATE=$(date -u +%Y-%m-%d_%H%M)" >> "$GITHUB_ENV"
+
+      - name: Install Supabase CLI + AWS CLI + jq
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz | tar xz
+          sudo mv supabase /usr/local/bin/
+          supabase --version
+          pip install awscli --quiet
+          jq --version
+
+      - name: Dump every registered tenant
+        run: |
+          set -uo pipefail   # NOT -e: one tenant's failure must not kill the loop
+          mkdir -p dumps
+          rm -f failed_tenants.txt
+
+          jq -c '.tenants[]' eq/identity/tenant-projects.json | while read -r row; do
+            SLUG=$(echo "$row" | jq -r '.slug')
+            SECRET_NAME=$(echo "$row" | jq -r '.db_url_secret')
+            echo "--- ${SLUG} (secret: ${SECRET_NAME}) ---"
+
+            if [ -z "$SLUG" ] || [ -z "$SECRET_NAME" ]; then
+              echo "::error::malformed row in tenant-projects.json — missing slug or db_url_secret"
+              echo "unknown" >> failed_tenants.txt
+              continue
+            fi
+
+            DB_URL="${!SECRET_NAME}"
+            if [ -z "$DB_URL" ]; then
+              echo "::error::${SECRET_NAME} is not set — cannot back up ${SLUG}. Add it under Settings > Secrets > production-ops."
+              echo "$SLUG" >> failed_tenants.txt
+              continue
+            fi
+
+            mkdir -p "dumps/${SLUG}"
+            if supabase db dump --db-url "$DB_URL" -f "dumps/${SLUG}/roles.sql" --role-only \
+               && supabase db dump --db-url "$DB_URL" -f "dumps/${SLUG}/schema.sql" \
+               && supabase db dump --db-url "$DB_URL" -f "dumps/${SLUG}/data.sql" --use-copy --data-only; then
+              DATA_BYTES=$(wc -c < "dumps/${SLUG}/data.sql")
+              echo "${SLUG}: roles=$(wc -c < "dumps/${SLUG}/roles.sql")B schema=$(wc -c < "dumps/${SLUG}/schema.sql")B data=${DATA_BYTES}B"
+              # Silent-empty guard: a real dump has a non-trivial schema at minimum.
+              if [ ! -s "dumps/${SLUG}/roles.sql" ] || [ ! -s "dumps/${SLUG}/schema.sql" ]; then
+                echo "::error::${SLUG}: roles.sql or schema.sql came back empty — refusing to trust this dump."
+                echo "$SLUG" >> failed_tenants.txt
+              fi
+            else
+              echo "::error::pg_dump failed for ${SLUG}"
+              echo "$SLUG" >> failed_tenants.txt
+            fi
+          done
+
+          TENANT_COUNT=$(jq '.tenants | length' eq/identity/tenant-projects.json)
+          DUMPED=$(find dumps -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+          echo "Attempted ${TENANT_COUNT} tenant(s) from the registry, produced a dump directory for ${DUMPED}."
+          if [ -f failed_tenants.txt ]; then
+            echo "FAILED_TENANTS=$(tr '\n' ' ' < failed_tenants.txt)" >> "$GITHUB_ENV"
+          fi
+          if [ "$DUMPED" -eq 0 ] && [ "$TENANT_COUNT" -gt 0 ]; then
+            echo "::error::Every registered tenant failed — refusing to upload nothing and call it success."
+            exit 1
+          fi
+
+      - name: Upload tenant dumps to R2
+        if: always()
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for d in dumps/*/; do
+            slug=$(basename "$d")
+            tar czf "${slug}.tar.gz" -C "$d" .
+            aws s3 cp "${slug}.tar.gz" \
+              "s3://${{ secrets.R2_BUCKET_NAME }}/tenant/${slug}/${BACKUP_DATE}/db_backup.tar.gz" \
+              --endpoint-url "${{ secrets.R2_ENDPOINT }}"
+            echo "✅ ${slug} uploaded: tenant/${slug}/${BACKUP_DATE}/"
+          done
+
+      - name: Prune old tenant backups (keep last 8 weeks)
+        if: always()
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          CUTOFF=$(date -u -d '56 days ago' +%Y-%m-%d)
+          for d in dumps/*/; do
+            slug=$(basename "$d")
+            aws s3 ls "s3://${{ secrets.R2_BUCKET_NAME }}/tenant/${slug}/" \
+              --endpoint-url "${{ secrets.R2_ENDPOINT }}" \
+              | awk '{print $NF}' | tr -d '/' \
+              | while read -r prefix; do
+                  [ -z "$prefix" ] && continue
+                  DATE_PART=$(echo "$prefix" | cut -d_ -f1)
+                  if [[ "$DATE_PART" < "$CUTOFF" ]]; then
+                    echo "Pruning old tenant backup: ${slug}/$prefix"
+                    aws s3 rm "s3://${{ secrets.R2_BUCKET_NAME }}/tenant/${slug}/$prefix/" \
+                      --recursive --endpoint-url "${{ secrets.R2_ENDPOINT }}"
+                  fi
+                done
+          done
+          echo "✅ Pruning complete (kept last 8 weeks)"
+
+      - name: Fail the job if any tenant didn't back up
+        run: |
+          set -uo pipefail
+          if [ -n "${FAILED_TENANTS:-}" ]; then
+            echo "::error::These tenants did NOT back up successfully this run:${FAILED_TENANTS}"
+            exit 1
+          fi
+
+      - name: Sentry check-in (ok)
+        if: success() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"ok"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=ok" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: ok"
+
+      - name: Sentry check-in (error)
+        if: failure() && env.SENTRY_BASE != ''
+        run: |
+          set -uo pipefail
+          if [ -n "${SENTRY_CID:-}" ]; then
+            curl -sS -X PUT "${SENTRY_BASE}/${SENTRY_CID}/" \
+              -H 'Content-Type: application/json' -d '{"status":"error"}' >/dev/null || true
+          else
+            curl -sS "${SENTRY_BASE}/?status=error" >/dev/null || true
+          fi
+          echo "Sentry monitor checked in: error"

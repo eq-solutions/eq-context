@@ -1,7 +1,7 @@
 ---
 title: Disaster Recovery — platform backups
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: Platform-level DR — offsite backups + restore verification for the shared EQ Supabase DBs
 read_priority: high
 status: live
@@ -236,6 +236,29 @@ moved to `--use-copy`.
    eq-service PR **after** the ehow run is green (avoid the double-backup trap). Not done from eq-context.
    ✅ [eq-service PR #438](https://github.com/eq-solutions/eq-service/pull/438) open 2026-07-04 (delete
    workflow + tombstone the old runbook → pointer to this repo).
+
+---
+
+## Per-tenant projects (new tier, 2026-09-09)
+
+The 2026-09-09 non-negotiable — every tenant gets its own dedicated Supabase
+project, never shared — creates a growing backup surface this doc's original
+3-plane inventory never anticipated. [`backup-tenants.yml`](../.github/workflows/backup-tenants.yml)
+covers it: reads [`eq/identity/tenant-projects.json`](../eq/identity/tenant-projects.json)
+(one row per tenant) and loops, nightly 04:30 UTC, same R2 bucket under a
+`tenant/<slug>/` prefix. No auth capture — tenant projects hold operational
+data only; identity stays solely on jvkn, never duplicated per tenant.
+
+**Adding a tenant needs three things** (see the workflow's own header for why
+the middle one can't be automated away): a row in `tenant-projects.json`, one
+line in the workflow's own secret-mapping `env:` block, and the actual DB URL
+secret added in GitHub Settings → Secrets → `production-ops`.
+
+**Currently registered:** `madagins` (`ornndtbdkxfsewspbrwk`, created
+2026-09-09 — found with zero backup coverage the same day it was created).
+**Not yet armed** — needs `TENANT_MADAGINS_DB_URL` before its first real run;
+every attempt fails loudly, not silently, until then. No verify-/
+restore-drill sibling built yet, same reasoning as `backup-code.yml`.
 
 ---
 
