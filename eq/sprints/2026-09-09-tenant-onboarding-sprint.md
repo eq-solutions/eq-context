@@ -90,11 +90,11 @@ verified live the same day, `shell_control.tenant_routing.supabase_project_ref` 
 
 ~~Per decision #2: on a Cards-side authenticated action, if the user holds `shell_control.user_tenant_memberships.role = 'manager'` for a tenant and has no `org_memberships` row for its `organisations` counterpart yet, create one (`role: 'admin'`, `status: 'active'`). No backfill pass needed — self-corrects the first time Michelle or Aditi actually uses Cards for Madagins.~~
 
-### 7. Sync `organisations.tier` from `shell_control.tenants.tier`
+### 7. Sync `organisations.tier` from `shell_control.tenants.tier` — done, [eq-cards#352](https://github.com/eq-solutions/eq-cards/pull/352)
 
-**Backfill done (2026-09-09, later same day)**: Madagins' `organisations.tier` is now `Advanced`, matching `shell_control.tenants.tier`. EQ Field reads the correct value now.
+**Fully closed (2026-09-09, later same night).** Backfill done earlier for Madagins; the structural half shipped the same night — a trigger on `shell_control.tenants` (fires `AFTER UPDATE OF tier`) pushes the value into `organisations.tier`, case-normalised via `initcap()` since the two columns use different casing conventions (`enterprise` vs `Enterprise`) and a raw copy would have silently broken `tierAtLeast()` instead of fixing it. Shipping it meant actually bootstrapping eq-cards' jvkn migration pipeline for the first time ever (the "never dispatched, no approval gate" risk noted below) — closed properly, not worked around: all 163 pre-existing migrations individually verified safe first (132 by direct live-object match against jvkn, the remaining 31 read and checked by hand), *then* `--bootstrap` dispatched.
 
-**The structural half is real, but bigger than a quick fix — deferred, needs your call on scheduling.** Closing the sync gap for every future tenant means either patching eq-shell's tenant admin code or adding a database trigger, applied through eq-cards' own migration-apply pipeline for this database (`jvkn-control-plane-apply.yml`) — checked, and that pipeline **has never been dispatched, not once**. Its own header warns that bootstrapping it over unreconciled migrations "stamps them applied without ever running them." First-time-running a never-exercised, no-approval-gate DDL pipeline isn't something to fold into a quick fix — it needs its own deliberate pass.
+**Bigger than Madagins.** The live check run immediately before shipping found SKS — the one real paying tenant, unrelated to tonight's Madagins work — already mismatched (`organisations.tier` showing `Standard` against a canonical `enterprise`). Enterprise-gated EQ Field features (Forecast nav, the apprentice-ratio dashboard widget, the top-bar region picker) had been silently hidden from SKS users. The same migration's backfill corrected it on apply — verified live, SKS now reads `Enterprise`.
 
 ### 8. Fix the Cards-side multi-org-admin picker truncation — done, [eq-cards#350](https://github.com/eq-solutions/eq-cards/pull/350)
 
@@ -118,6 +118,6 @@ Turned out item 6 closing as unnecessary doesn't reduce this one's value — `is
 | 4 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | **Done — [PR #348](https://github.com/eq-solutions/eq-cards/pull/348), live** | — |
 | 5 | Archive orphaned `eq-tenant-madagins` project | **Retracted — do not do this** | Madagins keeps its dedicated project |
 | 6 | Lazy-seed Cards-side `org_memberships` admin | **Closed — unnecessary**, `is_org_admin()` already covers it | — |
-| 7 | Backfill + sync `organisations.tier` | **Backfill done 2026-09-09** | Structural fix deferred — needs your call on scheduling |
+| 7 | Backfill + sync `organisations.tier` | **Done — [PR #352](https://github.com/eq-solutions/eq-cards/pull/352), live** | Also fixed a live SKS tier mismatch found while shipping it |
 | 8 | Fix multi-org-admin picker truncation (`org_admin_provider.dart`) | **Done — [PR #350](https://github.com/eq-solutions/eq-cards/pull/350), live** | — |
 | 9 | Fix `required_by_org_strip` grouping key (name → id) | **Done — same PR as #8** | — |
