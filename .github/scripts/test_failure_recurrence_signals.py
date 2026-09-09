@@ -51,6 +51,17 @@ timing the test run before shipping, not by reading the pattern. Always
 paste a validated script's exact output; never hand-retype a
 lookahead-heavy regex.
 
+F12's false positive (2026-09-10) was self-referential: a LATER session's
+own analysis explicitly rejecting an earlier file ("not F12's... Re-
+attributed to F9, not counted under F12") re-triggered F12's own signal
+against the paragraph that recorded the rejection -- a permanent loop per
+the ledger's own note, unfixed across three separate /triage passes.
+Excluded that exact rejection framing. A second false positive
+(sessions/2026-08-21.md, a real incident but the wrong ID) has no such
+framing in its OWN text -- only the later analysis names it -- so no safe
+regex distinction exists without risking the two genuine incidents' own
+similarly bare phrasing; added to confirmed_in instead.
+
 Run: python .github/scripts/test_failure_recurrence_signals.py
 """
 import re
@@ -410,10 +421,67 @@ def test_f9():
     )
 
 
+def test_f12():
+    pat = re.compile(load_signal("F12"), re.I)
+
+    # --- must CATCH: both confirmed genuine incidents + the real-but-wrong-ID case
+    check(
+        "F12: 2026-08-05-o confirmed genuine incident (verbatim excerpt)",
+        pat,
+        "pushing this close's `eq/pending.md` edit required going through an "
+        "isolated clone (the shared checkout blocks `git rebase` by design), and "
+        "the first attempt `cp`-overwrote the clone's freshly-cloned `pending.md` "
+        "with this checkout's older local copy -- instead of merging, it silently "
+        "reverted a different session's already-pushed edits.",
+        True,
+    )
+    check(
+        "F12: 2026-08-17 confirmed genuine incident (verbatim, no cp/copy anchor -- "
+        "proves the fix doesn't require one)",
+        pat,
+        "Spawned from a chip Royce clicked after this session hit F12 live "
+        "mid-close: its own uncommitted staged edits (pending-archive, two "
+        "changelogs, session log) vanished cleanly between two read-only Bash "
+        "commands, no error.",
+        True,
+    )
+    check(
+        "F12: 2026-08-21 real incident, wrong ID -- still matches on purpose "
+        "(handled via confirmed_in, not the regex, since its own text carries no "
+        "rejection framing)",
+        pat,
+        "By the very next status check both the staged content AND the "
+        "working-tree edit were simply gone -- git diff/git diff --cached both "
+        "empty, git status no longer listing the file.",
+        True,
+    )
+
+    # --- must NOT catch: the self-referential rejection shape ----------------
+    check(
+        "F12: 2026-08-30 self-referential rejection of 2026-08-21 (verbatim)",
+        pat,
+        "**F12** (sessions/2026-08-21.md) -- matched text is real data loss "
+        "(staged content vanishing), but it's F9's failure shape (a concurrent "
+        "session's `reset` wiping this session's staged edit), not F12's (a "
+        "copy-back overwrite) -- no cp/mv/copy command anywhere near it. "
+        "Re-attributed to F9, not counted under F12.",
+        False,
+    )
+    check(
+        "F12: synthetic -- same rejection framing, reworded",
+        pat,
+        "Investigated the flagged file directly -- this is not F12's mechanism, "
+        "it's F9's failure shape (a third-party git operation), not counted "
+        "under F12.",
+        False,
+    )
+
+
 def main():
     test_f1()
     test_f9()
     test_f10()
+    test_f12()
     test_f14()
     print(f"\n{passed} passed, {failed} failed")
     if failed:
