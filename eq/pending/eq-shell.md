@@ -24,8 +24,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - **Real, separate finding, not fixed here**: `madagins` being 50 migrations behind on what was framed as a brand-new signup suggests new-tenant provisioning isn't actually baselining onto current schema. Very likely overlaps with `fix/tenant-provisioning-pg-cron` — a different, uncommitted, in-progress branch (worktree `eq-shell-wt-pgcron`) already touching `provision-tenant-background.ts`/`tenant-routing.ts` with its own new migration draft — not touched, since it's someone else's live work-in-progress.
 
 **Deferred:**
-- [ ] **`madagins`'s 50-migration backlog** — needs a deliberate decision (batch-dispatch after review? tie into the pg_cron provisioning fix once that lands?), not a default fleet-wide catch-up. Whoever picks up `fix/tenant-provisioning-pg-cron` should see this. _(added 2026-09-09)_
-- [ ] **Migration number collision**: `fix/tenant-provisioning-pg-cron`'s own untracked `0308_legacy_public_schema_baseline.sql` will collide with the now-merged `0308_sites_deleted_at.sql` — needs renumbering to 0309+ whenever that branch is pushed/PR'd. _(added 2026-09-09)_
+- [ ] **`fix/tenant-provisioning-pg-cron` follow-up** (madagins's 50-migration backlog decision + the now-confirmed 0308 renumbering) — moved to `eq/sprints/2026-09-09-provisioning-completeness-followup.md`, alongside the other 2 items deferred from PR #1832 the same day. That doc also flags a possible collision with `eq/sprints/2026-09-09-tenant-onboarding-sprint.md`'s dedicated-project-vs-shared-ehow decision — read it before picking this branch back up. _(added 2026-09-09)_
 
 ---
 
