@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-09 (PR #972 OPEN, v3.5.713 — Tenant routing: a rejected ?tenant= override is now visible, not silent)
+- `_loadCanonicalConfig()` silently fell back to the host-matched tenant on a rejected `?tenant=` override — a `console.warn` only for a hostname mismatch, and zero signal at all (found reading the code, not in the original ask) for a slug matching no canonical org. Both paths now show a dismissible banner naming the requested and actually-served slugs via `loadTenantConfig()`; which tenant gets served is unchanged.
+- Found investigating why the freshly onboarded `madagins` tenant would silently render `eq` sandbox data on `field.eq.solutions/?tenant=madagins` — confirmed live (DNS + the canonical `organisations` table) that both `sks` and `madagins` carry a `field.{slug}.eq.solutions` hostname with no real Netlify domain behind it. Companion fix on the eq-shell side ([PR #1862](https://github.com/eq-solutions/eq-shell/pull/1862), merged) stops that at the source for new onboards.
+- Verified: 49/49 tests, eslint 0 errors, cache-buster + bundle-drift checks clean; live-verified on the deploy preview across both rejection paths, a clean normal load, and Dismiss.
+- Open, held unmerged — Royce's explicit "not yet."
+
 ## 2026-09-09 (PR #969 MERGED, v3.5.712 — Documents to Sign: fix inline PDF viewer's fake-worker fallback crash, EQ-FIELD-1P)
 - Root cause (proven from source): `scripts/pdfjs-worker-compat-shim.mjs` (added PR #952/v3.5.703 for an unrelated Samsung Internet `Map.prototype` bug) redirected pdf.js's `workerSrc` to itself but never exported `WorkerMessageHandler` — a bare `import(...)` with no `export`. pdf.js's fake-worker fallback (used whenever the real dedicated Worker fails to start) reads that export directly, so it was always `undefined`, crashing the fallback on any browser that ever reached it. iOS Safari hit it live (Sentry EQ-FIELD-1P) because its real Worker failed to start first — a known WebKit weak spot with dynamic `import()` inside a Worker's own module scope.
 - Fixed: static import + real `export { WorkerMessageHandler }`. Also fixed an adjacent bug found while there — `sign-documents-viewer.js`'s `workerSrc` reference had no cache-buster, and `/scripts/*` is served `Cache-Control: immutable` for a year, so the fix alone would never have reached a browser that had already cached the broken shim.

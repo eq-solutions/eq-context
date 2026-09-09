@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-09 (PR #1862 MERGED + LIVE — onboard-trial-tenant.mjs stops stamping a guessed EQ Field hostname by default)
+- Step 6 defaulted `--field-hostname` to `field.{slug}.eq.solutions` and wrote it straight to `public.organisations` — but this script only provisions the Supabase data plane, never Netlify DNS/domains. Confirmed live via Supabase MCP that both `sks` and `madagins` carried this exact dangling hostname; `eq`'s is real only because it's EQ Field's own default deploy, not because this script provisioned it.
+- `--field-hostname` now has no default — omitting it leaves `hostname` null (Shell-embed-only access via `core.eq.solutions/{slug}`). An existing-row update only touches `hostname` when the flag is explicitly passed, so a bare re-run no longer clobbers a deliberately-set value back to null.
+- Companion fix on the eq-field side ([PR #972](https://github.com/eq-solutions/eq-field/pull/972), held unmerged): a rejected `?tenant=` override now shows a visible banner instead of silently falling back.
+- Residual cleanup: nulled the existing dangling `hostname` on `sks`/`madagins`'s live `organisations` rows directly, per Royce's go.
+
 ## 2026-09-09 (PR #1842 MERGED — rescued app_data legacy-baseline migration (0311) landed; excludes a real cross-tenant leak)
 - `supabase/tenant-migrations/0311_app_data_legacy_baseline_and_tenant_members.sql` — rescues the hand-built `0309` draft from the deleted `eq-shell-wt-pgcron` worktree before it was lost (renumbered `0311` after a numbering collision with an already-merged file). 28 tables + 10 views + 22 functions + `service.tenant_members`, closing the "~20-25 CMMS tables missing" gap on madagins.
 - Full 2901-line read-through before committing found a real cross-tenant data leak: `app_data.field_job_numbers_src()` was `SECURITY DEFINER` with SKS's `tenant_id` hardcoded and no caller-tenant check — since `SECURITY DEFINER` bypasses RLS on everything it touches, shipping it as-is to any other tenant would expose SKS's own live job numbers, customer names, and project names to every authenticated user. Excluded the function and the view built on it from the PR entirely.
