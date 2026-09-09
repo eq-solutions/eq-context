@@ -7,6 +7,13 @@ read_priority: reference
 status: live
 ---
 
+## [2026-09-10] F5 investigated and confirmed real, not escalated — true close of the precision pass
+
+**Built by:** Claude Code
+
+- Ran `failure_recurrence_signals()` directly against current state (the live digest hadn't regenerated since eq-context's own commits don't trigger it) to confirm the five-failure pass was actually complete. F1/F10/F12 fully clear; F9/F14 show only their already-investigated genuine incidents.
+- **F5** ("An ungoverned shadow memory overrode the canonical contract," rung 0) had one new match, `sessions/2026-08-16.md` — real, not a false positive: that session self-identifies as "a live instance of the platform's own F5 ratchet warning." Documented in the ledger; `recurrences` deliberately not bumped (Royce's call, not self-filed). Also added `confirmed_in` for this same write-up's own self-reference (the "shadow memory" phrase quoted while describing the finding) — the identical class F1/F14 both hit today. Commit [`4de58a7`](https://github.com/eq-solutions/eq-context/commit/4de58a71d3b68af346fcbfc997db69302968bf98).
+
 ## [2026-09-10] F12's signal regex tightened (self-referential rejection excluded) — closes a five-failure precision pass
 
 **Built by:** Claude Code
