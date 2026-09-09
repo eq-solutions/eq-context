@@ -79,7 +79,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1840 fix(dev): allow Vite's React-refresh preamble under the CSP
-- #1839 fix(control-plane): keep tenants mirrored from organisations, backfill drift
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -101,7 +100,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | building | 2026-09-09 |
+| eq-shell | new | 2026-09-09 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
