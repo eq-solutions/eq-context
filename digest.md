@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 11:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 11:57 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 11:51 UTC → 2026-09-09 11:55 UTC)
+## Since last refresh (2026-09-09 11:55 UTC → 2026-09-09 11:57 UTC)
 
-- Merged: eq-shell [#1848](https://github.com/eq-solutions/eq-shell/pull/1848) feat(workers): redesign the Add worker screen (follow-up to 
-- Merged: eq-shell [#1847](https://github.com/eq-solutions/eq-shell/pull/1847) fix(entitlements): allowlist modules in upsertAppEntitlement
-- Merged: eq-shell [#1844](https://github.com/eq-solutions/eq-shell/pull/1844) feat(workers): merge Invite worker + Connect existing into o
-- Merged: eq-shell [#1841](https://github.com/eq-solutions/eq-shell/pull/1841) docs(env): document VITE_FIELD_URL, the one undocumented req
-- Merged: eq-shell [#1837](https://github.com/eq-solutions/eq-shell/pull/1837) fix(sidebar): open workspace switcher menu upward, not down 
-- Merged: eq-field [#972](https://github.com/eq-solutions/eq-field/pull/972) v3.5.714 — Tenant routing: a rejected ?tenant= override is n
-- Merged: eq-field [#971](https://github.com/eq-solutions/eq-field/pull/971) v3.5.713 — canon-read: allow the madagins tenant
-- Merged: eq-field [#970](https://github.com/eq-solutions/eq-field/pull/970) fix(sites,managers): Shell-ownership gate keys off CORE_ONLY
+- Merged: eq-shell [#1866](https://github.com/eq-solutions/eq-shell/pull/1866) fix(security): add authenticated read policy for zaap's orga
+- Merged: eq-shell [#1849](https://github.com/eq-solutions/eq-shell/pull/1849) fix(migrations): scope 0311 to ehow only
+- Merged: eq-shell [#1845](https://github.com/eq-solutions/eq-shell/pull/1845) fix(migrations): add missing UNIQUE constraint on licences.c
+- Merged: eq-shell [#1843](https://github.com/eq-solutions/eq-shell/pull/1843) fix(migrations): guard 0257's REVOKE against a from-scratch 
+- Merged: eq-shell [#1842](https://github.com/eq-solutions/eq-shell/pull/1842) fix(provisioning): recover and land the app_data legacy-base
+- Merged: eq-shell [#1840](https://github.com/eq-solutions/eq-shell/pull/1840) fix(dev): allow Vite's React-refresh preamble under the CSP
+- Merged: eq-shell [#1839](https://github.com/eq-solutions/eq-shell/pull/1839) fix(control-plane): keep tenants mirrored from organisations
+- Merged: eq-shell [#1838](https://github.com/eq-solutions/eq-shell/pull/1838) fix(field): add madagins to the Field tenant allowlist + pic
 
 ## ⚠ Needs you (8)
 
@@ -84,6 +84,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-09 | eq-shell | [#1866](https://github.com/eq-solutions/eq-shell/pull/1866) fix(security): add authenticated read policy for zaap's organisat |
 | 2026-09-09 | eq-shell | [#1864](https://github.com/eq-solutions/eq-shell/pull/1864) fix(documents): actually stop clipping the "..." menu (#1828 didn |
 | 2026-09-09 | eq-shell | [#1863](https://github.com/eq-solutions/eq-shell/pull/1863) fix(security): add missing tenant-scoped RLS policies on zaap's t |
 | 2026-09-09 | eq-shell | [#1862](https://github.com/eq-solutions/eq-shell/pull/1862) fix(onboard): stop stamping a guessed EQ Field hostname by defaul |
@@ -98,8 +99,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1856](https://github.com/eq-solutions/eq-shell/pull/1856) fix: idempotency guards for 0256/0267 policies + registry array d |
 | 2026-09-09 | eq-shell | [#1855](https://github.com/eq-solutions/eq-shell/pull/1855) ci(tenant-drift): skip drift-check cleanly on dependency-only Dep |
 | 2026-09-09 | eq-shell | [#1853](https://github.com/eq-solutions/eq-shell/pull/1853) fix(field-iframe): stop the memory-saver restore stall-notice rac |
-| 2026-09-09 | eq-shell | [#1851](https://github.com/eq-solutions/eq-shell/pull/1851) fix(field-iframe): pause the 30s handoff watchdog while the tab i |
-_Showing 15 of 79 · full record in [sessions/](sessions/)_
+_Showing 15 of 80 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 11:55 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 11:57 UTC._
