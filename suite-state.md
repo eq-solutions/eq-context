@@ -64,9 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
-**eq-field:**
-- #968 fix: fold pg_net extension check into tenant-provision generator
-
 **eq-service:**
 - #838 fix(canonical-members): scope every roster lookup to the actual tenant
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
@@ -102,7 +99,7 @@ _If this file is >48h old, the cron is broken._
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
 | eq-shell | new | 2026-09-09 |
-| eq-field | ready | 2026-09-09 |
+| eq-field | new | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
