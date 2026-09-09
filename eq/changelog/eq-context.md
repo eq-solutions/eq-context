@@ -7,6 +7,14 @@ read_priority: reference
 status: live
 ---
 
+## [2026-09-10] F9's signal regex tightened (guard-fired-correctly and cross-repo exclusions); a regex near-miss caught pre-ship
+
+**Built by:** Claude Code
+
+- **`system/failures.md`'s F9 `signal` regex** had two documented false-positive shapes, both already investigated by hand multiple times without ever closing the gap: the guard firing correctly and recovering via an isolated clone (`sessions/2026-08-27.md`, `sessions/2026-09-04.md`), and the identical "concurrent-session git race" language describing a DIFFERENT repo's own checkout — eq-cards, eq-shell — rather than eq-context's. Added two same-line exclusions across all five alternatives (one false positive matches via alternative 1, not just alternative 5). Full-corpus verification: matches dropped 13 → 4; the one file still matching after `last_seen` (`sessions/2026-09-09.md`) is a genuine, live, first-hand incident, correctly left for human review.
+- **Near-miss caught before shipping**: the first draft dropped the line-start anchor F1/F10/F14 all use, and produced catastrophic backtracking on the real corpus (120s+ for a sub-second scan). Caught by timing the test run; documented in the ledger note as a standing lesson for the next signal-regex edit.
+- Extended `.github/scripts/test_failure_recurrence_signals.py` with `test_f9()` — 7 cases, 35 total across F1/F9/F10/F14, all passing. Closes out a same-session four-failure precision pass. Commit [`9424dfb`](https://github.com/eq-solutions/eq-context/commit/9424dfb9fe5b859e877b9d1c86c11c5c6cc88431).
+
 ## [2026-09-10] F14's signal regex restructured (directional bug, pending.md/substrate anchors dropped)
 
 **Built by:** Claude Code
