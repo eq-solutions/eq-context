@@ -294,6 +294,32 @@ the same day, same root cause, already on record as unresolved. **Recommend not 
 effort** — extend it (or coordinate with whoever's driving it) for eq-service's RLS-policy finding
 (§0 item 2) once its footprint is known, rather than building a second generator.
 
+**Addendum 2026-09-09, later same session (SEC-76 verification) — a live count for finding #25.**
+While verifying §0 item 2 (now `ops/security-register.md` SEC-76), a direct `pg_policies` query
+against ehow found the hardcoded-literal pattern live on **~31 tables** — this doc's own "~30+
+migrations" estimate for eq-field was in the right range; this is a live number, not a
+migration-count guess, and it turns out not to be eq-field's alone. Ownership resolved by grepping
+`CREATE TABLE` across both repos' migrations, not by naming: **eq-field owns ~15**
+(`apprentice_journal`, `competencies`, `email_templates`, `feedback_requests`,
+`leave_cc_recipients`, `organisations`, `pending_schedule`, `roster_presence`, `site_audits`,
+`site_audit_items`, plus the 6 shared tables below) — almost certainly already covered by the
+generator's own stated substitution policy ("ANY file containing either SKS literal ANYWHERE... is
+substituted in full," above), not independently re-verified against its MANIFEST line-by-line.
+**eq-shell owns ~10** (`apprentice_profiles`, `tender_enrichment`, `tender_import_runs`,
+`tender_review_decisions`, `tenders`, `tender_nominations`, plus shared) — **not** covered by
+eq-field's generator (different repo, different pipeline) and not checked this pass whether
+eq-shell's own `tenant-migrate.yml` already handles literal substitution for these or carries the
+same bug eq-field had before its generator existed — a genuinely open question, not answered here.
+**6 tables are shared** between both repos' migrations (`team_supervisors`, `feedback_entries`,
+`quarterly_reviews`, `rotations`, `skills_ratings`, `field_job_number_overrides`) — same
+SHARED_REGISTRY_* class this section already names, for the same underlying reason. **7 tables
+weren't found via `CREATE TABLE` grep in either repo** (`job_numbers`, `nominations`,
+`people_notes`, `supervisor_notes`, `tender_phases`, `team_members`, `teams`) — possibly
+out-of-band, the same class as `public.audit_log` and the original `public.app_config` (both
+confirmed this session to predate migration tracking entirely on ehow), possibly just a grep miss
+— not resolved either way. Full per-table detail and eq-service's own 3-table piece
+(`acknowledgments`, `app_config`, `audit_log`): `ops/security-register.md` SEC-76.
+
 ---
 
 ## 7. Live tenant-identity data model on jvkn (verified 2026-09-09)
