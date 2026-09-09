@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #974 fix(ehow): field_job_numbers_src() had no caller-tenant check
-- #973 fix(madagins): restore security_invoker=on for field_site_projects/field_timesheet_locks
 
 **eq-service:**
 - #840 fix(ehow): role-gate site-credential fns, tenant-guard get_defect_counts
@@ -78,9 +77,7 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1877 chore(deps): bump @eq-solutions/ui to v1.16.5
-- #1876 fix(documents): warm push-document-audience's tenant-client cache
 - #1875 fix(cards): let a worker cancel their own pending access request
-- #1873 Make Multi the Add-workers homepage, fold agency links into upload
 - #1871 fix(control-plane): mirror liveness off the data plane, not DNS
 - #1870 Fix crash on outgoing connect requests with a revoked status
 
@@ -104,7 +101,7 @@ _If this file is >48h old, the cron is broken._
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
 | eq-shell | new | 2026-09-09 |
-| eq-field | enqueued | 2026-09-09 |
+| eq-field | new | 2026-09-09 |
 
     **Migrations:** eq-service has 244 (latest: 0240) applied
 
