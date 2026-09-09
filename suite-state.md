@@ -78,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1836 fix(security): enable RLS on the migration ledger table (app_data._eq_migrations)
+- #1837 fix(sidebar): open workspace switcher menu upward, not down off-screen
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -134,7 +134,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 51 |  |
+| Active users (Shell sign-ins, jvkn) | 50 |  |
 
 _No flips this run._
 ---
