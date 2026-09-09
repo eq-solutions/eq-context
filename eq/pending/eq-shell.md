@@ -15,20 +15,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: closed the tenant-identity-drift doc's #1 finding — token-exchange.ts no longer gates a caller's own tenant slug against a static allowlist (2026-09-09)
-*Picked up as the first build slice out of `system/tenant-identity-drift-scoping-2026-09-09.md` (a completed ~40-finding scoping doc, not a fresh investigation) — its own "Bottom line" ranked this eq-shell finding as the strongest table-backed candidate in the whole sweep. `ALLOWED_FIELD_TENANT_SLUGS` was doing two jobs: validating `body.tenant_slug` on the platform-admin cross-tenant Field picker (genuine caller input) and re-checking a non-admin caller's own `field_tenant_slug`/`slug`, already read from `shell_control.tenants` scoped to their signed session — never attacker-controlled. The second use added no security value, only a completeness trap: a real tenant missing from the static list got wrongly `403 no-field-workspace`'d out of Field, the exact shape of the 2026-09-09 Madagins incident this array was already reactively patched for once (#1838).*
-
-- [eq-shell#1850](https://github.com/eq-solutions/eq-shell/pull/1850) drops the array check on the non-admin path only; the admin picker's real input-validation use is untouched. 2 new regression tests (a not-in-the-list tenant now mints; a tenant with no slug set at all still correctly 403s). `tsc -b` clean, `eslint` clean, full `token-exchange.test.ts` suite green (9/9).
-- Built in an isolated worktree (`.claude/worktrees/field-tenant-slug-dynamic`), not the shared main checkout — which was mid-flight on an unrelated branch (`fix/entitlements-module-allowlist`) with 14 other active worktrees in this repo at the time.
-
-**Deferred:**
-- [ ] **Not merged or deployed** — waiting on Royce's explicit sign-off (auth-adjacent JWT-minting code; the edit itself was flagged by the Claude Code auto-mode classifier and only applied after explicit confirmation). _(added 2026-09-09)_
-- [ ] **The admin-picker half of the array is still static** — a new tenant needs a manual `ALLOWED_FIELD_TENANT_SLUGS` update before a platform admin's cross-tenant picker can reach it. Smaller, lower-frequency than the fixed gap (admin-only setting), deliberately left out of this slice. _(added 2026-09-09)_
-- [ ] **The rest of the tenant-identity-drift doc's Category A/B program (~1–1.5 weeks per its own estimate) is still open** — this was one finding out of ~40. See the doc's §8/§9/§10 for the full categorization, source-of-truth recommendation, and effort estimate. _(added 2026-09-09)_
-- [ ] **Three §0 items from the same doc explicitly need Royce's call, not spawned:** eq-field's Apprentice-module unrecognized-tenant fallback (item 4), `sites.js`/`managers.js` gating Shell-ownership on the literal string `'sks'` (item 5), and `check-tenant-drift.mjs`'s own fixed 3-project `CANONICAL_PROJECTS` list (item 6) — all deferred pending his input, all in eq-field where 3 other worktrees are already active on adjacent code. _(added 2026-09-09)_
-
----
-
 ## eq-shell: fixed a stale Field-tenant onboarding runbook; confirmed direct pushes to `main` skip 4 of 5 required checks; independently reconfirmed the uncommitted phone-claim migration from the PR #1842 section below (2026-09-09)
 
 - **`docs/runbooks/add-field-trial-tenant.md` was pointing at a deleted file.** Its "Two files to edit" section named `netlify/functions/mint-iframe-token.ts`, retired in the Phase 2→3 migration to `token-exchange.ts` — confirmed absent from the repo; confirmed the live mechanism via `token-exchange.ts` (`ALLOWED_FIELD_TENANT_SLUGS`) + `fieldTenants.ts` (`FIELD_TENANT_URLS`/`TENANT_OPTIONS`), matched against [PR #1838](https://github.com/eq-solutions/eq-shell/pull/1838) (madagins allowlist, merged same day) as a worked example. Rewrote the runbook: corrected both illustrative code snippets (they didn't match live shape at all, not just the filename), corrected "Field-side requirements" from `EQ_SECRET_SALT` to `SUPABASE_JWT_SECRET` (verified via this repo's own `CLAUDE.md` auth table — the old HMAC handoff is confirmed dead code), and corrected a stale "SKS has its own Netlify site" claim. Left "Current state of Field" / "Per-tenant data" flagged, not fixed — their premise depends on `FIELD-UNIFICATION-PLAN.md`, itself marked SUPERSEDED, and re-verifying needs eq-field. Committed (`e2d7e558`) and pushed on explicit instruction.
@@ -133,12 +119,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **`fix/tenant-provisioning-pg-cron` follow-up** (madagins's 50-migration backlog decision + the now-confirmed 0308 renumbering) — moved to `eq/sprints/2026-09-09-provisioning-completeness-followup.md`, alongside the other 2 items deferred from PR #1832 the same day. That doc also flags a possible collision with `eq/sprints/2026-09-09-tenant-onboarding-sprint.md`'s dedicated-project-vs-shared-ehow decision — read it before picking this branch back up. _(added 2026-09-09)_
-
----
-
-## eq-shell: EQ-SHELL-23 test-data account cleanup — re-landed after a same-day clobber (F17 recurrence); one residual still open (2026-09-09)
-
-- [ ] **EQ-SHELL-23 residual** — re-checked live in Sentry as of this restore: issue still `unresolved`/`new`, exactly 1 occurrence (2026-09-08T21:50 UTC), no re-fire since. Silencing it for good needs the jvkn-side shell account/tenant-membership closed too — Royce's call whether that's worth doing; not requested yet. _(added 2026-09-09, restored 2026-09-09)_
 
 ---
 
