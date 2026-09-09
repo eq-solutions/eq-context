@@ -78,6 +78,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1840 fix(dev): allow Vite's React-refresh preamble under the CSP
+- #1839 fix(control-plane): keep tenants mirrored from organisations, backfill drift
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
