@@ -100,7 +100,7 @@ one-paragraph flag.
 
 **Decisions needed from you before this goes further:**
 1. Scoping — 37 legacy objects (0308) + 2 hardcoded functions (0309): SKS/ehow-only forever, or real per-tenant parameterisation?
-2. Ordering — patch `0257` (and the internal 0308-vs-0309 dependency) with existence guards, or genuinely reorder the sequence (confirmed possible)? `0260` is not part of this — it's ehow-only, never dispatched to a new tenant at all.
+2. Ordering — **`0257`'s half is done**: [PR #1843](https://github.com/eq-solutions/eq-shell/pull/1843) guards its unconditional REVOKE behind an existence check, live-verified against ehow via `BEGIN...ROLLBACK` (guard short-circuits cleanly on nonexistent tables; full body against ehow's real schema reproduces the original's exact `anon: SELECT`-only result). Open, not merged — same merge-is-the-deploy hold as everything else, plus a real follow-up requirement: this file is already applied on every tenant, so `migrate-tenants.mjs`'s checksum-drift guard will block the *next* dispatch to sks/eq/zaap/ehow until `--reconcile-ledger` runs against each plane (ledger-only, no schema/data change) — not run here, needs its own go. The internal 0308-vs-0309 dependency (this pair's own ordering issue, separate from 0257) is still open — `0260` remains correctly out of scope, ehow-only.
 3. The 2 missing `service.*` objects need their own capture migration before this pair is safe on any tenant but ehow.
 4. `sync_staff_to_field()` is dead with a live landmine in it (hardcoded org_id) — drop it from the capture, or keep it as-is?
 
@@ -174,7 +174,7 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 | # | Item | Status | Depends on |
 |---|---|---|---|
 | 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) merged and confirmed live** — done | — |
-| 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | **Reviewed** — 4 concrete decisions needed from you (scoping now covers 2 files, ordering has a 3rd interlocking bug, 2 missing `service.*` objects, 1 dead function to keep-or-drop) | — |
+| 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | **Reviewed.** `0257`'s ordering bug fixed — [PR #1843](https://github.com/eq-solutions/eq-shell/pull/1843), open, needs `--reconcile-ledger` after merge. 3 more decisions needed from you (scoping now covers 2 files, internal 0308-vs-0309 ordering, 2 missing `service.*` objects, 1 dead function to keep-or-drop) | — |
 | 1c | madagins's migration backlog | **Resolved — was never real.** eq-field session's fix landed the genuine gap; the remaining "11 missing" are all Plane-scoped away from madagins (ehow/zaap only) and correctly absent | — |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | 1a merged + dispatched |
 | 3 | Triage ~71 tables / ~65 functions / 2 extensions / 2 schemas | Not started | Independent — can run anytime |
