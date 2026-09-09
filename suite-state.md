@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #958 v3.5.705 — sbFetch's core fetch had no timeout, hanging initApp() forever (Sentry EQ-SHELL-21)
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -78,7 +77,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1829 fix(schema): add app_data.sites.deleted_at, missing on every tenant but ehow
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
