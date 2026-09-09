@@ -57,9 +57,11 @@ Checked `AdminTenantsPage.tsx` / `admin-tenants.ts` directly: `shell_control.ten
 
 ## Wave 1 — ship now, no more decisions needed
 
-### 4. Generalise `workers-canonical-sync` beyond the SKS/ehow hardcode
+### 4. Generalise `workers-canonical-sync` beyond the SKS/ehow hardcode — built, [eq-cards#348](https://github.com/eq-solutions/eq-cards/pull/348)
 
-Make `TENANT_ROUTES` data-driven (read off `organisations`/`shell_control.tenants` directly, or a small dedicated mapping table) instead of a const requiring a code deploy per tenant — the literal opposite of "seamless." **Must ship with** a test that deliberately tries to cross tenant boundaries in `findStaffId()`'s phone/email adoption logic and asserts it fails (the guardrail from decision #1). Once live, register Madagins as a normal shared-ehow tenant.
+**Built 2026-09-09, PR open, not yet merged or deployed.** `TENANT_ROUTES` replaced with `resolveTenantRoute()` (new module `tenant-routing.ts`), reading `organisations.tenant_id` live instead of a const requiring a code deploy per tenant. Guardrail shipped as required: `tenant-routing.test.ts` asserts two different orgs never resolve to each other's tenant, and an org with its own dedicated data-plane project is refused rather than silently mis-routed into shared ehow — 6/6 passing (`deno check` + `deno test`, verified locally, both clean). Also added a `deno test` CI job for edge functions, which had none before — otherwise the guardrail test would just sit there unrun. Unstamped workers (`origin_org_id` NULL — the overwhelming majority) keep exactly today's behaviour, unit-tested.
+
+Remaining before this actually changes anything live: merge the PR, then a separate, explicit `Build & Deploy` dispatch (`deploy.yml` is manual-only — merging does not deploy). Madagins itself isn't registered as a shared-ehow tenant by this PR alone; that's a data step (setting `origin_org_id` for its workers, or equivalent), not touched here.
 
 ### 5. Archive the orphaned `eq-tenant-madagins` Supabase project
 
@@ -92,8 +94,8 @@ Per decision #3: backfill Madagins' `organisations.tier` to `'advanced'` now (EQ
 | 1 | Isolation model: shared-ehow default, dedicated project opt-in | **Decided 2026-09-09** | Unblocks #4/#5 below |
 | 2 | Cards-side admin-create gap: lazy self-seed off `shell_control` manager role | **Decided 2026-09-09** | Unblocks #6 below |
 | 3 | Tier split-brain: confirmed bug, sync from `shell_control.tenants.tier` | **Confirmed 2026-09-09** | Unblocks #7 below |
-| 4 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | Ready to build | Build on your go |
-| 5 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, after #4 ships |
+| 4 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | **Built — [PR #348](https://github.com/eq-solutions/eq-cards/pull/348) open** | Your merge + deploy |
+| 5 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, after #4 deploys |
 | 6 | Lazy-seed Cards-side `org_memberships` admin | Ready to build | Build together with #8 |
 | 7 | Backfill + sync `organisations.tier` | Ready to build | Build on your go |
 | 8 | Fix multi-org-admin picker truncation (`org_admin_provider.dart`) | Ready to build | Build together with #6 |
