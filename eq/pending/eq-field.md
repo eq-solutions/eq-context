@@ -15,6 +15,31 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Documents to Sign — Supervisor role had never been pushed to on SKS; 13 people (incl. Richard Brown, Collin Toohey) had zero signoffs — FIXED live (2026-09-09)
+*Royce: "can you see why richard brown and collin toohey cant see documents to sign in eq field sks tenant?" Investigated against live ehow + jvkn before proposing anything.*
+
+- [x] **Root cause: `document_signoffs` (ehow) is written only when eq-shell's `push-document-audience.ts` is used — a role-based push resolves signers from `shell_control.user_tenant_memberships.role` (control plane, jvkn), completely independent of `app_data.staff` fields (`employment_type`/`is_supervisor`/`active`/`on_roster`).** Richard Brown and Collin Toohey both hold Shell role `supervisor`. Every document ever pushed on this tenant (3 total: SWMS-005/008/018) had only ever targeted roles `employee`/`apprentice`/`labour_hire`, or named individuals directly — `supervisor` and `manager` had never once been used as a push target (24 people tenant-wide: 13 supervisors + 11 managers, zero signoffs). eq-field's own nav gate (`_hasAnySignoffs`) was working correctly — there was genuinely nothing to show them.
+- [x] **Simon Bramall (and Royce Milmlow) could already sign SWMS-005 for an unrelated reason** — both were individually hand-picked as explicit `target_kind='person'` audience rows when that document was first pushed (8 named people, alongside the 3-role sweep), unrelated to role-matching. Simon's own Shell role is `manager` — also never targeted by role.
+- [x] **Fix, on Royce's explicit "yes, push SWMS-005/008/018 to the Supervisor role":** wrote `document_audiences` (3 rows, `target_kind='role'`, `target_role='supervisor'`) + `document_signoffs` (39 rows, `status='outstanding'`) directly against ehow, mirroring `push-document-audience.ts`'s exact insert shape/constraints (`document_audiences_unique_target` is `(document_id, target_kind, target_key)` — `target_key` is a GENERATED column, cannot be inserted directly; `document_signoffs_version_signer_uq` is `(version_id, signer_user_id)`). Confirmed working within minutes, not just inserted: Rumen Iliev signed SWMS-005 3.5 minutes after the push.
+- [ ] **Manager role (11 people) still has zero signoffs on any document — not touched.** Royce only asked for Supervisor this pass. _(added 2026-09-09)_
+- [ ] **Orphaned `user_tenant_memberships` row found in passing, not resolved:** both Richard Brown and Collin Toohey also carry a second ACTIVE membership row under `tenant_id=279a6da0-0b54-4da8-8eac-499dffaa44cb`, which has no matching row in `public.organisations` at all. Spun off as a background task (`task_e40938b4`), started by Royce in a separate session — not yet reported back as of this close. _(added 2026-09-09)_
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`.
+
+---
+
+## eq-field: Documents to Sign inline PDF viewer — pdf.js "fake worker" fallback was broken for EVERY browser, not just iOS Safari — FIXED, merged, live (PR #969, v3.5.712, 2026-09-09)
+*Surfaced checking Sentry for fallout from the Supervisor-role push above — EQ-FIELD-1P, "Setting up fake worker failed", 1 event, iPhone Safari, pre-dated the push by 40 minutes so confirmed unrelated to it. Royce: "yes, look into the pdf.js worker failure."*
+
+- [x] **Root cause (proven from source, not inferred):** `scripts/pdfjs-worker-compat-shim.mjs` (added v3.5.703/PR #952 for an unrelated Samsung Internet `Map.prototype` bug) redirects pdf.js's `workerSrc` to itself, but its body was a bare `import('./vendor/pdfjs/build/pdf.worker.mjs')` with no export. pdf.js's fake-worker fallback (used whenever the real dedicated Worker fails to start, for any reason) reads `WorkerMessageHandler` off exactly that import — always `undefined`, so the fallback always threw on any browser that ever reached it. iOS Safari hit it because its real Worker failed to start first (a known WebKit weak spot with dynamic `import()` inside a Worker's own module scope).
+- [x] **Fix ([PR #969](https://github.com/eq-solutions/eq-field/pull/969)):** made the import static and actually exported `WorkerMessageHandler`. Also caught and fixed an adjacent bug while there: `sign-documents-viewer.js`'s `workerSrc` reference had no cache-buster, and `/scripts/*` is served `Cache-Control: immutable` for a year — without this, the fix would never have reached any client whose browser had already cached the broken shim.
+- [x] **Verified thoroughly, including live:** 47/47 tests, lint clean, cache-buster + bundle-drift guards pass, all CI green, deploy preview fetched directly (correct MIME type, CSP `worker-src 'self' blob:` covers it — ruling CSP out with certainty, not assumption). Merged on Royce's "merge it"; production (`field.eq.solutions/sw.js`) confirmed serving v3.5.712.
+- [ ] **Not confirmed on a real iOS Safari device** — none available in this environment. The missing-export bug is proven from source; what's still open is only whether the real dedicated Worker now succeeds outright on Safari (vs. still falling back, just successfully) — flagged in the PR body, not assumed. _(added 2026-09-09)_
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`.
+
+---
+
 ## eq-field: `tenant-migrate-apply.yml`'s 3 required secrets provisioned — pipeline still never successfully run (2026-09-09)
 
 - **`SUPABASE_ACCESS_TOKEN`, `EQ_SHELL_CHECKOUT_TOKEN`, `CONTROL_PROJECT_REF`** (jvkn) all set on this repo for the first time — the workflow existed since 2026-08-30 but had zero secrets and had never been dispatched, in any mode. `SUPABASE_ACCESS_TOKEN` is Supabase's newer scoped-token type (Organization → EQ Solutions; Database + Migrations permissions set to Write, everything else minimal) — first token pasted was invalid (`401 JWT failed verification` on a `--plan` dry run, caught before anything write-side was attempted), regenerated properly the second time.
