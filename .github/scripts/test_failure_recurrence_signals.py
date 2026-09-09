@@ -37,6 +37,20 @@ line" hygiene -- both are the identical short phrase. This fix removes the
 specific, provable noise sources found by full-corpus audit; it does not
 claim F1/F10-level precision.
 
+F9 (2026-09-10) had two documented false-positive shapes, both already
+investigated by hand multiple times without ever closing the gap: the guard
+firing correctly and recovering via an isolated clone (2026-08-27,
+2026-09-04), and the identical "concurrent-session git race" language
+describing a DIFFERENT repo's own shared checkout (eq-cards on 2026-08-25,
+eq-shell on 2026-08-27/2026-09-08) rather than eq-context's. Fixed with two
+same-line exclusions applied across all five alternatives. NEAR-MISS while
+building this one: the first draft dropped the `(?:^|\n)` line-start anchor
+the other three all use, and produced catastrophic backtracking on the real
+corpus (a scan that should take under a second exceeded 120s) -- caught by
+timing the test run before shipping, not by reading the pattern. Always
+paste a validated script's exact output; never hand-retype a
+lookahead-heavy regex.
+
 Run: python .github/scripts/test_failure_recurrence_signals.py
 """
 import re
@@ -321,8 +335,84 @@ def test_f14():
     )
 
 
+def test_f9():
+    pat = re.compile(load_signal("F9"), re.I)
+
+    # --- must CATCH: the one live, unconfirmed real incident + a synthetic --
+    check(
+        "F9: 2026-09-09 real, live, first-hand incident (verbatim; still unconfirmed)",
+        pat,
+        "A live, first-hand instance of the exact concurrent-session git race "
+        "pattern flagged in this same session's own needs-you triage (F9/F12-shaped): "
+        "two safe_commit.py pushes landed cleanly (confirmed via git log --all, both "
+        "SHAs genuinely exist in history) but the specific in-place line edits inside "
+        "eq/pending/eq-shell.md didn't survive.",
+        True,
+    )
+    check(
+        "F9: synthetic genuine eq-context checkout collision, no guard-ok/other-repo framing",
+        pat,
+        "A genuine concurrent-session checkout collision hit the shared eq-context "
+        "root tonight -- HEAD moved to a different branch mid-edit with no warning.",
+        True,
+    )
+
+    # --- must NOT catch: the two documented false-positive shapes -----------
+    check(
+        "F9: 2026-08-27 false positive -- guard fired correctly (verbatim)",
+        pat,
+        "**eq-context substrate was badly out of sync this close** -- "
+        "`C:\\Projects\\eq-context` (shared checkout) was 85+ commits behind "
+        "`origin/main` and climbing during this session. A `git pull` there was "
+        "correctly BLOCKED by the repo's own `pre_tool_use` hook (failure F9 -- "
+        "concurrent-session git races corrupting the shared checkout).",
+        False,
+    )
+    check(
+        "F9: 2026-08-27 false positive -- names eq-shell's own checkout, not eq-context (verbatim)",
+        pat,
+        "**Direct, repeated evidence of concurrent-session git races this session, "
+        "on eq-shell's own root checkout -- not just eq-context.** `git reflog` on "
+        "the shared root checkout showed a `merge origin/main: fast-forward` and a "
+        "real commit neither issued by this session.",
+        False,
+    )
+    check(
+        "F9: 2026-09-08 false positive -- explicitly eq-shell's checkout, not eq-context (verbatim)",
+        pat,
+        "**Concurrent-session checkout collision, same night as the other session "
+        "logged above, different mechanism**: mid-task, 9+ other sessions' "
+        "branch-hops/commits landed in the shared `C:/Projects/eq-shell` root "
+        "checkout between this session's edit and its commit.",
+        False,
+    )
+    check(
+        "F9: synthetic guard recovered via isolated clone, no live problem",
+        pat,
+        "A concurrent-session git race was hard-blocked by hooks/pre_tool_use.py; "
+        "followed the prescribed remediation (isolated clone) and recovered cleanly.",
+        False,
+    )
+    check(
+        "F9: synthetic eq-context's own per-repo tracking file, not another repo's checkout",
+        pat,
+        "Updated eq/pending/eq-shell.md and eq/changelog/eq-cards.md after today's "
+        "concurrent-session checkout collision investigation.",
+        False,
+    )
+    check(
+        "F9: real noise -- 'swept up' shape naming eq-cards' checkout, not eq-context's (verbatim)",
+        pat,
+        "A concurrent session was actively committing to this exact eq-cards branch, "
+        "in this exact shared root checkout, in real time during this session -- one "
+        "of its git operations swept up this session's already-staged doc changes.",
+        False,
+    )
+
+
 def main():
     test_f1()
+    test_f9()
     test_f10()
     test_f14()
     print(f"\n{passed} passed, {failed} failed")
