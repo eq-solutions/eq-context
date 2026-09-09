@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 08:08 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 08:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 07:59 UTC → 2026-09-09 08:08 UTC)
+## Since last refresh (2026-09-09 08:08 UTC → 2026-09-09 08:12 UTC)
 
-- Merged: eq-shell [#1826](https://github.com/eq-solutions/eq-shell/pull/1826) fix(chunk-reload): recognize Firefox's MIME-type wording for
-- Merged: eq-shell [#1822](https://github.com/eq-solutions/eq-shell/pull/1822) feat(documents): expose bulk multi-document push
-- Merged: eq-shell [#1818](https://github.com/eq-solutions/eq-shell/pull/1818) fix(documents): scope site/customer tags to Person, make Rol
-- Merged: eq-shell [#1816](https://github.com/eq-solutions/eq-shell/pull/1816) fix(migrations): drop document_register before document_sign
-- Merged: eq-shell [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an ex
-- Merged: eq-shell [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load 
-- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
-- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
+- Merged: eq-shell [#1837](https://github.com/eq-solutions/eq-shell/pull/1837) fix(sidebar): open workspace switcher menu upward, not down 
+- Merged: eq-shell [#1825](https://github.com/eq-solutions/eq-shell/pull/1825) feat(documents): add an outstanding-count badge to My docume
+- Merged: eq-shell [#1824](https://github.com/eq-solutions/eq-shell/pull/1824) feat(staff): let a conversation carry a reminder date
+- Merged: eq-shell [#1823](https://github.com/eq-solutions/eq-shell/pull/1823) fix(responsive): let iPad join the phone breakpoint instead 
+- Merged: eq-shell [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view
+- Merged: eq-shell [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAud
+- Merged: eq-shell [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabili
+- Merged: eq-shell [#1817](https://github.com/eq-solutions/eq-shell/pull/1817) feat(staff): backdate conversations, Casual notes attach a s
 
 ## ⚠ Needs you (9)
 
@@ -40,7 +40,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **`madagins`'s ledger needs correcting before any real apply can succeed on it** — the 314 falsely-stamped rows have to be cleared/reset first, or every future apply attempt will keep trusting them and skipping real work. Not done here — Royce's call on timing/ownership, and who ran the original bootstrap (and why) is still unknown. _(added 2026-09-09)_
 - **eq-shell** · **EQ-SHELL-23 residual** — re-checked live in Sentry as of this restore: issue still `unresolved`/`new`, exactly 1 occurrence (2026-09-08T21:50 UTC), no re-fire since. Silencing it for good needs the jvkn-side shell account/tenant-membership closed too — Royce's call whether that's worth doing; not requested yet. _(added 2026-09-09, restored 2026-09-09)_
 - **eq-shell** · **RLS gap on madagins's `app_data._eq_migrations`** (project `ornndtbdkxfsewspbrwk`) — Supabase advisor flagged RLS disabled on this table (anon-exposed). Same table the "tenant creation..." section above independently found holding 314 falsely-stamped ledger rows from the `--bootstrap` misuse — likely two symptoms of the same under-provisioned tenant, but access-control and ledger-integrity are separate fixes; this one needs its own governed-pipeline dispatch (RLS-enabled-with-no-policy + revoke public/anon/authenticated + grant service_role, added to both repos' `SERVICE_ROLE_ONLY` lists) regardless of how the ledger gets corrected. No evidence of a fix as of this restore, but re-verify live before acting — madagins's schema state has changed hands and shape several times today. Royce's call on timing. _(added 2026-09-09, restored 2026-09-09)_
-- **eq-shell** · **Local dev server CSP-vs-Vite-preamble conflict** — `netlify dev` blanks the entire SPA on load; the app's CSP `script-src` header (`netlify.toml`) blocks Vite's dev-mode inline preamble script (`@vitejs/plugin-react can't detect preamble`). Confirmed still present as of this restore: current `netlify.toml`'s `script-src` directive carries no `'unsafe-inline'` and no nonce/hash carve-out for dev. Blocks all local click-testing in this repo, not just this feature. Root cause not yet investigated. _(added 2026-09-09, restored 2026-09-09)_
+- **eq-shell** · **Local dev server CSP-vs-Vite-preamble conflict** — reproduced live 2026-09-09 (not just inferred from the header this time): ran `netlify dev --filter eq-shell`, hit `http://localhost:8888` once functions finished bundling. Server sends the full production CSP (`script-src` has no `'unsafe-inline'`/nonce/hash), and the dev HTML always inlines `@vitejs/plugin-react`'s React-refresh preamble (`<script type="module">import { injectIntoGlobalHook } from "/@react-refresh"...`, no `src`). Browser console: `Executing inline script violates the following Content Security Policy directive 'script-src ...'. Either the 'unsafe-inline' keyword, a hash (...), or a nonce (...) is required` immediately followed by `Uncaught: @vitejs/plugin-react can't detect preamble. Something is wrong.` at `src/brand.tsx:63:11` — screenshot confirms a fully blank white page, nothing renders. **Concrete lead for the fix**: Chrome's own CSP error already computed the exact hash of the blocked inline script — `sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk=`. Adding that to a dev-only `script-src` override would unblock this specific preamble immediately, though it's tied to this exact Vite/plugin-react version's preamble content and would need recomputing on a version bump — a dev-mode-only CSP relaxation (env-gated in whatever sets the header) would be more durable than pinning the hash. Blocks all local click-testing in this repo, not just this feature. _(added 2026-09-09, restored 2026-09-09, reproduced live 2026-09-09)_
 - **eq-shell** · **"Logged after the fact" indicator, Casual attachment friction, "overall score per person"** — 3 items from the follow-up sprint still waiting on Royce's own decisions, none urgent. Full detail in the sprint doc. _(added 2026-09-09)_
 - **eq-shell** · **The structural gap itself is still open** — every future Dependabot PR in this repo will hit the identical `SUPABASE_ACCESS_TOKEN` failure and need the same admin-override, until one of: (a) grant the token to Dependabot secrets (security trade-off, declined for now), or (b) change the workflow to skip this check gracefully when triggered by Dependabot AND the diff touches no schema-relevant files. Neither built — Royce's call which way, if either. _(added 2026-09-09)_
 - **eq-shell** · **Not click-tested against the real authenticated page** — no Shell session/credentials in this environment; verified instead via the isolated CSS repro above. _(added 2026-09-09)_
@@ -55,7 +55,7 @@ _…and 281 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
 | eq-field | ✓ success | 0d ago | 3 | 6d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
@@ -83,6 +83,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-09 | eq-shell | [#1837](https://github.com/eq-solutions/eq-shell/pull/1837) fix(sidebar): open workspace switcher menu upward, not down off-s |
 | 2026-09-09 | eq-shell | [#1835](https://github.com/eq-solutions/eq-shell/pull/1835) fix(security): enable RLS on app_data._eq_migrations (all tenant  |
 | 2026-09-09 | eq-shell | [#1834](https://github.com/eq-solutions/eq-shell/pull/1834) fix(provisioning): enable pg_cron on new tenant projects |
 | 2026-09-09 | eq-shell | [#1833](https://github.com/eq-solutions/eq-shell/pull/1833) fix(security): enable RLS on 4 dead wipe_backup tables (ehow) |
@@ -97,7 +98,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-field | [#961](https://github.com/eq-solutions/eq-field/pull/961) v3.5.708 — Role-string literals: wire up eq-roles-canon.js instea |
 | 2026-09-09 | eq-field | [#960](https://github.com/eq-solutions/eq-field/pull/960) v3.5.707 — Leave: extract balance/business-day math into leave-ru |
 | 2026-09-09 | eq-field | [#958](https://github.com/eq-solutions/eq-field/pull/958) v3.5.706 — sbFetch's core fetch had no timeout, hanging initApp() |
-| 2026-09-09 | eq-field | [#956](https://github.com/eq-solutions/eq-field/pull/956) DRAFT (not applied): track app_data.staff write-restriction polic |
 _Showing 15 of 78 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -192,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 08:08 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 08:12 UTC._
