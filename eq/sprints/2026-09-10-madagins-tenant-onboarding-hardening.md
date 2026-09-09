@@ -1,3 +1,12 @@
+---
+title: Sprint — madagins tenant-onboarding hardening
+owner: Royce Milmlow
+last_updated: 2026-09-10
+scope: eq-field/eq-shell/eq-cards SKS-hardcode audit + madagins live-health check
+read_priority: standard
+status: live
+---
+
 # Sprint: madagins tenant-onboarding hardening — 2026-09-10
 
 **Trigger:** a session confirming Royce's mental model of the per-tenant SaaS
