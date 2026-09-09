@@ -69,8 +69,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 - #1879 fix(security): lock field_tenant_slug to a tenant's own slug
-- #1878 fix(security): close 2 more RLS gaps found while checking tender_enrichment's siblings
 - #1875 fix(cards): let a worker cancel their own pending access request
 - #1871 fix(control-plane): mirror liveness off the data plane, not DNS
 - #1870 Fix crash on outgoing connect requests with a revoked status
@@ -83,7 +83,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? in_progress |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -93,9 +93,9 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | new | 2026-09-09 |
+    | eq-service | ready | 2026-09-09 |
 | eq-shell | building | 2026-09-09 |
-| eq-field | new | 2026-09-09 |
+| eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
 
