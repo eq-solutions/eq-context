@@ -15,6 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Field-workspace picker had a fourth, undocumented copy of the tenant-slug list — found, fixed, merged, live; a matching eq-field copy found the same day also fixed (2026-09-09)
+*Started as a walkthrough of two Madagins admin-settings screenshots Royce shared — what the "Apps" checkboxes actually gate (cosmetic dashboard-tile toggle only, `org_module_entitlements`) versus what the "Field workspace" dropdown gates (real, server-enforced routing, `field_tenant_slug`). Investigating the second one surfaced a gap neither the tenant-identity-drift doc nor the same day's #1838/#1850 fixes had caught.*
+
+- **`AdminTenantSettings.tsx`'s "Field workspace" `<select>` (platform-admin only) turned out to be a THIRD hardcoded copy of the tenant-slug list** — distinct from `token-exchange.ts`'s `ALLOWED_FIELD_TENANT_SLUGS` and `fieldTenants.ts`'s `TENANT_OPTIONS`, and not named by either file's own "keep these in sync" comment. It was still missing Madagins even after #1838/#1850 fixed the other two — a platform admin had no way to point Madagins at its own EQ Field workspace from this screen, though "None" (the actual live setting) was harmless since #1850's fallback already routes an unset tenant to its own shell slug.
+- **[eq-shell#1860](https://github.com/eq-solutions/eq-shell/pull/1860)** adds the missing `<option value="madagins">`. `tsc -b` + `eslint` clean. Reviewed and merged by Royce (`9efe7607`); confirmed live via Netlify's own published-deploy `commit_ref` (ancestry-checked against the merge commit directly, twice, a few minutes apart, since the first check caught the production deploy still serving the previous commit). The GitHub Deployments API recorded nothing at all for this merge — hours-stale — while Netlify had published normally; not the check to use for this repo going forward.
+- **Also found live while checking:** `shell_control.tenants.field_tenant_slug` has no CHECK constraint on jvkn — the original migration scoped one to the original 4 slugs, but it's gone from `pg_constraint` with no record of when or how (the usual hand-applied-control-plane-change gap). Not a blocker, just means nothing at the DB layer stops an admin saving an arbitrary string here.
+- **A FOURTH copy, in a different repo, was actively breaking a real tenant.** eq-field's own `netlify/functions/canon-read.js` has its own `ALLOWED_SLUGS` allowlist (`eq`/`sks`/`demo-trades`/`melbourne`), 400ing anything else before the canonical lookup. Madagins already has 5 active `app_data.staff` rows, so this wasn't hypothetical — Field's People-screen licence + worker-summary reads were failing outright. Found and fixed the same day (a concurrent session, not this one): eq-field [PR #971](https://github.com/eq-solutions/eq-field/pull/971) (v3.5.713), merged, confirmed live via `field.eq.solutions/sw.js`.
+
+**Deferred:**
+- [ ] **Now 4 known hardcoded copies of "which Field tenants exist," across 2 repos** (`ALLOWED_FIELD_TENANT_SLUGS`, `TENANT_OPTIONS`, this settings dropdown, eq-field's `ALLOWED_SLUGS`) — one more concrete data point for the tenant-identity-drift doc's "go dynamic" direction already tracked in the findings #1/#6 section below. Not re-scoped as its own program here. _(added 2026-09-09)_
+
+---
+
 ## eq-shell: zaap's own migration-replay conflicts — 2 real RLS gaps found, fixed, merged, dispatched, verified live; 1 checked clean (2026-09-09)
 *Follow-up to the madagins migration-reconciliation pass: asked to also check the 9 zaap items that reconciliation had classified "genuinely different, not reparameterized." Investigated all 9 live rather than trusting the earlier summary — found the framing was too coarse: some were fine, one was a real bug with live data blocked, one was a real-but-latent gap, one was a non-issue.*
 

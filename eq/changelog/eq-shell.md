@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-09 (PR #1860 MERGED + LIVE — Field workspace dropdown was missing Madagins)
+- `AdminTenantSettings.tsx`'s platform-admin-only "Field workspace" `<select>` — a third, undocumented hardcoded copy of the tenant-slug list, separate from `token-exchange.ts`'s `ALLOWED_FIELD_TENANT_SLUGS` and `fieldTenants.ts`'s `TENANT_OPTIONS` — was still missing `madagins` even after the same day's #1838/#1850 fixes to the other two. Added the missing `<option value="madagins">`. [PR #1860](https://github.com/eq-solutions/eq-shell/pull/1860).
+- Confirmed live via Netlify's own published-deploy `commit_ref` matched against the merge commit — the GitHub Deployments API recorded nothing for this merge at all.
+
 ## 2026-09-09 (PR #1863 + #1866 MERGED + LIVE — 2 zaap RLS gaps closed)
 - `public.tender_enrichment` on zaap: RLS enabled, zero policies, 3 real active tenders' enrichment data completely inaccessible to authenticated users. Added `te_tenant_read`/`te_tenant_write`, scoped through `tenders.org_id` (the table itself has no org_id/tenant_id column on zaap, unlike ehow's copy). [PR #1863](https://github.com/eq-solutions/eq-shell/pull/1863), migration `0314`, `Plane: zaap ONLY`.
 - `public.organisations` on zaap: same RLS-plus-no-policy shape, but latent (no live client code reads it as `authenticated`). Added `organisations_tenant_read` (read-only, matching the existing anon policy's scope). [PR #1866](https://github.com/eq-solutions/eq-shell/pull/1866), migration `0315`, `Plane: zaap ONLY`.
