@@ -1,7 +1,7 @@
 ---
 title: EQ Context (substrate/tooling) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: EQ Context (substrate/tooling) engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -30,6 +30,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - This machine's `python3` resolves to the Windows Store app-execution-alias stub, not a real interpreter (confirmed live) — use `python` instead, matching `system/failures.md` F10's own note.
 - The GitHub connector available this session can read `eq-context`/`eq-solves-intake`/`eq-roles`/`eq-ui`/`eq-design-tokens`/`eq-contracts`/`sks-nsw-labour`/`test` but 404s cleanly on `eq-shell`/`eq-field`/`eq-service`/`eq-cards` — worth knowing before trusting it for anything product-repo-shaped. Also noticed in passing: `sks-nsw-labour` now shows `archived: true` on GitHub, consistent with its documented retirement.
 - A background task (`task_aeccccf4`) was spawned for a real, separate finding hit while checking the auth-hub Sentry events — a regressed Shell↔Field iframe-handoff stall on `/sks/field`, unresolved since 2026-07-14. Royce started it in its own session; not part of this entry's scope.
+
+---
+
+## eq-context: item 4/5 follow-through — tenant-backup coverage built + verified live; friend-as-backup engagement decided; Room to Grow architecture walkthrough published (2026-09-09)
+*Second wave off the 2026-09-08 redundancy review: closed the new "every tenant gets its own dedicated Supabase project" architecture's backup gap (it had zero coverage by design — the old backup jobs hardcode ehow/jvkn/zaap), ran `/decide` on engaging a friend as an emergency infra backup, and built an HTML walkthrough of current vs. at-scale architecture for Royce to use with someone else. Also corrected a factual error of this session's own in `ops/decisions.md` (Cards doesn't go through Shell's `token-exchange.ts` — confirmed against `IDENTITY-MODEL.md`).*
+
+- [ ] **`scripts/register_tenant_backup.py` untested on a second real tenant** — verified against copies of the real files with a fake tenant (happy path, duplicate rejection, bad-slug validation), but madagins is the only tenant it's registered for real. Next new tenant is the real test. _(added 2026-09-09)_
+- [ ] **Decide whether/when to send the drafted friend-engagement message** — `/decide`'d to draft it (emergency-only EQ-scoped access, explicitly not SKS, no obligation framing); sending it is Royce's own call, not made this session. _(added 2026-09-09)_
+
+**Notes:**
+- **New workflow `.github/workflows/backup-tenants.yml`** (nightly 04:30 UTC) + registry `eq/identity/tenant-projects.json` + `scripts/register_tenant_backup.py` — pg_dumps every registered dedicated-per-tenant Supabase project to R2 (`tenant/<slug>/`), no auth-schema capture. Confirmed **green end-to-end for `eq-tenant-madagins`** (project `ornndtbdkxfsewspbrwk`) after live, iterative troubleshooting of a 4-stage failure chain: wrong GitHub secret name (Royce's first attempt named the secret after the generated password instead of `TENANT_MADAGINS_DB_URL`), wrong Supabase connectivity mode (Session pooler doesn't work from GitHub-hosted runners — no IPv6; needed Transaction pooler + IPv4, my own wrong first guidance, corrected), a real bug in this session's own workflow (Supabase CLI tarball extraction collided with this repo's tracked `supabase/migrations/` dir — fixed by extracting to `/tmp` first), and a stale/mistyped password from manual copy-paste (fixed with one more dashboard-driven reset).
+- **A database password was inadvertently visible in a screenshot pasted into this chat during that troubleshooting.** Flagged at the time; Royce rotated it via another password reset immediately after. No further action needed — noting it here so the exposure is on the record, not just in scrollback.
+- **The `ornndtbdkxfsewspbrwk` project itself is confirmed correct to back up** — cross-checked against `sessions/2026-09-09.md`'s own record of a same-day, separate, much larger multi-session thread on madagins' application-layer provisioning: an early proposal to make shared-ehow the tenant default and archive madagins' dedicated project as "orphaned" was **rejected outright by Royce** ("tenants must never share a database, full stop" — now the global `CLAUDE.md` non-negotiable), and madagins' dedicated project was later reconfirmed as its real, intended database. Separately and not this session's concern: that same thread shows madagins' schema itself was rebuilt/incomplete/flapping (missing tables, a `pg_cron` gap, `shell_control.tenant_routing` toggling present/missing) across 6-8+ concurrent sessions all day, still not fully settled as of the last entry in that file. This doesn't affect backup correctness — the nightly job backs up whatever schema state exists — but the first several nightly dumps for madagins may reflect a moving target, not a final one. Already surfaced to Royce directly by the sessions working that thread; not re-chased here.
+- **Room to Grow** — published HTML artifact (architecture-level "today → trigger → at scale" walkthrough across 6 growth dimensions, plus auth/identity and backup-flow diagrams) for Royce to walk a third party through: `https://claude.ai/code/artifact/26f38dca-a735-4709-a916-bf63097caed4`.
+- **`ops/decisions.md` correction (own error):** this session's earlier auth-hub entry (2026-09-08) said Cards goes through Shell's `token-exchange.ts` the same as Field/Service. It doesn't — Cards authenticates workers directly via Supabase's own phone-OTP flow (bridged via a `custom_access_token_hook`), never through Shell's minting path. Corrected in place, confirmed against `IDENTITY-MODEL.md` §9-10 and a 2026-06-15 decision entry.
 
 ---
 
