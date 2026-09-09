@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 10:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 10:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 10:07 UTC → 2026-09-09 10:10 UTC)
+## Since last refresh (2026-09-09 10:10 UTC → 2026-09-09 10:12 UTC)
 
-- Merged: eq-shell [#1842](https://github.com/eq-solutions/eq-shell/pull/1842) fix(provisioning): recover and land the app_data legacy-base
-- Merged: eq-shell [#1828](https://github.com/eq-solutions/eq-shell/pull/1828) fix(documents): stop clipping the "..." menu behind the next
-- Merged: eq-shell [#1826](https://github.com/eq-solutions/eq-shell/pull/1826) fix(chunk-reload): recognize Firefox's MIME-type wording for
-- Merged: eq-shell [#1822](https://github.com/eq-solutions/eq-shell/pull/1822) feat(documents): expose bulk multi-document push
-- Merged: eq-shell [#1699](https://github.com/eq-solutions/eq-shell/pull/1699) chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2
-- Merged: eq-shell [#1698](https://github.com/eq-solutions/eq-shell/pull/1698) chore(deps): bump react-hook-form from 7.77.0 to 7.87.0
-- Merged: eq-shell [#1696](https://github.com/eq-solutions/eq-shell/pull/1696) chore(deps): bump @sentry/react from 10.53.1 to 10.73.0
-- Merged: eq-shell [#1695](https://github.com/eq-solutions/eq-shell/pull/1695) chore(deps): bump papaparse and @types/papaparse
+- Merged: eq-shell [#1830](https://github.com/eq-solutions/eq-shell/pull/1830) test(staff): add coverage for staff-resourcing's pure rollup
+- Merged: eq-shell [#1825](https://github.com/eq-solutions/eq-shell/pull/1825) feat(documents): add an outstanding-count badge to My docume
+- Merged: eq-shell [#1824](https://github.com/eq-solutions/eq-shell/pull/1824) feat(staff): let a conversation carry a reminder date
+- Merged: eq-shell [#1823](https://github.com/eq-solutions/eq-shell/pull/1823) fix(responsive): let iPad join the phone breakpoint instead 
+- Merged: eq-shell [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view
+- Merged: eq-shell [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAud
+- Merged: eq-shell [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) chore(deps): bump unpdf from 0.12.1 to 0.12.2
+- Merged: eq-field [#968](https://github.com/eq-solutions/eq-field/pull/968) fix: fold pg_net extension check into tenant-provision gener
 
 ## ⚠ Needs you (8)
 
@@ -55,8 +55,8 @@ _…and 282 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 4 | 0d |
-| eq-solves-service | ✓ success | 36d ago | 7 | 4d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 7 | 4d |
+| eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 10:10 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 10:12 UTC._
