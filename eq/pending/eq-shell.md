@@ -15,6 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Conversations reminders shipped, caused and fixed a same-day live outage, mobile verified, tests added (2026-09-09)
+*Continuation of 2026-09-08's Conversations backdating feature (`eq/sprints/2026-09-09-conversations-followup-sprint.md` has the full item-by-item follow-up sprint) — this entry covers the day's actual events: reminders shipped, broke production, fixed, then closed out the remaining open items from that sprint.*
+
+- **Reminders on conversations shipped**: [PR #1824](https://github.com/eq-solutions/eq-shell/pull/1824), merged — a nullable `remind_at date` (migration `0307`) on all 3 templates, surfaced as a `REMINDER DUE` badge on the Resourcing dashboard's existing catch-up card.
+- **Caused a live outage, same day**: PR #1824's app code (querying `remind_at`) auto-deployed on merge; the migration dispatch was deliberately left as a separate "on request" step. That gap broke `/sks/staff/resourcing` (`db_error`, whole page, not just reminders) until Royce reported it and the migration was dispatched. Root-caused and fixed within the session — confirmed live on both `/sks/` and `/eq/` afterward. Written up as a standing rule (never defer a migration dispatch once dependent code has merged) in the eq-shell Claude memory store (`feedback_migration_dispatch_before_merge_gap`) so it isn't repeated.
+- **Mobile view confirmed live**: earlier session notes said browser-automation mobile emulation was a dead end (window resize + DevTools toolbar both inert) — a later retry the same day worked (transient tool/session issue, not a real limitation). Verified for real: mobile roster cards, the person detail sheet, and the conversation modal (both date fields side by side) all render correctly at 390px.
+- **Test coverage added**: [PR #1830](https://github.com/eq-solutions/eq-shell/pull/1830) (open) — 16 tests for `staff-resourcing.ts`'s pure logic (`avgRating`, `trainingCounts`, `redactForViewer`, and a newly-extracted `findDueReminder`), the established `_shared/*.test.ts` pattern applied to a file that had none.
+
+- [ ] **Merge PR #1830** — open, not yet merged, no migration involved this time (pure code + test). _(added 2026-09-09)_
+- [ ] **"Logged after the fact" indicator, Casual attachment friction, "overall score per person"** — 3 items from the follow-up sprint still waiting on Royce's own decisions, none urgent. Full detail in the sprint doc. _(added 2026-09-09)_
+
+---
+
 ## eq-shell: 5 aging Dependabot PRs merged — root cause was a structural CI gap, not staleness, still open (2026-09-09)
 *Royce asked to merge the 5 aging (8d) dependency-bump PRs the digest kept flagging. All 5 failed the same required check ("Schema drift + anon-grant + policy-lint"); root-caused rather than assumed stale or force-merged blind.*
 

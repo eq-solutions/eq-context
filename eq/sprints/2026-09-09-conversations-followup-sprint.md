@@ -18,17 +18,19 @@ Built from the 2026-09-08 session-close card's 6 open rows (5 "Deferred" + 1 "Ne
 
 ## Wave 1 — ship now, no more decisions needed
 
-### 1. Add test coverage
-No decision needed — straightforward engineering hygiene. This repo has an established `netlify/functions/_shared/*.test.ts` pattern (33+ files) never applied to `staff-resourcing.ts`'s pure logic: `avgRating`, `redactForViewer`, and the new summary-regeneration/sort-tiebreak logic from PR #1819 are all directly unit-testable with plain-object inputs, no mocking. `ConversationsSection.tsx`'s modal logic is harder to unit-test cheaply (heavy DOM/modal state) — function-level coverage first, lower priority than the Netlify-function side.
+### 1. Add test coverage — ✅ DONE (2026-09-09)
+[eq-shell PR #1830](https://github.com/eq-solutions/eq-shell/pull/1830) (open, not yet merged) — 16 tests covering `avgRating`, `trainingCounts`, `redactForViewer`, and a newly-extracted `findDueReminder` (pulled out of an inline `.find()` in item 2's own code so it's independently testable). `ConversationsSection.tsx`'s modal logic still has no coverage — heavier DOM/component-test lift, not attempted here, lower priority than the Netlify-function side.
 
-### 2. Reminders on conversations
-**Scoped 2026-09-09, ready to build on your go.** Royce: "Can we add in reminders somehow?" — with a live example: a Casual note about a future commitment, nothing to surface it again when that date arrives.
+### 2. Reminders on conversations — ✅ DONE (2026-09-09)
+[eq-shell PR #1824](https://github.com/eq-solutions/eq-shell/pull/1824), merged, migration `0307` dispatched fleet-wide, confirmed live on both ehow and zaap. All three entry types get the field; surfaces on the Resourcing dashboard's existing "Who to catch up with next" card as a `REMINDER DUE` badge, no new screen — exactly as scoped below.
 
-Confirmed via `AskUserQuestion`:
-- **All three entry types** get the field (Casual, Check-in, Development Review) — not Casual-only.
-- **Surfaces on the Resourcing dashboard's existing "Who to catch up with next" card** as a new `REMINDER DUE` badge, alongside the existing `NEW — SAY HI` / `NEVER CHATTED` / `LAST CHAT · X AGO` ones — no new dedicated Reminders screen.
+**Also: this shipped a real same-day outage, now fixed and written up as a standing lesson.** PR #1824's app code (which queries `remind_at`) auto-deployed on merge; the migration was left as a deliberately separate "dispatch when ready" step. That gap window broke `/sks/staff/resourcing` (`db_error`) until the migration was dispatched. Fixed within the same session once reported; see `feedback_migration_dispatch_before_merge_gap` in the eq-shell Claude memory store — future migration+code pairs in this repo should not repeat the deferred-dispatch pattern.
 
-Build shape: a nullable `remind_at date` column on `app_data.staff_conversations` (same shape as `occurred_at` from #1817 — new migration, both planes), an optional "Remind me on" date field in the modal below the note/answers (all 3 templates), and `staff-resourcing.ts`'s existing "who to catch up with" selection logic extended to include anyone with an open conversation whose `remind_at` has arrived.
+<details><summary>Original scope (for the record)</summary>
+
+Royce: "Can we add in reminders somehow?" — with a live example: a Casual note about a future commitment, nothing to surface it again when that date arrives. Confirmed via `AskUserQuestion`: all three entry types get the field (not Casual-only); surfaces on the existing catch-up card, no new screen. Build shape: a nullable `remind_at date` column (same shape as `occurred_at` from #1817), an optional "Remind me on" date field in the modal, `staff-resourcing.ts`'s catch-up selection extended to anyone with an open conversation whose `remind_at` has arrived.
+
+</details>
 
 ---
 
@@ -49,10 +51,10 @@ Sketched in conversation 2026-09-08, no code. Raw material already exists and is
 
 ---
 
-## Not a build — needs your own action
+## Resolved without a build
 
-### 6. Check the mobile view on your phone
-Desktop confirmed live and correct (checked directly against a real record, via your own logged-in session). Forcing a real mobile viewport through available browser automation was a genuine dead end — window resize and Chrome DevTools' device toolbar both had no effect. No code fix available here; just needs you to glance at it on your actual phone next time you're in Core. No rush.
+### 6. Mobile view — ✅ CONFIRMED (2026-09-09)
+Turned out not to need your own phone check after all — a second attempt at forcing a mobile viewport through browser automation worked this time (the first attempt's failure was a transient tool/session issue, not a real limitation). Verified directly, real production, real session: the mobile roster card layout, the person detail sheet, and the "Log a conversation" modal (both new date fields side by side, no overflow) all render correctly at 390px wide. Nothing further needed here.
 
 ---
 
@@ -60,9 +62,9 @@ Desktop confirmed live and correct (checked directly against a real record, via 
 
 | # | Item | Status | Action |
 |---|---|---|---|
-| 1 | Test coverage | No decision needed | Build whenever |
-| 2 | Reminders on conversations | Scoped 2026-09-09, ready | **Build on your go** |
+| 1 | Test coverage | ✅ Done — PR #1830 open | Merge when ready |
+| 2 | Reminders on conversations | ✅ Done — live | Nothing — watch for a real reminder to confirm the badge |
 | 3 | "Logged after the fact" indicator | Needs a small decision | Worth it? |
 | 4 | Casual attachment friction | Needs a small decision | Worth restructuring? |
 | 5 | "Overall score per person" | Needs a bigger decision | Who can see it? |
-| 6 | Mobile view check | Not a build | Your own 15-second look |
+| 6 | Mobile view check | ✅ Confirmed live | Nothing |
