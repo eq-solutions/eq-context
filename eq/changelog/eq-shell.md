@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-09 (PR #1842 MERGED, DISPATCH FAILED — rescued app_data/CMMS legacy-baseline migration, `0311`)
+- `supabase/tenant-migrations/0311_app_data_legacy_baseline_and_tenant_members.sql` — ~28 tables, 10 views, 22 functions, `service.tenant_members`, reconstructed from ehow's live schema, intended to close a ~20-25 table gap on the `madagins` tenant. Admin-merged after two rounds of unrelated control-plane drift blocked the required CI check (a different session's hand-applied `eq_cards_worker_claimed_by_phone` — resolved once #1844 merged — then `shell_control.sync_organisations_tier`, still unfixed).
+- **Not live on any tenant.** Dispatching it to madagins failed transactionally (`ERROR 42P16: cannot drop columns from view`, 0 applied) — its 10 `app_data.field_*` view definitions are stale against a concurrent eq-field session's own more-complete live versions of those same views. Needs those view definitions fixed before any retry. See `eq/pending/eq-shell.md`.
+
 ## 2026-09-09 (PR #1840 MERGED + LIVE — CSP dev-mode fix for Vite's React-refresh preamble)
 - `netlify.toml`'s CSP had no dev-mode carve-out (headers there can't be scoped per deploy context — confirmed against Netlify's own docs), so under `netlify dev`, `@vitejs/plugin-react`'s inline React-refresh preamble was blocked outright — `@vitejs/plugin-react can't detect preamble`, blanking the whole SPA. Reproduced live (curl + browser console + screenshot) before fixing, not just inferred from the header.
 - Fix: added the preamble's exact sha256 hash (read directly off Chrome's own CSP violation message) to `script-src`, unconditionally. Safe despite being global: hash-based CSP only matches this exact byte content, and the built `dist/index.html` production serves has no such script at all — Fast Refresh doesn't exist outside Vite's dev server. Documented the trade-off inline: a future Vite/plugin-react bump changing the preamble bytes would need the hash recomputed.
