@@ -15,14 +15,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: SKS tenant ID hardcoded into RLS on acknowledgments/app_config/audit_log — footprint mapped, fix not yet built (2026-09-09)
-*The other task spawned from the same suite-wide tenant-identity-drift scoping doc (§0 item 2, alongside the canonical-members.ts fix below). `0146b_acknowledgments_authenticated_write.sql:36` and `0151_fix_app_config_id.sql:46` hardcode SKS's tenant_id into RLS `WITH CHECK` clauses. Live introspection (once Supabase MCP became available mid-session) found a 3rd affected table — `public.audit_log`, the actively-written audit trail (5,886 rows, written today) — and the same pattern on ~31 tables suite-wide, mostly owned by eq-shell/eq-field, not this repo. Full detail: [SEC-77](../../ops/security-register.md) (originally numbered SEC-76, renumbered after a race with the canonical-members.ts push below — see that row's own note).*
-
-- Corrected the original report's severity framing twice over the course of the investigation: not a shared-tenant leak (SKS is ehow's only real non-demo tenant, live-verified twice independently) and not risk-free either (the Demo tenant's writes to these tables are being silently denied today).
-- Spun off as its own task, not investigated further this session: why `public.audit_log` still receives live writes instead of the properly-migrated `service.audit_logs` (66 rows, stale since 2026-08-02) — `task_53ac5191`.
-
-**Deferred:**
-- [ ] **Fix mechanism not decided.** Whether `acknowledgments`/`app_config`/`audit_log` can adopt `service.audit_logs`'s dynamic-JWT-derived pattern as written, or need a schema change first (`org_id` vs `tenant_id` scoping isn't identical across all three) — not traced this session. _(added 2026-09-09)_
+## eq-solves-service: SKS tenant ID hardcoded into RLS on acknowledgments/app_config/audit_log — turned out to be eq-field's problem, not this repo's; CLOSED (2026-09-09)
+*The other task spawned from the same suite-wide tenant-identity-drift scoping doc (§0 item 2, alongside the canonical-members.ts fix below). `0146b_acknowledgments_authenticated_write.sql:36` and `0151_fix_app_config_id.sql:46` hardcode SKS's tenant_id into RLS `WITH CHECK` clauses. Live introspection (once Supabase MCP became available mid-session) found a 3rd affected table — `public.audit_log` — and the same pattern on ~31 tables suite-wide. Full detail: [SEC-77](../../ops/security-register.md) (originally numbered SEC-76, renumbered after a race with the canonical-members.ts push below — see that row's own note). **Final state: CLOSED, not fixed here.** Told to "start the eq-service RLS fix" — checked which application code actually reads/writes `acknowledgments`/`app_config` first, before writing any migration. Zero hits in this repo's `app/`/`lib/`. `0146`/`0146b` are stale orphaned duplicates of eq-field's own `20260625_acknowledgments_write_enable.sql` (same day, same policies) — eq-field owns both tables and has kept evolving them independently since. The hardcode itself isn't a bug there either: `20260823_ehow_second_wave_jwt_tenant_gate.sql` deliberately added it to close a real Demo↔SKS cross-tenant leak (these tables previously checked only `org_id`, so any authenticated ehow session — Demo included — could read/write SKS's business data). Future-tenant provisioning already correct too: eq-field's own generator classifies both files `action: 'substitute'`, verified directly in its manifest. Nothing left for this repo to fix. `public.audit_log` resolved the same way, separately (see below) — also eq-field's, also not a bug.
 - [x] ~~Blocked on the concurrent session (`canonical-members.ts`)~~ — cleared: that session's fix landed and pushed (`2c6c7aa`), eq-service's checkout is clean and up to date with `origin/main` again. The actual RLS fix is now unblocked to start. _(added 2026-09-09, closed 2026-09-09)_
 - [x] ~~Whether eq-shell's own `tenant-migrate.yml` already substitutes tenant literals~~ — **checked directly: it doesn't, ever** (`scripts/migrate-tenants.mjs` applies every migration's SQL verbatim to every tenant in `shell_control.tenant_routing`; the only exclusion mechanism is an explicit `-- Plane: X ONLY.` header). Of 20 eq-shell migration files hardcoding SKS's literal, 14 have no Plane header (fleet-wide, including Madagins) — of those, only 5 actually `CREATE`/`ALTER POLICY`, and the most severe one, `app_data.field_job_numbers_src()` (`SECURITY DEFINER`, hardcoded SKS filter, no caller-tenant check — a real cross-tenant **data leak**, not just a denial, since SECDEF bypasses RLS on every table it touches), is **already found and excluded** by another concurrent session's own independent review — [eq-shell PR #1842](https://github.com/eq-solutions/eq-shell/pull/1842), not yet merged (blocked on an unrelated CI/control-plane-drift issue). Nothing further to do here — already owned. _(added 2026-09-09, closed 2026-09-09)_
 - [x] ~~7 of the ~31 live-affected tables weren't found via `CREATE TABLE` grep~~ — **explained**: they're part of the same ~60-object out-of-band legacy-baseline capture another concurrent session did today (`0311_app_data_legacy_baseline_and_tenant_members.sql`, PR #1842) — objects live on ehow with no `CREATE` in any tracked migration anywhere, the same class as `audit_log`/original `app_config`. Already being tracked and reconciled there, not a fresh gap. _(added 2026-09-09, closed 2026-09-09)_
@@ -51,6 +45,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Dashboard's `grid-cols-4` tiles and the shared Table component don't reflow at any width** — a separate, real gap found during the same audit, out of scope for the nav fix. _(added 2026-09-08)_
+- [ ] **Not click-tested live by a person** — no Shell/demo credentials in this environment. Worth a real pass at iPad width once convenient. _(added 2026-09-08)_
 
 ---
 
@@ -68,6 +63,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Upload screen trusts the browser's claimed file type — deliberately left as-is.** Royce's call: the risk (a trusted staff member mislabeling a file for another staff member at the same company to open) is real but bounded, and tightening it risks rejecting real uploads in a way that can't be tested here (no working phone-camera-upload test path in this environment). Revisit if there's ever a real incident, or once there's a way to click-test uploads live. _(added 2026-09-05)_
 - [ ] **Evidence attachments advertise "Photos / videos" on-screen, but video files are silently rejected today.** Nobody has decided whether to actually support video (which would also need a bigger size limit than the current 10MB). _(added 2026-09-05)_
 - [ ] **The file-storage system itself allows bigger files (50MB) with no type restriction at its own level** — the app's own rules (10MB, specific file types only) are tighter, so this only matters if something ever writes to file storage directly instead of through the app. Low priority. _(added 2026-09-05)_
+- [ ] **Not click-tested live by a real technician.** The fix was verified against the live database directly (both the broken state and the fixed state), not by an actual person uploading or deleting a file on the maintenance check page. _(added 2026-09-05)_
 
 ---
 
@@ -142,6 +138,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 **Deferred:**
 - [ ] **"Approved by" has no real data source to wire to.** The DB carries unused `signature_technician_url` / `signature_site_url` / `signature_initials` columns from migration 0068 (2026-04), explicitly intended for exactly this, but no UI anywhere has ever captured them. Real feature gap, not a wiring fix — needs Royce's call on whether to build signature capture. _(added 2026-08-17)_
 - [ ] **Masthead caption redundancy also exists on NSX, Work Order Details, and the Run-Sheet** — only dropped for ACB per Royce's explicit scoping this session. Revisit if he wants it dropped everywhere. _(added 2026-08-17)_
+- [ ] **Secondary Injection load fix not click-tested live post-deploy** — verified via code trace (label-prefix mismatch confirmed against live DB data) plus a regenerated sample report, not by an actual technician reopening a check with saved SI data and watching the fields populate. Worth Royce doing that once. _(added 2026-08-17)_
 
 ---
 
@@ -163,6 +160,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-service: migrations dispatched live; mobile check-detail header overflow found+fixed+deployed; eq-context accidental-checkout scare investigated (2026-08-13)
 
+- [ ] **Not click-tested on a real phone** — same sandbox limitation as other recent mobile fixes (no path to complete the Shell-iframe auth handoff here). Verified instead via `tsc --noEmit` (clean) and a static Tailwind-class repro at 375px sent directly to Royce, plus confirming the live Netlify production deploy matches the merge commit. _(added 2026-08-13)_
 - [ ] **No independent confirmation yet from the other session.** Messaged it directly via `send_message` with the full incident writeup, asking for its own explicit confirmation that nothing is missing — no reply received before this session closed. _(added 2026-08-13)_
 
 ---
