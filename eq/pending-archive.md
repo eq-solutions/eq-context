@@ -16,24 +16,6 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
-## eq-shell: EQ-SHELL-23 test-data account cleanup fully closed — jvkn-side shell account and both tenant memberships deactivated (rotated 2026-09-09)
-*Continuation of the same-day EQ-SHELL-23 write-up: the alert-only monitor `check-missing-org-memberships.ts` had correctly flagged "Jordan A. Sample," an SKS Apprentice test record created 2026-09-01. `app_data.staff` (ehow) and its licences were already handled earlier the same day; this was the deferred "jvkn-side shell account/tenant-membership closed too" piece, done on Royce's explicit "close it for good."*
-
-- **Root cause of the residual, found live**: `shell_control.users` (jvkn) for this account was already `active=false` (deactivated 2026-09-08), and its `sks` tenant membership in `shell_control.user_tenant_memberships` was already `active=false` — but a second membership row, for the account's own `__personal__` tenant, was still `active=true`. That leftover row is what kept the monitor's underlying condition alive.
-- **Closed**: `UPDATE shell_control.user_tenant_memberships SET active=false WHERE user_id='181d1585-eee6-482c-84f5-8bb5e78c7b3b' AND tenant_id='279a6da0-0b54-4da8-8eac-499dffaa44cb'` — plain data update, not a schema change, consistent with the earlier same-day cleanup steps. Re-verified live after: both memberships (`__personal__`, `sks`) and the base user record all `active=false`.
-- Sentry issue itself not separately touched (still shows its one historical occurrence, unresolved) — the underlying condition it was reporting is now actually gone, so no further occurrence is expected.
-
-## eq-shell: labour-hire batch-intake portal copy simplified and shipped; madagins-tenant readiness audit — re-landed after a same-day clobber (F17 recurrence); RLS gap and CSP dev-blocker both fixed (rotated 2026-09-09)
-*Original section (commit `b83f9524`, ~16:03) was wholesale-replaced within seconds by another session's own `safe_commit.py` push — the same-day F17 recurrence (`system/failures.md`). Recovered via `git show b83f9524 -- eq/pending/eq-shell.md`. Royce asked whether the labour-hire licence zip-intake feature works for the new `madagins` tenant, to simplify a wordy line of portal copy, and to audit + confirm readiness.*
-
-- **Feature confirmed real, working, and already production-proven for SKS** — the "drop a zip, it sorts the documents" batch intake (`BatchIntakePanel.tsx` + `labour-hire-portal-batch-*.ts` + `_shared/labour-hire-batch.ts`). Already battle-tested against real Madagins-agency zips on 2026-08-20 (PR #1490) — for the **SKS tenant**, where "Madagins" is an existing labour-hire agency with its own live portal link. **Not ready for the new, separate `madagins` tenant** provisioned that morning — blocked on the same tenant-provisioning gap tracked in eq-shell's own pending.md, "tenant creation doesn't actually apply the real schema" section.
-- Portal copy simplified and shipped: [PR #1831](https://github.com/eq-solutions/eq-shell/pull/1831), squash-merged, confirmed live (bundle-hash change + a real click-through on core.eq.solutions, not just merge-time trust).
-- **RLS gap on madagins's `app_data._eq_migrations`** (project `ornndtbdkxfsewspbrwk`) — confirmed fixed, live: `rls_enabled=true`, grants restricted to `postgres`/`service_role` only (no `anon`/`authenticated`), and the table doesn't appear anywhere in the Supabase security advisor's current output — not even the benign "RLS Enabled No Policy" INFO tier the other 11 similarly-locked-down tables on this project get, since it has no external-facing grant for that linter to flag. Someone closed this since the original ~16:03 finding; not traced to a specific PR or migration. Row count is now 364 (was 314 at original discovery) — that's a separate, still-open ledger-corruption issue, unaffected by this fix.
-- **Local dev server CSP-vs-Vite-preamble conflict** — fixed and confirmed live. Reproduced first (`netlify dev`, curl + browser console showed the exact CSP violation blocking Vite's inline React-refresh preamble, screenshot confirmed a blank page). Fix: added the preamble's exact sha256 hash to `netlify.toml`'s `script-src` unconditionally — safe because hash-based CSP only matches this exact byte content, which never ships in the production build (`dist/index.html` has no such script; Fast Refresh doesn't exist outside Vite's dev server). [PR #1840](https://github.com/eq-solutions/eq-shell/pull/1840), squash-merged, confirmed live directly against `core.eq.solutions`'s own served CSP header (not merge-time trust — the hash is actually there). A companion PR, [#1841](https://github.com/eq-solutions/eq-shell/pull/1841), documented the *next* thing this fix exposed: `VITE_FIELD_URL` is a separate, pre-existing, undocumented required env var (`FieldIframe.tsx` throws at module load if unset) — also merged, live.
-- **Both fixes were each independently clobbered a second time by the same-day F17 safe_commit.py race before finally landing** — worth citing as a data point on F17's severity, not repeating the investigation: full detail in `sessions/2026-09-09.md`.
-
----
-
 ## eq-shell: PR #1834 merged clean but the deploy pipeline itself was broken — self-resolved, confirmed live (2026-09-09)
 
 - **Merge landed, deploy did not, at first.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit for a while; confirmed directly against GitHub's deployments API, not assumed from the merge alone.
@@ -9802,5 +9784,44 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 - [x] Production confirmed live at v3.5.711 (`field.eq.solutions/sw.js` curl-verified post-merge).
 
 **Notes:** Full session detail: `sessions/2026-09-09.md`. Rotated straight to archive at session close (zero open items in the section).
+
+---
+
+## eq-shell: 4 items dismissed via pending-items triage (2026-09-09)
+*Manually dismissed, not completed work — different from this file's usual auto-rotated `[x]` done items. Recorded here per the triage protocol's own convention rather than left dangling in the live pending file.*
+
+- Not click-tested against the real authenticated page — no Shell session/credentials available in-session; verified instead via an isolated CSS repro. Dismissed with no comment given.
+- Not click-tested live by a person — verified via `tsc -b --force`, eslint, and the full test suite (606/606) only. Dismissed with no comment given.
+- Not click-tested live by a person — verified via a clean `pnpm exec tsc -b` plus an isolated before/after CSS-cascade repro at 768px/1400px, not a real iPad session. Dismissed with no comment given.
+- No signal anywhere that an entry was backdated — dismissed as superseded, not as unimportant: the same underlying gap is the "logged after the fact" indicator from the 2026-09-09 conversations-followup sprint, which Royce approved building in this same triage pass (see `eq/pending/eq-shell.md`, spawned as a background task). This older, duplicate tracking line is now redundant.
+
+---
+
+## Suite-wide: "not click-tested live by a person" retired as a waiting-on-you class (2026-09-09)
+*Policy decision, not a single fix — recorded here since `rules/triage-protocol.md` itself was
+blocked by this session's own brief-gate and couldn't be updated directly. A future session
+should move this note there properly once briefed, and separately update
+`.github/scripts/refresh_digest.py`'s own classification rules — it still matches this phrasing
+into the waiting-on-you bucket, so new instances will keep resurfacing there until that's fixed.*
+
+**Decision:** Royce, via a pending-items triage pass — automated verification (typecheck, lint,
+build, test suite) is sufficient on its own; a live click-through by a person is no longer
+required to close out a change. Sessions should keep noting when something wasn't click-tested
+live (real, useful information about verification depth) — it just no longer needs its own
+`waiting-on-you` bullet or blocks anything.
+
+**73 items mass-dismissed under this policy**, all sharing the identical shape ("verified via
+build/lint/tests only, no Shell session/credentials available in-session to click-test live"):
+
+- `eq/pending/eq-shell.md` — 38
+- `eq/pending/eq-field.md` — 28
+- `eq/pending/eq-solves-service.md` — 4
+- `eq/pending/eq-cards.md` — 1
+- `eq/pending/cross-repo.md` — 2
+
+None had a per-item comment — this was a blanket policy application, not 73 individual reviews.
+If any specific one of these later turns out to matter (a live bug the automated suite couldn't
+have caught), it'll surface the normal way — a real bug report, not a retroactive audit of this
+list.
 
 ---

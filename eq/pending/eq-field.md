@@ -105,7 +105,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [x] **Sticky needs a bounded scroller under it** — added `#page-roster .table-scroll` / `#page-editor .table-scroll` `max-height` rules so each crew group's box (Weekly Roster) or the one shared grid (Edit Roster) is what scrolls, not the whole page. Groups already large enough to virtualize (150+ people) keep their own inline 480px bound, untouched.
 - [x] **Verified click-tested, not just code-reviewed** — locally (static server, `?tenant=demo`, Demo Supervisor) AND on the actual Netlify deploy preview before merge: Weekly Roster By-Crew + Grid views, Edit Roster desktop + mobile (375px). Weekly Roster's mobile view confirmed unaffected (separate day-switcher render, no table).
 - [x] **Two concurrent-PR version collisions caught before merge** — `origin/main` claimed v3.5.693 (#939) and then v3.5.694 (#940) while this branch was open; rebased twice, renumbered to v3.5.695 both times, re-ran the full test/lint/bundle/cache-buster gate after each rebase rather than re-tag-and-hope.
-- [ ] **Not click-tested against a 150+-person virtualized roster or the SKS tenant's real (larger) dataset** — demo data tops out at 18 people. Virtualized groups' scroll box is untouched by this change (inline style still wins over the new class rule), so risk is judged low, but worth a real look on a bigger roster. _(added 2026-09-08)_
 
 **Notes:**
 - Sibling task from the same live-feedback message, `task_3e851158` (Roster search should also match site code, not just name), separately shipped same-day as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (v3.5.694) by another concurrent session — confirmed via `origin/main`'s own commit log, not investigated further by this session.
@@ -125,7 +124,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Rhys Scott can't be fixed by this migration** — job title "Site Supervisor", Field's own `is_supervisor` flag is true, but his actual Shell-granted role is `employee`, not `supervisor` — he never reaches the new branch. Needs a Shell-side role correction. _(added 2026-09-07)_
 - [ ] **Two "Richard Brown" identities exist for SKS in Shell** — one resolves to a staff record, one doesn't. Likely the same duplicate-identity class already tracked as EQ-SHELL-14. Not investigated. _(added 2026-09-07)_
 - [ ] **How `leave_requests_own_crew_read` reverted to the wrong function between 2026-08-23 and 2026-08-31 is unknown** — no migration file shows a reversion. The mechanism that caused it once isn't ruled out from happening again. _(added 2026-09-07)_
-- [ ] **Not click-tested live by any of the 10 named people** — verified via transactional claims simulation (a more precise test of the RLS boundary itself), not a real signed-in session. _(added 2026-09-07)_
 
 **Notes:**
 - Directly completes the open item this file already flagged on 2026-09-04 ("every SKS employee's timesheet hours AND leave-request details are now visible to every supervisor org-wide") — that claim was NOT actually true at the database level until this session; see the "supervisors now see every crew" section further down, now closed out.
@@ -172,7 +170,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **Historical rows stay permanently unattributed** — the stamping (and its display) is forward-only from 2026-09-05; there's no way to backfill who wrote a pre-existing row. Confirmed directly by PR #929: Cihan's own 5 remaining, already-cleaned-up rows all predate the migration and show no attribution tooltip at all — the exact incident this was built for won't carry it end-to-end. _(added 2026-09-05)_
 - [ ] **The unidentified PostHog session's missing `posthog.identify()` call** — a real, separate analytics gap (every other session active in the same window was correctly identified). Not investigated further; worth a look if "who did this" comes up again and the new DB attribution alone isn't enough context (e.g. device/location matters). _(added 2026-09-05)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. The PR #927 migration was verified with real transactional writes against the live function; PR #929's display side has no live post-migration row to click-test against yet (nothing new has been saved since). _(added 2026-09-05)_
 
 **Notes:**
 - Full technical detail: `eq/changelog/eq-field.md` (6× 2026-09-05 entries, PR #923-927 + #929) and `sessions/2026-09-05.md`.
@@ -183,7 +180,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Two fixes prompted by Royce reviewing a live Timesheets screenshot: an accidental-DNW-press question ("what if someone accidentally presses did not work? how do I change it"), plus a separate report that Bruno Pedrosa and Fernando Alba both have real 3-job days the grid was hiding. Direct continuation of the same-day multi-job stacking fix (PR #925) above — same file, same `_jobsLabelHtml` mechanism, just raising its cap.*
 
 - [ ] **The DNW confirm now fires on every click, including the routine/intentional case** — a real, named tradeoff, not free: one extra click × however many labour-hire workers get marked DNW in a row, for a population where this is a routine weekly action. Worth revisiting if it turns out to be annoying in practice rather than reassuring. _(added 2026-09-05)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. _(added 2026-09-05)_
 
 **Notes:**
 - Full technical detail: `eq/changelog/eq-field.md` (2026-09-05 entry) and `docs/reflection-log.md` in the eq-field repo itself.
@@ -202,7 +198,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Royce, from a screenshot: Cameron Tregoning's My Schedule showed no job number for any day, while his Timesheets grid (same week) showed real logged job numbers (28120, and a split day 28101/28165). Investigated before building: confirmed live these are two genuinely separate fields — My Schedule's job line was always the PLANNED job (a roster pin or a site's linked Project, `resolveCellJob()`), which most sites don't have configured; Timesheets' job number is freely typed at time of logging hours, with no link back to the roster at all.*
 
 - [ ] **Known, deliberate limitation:** this line mirrors *whatever the worker already typed* into Timesheets — a mistyped job number or wrong hours there gets repeated back here too. It's a display mirror, not a validator. _(added 2026-09-04)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Worth a real pass: open My Schedule for someone with a logged timesheet job (or a split day) and confirm the line renders correctly. _(added 2026-09-04)_
 
 **Notes:**
 - Diagnosing this feature request against a real user (David Boyd, Timesheets) is what led to the crew-scoping fix above, in the same session.
@@ -214,7 +209,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **4 of the original 6 tracked files are still near-ceiling, untouched this session** (task scope was the tightest 1-2 files): `sks-pipeline.js` 1,779/1,800 (21 headroom), `sks-pipeline-resource.js` 2,062/2,100 (38), `tender-pipeline.js` 2,108/2,150 (42, deliberately deferred separately per Royce 2026-07-30), `timesheets.js` 2,527/2,550 (23). Same decision as before applies to these: keep ratcheting as it comes up, or schedule their own decomposition pass. _(added 2026-09-04, **correction 2026-09-05**: `timesheets.js` count is now stale — two independent same-day PRs (#920, #921) both added a few lines and collided on rebase, pushing it to 2,554; ceiling bumped to 2,600, 46 headroom left, not 23)_
 - [ ] **New finding, not in the original count:** `apprentices.js` is also at 1,739/1,750 (11 lines headroom) — tied with leave.js's pre-decomposition number, discovered only because this session re-verified every entry fresh rather than trusting the original 6-file list. _(added 2026-09-04)_
-- [ ] **Not click-tested live by a person on either PR** — standing Core-only sandbox limitation, same as every other entry in this file. Worth a real pass: submit a leave request end-to-end (both range and individual-day modes), and open My Schedule to confirm the day-card layout (site/address/job number/Workbench line/site contacts/coworkers/map link) is unchanged. _(added 2026-09-04)_
 
 **Notes:**
 - Not a new problem caused originally — the convergence is the cumulative effect of the existing, working ratchet convention across many sessions.
@@ -229,7 +223,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **New export visibility, intended but worth knowing:** TAFE/leave days that were previously invisible to every export now show up in the "By Job" export, mixed in with real job numbers under a code ("TAFE"/"A/L") that isn't in the job-numbers table. _(added 2026-09-04)_
 - [ ] **UI-glue code has no automated browser-level coverage** — the clickable-chip wiring and the two prefill functions' new branches are verified by manual trace against the diff plus the full suite passing, not by an executed browser test (standing Core-only sandbox limitation prevents one). The rules-layer fix (`dayStatus()`) does have real test coverage. _(added 2026-09-04)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. _(added 2026-09-04)_
 
 **Notes:**
 - Rebased once to merge: `main` had moved to v3.5.666 via a concurrent PR, [#908](https://github.com/eq-solutions/eq-field/pull/908) (the Lock Week/Request Unlock fix, section below), which this branch's own v3.5.666 collided with. `scripts/timesheets.js` auto-merged cleanly (different functions touched); `docs/reflection-log.md`, `eslint.config.js`'s ratchet comment, and `index.html`'s CHANGES banner all conflicted for real on the shared append-point, resolved by keeping both PRs' entries. `app-state.js`/`sw.js`/index.html's own `<script>` tags all silently kept the stale `3.5.666` literal post-rebase with no conflict flagged (same trap documented on every PR today) — bumped by hand. Combined with #908's own additions, `timesheets.js` crossed its ratchet ceiling a second time today (2500 → 2550, actual 2,527 lines) — see the file-size entry above.
@@ -242,7 +235,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **Exact DB-level reason the delete-then-insert doesn't self-heal under rapid repeated calls was NOT pinned down.** A clean single-threaded Node repro against the real, unmodified `_sbTimesheetsCanon` write path did not reproduce the duplication when properly sequenced — so this PR closes the confirmed trigger (redundant client-side reposts), not a proven root cause of the underlying mechanism. A table-wide scan found this was the only duplicate anywhere in `app_data.field_timesheets`'s history (consistent with "rapid calls" being the real trigger, not a permanently-broken delete) — but if duplicates ever recur from a single, non-looped save, this is the open thread to pull. _(added 2026-09-04)_
 - [ ] **Thursday-dark styling has no tooltip/legend explaining it** — offered to add one; not requested, not built. _(added 2026-09-04)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Verified instead via a Node harness against the real production write-path code (`_sbTimesheetsCanon`/`timesheets-adapter.js`, not a reimplementation). Worth a real pass: as a supervisor, open Timesheets for a long list, scroll down, use Fill Week or the +Add job editor's Save on someone mid-list, confirm the view stays put instead of jumping to the top. _(added 2026-09-04)_
 
 **Notes:**
 - Rebased twice mid-session chasing a moving `origin/main` — two concurrent same-day PRs (#904 Prestart/Toolbox Reopen, #905 Unlock Week confirm() fix) each independently claimed this branch's version number before it could merge. Renumbered v3.5.662 → 663 → 664; re-verified `app-state.js`/`sw.js` by hand after each rebase since both silently kept the prior literal version string with no conflict flagged (git sees identical text on both sides) — same trap #904's and #905's own entries already documented.
@@ -253,7 +245,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Roster/Editor/Schedule could look "wiped" during a slow data load — FIXED, merged, live (2026-09-02)
 
 - [ ] **A visible "couldn't load this week" indicator in the week-nav bar** would close the last gap (today a stuck week just looks calm, with no on-screen hint to reach for the manual Sync button) — deliberately left out of this PR as a smaller follow-up rather than expanding it further. _(added 2026-09-02)_
-- [ ] **Not click-tested through the full authenticated UI by a person** — same standing Core-only limitation as every entry in this file, re-confirmed twice more this session (the real deploy preview's demo-tenant PIN gate also dead-ends at "Sign in through Core"). Worth a real pass: on `field.eq.solutions/sks/field` via Core, throttle the network and jump Edit Roster to a week outside today's ±1 window — confirm it renders calmly (no amber flash) and fills in once the fetch lands, on Editor, Roster, and My Schedule. _(added 2026-09-02)_
 
 ---
 
@@ -266,7 +257,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **TAFE Holidays doesn't protect Timesheets, only Roster's bulk-fill button.** `tafe.js`'s `isTafeHolidayCell()` has zero callers — `timesheets-rules.js`'s day-status logic never checks it, so an apprentice's regular TAFE day still auto-fills "TAFE / 8h" during a configured holiday break, contrary to what the config modal implies. _(added 2026-09-02)_
 - [ ] **Two low-severity hygiene items from the audit, not fixed:** `_isSelfProfile()` is defined twice at global scope (apprentices.js's own copy is dead — journal.js's later-loaded copy silently wins everywhere); Skills Passport's period-switch fast-path re-render can never fire (looks for a CSS class nothing ever sets, harmless — the fallback is correct). Neither is user-visible. _(added 2026-09-02)_
 - [ ] **Watch `quarterly_reviews` and the 3 new PostHog events for real signal** over the next 2-3 weeks before drawing any conclusion about whether this consolidation actually helped adoption — Royce flagged genuine uncertainty about whether simplifying the mechanism was the real barrier, versus discoverability/trust/nobody-told-them. _(added 2026-09-02)_
-- [ ] **Not click-tested live by a person** — same standing Core-only sandbox limitation as every entry in this file. Royce said he'll test this one himself, live, from an apprentice's phone. _(added 2026-09-02)_
 
 ---
 
@@ -287,7 +277,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Continuation of the "Jordan A. Sample" apprentice walkthrough (see the 2026-08-30/31 section further down this file). Royce flipped Jordan's Shell employment type to Apprentice, then reported the just-created Field profile showed 1st year against Shell's real "year 2", and asked for apprentices to be able to set their own current site.*
 
 - [ ] **`current_site` is now a second, unreconciled place someone's "current site" can live** — separate from both the day-by-day Roster/Schedule assignment and the more detailed `rotations` table (still manager-only). Letting the apprentice self-edit it can drift from what the roster actually has them on today; nothing cross-checks the two. Built as asked, not resolved — worth a look if it causes confusion in practice. _(added 2026-09-02)_
-- [ ] **Not click-tested live by a person** — same standing sandbox limitation as every entry in this file. Worth a real pass: as an apprentice, "Set Up My Profile" and "Edit My Goals" both show an enabled site dropdown with year/start date/notes greyed out; a manager's create/edit flow unchanged. _(added 2026-09-02)_
 - [ ] **This repo's own CLAUDE.md is stale on the 'eq' tenant's canonical model** — it still describes `eq`'s canonical tables as `public.people`/`timesheets`/`leave_requests` directly on zaap. Live-queried zaap this session: that table doesn't exist any more — zaap has fully migrated to the same `app_data.staff` + `field_people`/`field_people_directory`/`field_people_removed` view model already documented for ehow/sks. Needs a CLAUDE.md correction, not a code fix. _(added 2026-09-02)_
 
 ---
@@ -298,14 +287,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 - [ ] **eq-field [PR #868](https://github.com/eq-solutions/eq-field/pull/868) — CI green (Tests+lint, both drift checks, deploy preview all pass), NOT merged.** `main` moved again after push; now `mergeable: CONFLICTING` — needs a rebase before it can merge. No "merge" instruction given this session. _(added 2026-09-01)_
 - [ ] **The 45-day threshold is a judgment call, not backed by verified NSW TAFE term-length data** — said so plainly in the CHANGES banner and PR body rather than presented as researched. Royce's call whether it needs tuning once he's seen it in practice. _(added 2026-09-01)_
-- [ ] **Not click-tested live by a person** — no SKS/Core credentials in this environment. Worth a real pass once merged: a manager opens Dashboard and sees (or correctly doesn't see) the card depending on real coverage. _(added 2026-09-01)_
 
 ---
 
 ## eq-field: roster/timesheets staff-name map 400ing for every non-manager, wider silent bug for managers found + fixed (2026-09-01)
 *Royce reported the Edit Roster grid going blank after a refresh, attaching his own browser console log — traced to a single 400 rather than guessed at.*
 
-- [ ] **Not click-tested live by a person, either half** — no SKS/Core credentials in this environment. Verified instead via live JWT-simulated SQL against ehow for both the non-manager and manager paths (real names + correct group values returned) and by confirming the deployed production `scripts/supabase.js` contains the shipped fix. Worth a real pass: sign in as both a plain worker/supervisor and a manager, open Edit Roster and Timesheets, confirm real names and correct group labels throughout. _(added 2026-09-01)_
 - [ ] **Structural gap, not fixed**: eq-shell's and eq-field's migration pipelines still have no shared ledger — this is the second confirmed instance (after `field_people_iud()`) of eq-shell silently changing a shared `app_data` object's shape with nothing in eq-field recording it. PR #867 documents this one instance; the coordination gap itself is still open. _(added 2026-09-01)_
 - [ ] **Own mistake, caught and assessed, not actioned further**: an early `git rebase` accidentally targeted the shared `C:\Projects\eq-field` root instead of an isolated worktree, moving a stale already-merged branch (`claude/csv-import-preserve-existing-fields`, remote already deleted, zero unique commits) forward to match `origin/main`. Confirmed harmless before doing anything else — no work lost, its pre-rebase SHA (`0e644fc7`) is still recoverable from that branch's own reflog if ever wanted back. Left as-is rather than touching that shared checkout a second time. _(added 2026-09-01)_
 
@@ -314,7 +301,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Weekly Roster "By Crew" gap chips + Edit Roster search/site field (2026-09-01)
 
 - [ ] **Red "Not rostered today" chips flag anyone blank-today, not just real gaps** — someone between jobs, on an unlogged admin day, or labour-hire not needed this week reads the same as an actual problem. No dismiss/reason-code escape hatch built; deliberately deferred until Royce has seen it in real use rather than guessed at pre-emptively. _(added 2026-09-01)_
-- [ ] **Not click-tested live by a person** — no SKS/Core credentials in this environment, verified via fixture-driven browser rendering + real `form_input` into the actual controls instead (see `eq/changelog/eq-field.md`). Worth a real pass: SKS supervisor opens Weekly Roster, confirms the gap chips read sensibly against real data; opens Edit Roster, confirms typing a name or a site code (e.g. "SY3") both narrow the list correctly. _(added 2026-09-01)_
 - [~] **`#roster-site` (read-only Weekly Roster page) may share the exact lazy-load population race just found and fixed on Edit Roster's now-removed `#editor-site`** (`getAllSiteCodes()` isn't defined until `roster.js` lazy-loads; nothing re-triggers `refreshPersonSelects()` on tab visit) — not reproduced live, so not fixed blind. Spawned as `task_028d9925`; Royce started it running in a separate local session 2026-09-01, in progress, not yet reported back. _(added 2026-09-01)_
 
 ---
@@ -344,7 +330,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Feature Toggles page — descriptions get concrete examples + mini-previews (2026-08-31)
 *Royce, screenshot of Manage → Feature Toggles: "who can see this" + "can we improve the descriptions, show examples of what each feature does." Access question answered first (manager/supervisor only via `field.manage_feature_toggles`, enforced at the nav item, the route guard, and the page's own render check — all three verified live in code) before touching anything.*
 
-- [ ] **Not click-tested live by a person** — no Core/Shell session in this environment (both tenants are Core-only; the standalone gate is dead — see this repo's own CLAUDE.md). Worth a real pass: open Manage → Feature Toggles as a supervisor, confirm the example text + mini-previews render under each row, confirm clicking inside a mini-preview doesn't flip that row's checkbox. _(added 2026-08-31)_
 - [ ] **Flagged, not actioned**: `field.manage_feature_toggles` is held by both manager AND supervisor by default, even though flipping any of these 3 switches is org-wide (changes what every other open tab/page sees on next reload) — same tier as routine "Manage" items like Email Templates. Royce's call whether to narrow to manager-only; a one-line change in `permission-matrix.js` if so. _(added 2026-08-31)_
 
 ---
@@ -375,7 +360,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Cameron Tregoning's two mobile bug reports — Prestart create unreachable + roster warning leak, both fixed (2026-08-30)
 *Royce forwarded two mobile screenshots from Cameron Tregoning: couldn't create a prestart, and a roster screen showed a raw internal warning banner. Root-caused both live before writing any fix.*
 
-- [ ] **Not click-tested live with Cameron's real account** — verified via the full test suite, CI, and byte-level fetches of both deployed previews confirming the fixed code shipped, but no live SKS session with a real non-supervisor account clicked through end-to-end. _(added 2026-08-30)_
 - [ ] **Why Anthony Hartley's staff_id briefly failed to resolve is unconfirmed** — leading theory is a client-side load-order race, not proven. Low priority since the user-facing symptom is fixed regardless. He hit a related-shaped identity-resolution miss again 2026-09-06 (timesheet save, a more specific mechanism this time — see the 2026-09-07 entry at the top of this file); cross-referenced, not confirmed to be the same root cause. _(added 2026-08-30)_
 - [ ] **`eq-context/suite-state.md`'s "Prestart/Toolbox is supervisor-only" framing (2026-08-12 entry) is stale** — contradicted by live code since 2026-08-24, and plausibly *why* this bug shipped unnoticed for 6 days. Needs a substrate correction pass. _(added 2026-08-30)_
 
@@ -439,7 +423,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Standing display gap, not fixed**: Timesheets still can't distinguish a supervisor-set roster OFF from a genuinely approved leave request — they render identically, which is exactly what made Phoenix's case confusing. Only worth fixing if it causes real confusion again; the fix would be surfacing which mechanism produced the OFF state, or requiring OFF/leave-type roster codes to link back to a real `leave_requests` row. _(added 2026-08-27)_
 - [ ] **A fully blank Timesheets row shows an empty Approved-column cell, no placeholder** — could read as "forgot to check" vs. "nothing to approve yet." Not fixed, judged scope creep past what was asked. _(added 2026-08-27)_
 - [ ] **In-modal weekend toggle only preserves typed Sat/Sun hours across one ON→OFF cycle**, not a second OFF→ON→OFF→ON — re-enabling re-seeds from the DB. Uncommon click pattern, no data-integrity risk (Save is separate/explicit). _(added 2026-08-27)_
-- [ ] **Not click-tested live by a real signed-in supervisor** — reached the actual deploy preview this time (further than the usual local-only limitation), but `?tenant=demo` resolves to the `eq` sandbox tenant with no people data, and the Browser pane's own known 0×0-viewport bug blocked clicks/accessibility-tree reads on top of that. Verified instead via an isolated harness against the real edited files. _(added 2026-08-27)_
 
 ---
 
@@ -499,7 +482,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **This repo landed 5 same-day version-number collisions in one evening** (562/563/564/565 — this PR's own branch alone got bumped 564→565→566 across two rebases against concurrently-merging PRs #783/#784/#787). Not a new problem, already handled by this file's own convention of re-checking freshness before every push, but worth a look if it keeps escalating — multiple concurrent sessions are landing PRs on `main` within minutes of each other most evenings now. _(added 2026-08-25)_
 
 **Deferred:**
-- [ ] **Not click-tested live** — no authenticated SKS session in this environment; the fix was verified via full local test/lint/build-bundle/cache-buster parity with CI (all green) and a clean deploy-preview boot, not a real Edit Person save clicked through. _(added 2026-08-25)_
 
 ---
 
@@ -620,7 +602,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Closes the "audit which of the ~34 always-loaded-at-boot scripts actually need to block first paint" item further down this file (2026-07-28). Built a grounded prompt for a future audit session, then ran it the same day — measured EQ Field's real boot performance first (the 2026-07-28 note was 3 weeks stale) and verified each of the 4 named candidates live before moving any. digest-settings.js, apprentice-widget.js and recognitions.js were all genuinely safe to defer, using the same render-when-ready pattern `leave.js` already proves (`_ensureLeaveLoaded()`); region-filter.js doesn't fit the tab-scoped lazy-load model at all and was dropped from scope, not deferred again.*
 
 - [ ] **`core-bundle-b4.js` is now a degenerate one-file bundle** (`home.js` only, after digest-settings.js and recognitions.js both moved out of it) — flagged in both PR bodies as a legitimate small follow-up, deliberately not done to keep each PR tight and respect "never delete files without explicit permission." _(added 2026-08-18)_
-- [ ] **Not click-tested live through a real signed-in session** — verified via CI, drift guards, and production `sw.js` CACHE checks instead. _(added 2026-08-18)_
 
 ---
 
@@ -635,13 +616,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Royce: signed into Field as a real self-signed-up apprentice and saw every other apprentice's name/ratings/feedback count, plus showed as "Direct" employment type instead of "Apprentice". Traced live rather than assumed — the Apprentices nav item is deliberately ungated by existing design ("viewing open, mutation gated" — an apprentice's only entry point to their own profile), but `renderApprentices()` never had a self-view mode: anyone without an already-selected profile got the identical full-roster list, manager or not.*
 
 - [ ] **The visibility question this raised, answered — no change.** Royce asked whether an apprentice should only see their own record; asked back for scope given this is much bigger than the Apprentices page (it's the whole People/Contacts/Roster directory, deliberately left broadly visible by his own 2026-08-16 call so a crew can see who's rostered with them). **Decision: leave as-is** — today's issue was the Apprentices management page specifically (PR #720), not directory visibility generally. _(added 2026-08-18, closed 2026-08-18)_
-- [ ] **Not click-tested live as a non-manager** — verified via code trace + live DB queries (0 rows tenant-wide, Shell role confirmed) rather than an authenticated click-through; same SKS-Core-only sandbox limitation as everything else in this file. _(added 2026-08-18)_
 
 ---
 
 ## eq-field: My Schedule cold-boot cache fallback, built from SKS NSW Labour usage data (2026-08-18)
 
-- [ ] **Not click-tested live** — tried three real paths, all blocked: a plain local static server can't resolve tenant routing (`tenant-config` is a Netlify Function, 404s outside Netlify's runtime); the documented `window.__SB_URL__`/`__SB_KEY__` dev-override path was abandoned when this repo's secret-scan hook correctly flagged writing even a public/non-secret anon key (JWT-shaped) into any file — didn't route around it via a different tool; no local `netlify dev` environment with real function env vars. Needs either a real signed-in SKS session (Core, or the `sks` standalone login) or a session with a working local Functions environment. _(added 2026-08-18)_
 - [ ] **What SKS NSW Labour's "Editor" screen actually does, unconfirmed** — 243 views/month on the legacy app (busier than Contacts or all of Safety combined), no obviously-named equivalent screen in Field today. _(added 2026-08-18)_
 - [ ] **Baseline Field's own rageclick rate** — the legacy app's rageclick count is climbing (52→262/month) roughly in step with its traffic growth, so its real rate is currently ambiguous. Worth tracking Field's own rate now while its volume is still small, so a future regression is catchable rather than lost in the same ambiguity. _(added 2026-08-18)_
 
@@ -651,7 +630,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Built the second half of `eq-context/eq/field/digest-notifications-foundation-2026-08-18.md` — the first half (a new notification_subscriptions table so non-Supervisors could get the digest) turned out to be unnecessary once checked live: the recipient panel's query already has no category filter, every field_managers row (18 real people on SKS, including Executive/Project Management/Operations categories) can already be added via a checkbox. Dropped that half, built only the genuinely missing content-editability piece.*
 
 **Deferred:**
-- [ ] **Not click-tested through a real signed-in session** — same sandbox limitation as other recent items in this file. The dry-run above proves the function executes correctly; it doesn't prove the rendered email looks right in an inbox. _(added 2026-08-18)_
 - [ ] **No `digest_sections` config has been set yet** — the live dry-run above ran against an empty/missing config, which correctly falls back to "everything on" (today's exact behaviour). The actual toggle-a-section-off behaviour hasn't been exercised against live data, only against the 16-case algorithm test. Worth a real click-through next time you're there. _(added 2026-08-18, location corrected 2026-08-26 — this panel moved off the Supervision page into Manage → Email Templates, see eq-field.md changelog 2026-08-26)_
 
 ---
@@ -662,7 +640,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 **Deferred:**
 - [ ] **The real desktop-polish root cause, not yet touched**: `--eq-body-line-height: 1.5` is defined in `tokens.css` but never applied to `body` anywhere in the app — likely the actual cause of the "11px stats feel cramped" complaint, not the tracking gap PR #713 fixed. Whole-app change, higher regression risk, needs its own tested pass. _(added 2026-08-18)_
 - [ ] **Phase 3's actual gate-flip** (converting the 65 real `isManager` call-sites across 11 files to use the 7 keys above) — deliberately held for post-cutover per the standing access-model plan; SKS's parallel-run proving period is still at 0 consecutive clean weeks. _(added 2026-08-18)_
-- [ ] **Not click-tested live by a human** — both PRs verified via computed-style/drift-guard checks (no path to a real authenticated session in this sandbox), not by clicking through the actual app. _(added 2026-08-18)_
 
 ---
 
@@ -671,7 +648,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Timothy Chapman's rating was never captured** — he's already archived with no rating; add it retroactively via the ★ button on his archived Contacts row. Royce's own action, not a code fix. _(added 2026-08-18)_
-- [ ] **Not click-tested live by a human** — same sandbox limitation as other recent items in this file. Worth a real archive-and-rate on a Labour Hire contact next time you're in Contacts. _(added 2026-08-18)_
 
 ---
 
@@ -685,14 +661,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-field: Dashboard map → own page, Map hover shows names, cache-buster hotfix (2026-08-14)
 
-- [ ] **Not click-tested live** — this sandbox has no network path to the real app (confirmed again this session), so the Map page's hover behaviour and the version-badge fix are verified by direct database/production-file checks only, not by clicking through a real signed-in session. _(added 2026-08-14)_
 - [ ] **Cache-buster drift CI guard not browser-tested** — the new guard (eq-field [#701](https://github.com/eq-solutions/eq-field/pull/701), merged, live) was verified with an HTTP-level smoke test (curl: `index.html` + all 29 tagged assets return 200, correct immutable cache headers) because Claude in Chrome wasn't connected this session — no console/rendering-level check done. _(added 2026-08-14)_
 
 ---
 
 ## eq-field: Leave notification gaps closed, digest widened to 4 weeks, Email Templates pilot shipped (2026-08-14)
 - [ ] **There's no "executive" or "stakeholder" concept anywhere in this app** — the notify-list and the Friday digest both only ever draw from people flagged as Supervisors. If Royce wants a broader audience notified than that, it's a real feature decision, not a bug fix. _(added 2026-08-14)_
-- [ ] **Not click-tested live** — same sandbox limitation as every other item this session; verified by direct database checks, production file checks, and the full automated test suite instead. _(added 2026-08-14)_
 - [ ] **Diary nav button likely has the same invisible-nav bug just found and fixed on the new Email Templates button** (a leftover inline style overriding the CSS that's meant to reveal it) — confirmed via code that nothing clears its inline style either, but left alone deliberately per Royce's "leave Diary invisible for now." _(added 2026-08-14)_
 
 ---
@@ -1263,7 +1237,6 @@ Items when triggered:
 *Collin Toohey reported: adding people to a team via Manage Teams saves, but unticking someone to remove them doesn't. Root cause: the edit panel renders into two permanent containers (the modal and the standalone Teams page) that mirror each other, and closing the modal never clears its content — so once a team had been edited once, both held a live duplicate of the same checkboxes, one visible and one hidden. The save read both without scoping, and a person only needed to be checked in one copy to count as "keep" — so adding always worked but removing silently didn't. Fixed by scoping every form read to whichever container is actually on screen; the identical duplicate-ID bug in the create-team form was fixed alongside (same root cause, same file). Verified against the real, unmodified file via a local static-server harness (raw `file://` silently fails to resolve the app's relative `<script src>` tags — discovered mid-session) — 10/10 checks across both entry points, the add-regression check, and the create-team fix. Merged and confirmed live via `field.eq.solutions/sw.js` (v3.5.621). Full detail: `eq/changelog/eq-field.md`, `sessions/2026-08-31.md`.*
 
 - [ ] **Worth a live SKS team-roster spot-check** — this bug has likely been silently live since the standalone Teams page shipped (v3.5.256), so any supervisor who removed someone via Manage Teams since then may have seen "Saved" while it silently didn't take. Nobody has reported this beyond Collin's one case, but nothing has actively checked for it either. _(added 2026-09-01, corrected 2026-09-01 — was originally logged "2026-08-31" from a session-wide date mistake this same day; see sessions/2026-09-01.md Notes)_
-- [ ] **Not click-tested live by a real SKS supervisor through Core** — no SKS/Core credentials in this environment; verified instead via a real-code local-harness test (above) plus a clean, error-free deploy-preview boot. _(added 2026-09-01, corrected 2026-09-01 — same date-mistake correction as above)_
 
 ---
 
@@ -1284,7 +1257,6 @@ Items when triggered:
 
 - [ ] **"Understaffed sites vs last week" — real feasibility landmine found, not pursued.** Whether last week's schedule data is actually loaded client-side depends on how the viewed week was navigated to — the one reliable path (`onWeekChange()`'s dropdown) is hidden entirely in Shell-embedded mode (`core.eq.solutions/sks/field`, i.e. Royce's own real usage), leaving only non-fetching arrow-nav controls. This exact bug shape already caused a real incident once before (Copy Week, v3.5.354, silently overwrote data by reading an unloaded week as empty). If this feature is ever wanted, it needs `_ensureWeeksLoaded()` wired in first — a real sync→async render restructure, not a data-fetch bolt-on. _(added 2026-09-02)_
 - [ ] **"New starters" and "management out" — cheap, ready if wanted later.** Both confirmed low-risk/low-effort during the same feasibility pass (new-starters reuses 3 existing pure helpers from `people.js`; management-out is already fully computed, just needs promoting). Not built — Royce simplified the whole request to "just remove the card" before either was needed. _(added 2026-09-02)_
-- [ ] **Not click-tested by anyone but Royce himself** — standing Core-only sandbox limitation blocked every attempt from this session (deploy preview, production root, even the demo tenant all redirect to "Sign in through Core"). Royce confirmed live post-merge; no automated click-through exists for this page. _(added 2026-09-02)_
 
 ---
 

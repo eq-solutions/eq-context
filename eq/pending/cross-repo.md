@@ -152,7 +152,6 @@ status: live
 ## eq-shell/eq-field: deactivating someone didn't actually cut their EQ Field access — fixed + 2 follow-ups (2026-08-14)
 
 - [ ] **No automated check exists to catch the cache-tag mistake above** — flagged 5 times now in eq-field's own changelog history, never built. Spun off as its own task (`task_9bd3247c`), already started in a separate session. _(added 2026-08-14)_
-- [ ] **Not click-tested live** — the 4-hour session cap and its background-refresh recovery were verified by full test suite + source tracing + a live production version-banner check, not by actually leaving a real signed-in Field session open past 4 hours and watching it recover. _(added 2026-08-14)_
 - [ ] **eq-shell deploy: Royce reported "didn't work" after running the production-deploy command; Netlify's own deploy record shows it actually succeeded** (commit `7c471f5` = PR #1349's merge commit, state `ready`, context `production`, published 2026-08-14 13:18 UTC, no error; core.eq.solutions responding normally). Royce has not yet confirmed whether this resolves what he saw on his end — worth a follow-up check if it comes up again. _(added 2026-08-14)_
 
 ---
@@ -215,7 +214,6 @@ status: live
 ## eq-service + eq-solves-intake: RCD in-app entry (manual + photo) shipped, ACB mobile nav bug fixed, RCD threshold corrected (2026-08-11)
 
 - [ ] **`RCD_SCHEDULE_PARSE_ENDPOINT_URL` needs setting in Netlify (prod + preview).** Points at the deployed endpoint (`https://ehowgjardagevnrluult.supabase.co/functions/v1/parse-rcd-switchboard-schedule`), documented in `.env.example`. Manual-hands-only, Claude Code is blocked from writing Netlify secrets by design. Without it the photo-upload button errors; manual entry and the bulk-generate dropdown both work fine regardless. _(added 2026-08-11)_
-- [ ] **Not click-tested live anywhere in this thread** — auth unavailable in this environment throughout (no `EQ_SERVICE_JWT_SECRET` locally, demo account unavailable). Every UI change verified instead via static Tailwind-mirror geometry measurements and/or rolled-back-transaction writes against live ehow — real verification, not a browser click-through. Worth a real phone/iPad pass once Shell-embedded auth is available here. _(added 2026-08-11)_
 - [ ] **The shared `@eq-solutions/ui` Table component's own mobile gap is not fixed** — only the ACB/NSX page-level instance was. Every other page using the canonical Table (Maintenance, Assets, Job Plans, Contract Scope, Test Records...) still has the same word-wrap problem on a phone. That's an `eq-ui` repo change, deliberately scoped out of this session's `eq-service`-only work. _(added 2026-08-11)_
 - [ ] **One likely-stale data point noticed, not chased:** an ACB check literally named "Test" shows `status='complete'` with 0 of 5 linked ACB tests actually done — reads as leftover QA debris, not real customer data, but flagged in case it isn't. _(added 2026-08-11)_
 

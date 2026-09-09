@@ -72,7 +72,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 
 **Deferred:**
-- [ ] Not click-tested by a person with actual low vision or a screen reader — verified via computed contrast ratios, a rendered swatch comparison, downloaded golden PNGs, and a live screenshot, not a real assistive-tech session. _(added 2026-08-31)_
 - [ ] `EqColors.skyDeep` in `eq_tokens.dart` is a byte-identical duplicate of `EqColors.deep` (both `#2986B4`) — noticed while adding `skyAA` next to it, not cleaned up (out of scope for this pass). _(added 2026-08-31)_
 - [ ] 61 remaining `EqColours.sky` references left untouched on purpose (decorative accents, low-alpha borders, transient spinners, icons beside a duplicate visible text label) — documented in PR #339's own commit message rather than silently dropped, but worth Royce's spot-check if he wants zero `sky` left in button-adjacent contexts. _(added 2026-08-31)_
 

@@ -51,7 +51,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 **Deferred:**
 - [ ] **Dashboard's `grid-cols-4` tiles and the shared Table component don't reflow at any width** — a separate, real gap found during the same audit, out of scope for the nav fix. _(added 2026-09-08)_
-- [ ] **Not click-tested live by a person** — no Shell/demo credentials in this environment. Worth a real pass at iPad width once convenient. _(added 2026-09-08)_
 
 ---
 
@@ -69,7 +68,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Upload screen trusts the browser's claimed file type — deliberately left as-is.** Royce's call: the risk (a trusted staff member mislabeling a file for another staff member at the same company to open) is real but bounded, and tightening it risks rejecting real uploads in a way that can't be tested here (no working phone-camera-upload test path in this environment). Revisit if there's ever a real incident, or once there's a way to click-test uploads live. _(added 2026-09-05)_
 - [ ] **Evidence attachments advertise "Photos / videos" on-screen, but video files are silently rejected today.** Nobody has decided whether to actually support video (which would also need a bigger size limit than the current 10MB). _(added 2026-09-05)_
 - [ ] **The file-storage system itself allows bigger files (50MB) with no type restriction at its own level** — the app's own rules (10MB, specific file types only) are tighter, so this only matters if something ever writes to file storage directly instead of through the app. Low priority. _(added 2026-09-05)_
-- [ ] **Not click-tested live by a real technician.** The fix was verified against the live database directly (both the broken state and the fixed state), not by an actual person uploading or deleting a file on the maintenance check page. _(added 2026-09-05)_
 
 ---
 
@@ -144,7 +142,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 **Deferred:**
 - [ ] **"Approved by" has no real data source to wire to.** The DB carries unused `signature_technician_url` / `signature_site_url` / `signature_initials` columns from migration 0068 (2026-04), explicitly intended for exactly this, but no UI anywhere has ever captured them. Real feature gap, not a wiring fix — needs Royce's call on whether to build signature capture. _(added 2026-08-17)_
 - [ ] **Masthead caption redundancy also exists on NSX, Work Order Details, and the Run-Sheet** — only dropped for ACB per Royce's explicit scoping this session. Revisit if he wants it dropped everywhere. _(added 2026-08-17)_
-- [ ] **Secondary Injection load fix not click-tested live post-deploy** — verified via code trace (label-prefix mismatch confirmed against live DB data) plus a regenerated sample report, not by an actual technician reopening a check with saved SI data and watching the fields populate. Worth Royce doing that once. _(added 2026-08-17)_
 
 ---
 
@@ -166,7 +163,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## eq-service: migrations dispatched live; mobile check-detail header overflow found+fixed+deployed; eq-context accidental-checkout scare investigated (2026-08-13)
 
-- [ ] **Not click-tested on a real phone** — same sandbox limitation as other recent mobile fixes (no path to complete the Shell-iframe auth handoff here). Verified instead via `tsc --noEmit` (clean) and a static Tailwind-class repro at 375px sent directly to Royce, plus confirming the live Netlify production deploy matches the merge commit. _(added 2026-08-13)_
 - [ ] **No independent confirmation yet from the other session.** Messaged it directly via `send_message` with the full incident writeup, asking for its own explicit confirmation that nothing is missing — no reply received before this session closed. _(added 2026-08-13)_
 
 ---
