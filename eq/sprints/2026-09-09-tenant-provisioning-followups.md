@@ -50,7 +50,7 @@ already said.
   against sks/eq/zaap/ehow.
 
 **What actually needs your call:**
-- [ ] Merge (or don't) [PR #1842](https://github.com/eq-solutions/eq-shell/pull/1842) — the `0311` rescue.
+- [x] ~~Merge (or don't) PR #1842~~ — **merged**, by Royce directly, 2026-09-09T10:10:09Z (`6232792`). Confirmed via the merge's own CI run, not assumed: "Apply to all tenants" and "Reconcile tenant ledgers" both show `skipped`, not run — the file is in the repo now, still not applied to any database. That dispatch is still open, separate from this checkbox.
 - [ ] Say whether `0308` (public-schema half) still needs the same rescue-and-review treatment, or whether it's already been handled somewhere this pass didn't find.
 - [ ] Say when to run `--reconcile-ledger` (small, low-risk, but a live write against every tenant plane) — blocks any future real dispatch until it happens.
 - [ ] Decide whether `0260`'s ordering gap needs fixing now or can wait for a genuinely new from-scratch tenant to force the issue.
