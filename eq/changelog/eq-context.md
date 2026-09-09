@@ -7,6 +7,14 @@ read_priority: reference
 status: live
 ---
 
+## [2026-09-09] F10's false-positive signal regex tightened; F1's own self-reference fixed
+
+**Built by:** Claude Code
+
+- **`system/failures.md`'s F10 `signal` regex** — the confirmed false positive (`sessions/2026-08-26.md`) is the HOOKS "LATENT SHADOW" diagnostic firing exactly as designed: the effective `core.hooksPath` value resolves correctly, the guard only warns about a dormant `--worktree`/`--local` disagreement. Excluded that diagnostic's own self-description (`LATENT SHADOW`, `resolves correctly`, `working as intended`, `print-only by design`, `informational...only`) on the same line as the shape match. Verified against the full `sessions/*.md` corpus: all 3 genuine incidents still match, the confirmed false positive no longer does, neither does an earlier unflagged twin found in `sessions/2026-08-05-z.md` while building this.
+- **F1's own fix (below) immediately hit the exact self-reference class its note already named once** — its commit/session-log write-up combines the stale-shape phrase with substrate anchors while describing the fix. Added `sessions/2026-09-09.md` to F1's `confirmed_in`, the mechanism that exists for exactly this.
+- Extended `.github/scripts/test_failure_recurrence_signals.py` (now generalized across F1 and F10) with F10's 9 must-catch/must-not-catch cases — 19 total, all passing. Commit [`170c6cc`](https://github.com/eq-solutions/eq-context/commit/170c6ccc8fa2877ba9f2e768c8a954a3ecdddb0e).
+
 ## [2026-09-09] F1's false-positive signal regex tightened
 
 **Built by:** Claude Code
