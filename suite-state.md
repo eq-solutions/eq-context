@@ -65,6 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
+- #974 fix(ehow): field_job_numbers_src() had no caller-tenant check
 - #973 fix(madagins): restore security_invoker=on for field_site_projects/field_timesheet_locks
 
 **eq-service:**
@@ -76,8 +77,9 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1873 Make Multi the Add-workers homepage, fold agency links into upload
+- #1871 fix(control-plane): mirror liveness off the data plane, not DNS
 - #1870 Fix crash on outgoing connect requests with a revoked status
-- #1867 feat(mobile): add workspace switcher to the mobile account sheet
 
 ---
 
@@ -87,7 +89,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✗ failure |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
