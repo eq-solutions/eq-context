@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #1884 fix(token-exchange): scope platform-admin Field JWT to the picked tenant
 - #1882 fix(field): make the Field-workspace picker read tenants live
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
-- #1879 fix(security): lock field_tenant_slug to a tenant's own slug
 
 ---
 
