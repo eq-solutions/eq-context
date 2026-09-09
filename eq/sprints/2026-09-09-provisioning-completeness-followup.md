@@ -32,23 +32,17 @@ fresh live check of the branch below, so it's more current than the original wou
 
 ## 1. Land `fix/tenant-provisioning-pg-cron`
 
-### Read this first — a possible collision with a decided architecture change
+### Resolved — architecture question settled, this branch's premise holds
 
-Per `eq/sprints/2026-09-09-eq-shell-sentry-sprint.md` (written later the same day): this branch
-reconstructs the ~37 legacy objects **onto Madagins' own dedicated Supabase project**
-(`ornndtbdkxfsewspbrwk`) and fixes `pg_cron` there. But
-`eq/sprints/2026-09-09-tenant-onboarding-sprint.md`'s Decision #1 (also same day, via a full
-`/decide` pass) reaches a different conclusion: **shared ehow is the default data plane for every
-new tenant; a dedicated project is an explicit opt-in, not the default** — and that sprint's
-item #5 is "archive the orphaned `eq-tenant-madagins` project." If that decision holds, this
-branch's dedicated-project migration work may be solving a problem about to be deleted.
+Three sprint docs today (this one, `eq-shell-sentry-sprint.md`, and
+`tenant-onboarding-sprint.md`'s Decision #1) all touched the same open question: does this
+branch's dedicated-project work on `ornndtbdkxfsewspbrwk` survive, or does madagins move to
+shared ehow? **Asked Royce directly — he rejected shared-ehow-as-default. Madagins keeps its
+own dedicated Supabase project.** `tenant-onboarding-sprint.md`'s Decision #1 and item #5
+("archive eq-tenant-madagins") are corrected in that doc to reflect this. This branch's premise
+holds — proceed on the basis below.
 
-**Not resolved here either** — three sprint docs now touch this same day without Royce having
-confirmed which one wins. Whoever picks this branch up should read the tenant-onboarding
-sprint's Decision #1 first and confirm the branch's premise still holds before doing anything
-below.
-
-### If it does still hold — verified live just now, not carried over stale
+### Verified live just now, not carried over stale
 
 Branch/worktree: `eq-shell-wt-pgcron` (`fix/tenant-provisioning-pg-cron`):
 
@@ -116,6 +110,6 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 
 | # | Item | Status | Depends on |
 |---|---|---|---|
-| 1 | Land `fix/tenant-provisioning-pg-cron` | **Blocked on an architecture decision** (dedicated-project-per-tenant vs. shared ehow) before the rebase/renumber/madagins-backlog work below it is even worth doing | Read both cross-referenced sprints first |
+| 1 | Land `fix/tenant-provisioning-pg-cron` | Architecture question resolved 2026-09-09 (keep dedicated project) — still needs the rebase (6+ behind), the 0308/0309 renumbering, and Royce's call on madagins's 50-migration backlog | Not blocked on architecture anymore |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | #1 |
 | 3 | Triage ~71 tables / ~65 functions / 2 extensions / 2 schemas | Not started | Independent — can run anytime |

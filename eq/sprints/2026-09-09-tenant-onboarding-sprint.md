@@ -29,6 +29,15 @@ A follow-up question — "is there anything else to improve multiple tenancies v
 
 ### 1. Tenant-isolation model: shared ehow by default, dedicated project as an explicit opt-in
 
+**Correction (2026-09-09, later same day):** Royce reviewed this directly (asked via a separate
+session, after this call had already left an eq-field session and the uncommitted
+`fix/tenant-provisioning-pg-cron` branch both blocked on which way madagins goes) and
+**rejected it — madagins keeps its own dedicated Supabase project.** Shared-ehow-as-default
+does not stand. The reasoning below is kept for the record, not as current guidance. Live work
+proceeding on the dedicated-project premise: eq-field's schema-provisioning script against
+`ornndtbdkxfsewspbrwk`, and `fix/tenant-provisioning-pg-cron` (see
+`eq/sprints/2026-09-09-provisioning-completeness-followup.md`). **Item #5 below is retracted.**
+
 Two mechanisms existed for "where does a tenant's Field roster live," half-built in different directions — **shared, column-scoped** (`workers-canonical-sync` hardcodes a single `EHOW_URL` + a `TENANT_ROUTES` const mapping org → an ehow-side `tenant_id`; every Cards worker gets filed into `ehow.app_data.staff`, scoped by that column) vs. **dedicated project per tenant** (eq-shell's admin "Add tenant" → Provision → fleet tenant-migrate flow, proven once on "Favour Perfect," 2026-07-04; `organisations.supabase_url`/`supabase_anon_key` exist specifically for this). Madagins had a foot in both, wired into neither.
 
 **Call: shared-ehow is the default for every new tenant. Dedicated project stays alive only as an explicit, opt-in escape hatch** for a tenant that specifically needs data isolation — not a parallel default nobody remembers to finish. Reasoning (full six-step pass in session): it matches what's actually running today for the only real tenant that exists, months of proof, zero new infra per tenant; and it doesn't throw away the Provision/tenant-migrate machinery, just stops it being the accidental default. Pure dedicated-project-always was ruled out — it directly undercuts "seamless" (every onboarding now carries the exact infra failure modes Favour Perfect hit) and multiplies ops surface linearly with tenant count for tenants that likely don't need it.
@@ -65,9 +74,15 @@ Note: this deploy also shipped whatever else was sitting merged-but-undeployed o
 
 Madagins itself still isn't registered as a shared-ehow tenant by this alone — that's a data step (setting `origin_org_id` for its workers, or equivalent), not touched here.
 
-### 5. Archive the orphaned `eq-tenant-madagins` Supabase project
+### 5. ~~Archive the orphaned `eq-tenant-madagins` Supabase project~~ — RETRACTED
 
-Empty, never wired to anything (`organisations.supabase_url` and `shell_control.tenants.supabase_project_ref` both still null), not needed under the shared-ehow-default model. A `/_platform/tenants` admin action, not code — do this once #4 is live so Madagins isn't briefly homeless.
+**Retracted (2026-09-09, later same day): do not do this.** Royce explicitly rejected the
+shared-ehow-default decision this depended on (see the correction on Decision #1 above) —
+madagins keeps its dedicated project. Separately, the premise below no longer holds either:
+verified live the same day, `shell_control.tenant_routing.supabase_project_ref` and
+`organisations.supabase_url` are both populated for madagins now, not null.
+
+~~Empty, never wired to anything (`organisations.supabase_url` and `shell_control.tenants.supabase_project_ref` both still null), not needed under the shared-ehow-default model. A `/_platform/tenants` admin action, not code — do this once #4 is live so Madagins isn't briefly homeless.~~
 
 ### 6. Lazy-seed the Cards-side `org_memberships` admin row
 
