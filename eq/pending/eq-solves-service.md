@@ -15,6 +15,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: cross-tenant roster leak found and fixed — every canonical-roster lookup silently defaulted to SKS (2026-09-09)
+*Surfaced during a research pass scoping a suite-wide tenant-identity-drift doc in eq-context. `lib/canonical-members.ts` defaulted an unset tenant slug to `'sks'`, and 19 call sites across 15 files called the roster functions bare (no tenant argument) — assignee dropdowns, notification recipients (incl. the pre-visit-brief cron), report "tested by"/"assigned to" names, the audit log, and the admin user roster all silently rendered SKS's staff regardless of the actual signed-in tenant. Independently re-verified against live code before touching anything — grep found the same 19 sites, same lines, the handed-in report named. Logged as [SEC-76](../../ops/security-register.md).*
+
+- Made the tenant argument required on `getCanonicalMembers`/`getCanonicalMemberMap` (no more silent default) — turns any missed call site into a `tsc --noEmit` compile error, which is how completeness was verified. Added `getCanonicalMemberMapForTenantId` alongside the existing `getCanonicalMembersForTenantId`, fixed a related edge case in `supervisor-digest.ts`, and threaded `tenantId` through `resolve-user-names.ts`'s 5 callers.
+- Not live-exploitable today — only SKS exists as a tenant on ehow — but a primed landmine for the next one.
+- `tsc --noEmit` and `eslint` both pass clean across all 23 touched files (23 files, +92/-57).
+
+**Deferred:**
+- [ ] **Not committed or pushed** — waiting on Royce's explicit go (hard rule: no commit without instruction). Diff is sitting in the working tree at `C:\Projects\eq-service`. _(added 2026-09-09)_
+- [ ] **`lib/canonical-sync.ts` also reads `CANONICAL_TENANT_SLUG`** — separate consumer, deliberately left out of scope for this fix; worth checking whether it has the same class of issue. _(added 2026-09-09)_
+- [ ] **No live click-test against a second tenant** — can't be exercised until a second tenant (e.g. a re-provisioned `favour-perfect`) exists; verify then that a non-SKS session shows its own roster, not SKS's. _(added 2026-09-09)_
+
+---
+
 ## eq-solves-service: embedded Shell nav bar was unusable on iPad — found via a cross-suite iPad audit, fixed, merged, live (2026-09-08)
 *Royce asked what options exist for using Claude/EQ via iPad, which led to checking whether the EQ apps themselves render properly on one. They don't — none of EQ Field, EQ Service, or EQ Shell had ever been designed for a width between phone and desktop. Checked all three live; EQ Field turned out to already be fixed by a parallel session. This repo's specific problem: the nav bar shown when Service is embedded in Shell (Field/Service iframe mode) had no wrap or scroll handling, so every iPad width cut off the last link(s) with no way to reach them.*
 
