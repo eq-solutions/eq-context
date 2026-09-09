@@ -52,7 +52,7 @@ already said.
 **What actually needs your call:**
 - [x] ~~Merge (or don't) PR #1842~~ — **merged**, by Royce directly, 2026-09-09T10:10:09Z (`6232792`). Confirmed via the merge's own CI run, not assumed: "Apply to all tenants" and "Reconcile tenant ledgers" both show `skipped`, not run — the file is in the repo now, still not applied to any database. That dispatch is still open, separate from this checkbox.
 - [ ] Say whether `0308` (public-schema half) still needs the same rescue-and-review treatment, or whether it's already been handled somewhere this pass didn't find.
-- [ ] Say when to run `--reconcile-ledger` (small, low-risk, but a live write against every tenant plane) — blocks any future real dispatch until it happens.
+- [x] ~~Say when to run `--reconcile-ledger`~~ — **run**, via the governed `tenant-migrate.yml` dispatch (not local, no credentials handled directly), whole fleet. Result confirmed from the actual run log: zero rename/stamp/dedupe/drop-legacy on all three real tenants (eq, madagins, sks) — the ledger was already consistent everywhere, nothing needed fixing. `leave-pending` counts (eq 11, madagins 14, sks 1) are separate and unaffected — genuinely unapplied migrations, not a reconcile concern. Any future checksum-drift refusal on a real dispatch is now ruled out.
 - [ ] Decide whether `0260`'s ordering gap needs fixing now or can wait for a genuinely new from-scratch tenant to force the issue.
 
 ### 2. `check-tenant-drift.mjs`'s own tenant list is missing Madagins
