@@ -82,7 +82,6 @@ _If this file is >48h old, the cron is broken._
 - #1856 fix: idempotency guards for 0256/0267 policies + registry array drift
 - #1855 ci(tenant-drift): skip drift-check cleanly on dependency-only Dependabot PRs
 - #1854 fix(check-tenant-drift): fail loud when a real tenant has no CANONICAL_PROJECTS entry
-- #1853 fix(field-iframe): stop the memory-saver restore stall-notice racing BOOT_GRACE_MS
 - #1852 Add Multi screen for group-adding workers
 - #1850 fix(token-exchange): stop gating a caller's own tenant slug against a static allowlist
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
