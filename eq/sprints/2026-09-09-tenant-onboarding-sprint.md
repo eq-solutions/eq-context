@@ -57,11 +57,13 @@ Checked `AdminTenantsPage.tsx` / `admin-tenants.ts` directly: `shell_control.ten
 
 ## Wave 1 — ship now, no more decisions needed
 
-### 4. Generalise `workers-canonical-sync` beyond the SKS/ehow hardcode — merged, [eq-cards#348](https://github.com/eq-solutions/eq-cards/pull/348)
+### 4. Generalise `workers-canonical-sync` beyond the SKS/ehow hardcode — done, [eq-cards#348](https://github.com/eq-solutions/eq-cards/pull/348)
 
-**Merged 2026-09-09 (`df07f8c`), not yet deployed.** `TENANT_ROUTES` replaced with `resolveTenantRoute()` (new module `tenant-routing.ts`), reading `organisations.tenant_id` live instead of a const requiring a code deploy per tenant. Guardrail shipped as required: `tenant-routing.test.ts` asserts two different orgs never resolve to each other's tenant, and an org with its own dedicated data-plane project is refused rather than silently mis-routed into shared ehow — 6/6 passing in CI, not just locally. Also added a `deno test` CI job for edge functions, which had none before — otherwise the guardrail test would just sit there unrun. Unstamped workers (`origin_org_id` NULL — the overwhelming majority) keep exactly today's behaviour, unit-tested.
+**Merged and deployed 2026-09-09 (`df07f8c`)** — [Build & Deploy run 34316810026](https://github.com/eq-solutions/eq-cards/actions/runs/34316810026), both jobs (`Deploy edge functions`, `deploy`) completed successfully, confirmed independently via `gh run view` rather than trusting the dispatch alone. `TENANT_ROUTES` replaced with `resolveTenantRoute()` (new module `tenant-routing.ts`), reading `organisations.tenant_id` live instead of a const requiring a code deploy per tenant. Guardrail shipped as required: `tenant-routing.test.ts` asserts two different orgs never resolve to each other's tenant, and an org with its own dedicated data-plane project is refused rather than silently mis-routed into shared ehow — 6/6 passing in CI. Also added a `deno test` CI job for edge functions, which had none before. Unstamped workers (`origin_org_id` NULL — the overwhelming majority) keep exactly today's behaviour, unit-tested.
 
-Remaining before this actually changes anything live: a separate, explicit `Build & Deploy` dispatch (`deploy.yml` is manual-only — merging did not deploy it). Madagins itself isn't registered as a shared-ehow tenant by this merge alone; that's a data step (setting `origin_org_id` for its workers, or equivalent), not touched here.
+Note: this deploy also shipped whatever else was sitting merged-but-undeployed on `main` at the time — checked first (production was one commit behind main, exactly this PR, so nothing else rode along this time), but worth remembering for next time: `deploy.yml`'s edge-function job and its Netlify web-app job both fire on the same dispatch with no way to select just one.
+
+Madagins itself still isn't registered as a shared-ehow tenant by this alone — that's a data step (setting `origin_org_id` for its workers, or equivalent), not touched here.
 
 ### 5. Archive the orphaned `eq-tenant-madagins` Supabase project
 
@@ -94,8 +96,8 @@ Per decision #3: backfill Madagins' `organisations.tier` to `'advanced'` now (EQ
 | 1 | Isolation model: shared-ehow default, dedicated project opt-in | **Decided 2026-09-09** | Unblocks #4/#5 below |
 | 2 | Cards-side admin-create gap: lazy self-seed off `shell_control` manager role | **Decided 2026-09-09** | Unblocks #6 below |
 | 3 | Tier split-brain: confirmed bug, sync from `shell_control.tenants.tier` | **Confirmed 2026-09-09** | Unblocks #7 below |
-| 4 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | **Merged — [PR #348](https://github.com/eq-solutions/eq-cards/pull/348)** | Your deploy |
-| 5 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, after #4 deploys |
+| 4 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | **Done — [PR #348](https://github.com/eq-solutions/eq-cards/pull/348), live** | — |
+| 5 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, whenever |
 | 6 | Lazy-seed Cards-side `org_memberships` admin | Ready to build | Build together with #8 |
 | 7 | Backfill + sync `organisations.tier` | Ready to build | Build on your go |
 | 8 | Fix multi-org-admin picker truncation (`org_admin_provider.dart`) | Ready to build | Build together with #6 |
