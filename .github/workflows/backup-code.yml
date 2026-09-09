@@ -1,0 +1,125 @@
+name: Backup code (6 EQ repos → R2)
+
+# Platform-level offsite backup of this suite's own source code, independent of
+# GitHub itself — a full git history bundle per repo, uploaded to the same R2
+# bucket the DB backups already use, under a `code/` prefix. Closes SPOF #6 from
+# the 2026-09-08 redundancy review: every database has a documented offsite
+# backup, but the code that runs against those databases had none — GitHub was
+# the only place any of it lived.
+#
+# What it captures: `git bundle create --all` per repo — every branch, every tag,
+# full history, self-contained (a bundle is a valid clone source on its own, no
+# GitHub needed to restore from it). NOT a working-tree copy.
+#
+# Repos (the whole EQ suite, product + substrate):
+#   eq-shell, eq-field, eq-solves-service, eq-cards, eq-solves-intake, eq-context
+#
+# Read-only against GitHub (a mirror clone over HTTPS). Nothing is written back
+# to any repo. R2 is our own backup bucket, same one the DB backups use.
+#
+# Schedule: every day 03:00 UTC. Manual: workflow_dispatch.
+#
+# Secrets (production-ops GitHub Environment — see system/dr-backups.md):
+#   CODE_BACKUP_PAT   - fine-grained PAT, Contents:read on all 6 repos above.
+#                       MUST be added before this job can run at all — every
+#                       attempt fails loudly (a clone 403) by design, not silently.
+#   R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_ENDPOINT / R2_BUCKET_NAME
+#                       - already present (shared with the DB backup jobs).
+#
+# Alerting: none yet — no Sentry cron monitor slug reserved for this job. Add one
+# (mirroring backup-ehow.yml's pattern) once CODE_BACKUP_PAT is armed and the
+# first run is confirmed green, not before.
+#
+# History note (2026-09-09): an earlier version of this file was described in
+# session docs as "built" but was never actually committed anywhere — it only
+# existed in a scratch worktree that got discarded first. This is the real,
+# committed version. See sessions/2026-09-09.md and eq/pending/eq-context.md for
+# the correction.
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: ${{ matrix.repo }} → R2 (git bundle)
+    runs-on: ubuntu-latest
+    # Same production-ops environment as the DB backup jobs — see backup-ehow.yml's
+    # own comment for why (deployment-branch rule = main only, no required
+    # reviewers, so the cron never pauses waiting for an approval).
+    environment: production-ops
+    strategy:
+      fail-fast: false
+      matrix:
+        repo:
+          - eq-shell
+          - eq-field
+          - eq-solves-service
+          - eq-cards
+          - eq-solves-intake
+          - eq-context
+    steps:
+      - name: Set backup date
+        run: echo "BACKUP_DATE=$(date -u +%Y-%m-%d_%H%M)" >> "$GITHUB_ENV"
+
+      - name: Clone + bundle ${{ matrix.repo }}
+        env:
+          CODE_BACKUP_PAT: ${{ secrets.CODE_BACKUP_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CODE_BACKUP_PAT:-}" ]; then
+            echo "::error::CODE_BACKUP_PAT is not set — cannot clone ${{ matrix.repo }}. Add it to the production-ops environment (Contents:read on this repo)."
+            exit 1
+          fi
+          git clone --mirror "https://x-access-token:${CODE_BACKUP_PAT}@github.com/eq-solutions/${{ matrix.repo }}.git" repo.git
+          cd repo.git
+          git bundle create "../${{ matrix.repo }}.bundle" --all
+          cd ..
+          SIZE=$(wc -c < "${{ matrix.repo }}.bundle")
+          echo "${{ matrix.repo }}.bundle=${SIZE}B"
+          # Silent-empty guard: a real bundle is never this small. Fail loudly
+          # rather than upload a broken "backup" and report success.
+          if [ "$SIZE" -lt 1024 ]; then
+            echo "::error::${{ matrix.repo }}.bundle looks empty/truncated (${SIZE} bytes) — refusing to upload."
+            exit 1
+          fi
+
+      - name: Upload bundle to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          set -euo pipefail
+          pip install awscli --quiet
+          aws s3 cp \
+            "${{ matrix.repo }}.bundle" \
+            "s3://${{ secrets.R2_BUCKET_NAME }}/code/${{ matrix.repo }}/${BACKUP_DATE}.bundle" \
+            --endpoint-url "${{ secrets.R2_ENDPOINT }}"
+          echo "✅ ${{ matrix.repo }} bundle uploaded: code/${{ matrix.repo }}/${BACKUP_DATE}.bundle"
+
+      - name: Prune old bundles for this repo (keep last 8 weeks)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          set -euo pipefail
+          CUTOFF=$(date -u -d '56 days ago' +%Y-%m-%d)
+          aws s3 ls "s3://${{ secrets.R2_BUCKET_NAME }}/code/${{ matrix.repo }}/" \
+            --endpoint-url "${{ secrets.R2_ENDPOINT }}" \
+            | awk '{print $NF}' \
+            | while read -r fname; do
+                [ -z "$fname" ] && continue
+                DATE_PART=$(echo "$fname" | cut -d_ -f1)
+                if [[ "$DATE_PART" < "$CUTOFF" ]]; then
+                  echo "Pruning old bundle: $fname"
+                  aws s3 rm "s3://${{ secrets.R2_BUCKET_NAME }}/code/${{ matrix.repo }}/$fname" \
+                    --endpoint-url "${{ secrets.R2_ENDPOINT }}"
+                fi
+              done
+          echo "✅ Pruning complete for ${{ matrix.repo }} (kept last 8 weeks)"
