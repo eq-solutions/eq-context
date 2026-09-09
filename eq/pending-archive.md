@@ -16,6 +16,15 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: EQ-SHELL-23 test-data account cleanup fully closed — jvkn-side shell account and both tenant memberships deactivated, Sentry issue confirmed resolved (rotated 2026-09-09; recovered after a same-day clobber)
+*Continuation of the same-day EQ-SHELL-23 write-up: the alert-only monitor `check-missing-org-memberships.ts` had correctly flagged "Jordan A. Sample," an SKS Apprentice test record created 2026-09-01. `app_data.staff` (ehow) and its licences were already handled earlier the same day; this was the deferred "jvkn-side shell account/tenant-membership closed too" piece, done on Royce's explicit "close it for good." Original section (commit `24b51c2a`, 20:34) was wholesale-replaced ~106 seconds later by `d8c83d3e`, an unrelated same-day session's stale-based rewrite of this file (the same-day F17 pattern, `system/failures.md`) — recovered via `git show 24b51c2a -- eq/pending-archive.md`.*
+
+- **Root cause of the residual, found live**: `shell_control.users` (jvkn) for this account was already `active=false` (deactivated 2026-09-08), and its `sks` tenant membership in `shell_control.user_tenant_memberships` was already `active=false` — but a second membership row, for the account's own `__personal__` tenant, was still `active=true`. That leftover row is what kept the monitor's underlying condition alive.
+- **Closed**: `UPDATE shell_control.user_tenant_memberships SET active=false WHERE user_id='181d1585-eee6-482c-84f5-8bb5e78c7b3b' AND tenant_id='279a6da0-0b54-4da8-8eac-499dffaa44cb'` — plain data update, not a schema change, consistent with the earlier same-day cleanup steps. Re-verified live after: both memberships (`__personal__`, `sks`) and the base user record all `active=false`.
+- **Sentry issue confirmed resolved** — re-checked live via the Sentry MCP (newly authorized) after this section's original "still unresolved" note: [EQ-SHELL-23](https://eq-solutions.sentry.io/issues/EQ-SHELL-23) now shows `status: resolved`, still just the one historical occurrence (2026-09-08T21:50 UTC, 0 users impacted), no re-fire.
+
+---
+
 ## eq-shell: PR #1834 merged clean but the deploy pipeline itself was broken — self-resolved, confirmed live (2026-09-09)
 
 - **Merge landed, deploy did not, at first.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit for a while; confirmed directly against GitHub's deployments API, not assumed from the merge alone.
