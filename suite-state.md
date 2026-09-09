@@ -75,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1848 feat(workers): redesign the Add worker screen (follow-up to #1844)
-- #1847 fix(entitlements): allowlist modules in upsertAppEntitlements
 - #1846 fix(entitlements): enforce module allowlist in upsertAppEntitlements
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -98,8 +97,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | new | 2026-09-09 |
-| eq-field | new | 2026-09-09 |
+| eq-shell | building | 2026-09-09 |
+| eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
