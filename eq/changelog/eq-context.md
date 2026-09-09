@@ -1,11 +1,19 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
+
+## [2026-09-10] F14's signal regex restructured (directional bug, pending.md/substrate anchors dropped)
+
+**Built by:** Claude Code
+
+- **`system/failures.md`'s F14 `signal` regex** had a latent directional bug (alternative 1 only ever matched stale-word-THEN-filename, never the reverse), so its own real incidents were matching by accident via a coincidental later "substrate" mention, not the real `suite-state.md...stale` connection. Made bidirectional; dropped `pending.md` (routine, expected latency — not this failure's class) and bare `substrate` (too generic, source of two live false triggers) as anchors; tuned the remaining anchors (`CLAUDE.md`, `suite-state`, `brand-`) to a 35-char same-line window. Full-corpus verification: file matches 35 → 23, only one post-`last_seen` file still matches (a real, minor, already-unescalated drift, correctly left for human review).
+- **Honest limit documented, not overclaimed**: unlike F1/F10's clean single false-positive shapes, F14 has no textual marker separating a genuine incident from routine "found and fixed a stale doc line" hygiene. This fix removes the specific, provable noise found by audit; it does not claim F1/F10-level precision.
+- Extended `.github/scripts/test_failure_recurrence_signals.py` with `test_f14()` — 9 cases, 27 total across F1/F10/F14, all passing. Also added `sessions/2026-09-10.md` to F14's own `confirmed_in` — this fix's own write-up immediately re-triggered its new anchor logic, the same self-reference class F1 hit the day before. Commit [`e07049f`](https://github.com/eq-solutions/eq-context/commit/e07049fd7565c9e0e259d9c5df655efb040694e4).
 
 ## [2026-09-09] F10's false-positive signal regex tightened; F1's own self-reference fixed
 
