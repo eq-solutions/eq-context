@@ -64,9 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
-**eq-field:**
-- #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
-
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -76,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1845 fix(migrations): add missing UNIQUE constraint on licences.cards_credential_id
 - #1842 fix(provisioning): recover and land the app_data legacy-baseline migration (0311)
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -89,7 +87,7 @@ _If this file is >48h old, the cron is broken._
     |------|--------|
     | eq-service | ✓ success |
 | eq-shell | ✓ success |
-| eq-field | ? in_progress |
+| eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
@@ -98,8 +96,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | uploading | 2026-09-09 |
-| eq-field | building | 2026-09-09 |
+| eq-shell | ready | 2026-09-09 |
+| eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
@@ -132,7 +130,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 50 |  |
+| Active users (Shell sign-ins, jvkn) | 51 |  |
 
 _No flips this run._
 ---
