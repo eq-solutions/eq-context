@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-09)
 
-**eq-field:**
-- #975 fix(canon-read): drop the redundant ALLOWED_SLUGS gate
-
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -85,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✗ failure |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
