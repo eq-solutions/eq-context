@@ -72,9 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #832 chore(deps): bump @eq-solutions/roles from v2.7.5 to v2.7.7 in the eq-design-system group
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
-**eq-shell:**
-- #1861 chore(intake): auto re-vendor eq-intake/eq-platform
-
 ---
 
 ## System Health (as of 2026-09-09)
