@@ -16,6 +16,16 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-field: `leave.js` balance/business-day math had zero unit coverage — extracted to `leave-rules.js`, FIXED, merged, live (PR #960, v3.5.707, 2026-09-09)
+*Multi-lens review decision #12 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 12): `_leaveGetBalances`/`_leaveBizDays` were the one piece of business logic across the five extracted-or-extractable domains (timesheets/roster/apprentices/sks-pipeline-resource/leave) with zero unit coverage, despite being payroll-adjacent.*
+
+- [x] **[PR #960](https://github.com/eq-solutions/eq-field/pull/960), v3.5.707, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): extracted into new `scripts/leave-rules.js` — pure, headless-tested, matching the exact extract-plus-test-module pattern already proven on `timesheets-rules.js`/`roster-rules.js`/`apprentices-rules.js`/`sks-pipeline-resource-rules.js`. `leave.js` keeps thin same-name wrappers, zero call-site changes.
+- [x] **New `tests/leave-rules.test.js`, 20 cases** — closes the coverage gap the review flagged. Full test suite, eslint, and cache-buster checks green before push; verified click-tested on the deploy preview (worker balance cards + supervisor Leave Requests view), not just code-reviewed.
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`. Rotated out of `eq/pending/eq-field.md` at session close (zero open items in the section).
+
+---
+
 ## cross-repo: 4 fully-closed sections rotated out, 1 stale duplicate header merged — full live audit (rotated 2026-09-07)
 *Live-verified every item pruned from `eq/pending/cross-repo.md` before removing it — a Supabase advisors query, a direct SQL query against live zaap, or (for a section already carrying its own "Fully done"/"SUPERSEDED" framing) the section's own text. Nothing here assumed done from staleness alone.*
 
