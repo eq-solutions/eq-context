@@ -23,33 +23,41 @@ Nelson and Conor themselves are sorted — added to Madagins' `org_memberships` 
 
 ---
 
-## Wave 3 — needs a bigger decision before anything else here is buildable
+## Decided (2026-09-09, via `/decide`)
 
-### 1. Which tenant-isolation model does EQ Field actually commit to?
+### 1. Tenant-isolation model: shared ehow by default, dedicated project as an explicit opt-in
 
-Two mechanisms exist for "where does a tenant's Field roster live," and they're only half-built, in different directions:
+Two mechanisms existed for "where does a tenant's Field roster live," half-built in different directions — **shared, column-scoped** (`workers-canonical-sync` hardcodes a single `EHOW_URL` + a `TENANT_ROUTES` const mapping org → an ehow-side `tenant_id`; every Cards worker gets filed into `ehow.app_data.staff`, scoped by that column) vs. **dedicated project per tenant** (eq-shell's admin "Add tenant" → Provision → fleet tenant-migrate flow, proven once on "Favour Perfect," 2026-07-04; `organisations.supabase_url`/`supabase_anon_key` exist specifically for this). Madagins had a foot in both, wired into neither.
 
-- **Shared, column-scoped**: `workers-canonical-sync` (eq-cards edge function) hardcodes a single `EHOW_URL` and a `TENANT_ROUTES` const mapping org → an ehow-side `tenant_id`. Every Cards worker signup gets filed into `ehow.app_data.staff`, scoped by that column. Today `TENANT_ROUTES` contains exactly one entry (SKS) — anyone else falls through to SKS by default (if unstamped) or gets silently skipped (`no_tenant_route`, if explicitly stamped to an org with no route — Madagins' exact situation the moment anyone tries to attribute a worker to it).
-- **Dedicated project per tenant**: eq-shell's admin "Add tenant" flow actively provisions a brand-new standalone Supabase project (the "Provisioning…" spinner), and a separate "Provision" + fleet tenant-migrate step is supposed to build its schema (confirmed live for tenant "Favour Perfect," 2026-07-04). `organisations.supabase_url` / `supabase_anon_key` exist specifically to point a tenant at its own project instead of the shared fallback. Madagins got the empty project (`eq-tenant-madagins`) but never got the Provision/migrate follow-through — so it's half-built toward *this* model instead.
+**Call: shared-ehow is the default for every new tenant. Dedicated project stays alive only as an explicit, opt-in escape hatch** for a tenant that specifically needs data isolation — not a parallel default nobody remembers to finish. Reasoning (full six-step pass in session): it matches what's actually running today for the only real tenant that exists, months of proof, zero new infra per tenant; and it doesn't throw away the Provision/tenant-migrate machinery, just stops it being the accidental default. Pure dedicated-project-always was ruled out — it directly undercuts "seamless" (every onboarding now carries the exact infra failure modes Favour Perfect hit) and multiplies ops surface linearly with tenant count for tenants that likely don't need it.
 
-Madagins currently has a foot in both and is fully wired into neither. Whichever model is the real answer, the other needs to either get finished generically (so it's not a one-off per tenant) or get retired, or every future tenant repeats tonight's audit. This is Royce's call — not a technical question so much as "which of these two already-built mechanisms is the one we're actually committing to."
+**Non-negotiable guardrail on the build below, surfaced in pre-mortem, not optional:** generalising the shared-ehow scoping logic without a deliberate cross-tenant-leak test is exactly how a real leak happens — same failure shape as the 2026-07 EQ-SHELL-14 incident (a phone-normalisation backfill mis-filed a live worker onto the wrong tenant's roster for ~10 minutes). Ship the test before this touches a second real tenant.
 
-**Depends on this decision:**
-- Whether `TENANT_ROUTES` needs a Madagins entry at all, or whether Madagins should instead get its dedicated project finished (Provision + tenant-migrate, same as Favour Perfect).
-- Whether `TENANT_ROUTES` stops being a hardcoded const (requiring a code deploy for every new tenant, which is the literal opposite of "seamless") and becomes data-driven — straightforward once the model is picked, not before.
-- What happens to the orphaned `eq-tenant-madagins` project: finish provisioning it, or archive/delete it.
+**Crux, if it matters later:** this flips if a real near-term customer (not Madagins) turns out to need guaranteed data isolation — then dedicated-project stops being a rare escape hatch and becomes the thing worth investing in properly. Nothing currently known points that way.
 
 ---
 
-## Wave 2 — small decision needed first, each independently buildable once decided, not blocked by Wave 3
+## Wave 1 — ship now, no more decisions needed
 
-### 2. Cards-side admin-create zero-member gap
+### 2. Generalise `workers-canonical-sync` beyond the SKS/ehow hardcode
+
+Make `TENANT_ROUTES` data-driven (read off `organisations`/`shell_control.tenants` directly, or a small dedicated mapping table) instead of a const requiring a code deploy per tenant — the literal opposite of "seamless." **Must ship with** a test that deliberately tries to cross tenant boundaries in `findStaffId()`'s phone/email adoption logic and asserts it fails (the guardrail above). Once live, register Madagins as a normal shared-ehow tenant.
+
+### 3. Archive the orphaned `eq-tenant-madagins` Supabase project
+
+Empty, never wired to anything (`organisations.supabase_url` and `shell_control.tenants.supabase_project_ref` both still null), not needed under the shared-ehow-default model. A `/_platform/tenants` admin action, not code — do this once #2 is live so Madagins isn't briefly homeless.
+
+---
+
+## Wave 2 — small decision needed first, each independently buildable, unrelated to the isolation-model call
+
+### 4. Cards-side admin-create zero-member gap
 
 `task_4f5989fb` (eq-shell, 2026-07-04) covers the Shell-side half of "a new tenant has nobody in it" — confirmed still working tonight, Madagins got 3 auto-seeded `shell_control.user_tenant_memberships` managers. But that fix lives in eq-shell and only touches `shell_control`. It never reaches eq-cards' own `org_memberships` table — a separate repo, separate concern — so Madagins still had zero Cards-side admins tonight. Without one, the normal in-app "invite a worker" flow (`eq_cards_request_worker_access`, gated on `is_org_admin`) has nobody able to call it on a brand-new tenant.
 
 **Needs a decision:** should eq-shell's tenant-creation flow call out to eq-cards (webhook/API) to seed the equivalent `org_memberships` admin row, or should eq-cards seed it itself, lazily, the first time someone from that tenant authenticates? Either is a small, scoped build once picked.
 
-### 3. Tier field split-brain
+### 5. Tier field split-brain
 
 `organisations.tier` = `'Standard'` and `shell_control.tenants.tier` = `'advanced'` — same Madagins org, two different tables, no visible sync between them, no migration or trigger keeping them aligned.
 
@@ -57,19 +65,12 @@ Madagins currently has a foot in both and is fully wired into neither. Whichever
 
 ---
 
-## Not a build — needs your own action, and only after Wave 3 is decided
-
-### 4. Close the loop on Madagins itself
-
-Once the isolation-model call is made: either click Provision on `/_platform/tenants` for Madagins and dispatch the fleet tenant-migrate (same as Favour Perfect) if dedicated-project wins, or add its `TENANT_ROUTES` entry and archive the empty `eq-tenant-madagins` project if shared-ehow wins. Deliberately not pre-built blind — building either path before Wave 3 is decided risks building the wrong one.
-
----
-
 ## Summary
 
 | # | Item | Status | Action |
 |---|---|---|---|
-| 1 | Which isolation model (shared-ehow vs. dedicated-project) | Needs a bigger decision | Your call — unblocks #3 and #4 |
-| 2 | Cards-side admin-create zero-member gap | Needs a small decision | Webhook from eq-shell, or lazy self-seed in eq-cards? |
-| 3 | Tier field split-brain (`organisations` vs `shell_control.tenants`) | Needs a small decision | One source of truth, or genuinely two axes? |
-| 4 | Close the loop on Madagins itself | Not a build | Your click-through, once #1 is decided |
+| 1 | Isolation model: shared-ehow default, dedicated project opt-in | **Decided 2026-09-09** | Unblocks #2/#3 below |
+| 2 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | Ready to build | Build on your go |
+| 3 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, after #2 ships |
+| 4 | Cards-side admin-create zero-member gap | Needs a small decision | Webhook from eq-shell, or lazy self-seed in eq-cards? |
+| 5 | Tier field split-brain (`organisations` vs `shell_control.tenants`) | Needs a small decision | One source of truth, or genuinely two axes?
