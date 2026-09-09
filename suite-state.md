@@ -64,6 +64,10 @@ _If this file is >48h old, the cron is broken._
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
+**eq-field:**
+- #972 v3.5.713 — Tenant routing: a rejected ?tenant= override is now visible, not silent
+- #971 v3.5.713 — canon-read: allow the madagins tenant
+
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -71,6 +75,9 @@ _If this file is >48h old, the cron is broken._
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
 - #832 chore(deps): bump @eq-solutions/roles from v2.7.5 to v2.7.7 in the eq-design-system group
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
+
+**eq-shell:**
+- #1863 fix(security): add missing tenant-scoped RLS policies on zaap's tender_enrichment
 
 ---
 
@@ -91,8 +98,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | new | 2026-09-09 |
-| eq-field | ready | 2026-09-09 |
+| eq-shell | building | 2026-09-09 |
+| eq-field | enqueued | 2026-09-09 |
 
     **Migrations:** eq-service has 244 (latest: 0240) applied
 
