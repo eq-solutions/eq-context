@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-09)
 
 **eq-cards:**
-- #351 fix(cards): correct stale tenant-isolation policy in code comments
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
@@ -104,7 +103,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | building | 2026-09-09 |
+| eq-shell | ready | 2026-09-09 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
