@@ -16,6 +16,18 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: workspace-switcher menu was clipped by the viewport, fixed and confirmed live (PR #1837, 2026-09-09)
+*Royce sent a screenshot of the "Switch workspace" popover cut off at the bottom of the screen and asked for it to fold up instead.*
+
+- **Root cause**: `TenantSwitcher.tsx`'s menu anchored with `top: 100%` (opens downward). Its only usage site (`HubSidebar`'s footer) always sits at the bottom of the sidebar, so the menu routinely ran off the bottom of the viewport, hiding some or all of the listed workspaces.
+- **Fix**: flipped the anchor to `bottom: 100%` so the menu opens upward instead — 2-line change, one file, confirmed `TenantSwitcher` has no other usage site.
+- **Verified via an isolated, pixel-accurate style reproduction** (before/after screenshots using the component's own exact style values), not the live authenticated app — no Shell credentials in this environment, and the real popover sits behind login.
+- **Shipped and confirmed live**: [PR #1837](https://github.com/eq-solutions/eq-shell/pull/1837), squash-merged (`5c62d73b`) after CI went fully green (typecheck/test/lint, schema drift + anon-grant + policy-lint, gitleaks, function grants preserved, migration ledger hygiene). Confirmed live on `core.eq.solutions` directly, not just trusted from the merge: watched the served JS bundle hash change (`index-DdnyHsnN.js` → `index-DrITrpD4.js`) and confirmed via `git merge-base --is-ancestor` that `5c62d73b` is in the history of the commit actually serving (`6e1793c3`, one commit ahead — PR #1838 merged immediately after and built on top of it, so still carries this fix).
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`. Written directly to archive at session close — zero open items, no live `eq/pending/eq-shell.md` entry needed.
+
+---
+
 ## eq-shell: PR #1834 merged clean but the deploy pipeline itself was broken — self-resolved, confirmed live (2026-09-09)
 
 - **Merge landed, deploy did not, at first.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit for a while; confirmed directly against GitHub's deployments API, not assumed from the merge alone.

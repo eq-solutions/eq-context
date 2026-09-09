@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-09 (PR #1837 MERGED + LIVE — workspace-switcher menu no longer clipped)
+- `TenantSwitcher.tsx`'s "Switch workspace" popover anchored with `top: 100%`, opening downward from its trigger. Since the trigger only ever renders in `HubSidebar`'s footer (its one usage site), the menu was routinely clipped by the bottom of the viewport, hiding some or all of the listed workspaces — reported live via screenshot.
+- Fix: flipped the anchor to `bottom: 100%` so it opens upward instead. 2-line change, single file.
+- **Merged (`5c62d73b`), confirmed live** — watched the served bundle hash change on `core.eq.solutions` and confirmed via `git merge-base --is-ancestor` that this commit is in the history of what's actually serving.
+
 ## 2026-09-09 (PR #1834 MERGED + LIVE — pg_cron enabled on new tenant projects)
 - New-tenant provisioning (`provision-tenant-background.ts`) failed partway through the fleet migration apply the first time it hit `cron.schedule()` — confirmed live on `eq-tenant-madagins`, 189 migrations in — because a from-scratch Supabase project doesn't have the `pg_cron` extension, and nothing in provisioning enabled it. sks/eq never hit this because pg_cron was already on those projects before this flow existed. Fix: idempotent `CREATE EXTENSION IF NOT EXISTS pg_cron` added as a new provisioning step. Also bumped `tenant-routing.ts`'s warm-cache tenant list to include `madagins` (cache-only, not a correctness fix).
 - Deliberately scoped to just this one gap — the branch's other uncommitted work (a much larger, self-documented-as-risky legacy-schema-capture migration pair) was split out rather than bundled in. See `eq/sprints/2026-09-09-provisioning-completeness-followup.md`.
