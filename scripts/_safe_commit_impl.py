@@ -286,6 +286,7 @@ def main() -> int:
 
         if not staged_paths:
             print("Nothing to commit -- every requested file already matches origin/main.")
+            cleanup()
             return 0
 
         print(f"Staged {len(staged_paths)} file(s): {sorted(staged_paths)}")
