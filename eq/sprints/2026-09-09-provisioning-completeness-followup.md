@@ -100,11 +100,28 @@ one-paragraph flag.
 
 Not built or merged pending those calls — kept separate from #1834 deliberately, same as before.
 
-**Also still open, independent of either half:** `madagins` is **50 migrations behind `main`**
-(back to `0257`) — a blank dispatch would silently apply 49 other, unreviewed migrations
-(security/RLS/role-gate changes among them). Needs a deliberate decision (batch-dispatch after
-review, or fold into whichever of the two halves above ends up touching madagins directly) —
-**Royce's call, not this doc's.**
+**Update — largely resolved by the eq-field session working this tenant, verified live
+directly against madagins's database (not from any session's self-report):** `public` and
+`app_data` are both now fully populated (34 + ~120 tables), with real seed-data rows in
+several tables and ledger `applied_at` timestamps spanning real hours (07:12-07:57 UTC) —
+genuine applies, not a repeat of the earlier fake-stamp bootstrap. One good sign for the
+scoping question above: `public.organisations`'s RLS policy uses madagins's own org id
+(`dd5d8622-...`), not ehow's hardcoded literal — whoever built this adapted it per-tenant
+rather than reusing the uncommitted draft verbatim.
+
+**Not fully caught up — 11 tracked migrations still missing from the ledger**, diffed
+directly against every file in `supabase/tenant-migrations/`: `0258`-`0262`, `0266`, `0270`,
+`0273`, `0290`, `0303`. Most notably **`0260_teams_team_members_tenant_lockdown.sql`** — the
+exact migration this doc's own ordering-bug finding (above) named as crashing a from-scratch
+tenant. The gaps are scattered individually rather than one contiguous stop-point, which
+reads as a deliberate exclude-list rather than a run that failed and gave up — but that's
+inference from the ledger's shape, not confirmed with whoever actually ran this. (Checked one
+plausible false alarm: `wipe_backup` schema, recently RLS-locked on ehow via #1833 — doesn't
+exist on madagins at all, so its absence from the ledger is expected, not a gap.)
+
+Remaining open question, smaller now than "50 behind": whether/how to land the 11 excluded
+migrations on madagins, particularly `0260` — same ordering-bug shape as the legacy-baseline
+pair above, so may want the same fix applied once. **Royce's call, not this doc's.**
 
 ## 2. Re-run `check-provisioning-completeness.mjs`
 
@@ -152,6 +169,6 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 |---|---|---|---|
 | 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) merged and confirmed live** — done | — |
 | 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | **Reviewed** — 4 concrete decisions needed from you (scoping now covers 2 files, ordering has a 3rd interlocking bug, 2 missing `service.*` objects, 1 dead function to keep-or-drop) | — |
-| 1c | madagins's 50-migration backlog | Needs your decision | — |
+| 1c | madagins's migration backlog | Down from 50 to 11 missing (eq-field session's fix) — most notably `0260`, same ordering bug as 1b. Your call on landing the rest | — |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | 1a merged + dispatched |
 | 3 | Triage ~71 tables / ~65 functions / 2 extensions / 2 schemas | Not started | Independent — can run anytime |
