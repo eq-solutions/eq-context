@@ -1,11 +1,18 @@
 ---
 title: Changelog — EQ Context Repo
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-09
 scope: Append-only history of changes to the eq-context repository itself
 read_priority: reference
 status: live
 ---
+
+## [2026-09-09] F1's false-positive signal regex tightened
+
+**Built by:** Claude Code
+
+- **`system/failures.md`'s F1 `signal` regex** (raw.githubusercontent+stale / serving-stale+no-error-or-200-ok / CDN-cache+stale) had no way to tell a genuine eq-context substrate-staleness incident from a session merely citing the F1 lesson while verifying a push to a *different* repo landed — confirmed false positive against `sessions/2026-08-23.md`, re-flagged live 4 times (2026-08-30, 2026-09-07, 2026-09-09 x2) without ever being real. Gated all three alternatives behind a same-line substrate-specific anchor term. Verified against the full `sessions/*.md` corpus (152 files): the 3 genuine historical incidents still match, the false positive no longer does, zero new matches anywhere (structurally guaranteed — the anchor can only narrow, never widen).
+- **Added `.github/scripts/test_failure_recurrence_signals.py`** — 10 unit tests (5 must-catch / 5 must-not-catch, matching F13's own precision-test convention), reading the live `signal:` string out of `failures.md` rather than a hardcoded copy. Wired into `digest-refresh.yml`'s pre-flight step alongside F11's `test_scheduled_workflow_health.py`. Commit [`4503f57`](https://github.com/eq-solutions/eq-context/commit/4503f5798174d7ce638c0b9d03d83249589cd975).
 
 ## [2026-09-07] Nightly digest/suite-state-refresh "duplicate" commits root-caused (not a bug); misleading "nightly" framing fixed
 
