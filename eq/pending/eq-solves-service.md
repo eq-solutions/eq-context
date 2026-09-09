@@ -15,6 +15,20 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-service: SKS tenant ID hardcoded into RLS on acknowledgments/app_config/audit_log — footprint mapped, fix not yet built (2026-09-09)
+*The other task spawned from the same suite-wide tenant-identity-drift scoping doc (§0 item 2, alongside the canonical-members.ts fix below). `0146b_acknowledgments_authenticated_write.sql:36` and `0151_fix_app_config_id.sql:46` hardcode SKS's tenant_id into RLS `WITH CHECK` clauses. Live introspection (once Supabase MCP became available mid-session) found a 3rd affected table — `public.audit_log`, the actively-written audit trail (5,886 rows, written today) — and the same pattern on ~31 tables suite-wide, mostly owned by eq-shell/eq-field, not this repo. Full detail: [SEC-77](../../ops/security-register.md) (originally numbered SEC-76, renumbered after a race with the canonical-members.ts push below — see that row's own note).*
+
+- Corrected the original report's severity framing twice over the course of the investigation: not a shared-tenant leak (SKS is ehow's only real non-demo tenant, live-verified twice independently) and not risk-free either (the Demo tenant's writes to these tables are being silently denied today).
+- Spun off as its own task, not investigated further this session: why `public.audit_log` still receives live writes instead of the properly-migrated `service.audit_logs` (66 rows, stale since 2026-08-02) — `task_53ac5191`.
+
+**Deferred:**
+- [ ] **Fix mechanism not decided.** Whether `acknowledgments`/`app_config`/`audit_log` can adopt `service.audit_logs`'s dynamic-JWT-derived pattern as written, or need a schema change first (`org_id` vs `tenant_id` scoping isn't identical across all three) — not traced this session. _(added 2026-09-09)_
+- [ ] **Blocked on the concurrent session below** (`canonical-members.ts`) — its 16 files are sitting uncommitted in the same shared `C:\Projects\eq-service` checkout; don't start the RLS fix there until that lands or is cleared. _(added 2026-09-09)_
+- [ ] **Whether eq-shell's own `tenant-migrate.yml` already substitutes tenant literals for the ~10 tables it owns in this same pattern, or shares eq-field's pre-generator gap** — not checked this session, needs someone in eq-shell. Full split: `system/tenant-identity-drift-scoping-2026-09-09.md` addendum. _(added 2026-09-09)_
+- [ ] **7 of the ~31 live-affected tables weren't found via `CREATE TABLE` grep in eq-shell or eq-field** (`job_numbers`, `nominations`, `people_notes`, `supervisor_notes`, `tender_phases`, `team_members`, `teams`) — possibly a third out-of-band-table instance (same class as `audit_log`/`app_config`), possibly a grep miss. Unresolved. _(added 2026-09-09)_
+
+---
+
 ## eq-solves-service: cross-tenant roster leak found and fixed — every canonical-roster lookup silently defaulted to SKS (2026-09-09)
 *Surfaced during a research pass scoping a suite-wide tenant-identity-drift doc in eq-context. `lib/canonical-members.ts` defaulted an unset tenant slug to `'sks'`, and 19 call sites across 15 files called the roster functions bare (no tenant argument) — assignee dropdowns, notification recipients (incl. the pre-visit-brief cron), report "tested by"/"assigned to" names, the audit log, and the admin user roster all silently rendered SKS's staff regardless of the actual signed-in tenant. Independently re-verified against live code before touching anything — grep found the same 19 sites, same lines, the handed-in report named. Logged as [SEC-76](../../ops/security-register.md).*
 
