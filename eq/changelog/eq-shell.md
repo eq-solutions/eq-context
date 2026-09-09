@@ -9,15 +9,9 @@ status: live
 
 # eq-shell changelog
 
-## 2026-09-09 (PR #1831 MERGED + LIVE — labour-hire batch-intake portal copy simplified)
-- Public labour-hire portal's "A batch" tab intro line (`src/portal/LabourHirePortal.tsx`)
-  dropped a rhetorical-question opener ("Got an email covering several people at once?"), kept
-  the "lands with `{tenant}` for review before anyone is contacted" assurance. Copy-only, no
-  logic changed.
-- Prompted by an audit of the labour-hire batch-zip intake feature's readiness for a new
-  `madagins` tenant — feature itself confirmed working and already production-proven (against
-  real Madagins-agency zips, under the SKS tenant); the new tenant is not yet ready (separate,
-  unrelated gap — see `eq/pending/eq-field.md` and `eq/pending/eq-shell.md`).
+## 2026-09-09 (PR #1829 MERGED + DISPATCHED LIVE — sites.deleted_at backfilled on sks and eq)
+- `app_data.sites.deleted_at` existed on ehow (sks) only — applied out-of-band at some point, never captured as a tracked migration — so it was missing on every other tenant plane, breaking `push-document-audience.ts`'s site-lookup queries there. Migration `0308_sites_deleted_at.sql` (idempotent `ADD COLUMN IF NOT EXISTS`) closes the gap. No application code changed; the existing queries were always correct once the schema actually matched them everywhere.
+- Merged by Royce, dispatched live this session via `tenant-migrate.yml`, scoped individually to `sks` and `eq` rather than the whole fleet — a third tenant surfaced by the dispatch's own read-only plan (`madagins`, 50 migrations behind) was deliberately left untouched pending its own decision, not swept in as a side effect. Verified post-dispatch directly against both databases: column now present on zaap, unaffected on ehow.
 
 ## 2026-09-08 (PR #1823 MERGED + LIVE — sidebar/nav extended to touch tablets up to 1024px wide)
 - Same cross-suite iPad audit as eq-service's #837. Shell's sidebar/hamburger-drawer (native pages) and icon-rail/MobileTabBar (embedded Field/Service/Cards iframe pages) only ever had a phone breakpoint and a desktop breakpoint — every iPad width rendered full desktop density under touch input.

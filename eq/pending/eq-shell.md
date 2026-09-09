@@ -15,46 +15,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: labour-hire batch-intake portal copy simplified and shipped; audited feature + madagins-tenant readiness (not ready) (2026-09-09)
-*Royce asked whether the labour-hire licence zip-intake feature works for the new `madagins`
-tenant, to simplify a wordy line of portal copy, and to audit + confirm readiness.*
+## eq-shell: two fresh Sentry errors triaged — one already had a fix in flight (caught before duplicating), one self-resolved; the real fix merged + dispatched live to sks/eq; a bigger tenant-provisioning gap found and deliberately left untouched (2026-09-09)
+*Ran /decide "next best option" against the live health digest — picked two fresh, unaddressed Sentry errors on eq-shell (EQ-SHELL-24, EQ-SHELL-25) as the highest-certainty next step given TODAY.md's GOALS are still unset. First pass on EQ-SHELL-25 was wrong: assumed `sites.deleted_at` was a phantom column and drafted a fix removing it — before committing anything, checking for existing worktrees/branches surfaced that Royce (via a Claude Code session) had already root-caused it correctly the opposite way and opened PR #1829. Discarded the wrong fix, never pushed.*
 
-- **Feature confirmed real, working, and already production-proven for SKS** — the "drop a zip,
-  it sorts the documents" batch intake (`BatchIntakePanel.tsx` + `labour-hire-portal-batch-*.ts`
-  + `_shared/labour-hire-batch.ts`): safe unzip (zip-slip hardened, size-capped), per-document
-  OCR, name/zip matching, human review before anything is created. Already battle-tested against
-  real Madagins-agency zips on 2026-08-20 (PR #1490) — for the **SKS tenant**, where "Madagins" is
-  an existing labour-hire agency with its own live portal link. **Not ready for the new, separate
-  `madagins` tenant** provisioned this morning — see `eq/pending/eq-field.md`'s "madagins tenant"
-  section (Field-schema blocker, now also carrying the missing-portal-link gap found this
-  session).
-- **Portal copy simplified and shipped**: [PR #1831](https://github.com/eq-solutions/eq-shell/pull/1831),
-  squash-merged, production confirmed live (bundle-hash change + a real click-through on
-  core.eq.solutions, not just merge-time trust) — the batch tab's intro line dropped a
-  rhetorical-question opener, kept the "lands with `{tenant}` for review" assurance.
-- **Live security finding, surfaced not fixed**: RLS is disabled on `app_data._eq_migrations` in
-  the new madagins tenant plane (`ornndtbdkxfsewspbrwk`) — flagged by Supabase's own advisor.
-  Proper fix is RLS-enabled-with-no-policy + revoke public/anon/authenticated + grant
-  service_role, added to both repos' `SERVICE_ROLE_ONLY` lists, per this repo's own governed
-  pipeline — not hand-applied. Royce's call on timing.
+- **EQ-SHELL-25 — closed.** `app_data.sites.deleted_at` existed on ehow (sks) only, applied out-of-band, never captured as a migration — missing everywhere else, breaking `push-document-audience.ts`'s 3 site-lookup queries on every other tenant. [PR #1829](https://github.com/eq-solutions/eq-shell/pull/1829) (migration `0308_sites_deleted_at.sql`, idempotent `ADD COLUMN IF NOT EXISTS`) merged by Royce. Dispatched live this session, scoped individually to `sks` and `eq` (NOT the whole fleet — see below) via `tenant-migrate.yml`. Verified directly against both databases post-dispatch: `deleted_at timestamptz` now present on zaap; unaffected on ehow.
+- **EQ-SHELL-24 — no action needed.** `app_data.canonical_events` table-not-found error, single occurrence, tenant "madagins" (`ornndtbdkxfsewspbrwk`) — confirmed live the table exists now. Reads as a one-off timing race during that tenant's provisioning window (the 15-min `quote-job-consumer` scheduler querying before the schema/PostgREST cache had caught up), not a standing bug.
+- **Deliberately did NOT fleet-wide dispatch.** The read-only `plan` job (auto-run on PR #1829) showed `sks` and `eq` each had exactly the 1 expected migration pending — but **`madagins` had 50 pending, back to migration `0257`**, despite being described as a tenant provisioned "the same day." A blank-slug dispatch would have silently applied 49 other, unreviewed historical migrations (security/RLS/role-gate changes among them) to a live tenant as a side effect of fixing one column. Dispatched to `sks` and `eq` individually instead; `madagins` left untouched on purpose.
+- **Real, separate finding, not fixed here**: `madagins` being 50 migrations behind on what was framed as a brand-new signup suggests new-tenant provisioning isn't actually baselining onto current schema. Very likely overlaps with `fix/tenant-provisioning-pg-cron` — a different, uncommitted, in-progress branch (worktree `eq-shell-wt-pgcron`) already touching `provision-tenant-background.ts`/`tenant-routing.ts` with its own new migration draft — not touched, since it's someone else's live work-in-progress.
 
-**Notes:**
-- **Local dev server can't render the app at all right now** — `netlify dev` hits a real,
-  reproducible CSP-vs-Vite conflict: the app's own CSP `script-src` header blocks Vite's
-  dev-mode inline preamble script ("@vitejs/plugin-react can't detect preamble"), blanking the
-  entire SPA on load. Unrelated to this session's change — confirmed via the real Netlify
-  deploy-preview build instead, which rendered correctly. Blocks any local click-testing in this
-  repo right now, not just this feature.
-- **GitHub MCP connector can't reach this repo, or any private eq-solutions repo** — confirmed
-  via `search_repositories org:eq-solutions`, which only returns the org's public repos. Worked
-  around via `gh` CLI (fully authorized) for this session's push/PR/merge. Full detail + fix path
-  in `eq/pending/cross-repo.md`'s new entry.
-
-- [ ] **RLS gap on madagins's `app_data._eq_migrations`** — needs the governed-pipeline fix
-  above; Royce's call on timing. _(added 2026-09-09)_
-- [ ] **Local dev server CSP-vs-Vite-preamble conflict** — blocks local click-testing entirely
-  until fixed; root cause not yet investigated (likely needs a dev-mode CSP carve-out or a
-  nonce/hash for Vite's preamble script). _(added 2026-09-09)_
+**Deferred:**
+- [ ] **`madagins`'s 50-migration backlog** — needs a deliberate decision (batch-dispatch after review? tie into the pg_cron provisioning fix once that lands?), not a default fleet-wide catch-up. Whoever picks up `fix/tenant-provisioning-pg-cron` should see this. _(added 2026-09-09)_
+- [ ] **Migration number collision**: `fix/tenant-provisioning-pg-cron`'s own untracked `0308_legacy_public_schema_baseline.sql` will collide with the now-merged `0308_sites_deleted_at.sql` — needs renumbering to 0309+ whenever that branch is pushed/PR'd. _(added 2026-09-09)_
 
 ---
 
@@ -111,7 +82,7 @@ tenant, to simplify a wordy line of portal copy, and to audit + confirm readines
 ---
 
 ## eq-shell: Sentry sweep — EQ-SHELL-22/1P (stale-chunk crash tied to the 09-08 merge train), EQ-SHELL-1R (Field handoff timeout points at eq-field, handoff prompt written), EQ-SHELL-T/V investigation continued — new repro context found, still unresolved (2026-09-09)
-*Royce asked for a Sentry sweep of eq-shell's unresolved issues (org `eq-solutions`), then asked for a portable session-brief for EQ-SHELL-T/V, then to run it. Re-added below after this whole section was silently overwritten between its first write and now — a concurrent session's own `safe_commit.py` push was built from a copy of this file predating that first write; the script replaces named-file bytes wholesale, it does not content-merge (its own docstring says as much). Flagged as a task at the time — fixed same day, see the closing bullet below.*
+*Royce asked for a Sentry sweep of eq-shell's unresolved issues (org `eq-solutions`), then asked for a portable session-brief for EQ-SHELL-T/V, then to run it. Re-added below after this whole section was silently overwritten between its first write and now — a concurrent session's own `safe_commit.py` push was built from a copy of this file predating that first write; the script replaces named-file bytes wholesale, it does not content-merge (its own docstring says as much). Flagged as a task, not fixed inline: `safe_commit.py` has no same-file concurrent-edit detection.*
 
 - **EQ-SHELL-22 + EQ-SHELL-1P are one event, not two** (same trace_id, same user — may.ung@sks.com.au, Firefox iOS/iPhone — same timestamp 2026-09-08T10:38:36Z / 20:38:36+10:00): `'text/html' is not a valid JavaScript MIME type` mid-`React.lazy()` chunk load on `/sks/field`. Timing correlates almost exactly with a 9-merge run to `main` that evening (19:10-21:06+10:00, each auto-deploying in 2-4s) — the crash lands between merges `a1f4a89d8` (20:24:25) and `dfac72680` (20:39:12). One user, one occurrence, self-resolves on refresh. **Root cause now confirmed, not just inferred**: `ChunkErrorBoundary` (App.tsx) + its shared matcher `isChunkLoadErrorMessage()` (`lib/chunkReload.ts`) already exist for exactly this class of failure (self-heals via silent reload, budget 2 attempts) — but the matcher only recognizes Chrome/Safari's wording ("dynamically imported module" / "importing a module script failed"), not Firefox's distinct wording for the same underlying failure ("'text/html' is not a valid JavaScript MIME type"). So on Firefox this falls through to the boundary's `stuck-crash` branch (a genuine-render-crash assumption) instead of self-healing — reported as `render-crash` (matches EQ-SHELL-1P's title exactly) with the raw TypeError captured (matches EQ-SHELL-22). Same bug class as EQ-SHELL-10 (2026-07-29, bare "Failed to fetch" false-positive) and EQ-SHELL-1S (2026-08-23, Safari's capitalized wording) — both already fixed by extending this same matcher. The fix here is the same shape: add Firefox's wording to `isChunkLoadErrorMessage()`. Small, well-precedented, low-risk — a one-line-class change, not a new handler. Not built — Royce's call, see open item below.
 - **EQ-SHELL-1R ("EQ Field handoff auto-recovery (timeout)") — shell side is healthy, the stall is downstream.** Breadcrumb trail (`mint-start` → `mint-ok`, 200, 947ms server time, `ttl_s:60` → `src-set` → 30s `watchdog` fires waiting for the iframe to report loaded → `recover`, reason `timeout`) shows the shell-side token mint completing in under a second every time. Last occurrence 2026-09-07T22:28+10:00 — *after* all three of that day's auth-stall fixes (`a68bca41d`, `6ee65e2b8`, `953de61a0`), so it's a distinct problem, not a recurrence of what those fixed. 3 occurrences since 2026-08-18, 2 users, substatus regressed. Handoff prompt for an eq-field-rooted session given to Royce 2026-09-09 — not yet run.
@@ -121,7 +92,6 @@ tenant, to simplify a wordy line of portal copy, and to audit + confirm readines
 - [x] **EQ-SHELL-22/1P fix** — shipped same day by a different concurrent session, [PR #1826](https://github.com/eq-solutions/eq-shell/pull/1826) (`61b06a02`), merged 2026-09-09T07:00 — *before* this line was ever marked done here. A later session picked this exact item from this file (still showing open) and re-verified it as still-current before scoping a rebuild; caught only because it re-read the live file (`src/lib/chunkReload.ts`) before writing any code, found the matcher and its test already covering the Firefox MIME-type case verbatim. No duplicate work landed — flagging the staleness gap itself, not just the fix. _(caught 2026-09-09)_
 - [ ] **EQ-SHELL-1R needs an eq-field-rooted session** — handoff prompt given to Royce 2026-09-09, not yet run. _(added 2026-09-09)_
 - [ ] **EQ-SHELL-T/V — try replay `ee5ceacc486f425fb42efb3115a3e219` next**, not just the Sep-4 one already named in the 09-08 entry — its 3-fetches-in-4s pattern on the role_code login URL is a tighter, more specific repro than "5 in ~10s," and might be easier for a person to watch directly and spot what's issuing them. _(added 2026-09-09)_
-- [x] **`safe_commit.py`'s same-file concurrent-edit gap (the exact mechanism that clobbered this section, above) fixed** — a separate eq-context session built and live-tested a `check_upstream_divergence()` guard: before copying the caller's bytes into its scratch worktree, it now compares origin/main's current copy of each requested file against what the caller's own HEAD had for that path, and aborts with a diff instead of silently overwriting if they've diverged (`--force` remains for a deliberate wholesale replace). Landed eq-context `ac46bae8`; logged as `system/failures.md` F17. _(fixed 2026-09-09)_
 
 ---
 
