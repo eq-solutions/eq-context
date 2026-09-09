@@ -9855,3 +9855,37 @@ list.
 - [x] ~~Stale duplicate migration files (`0146`, `0146b`)~~ — Royce: "remove them." Removed — eq-service PR #839, merged by Royce via the dashboard (2 pre-existing, unrelated failing checks — a chronic `npm audit` dependency finding and this repo's chronically-broken integration-test suite — blocked a normal/`--admin` merge from this session; `tsc + next build`, the real gate, was clean). Live-verified after merge: the production deploy that went out (`e5575d8`, a different, later PR) has `a4c2692` as an ancestor, confirmed via `git merge-base --is-ancestor`, so this removal is live on `service.eq.solutions` today, not just merged. Ledger rows in `service._eq_migrations` left untouched (verified `migrate-service.mjs` never cross-checks that direction — no CI/apply-pipeline impact). Almost landed the removal commit on the wrong branch (this shared checkout's HEAD had been silently switched to `fix/sec76-canonical-members-tenant-leak` by the concurrent session) — caught before pushing, nothing of that session's was touched, cherry-picked onto a clean branch off `main` instead.
 
 ---
+
+## eq-field: `?tenant=demo` silently fell back to the host org — FIXED, merged, live (PR #931, v3.5.687, 2026-09-06) (rotated 2026-09-09 — open items remain in eq-field.md)
+
+- [x] **Root cause + fix:** the canonical-driven tenant-resolution rewrite made every `?tenant=` override require a matching canonical `organisations` row — but `'demo'` is a pure in-memory sandbox that was never meant to have one, so the override silently no-opped and fell back to the host-matched org (`eq`, on the eq host). `_loadCanonicalConfig()` now special-cases `'demo'` before the lookup.
+- [x] **Second same-shape bug, caught by smoke-testing the fix's own preview before merge:** `module_entitlements` also built its fetch URL from `org.id` unconditionally, which is `null` for the synthetic demo org — 400s against PostgREST every demo session. Skipped outright, same pattern as the first fix.
+- [x] **Third issue, caught by smoke-testing again after that second fix:** re-pushing changed content under the already-used `v3.5.686` tag left the Service Worker permanently serving the pre-fix script to every tab at that origin (`Cache-Control: immutable` + origin-wide SW scope) — confirmed directly via Cache Storage, not assumed. Retargeted the whole PR to `v3.5.687` before merge rather than reuse the poisoned tag.
+- [x] **Verified live on `field.eq.solutions` itself, not just the deploy preview** — clean load, no 400, entitlements fetch correctly skipped. No Core-only sandbox caveat applies here (`?tenant=demo` needs no login).
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-09 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-09 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-09 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-09 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-09 — open items remain in eq-field.md)
+
+
+---
