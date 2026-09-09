@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 11:17 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 11:23 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 11:07 UTC → 2026-09-09 11:17 UTC)
+## Since last refresh (2026-09-09 11:17 UTC → 2026-09-09 11:23 UTC)
 
-- Merged: eq-shell [#1854](https://github.com/eq-solutions/eq-shell/pull/1854) fix(check-tenant-drift): fail loud when a real tenant has no
-- Merged: eq-shell [#1843](https://github.com/eq-solutions/eq-shell/pull/1843) fix(migrations): guard 0257's REVOKE against a from-scratch 
-- Merged: eq-shell [#1839](https://github.com/eq-solutions/eq-shell/pull/1839) fix(control-plane): keep tenants mirrored from organisations
-- Merged: eq-shell [#1838](https://github.com/eq-solutions/eq-shell/pull/1838) fix(field): add madagins to the Field tenant allowlist + pic
-- Merged: eq-shell [#1837](https://github.com/eq-solutions/eq-shell/pull/1837) fix(sidebar): open workspace switcher menu upward, not down 
-- Merged: eq-shell [#1835](https://github.com/eq-solutions/eq-shell/pull/1835) fix(security): enable RLS on app_data._eq_migrations (all te
-- Merged: eq-shell [#1833](https://github.com/eq-solutions/eq-shell/pull/1833) fix(security): enable RLS on 4 dead wipe_backup tables (ehow
-- Merged: eq-shell [#1830](https://github.com/eq-solutions/eq-shell/pull/1830) test(staff): add coverage for staff-resourcing's pure rollup
-- ⚠ Needs you: 8 → 9 (new items)
+- Merged: eq-shell [#1861](https://github.com/eq-solutions/eq-shell/pull/1861) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1860](https://github.com/eq-solutions/eq-shell/pull/1860) fix(admin): add Madagins to the Field workspace dropdown
+- Merged: eq-shell [#1858](https://github.com/eq-solutions/eq-shell/pull/1858) feat(staff): backdate signal on conversations, Casual attach
+- Merged: eq-shell [#1844](https://github.com/eq-solutions/eq-shell/pull/1844) feat(workers): merge Invite worker + Connect existing into o
+- Merged: eq-shell [#1841](https://github.com/eq-solutions/eq-shell/pull/1841) docs(env): document VITE_FIELD_URL, the one undocumented req
+- Merged: eq-shell [#1834](https://github.com/eq-solutions/eq-shell/pull/1834) fix(provisioning): enable pg_cron on new tenant projects
+- Merged: eq-field [#970](https://github.com/eq-solutions/eq-field/pull/970) fix(sites,managers): Shell-ownership gate keys off CORE_ONLY
+- Merged: eq-field [#969](https://github.com/eq-solutions/eq-field/pull/969) v3.5.712 — Documents to Sign: fix inline PDF viewer's fake-w
 
 ## ⚠ Needs you (9)
 
@@ -56,9 +55,9 @@ _…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 0d |
+| eq-shell | ✓ success | 0d ago | 0 | — |
 | eq-solves-service | ✗ failure | 0d ago | 6 | 4d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✗ failure | 0d ago | 0 | — |
 
@@ -86,6 +85,9 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-09 | eq-shell | [#1861](https://github.com/eq-solutions/eq-shell/pull/1861) chore(intake): auto re-vendor eq-intake/eq-platform |
+| 2026-09-09 | eq-shell | [#1860](https://github.com/eq-solutions/eq-shell/pull/1860) fix(admin): add Madagins to the Field workspace dropdown |
+| 2026-09-09 | eq-shell | [#1858](https://github.com/eq-solutions/eq-shell/pull/1858) feat(staff): backdate signal on conversations, Casual attach-on-f |
 | 2026-09-09 | eq-shell | [#1854](https://github.com/eq-solutions/eq-shell/pull/1854) fix(check-tenant-drift): fail loud when a real tenant has no CANO |
 | 2026-09-09 | eq-shell | [#1859](https://github.com/eq-solutions/eq-shell/pull/1859) docs(shared): explain the active=false/is_personal overlap in get |
 | 2026-09-09 | eq-shell | [#1857](https://github.com/eq-solutions/eq-shell/pull/1857) fix(licences): resolve staff_id per-tenant, not via workers.staff |
@@ -98,18 +100,15 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1848](https://github.com/eq-solutions/eq-shell/pull/1848) feat(workers): redesign the Add worker screen (follow-up to #1844 |
 | 2026-09-09 | eq-shell | [#1849](https://github.com/eq-solutions/eq-shell/pull/1849) fix(migrations): scope 0311 to ehow only |
 | 2026-09-09 | eq-shell | [#1847](https://github.com/eq-solutions/eq-shell/pull/1847) fix(entitlements): allowlist modules in upsertAppEntitlements |
-| 2026-09-09 | eq-shell | [#1845](https://github.com/eq-solutions/eq-shell/pull/1845) fix(migrations): add missing UNIQUE constraint on licences.cards_ |
-| 2026-09-09 | eq-shell | [#1842](https://github.com/eq-solutions/eq-shell/pull/1842) fix(provisioning): recover and land the app_data legacy-baseline  |
-| 2026-09-09 | eq-shell | [#1840](https://github.com/eq-solutions/eq-shell/pull/1840) fix(dev): allow Vite's React-refresh preamble under the CSP |
-_Showing 15 of 80 · full record in [sessions/](sessions/)_
+_Showing 15 of 79 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (286 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (289 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (230 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (231 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (71 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
-- **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
+- **eq-solves-intake** (20 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
@@ -137,11 +136,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1673 | 228 / 65 | 9 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1689 | 229 / 65 | 10 | 78 |
 | [eq-cards](eq/pending/eq-cards.md) | 348 | 47 / 16 | 0 | 8 |
-| [eq-field](eq/pending/eq-field.md) | 1343 | 192 / 41 | 42 | 48 |
+| [eq-field](eq/pending/eq-field.md) | 1355 | 193 / 41 | 42 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 413 | 51 / 21 | 4 | 20 |
-| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 164 | 13 / 6 | 2 | 17 |
+| [eq-solves-intake](eq/pending/eq-solves-intake.md) | 182 | 14 / 6 | 2 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 46 | 3 / 1 | 0 | 3 |
@@ -195,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 11:17 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 11:23 UTC._
