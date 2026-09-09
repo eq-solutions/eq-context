@@ -65,6 +65,8 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
+- #967 feat: auto-create the ~18-object prerequisite block for new-tenant provisioning
+- #966 fix: harden tenant-provision generator against 4 live collision classes
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -78,6 +80,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1844 feat(workers): merge Invite worker + Connect existing into one door
+- #1842 fix(provisioning): recover and land the app_data legacy-baseline migration (0311)
 - #1840 fix(dev): allow Vite's React-refresh preamble under the CSP
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -100,8 +104,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | new | 2026-09-09 |
-| eq-field | ready | 2026-09-09 |
+| eq-shell | building | 2026-09-09 |
+| eq-field | prepared | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
