@@ -76,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1866 fix(security): add authenticated read policy for zaap's organisations table
+- #1867 feat(mobile): add workspace switcher to the mobile account sheet
 - #1865 Rebuild Add worker to the Claude Design spec
 
 ---
