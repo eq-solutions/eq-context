@@ -49,6 +49,23 @@ divergence check only looks at paths requested on this invocation, and only
 against the caller's own HEAD as the baseline, not a full three-way merge --
 it catches "the file moved upstream since I last read it," not every possible
 conflict shape.
+
+Before even that, it checks whether THIS SCRIPT's own on-disk copy is current
+(see check_script_currency). git fetch (above) only refreshes the origin/main
+*ref* -- it does not update this worktree's checked-out files, so a caller
+running from a worktree/checkout that predates a fix to this file silently
+executes the OLD logic, with none of the newer protections, no matter how
+current origin/main itself is. See system/failures.md F17 (second
+occurrence, 2026-09-09): a shared checkout sat with local HEAD two hours
+stale relative to the check_upstream_divergence fix landing, and every
+safe_commit.py call from a checkout in that state ran the pre-fix,
+no-divergence-check version for the rest of that day -- silently, with no
+error, because nothing before this addition ever verified the guard itself
+was the current one. This new check has the same blind spot in reverse: it
+can only warn a caller whose own copy is already new enough to contain it.
+It cannot retroactively protect a call already running code that predates
+it -- no in-script check can. Treat a --force past THIS check as a sign the
+worktree needs a real `git pull`/merge, not just a one-off override.
 """
 from __future__ import annotations
 
@@ -97,6 +114,44 @@ def resolve_files(files: list[str], caller_cwd: Path, root: Path) -> dict[str, b
         rel = src.resolve().relative_to(root.resolve())
         out[str(rel).replace("\\", "/")] = src.read_bytes()
     return out
+
+
+def check_script_currency(root: Path, force: bool) -> bool:
+    """Compare THIS script's own on-disk bytes against origin/main's current copy
+    of itself (already fetched by the time this runs). A caller executing an
+    outdated copy of safe_commit.py gets none of the protection any later fix --
+    including check_upstream_divergence itself -- ever added, regardless of how
+    current origin/main is, because nothing re-execs this process against newer
+    code just because the origin/main *ref* moved. See system/failures.md F17
+    (second occurrence): a checkout sat two hours stale relative to the
+    check_upstream_divergence fix and silently ran the old, no-guard version for
+    the rest of that day. This check cannot protect a caller already running a
+    copy that predates it -- that is a structural limit of any in-script check,
+    not a bug in this one -- but it does mean staleness is no longer silent for
+    anyone whose copy is new enough to reach this line."""
+    self_path = Path(__file__).resolve()
+    try:
+        self_rel = str(self_path.relative_to(root.resolve())).replace("\\", "/")
+    except ValueError:
+        return True  # not running from inside this checkout at all -- nothing to compare
+
+    upstream = show_at_ref(root, "origin/main", self_rel)
+    if upstream is None or self_path.read_bytes() == upstream:
+        return True
+
+    print(
+        f"SAFETY CHECK FAILED: your own copy of {self_rel} is stale relative to "
+        "origin/main -- the checks in the rest of THIS run (including "
+        "check_upstream_divergence below) are whichever old logic happens to be on "
+        "disk here, not necessarily what's actually live. Sync this worktree first "
+        "(git pull / fetch+merge origin/main) and re-run, or pass --force to proceed "
+        "on the old code anyway.",
+        file=sys.stderr,
+    )
+    if force:
+        print("\n--force given -- proceeding on a stale copy of this script anyway.", file=sys.stderr)
+        return True
+    return False
 
 
 def check_upstream_divergence(root: Path, file_contents: dict[str, bytes], force: bool) -> bool:
@@ -160,8 +215,8 @@ def main() -> int:
     )
     parser.add_argument(
         "--force", action="store_true",
-        help="skip the upstream-divergence check and overwrite origin/main's current "
-        "copy of the requested file(s) regardless",
+        help="skip the script-currency and upstream-divergence checks and overwrite "
+        "origin/main's current copy of the requested file(s) regardless",
     )
     parser.add_argument(
         "--max-retries", type=int, default=5,
@@ -178,6 +233,9 @@ def main() -> int:
 
     print("Fetching origin/main...")
     run(["git", "fetch", "origin", "main", "--quiet"], cwd=root)
+
+    if not check_script_currency(root, args.force):
+        return 1
 
     if not check_upstream_divergence(root, file_contents, args.force):
         return 1
