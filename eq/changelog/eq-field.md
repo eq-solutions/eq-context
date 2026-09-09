@@ -3409,3 +3409,17 @@ Reviewed all 8 open eq-field Sentry issues. 3 real bugs found and fixed: `eqhExt
 - Reclassified `app_data.teams`/`team_members` in `PREREQUISITE_OBJECTS` from `'lower'` (assumed eq-shell canonical) to `'high'` concern — confirmed live to be eq-field's own out-of-band objects too.
 - Does NOT change: the remaining `'lower'`-concern `app_data.*` canonical objects (`staff`, `sites`, `customers`, `field_people`, etc.) still require eq-shell's canonical dispatch to have run first, and this script still has no DB access to verify that.
 - Verified: regenerated output against madagins's own real IDs and diffed the resulting DDL (comments excluded) against the actual file Royce ran live — 133 lines each side, zero differences.
+
+## 2026-09-09 (PR #890 MERGED + LIVE, v3.5.709 — Copy Last Week save-failure fix)
+- `copyLastWeek()` (`scripts/batch.js`) wrapped each per-person save in its own `try/catch` that swallowed the failure, so the outer `Promise.all()` could never see a rejection — the "some saves failed" toast was dead code, and a copy that failed every write still showed "saved ✓". Removed both inner catches to match the already-correct sibling pattern in `applyBatch()` (Batch Fill). No new logic added, structural removal only.
+- Previously built and CI-green but deliberately held (see 2026-09-02 PostHog usage-review entry); re-reviewed and approved for merge this session.
+
+## 2026-09-09 (PR #895 MERGED + LIVE, v3.5.710 — 5 of 6 Apprentices audit follow-ups)
+- Ownership-check bypass: `addCustomCompetency()`/`removeCustomCompetency()` (`apprentices.js`) wrote straight to Supabase — the only apprentice write never migrated to the ownership-checked `apprentice-write.js` gateway from an earlier security fix. New Tier-1, manager-only action `edit-custom-competencies`.
+- 3 files (`apprentices-feedback-forms.js`, `apprentices-skills-passport.js`, `tafe.js`) migrated from the coarse `isManager` role check to the real per-person `canManageApprentices()` grant, matching `journal.js`.
+- Cleanup: removed apprentices.js's dead duplicate `_isSelfProfile()` (journal.js's copy always won at call time); fixed Skills Passport's period-switch fast path (was gated on a CSS class nothing ever set); 3 form fields switched to the shared `.form-input`/`.form-select` classes.
+- **Not shipped**: a 6th fix (TAFE-Holiday suppression in `timesheets-rules.js`'s `dayStatus()`) was dropped during this PR's rebase — [PR #909](https://github.com/eq-solutions/eq-field/pull/909)/v3.5.667 had independently built the identical wiring while this branch sat open, plus a materially larger feature around it (real editable TAFE/Leave autofill, CSV export, dark-cell tooltips). Kept #909's live version rather than ship a redundant duplicate.
+
+## 2026-09-09 (PR #930 MERGED + LIVE, v3.5.711 — Dashboard Headcount tiles show "N today")
+- Direct/Apprentices/Labour Hire Headcount tiles gain a live "N today" (or "N Fri" on a weekend) subline, sourced from the same `get_site_headcount_for_map` RPC the Map tab already calls — closes the confusion between the Map's per-site numbers and the Dashboard's org-wide roster count (previously only explained via a v3.5.655 tooltip).
+- One documented edge case, not fixed: an orphaned schedule row (points at a person record that no longer resolves) counts toward the Map's numeric headcount but has no name to list, so this tile's name-derived count could be a person or two short in that case. Also inherits the Map's existing gap that a site with no saved location drops its people from both totals.

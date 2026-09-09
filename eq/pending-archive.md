@@ -9773,3 +9773,16 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 **Notes:** Full session detail: `sessions/2026-09-09.md`. Rotated straight to archive at session close (zero open items in the section).
 
 ---
+
+## eq-field: 3 stale open PRs triaged and merged — Copy Last Week fix, Apprentices follow-ups, Dashboard headcount tiles (PRs #890/#895/#930, v3.5.709→v3.5.711, 2026-09-09)
+*Follow-on to decision #13's role-canon work, same session: reviewed the 3 oldest still-open eq-field PRs and rebased/verified/merged all three, in this order.*
+
+- [x] **[PR #890](https://github.com/eq-solutions/eq-field/pull/890), v3.5.709** — Copy Last Week could report "saved" even when the writes silently failed (dead-code toast, two swallowing `try/catch`es removed). Superseded the 2026-09-02 "deliberately not merged" decision in `eq/pending/eq-field.md` once re-reviewed and approved this session. Smoke-tested on the deploy preview (demo tenant): correct "No recent week to copy from" toast, no console errors.
+- [x] **[PR #895](https://github.com/eq-solutions/eq-field/pull/895), v3.5.710** — 5 of its original 6 Apprentices audit follow-ups (ownership-check bypass on custom-skill writes, 3 files' coarse permission gates, dead `_isSelfProfile()` duplicate, Skills Passport's dead fast-path, form-field styling). The 6th (TAFE-Holiday suppression in `dayStatus()`) was dropped during rebase: [PR #909](https://github.com/eq-solutions/eq-field/pull/909)/v3.5.667 had independently shipped the identical wiring (plus more — real editable autofill rows, CSV export) while this branch sat open. Kept #909's live version, not a duplicate.
+- [x] **[PR #930](https://github.com/eq-solutions/eq-field/pull/930), v3.5.711** — Dashboard Direct/Apprentices/Labour Hire tiles gain a live "N today" subline, sourced from the same RPC the Map tab uses. Click-tested on the deploy preview; demo tenant's roster has zero assignments this week so every tile correctly reads "0 today" — cross-checked against Weekly Roster to confirm that's the real seed-data state, not a broken/defaulted value.
+- [x] **All three needed 2-3 rebases each** past a fast-moving `main` — a concurrent session's tenant-provision-generator hardening work ([PR #964](https://github.com/eq-solutions/eq-field/pull/964)/[#965](https://github.com/eq-solutions/eq-field/pull/965)/[#966](https://github.com/eq-solutions/eq-field/pull/966)/[#967](https://github.com/eq-solutions/eq-field/pull/967)) landed mid-review each time. Only real collision was `docs/reflection-log.md`'s append point (resolved by keeping both sides' entries in order, no content lost) — zero file overlap with any of the three PRs' actual code changes.
+- [x] Production confirmed live at v3.5.711 (`field.eq.solutions/sw.js` curl-verified post-merge).
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`. Rotated straight to archive at session close (zero open items in the section).
+
+---
