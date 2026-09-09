@@ -15,6 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: PR #1834 merged clean but the deploy pipeline itself is broken — 2 independent mechanisms failing, 2nd occurrence today (2026-09-09)
+
+- **Merge landed, deploy did not.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit; confirmed directly against GitHub's deployments API, not assumed from the merge alone.
+- **Not a one-off — the SAME symptom hit PR #1826 earlier today** (per `eq/sprints/2026-09-09-eq-shell-sentry-sprint.md` item 3, still unexplained there). This is the 2nd confirmed occurrence in one day.
+- **The documented workaround from the 1st occurrence (manual deploy via the Netlify MCP) also failed** — twice, identical `zipAndBuild: 500 Internal Server Error` from Netlify's own upload endpoint, no partial/bad deploy left behind either time.
+- **Ruled out**: a platform-wide incident (netlifystatus.com: all green, Build Pipeline "Operational," nothing reported today) and a classic GitHub webhook misfire (none configured on this repo at all — `GET /hooks` returns `[]` — confirms the integration runs through Netlify's GitHub App, whose delivery logs need app-level credentials this session doesn't have).
+- **Points at this site's specific GitHub App connection**, not the code, not a platform outage. `core.eq.solutions` was still correctly serving the prior commit throughout — nothing broken live, just not current.
+
+- [ ] **Check Site settings → Build & deploy → Git provider in the Netlify dashboard** (or re-link the GitHub App) — needs your login, couldn't be done from this session. Two clean deploy mechanisms failing identically in one day is a real, not cosmetic, gap. _(added 2026-09-09)_
+- [ ] **Once fixed, confirm `core.eq.solutions` is actually serving `d9d8c89a` or later** before treating PR #1834 as live. _(added 2026-09-09)_
+
+---
+
 ## eq-shell: tenant creation doesn't actually apply the real schema, and `madagins` got further corrupted by a wrongly-run `--bootstrap` (2026-09-09)
 *Royce was live trying to create a new tenancy and asked "what would you do if you were me" once it became obvious the process wasn't working — multiple sessions already open on this. Traced the automated "create tenant" flow end to end rather than guessing.*
 
@@ -27,6 +40,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **`madagins`'s ledger needs correcting before any real apply can succeed on it** — the 314 falsely-stamped rows have to be cleared/reset first, or every future apply attempt will keep trusting them and skipping real work. Not done here — Royce's call on timing/ownership, and who ran the original bootstrap (and why) is still unknown. _(added 2026-09-09)_
 - [ ] **Whoever owns `fix/tenant-provisioning-pg-cron` should see this write-up** — it's the same root cause their branch is already touching. _(added 2026-09-09)_
 - [ ] **`--bootstrap`'s footgun potential is now confirmed twice** (eq-field per its own doc comment, now eq-shell/madagins) — worth a guard on the script itself (e.g. refuse to bootstrap a tenant whose `public`/`app_data` tables don't already look populated) once the immediate fix lands, so a third occurrence needs an explicit override instead of a plain flag. Not built, not requested — future scope only. _(added 2026-09-09)_
+- [ ] **Correction: `fix/tenant-provisioning-pg-cron`'s pg_cron slice merged ([PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834)) — this section's actual root cause is still fully open.** That branch's uncommitted work was two independent fixes sharing one worktree; only the small, self-contained pg_cron-extension piece landed, deliberately split from the much larger, self-documented-as-risky legacy-schema-capture migrations (still uncommitted). Don't read the merge as "the intended real fix" from item above having landed — the actual gap this section describes (provisioning never applies the real ~308-migration schema; `madagins`'s ledger has 314 falsely-stamped rows) is untouched by it. Full detail: `eq/sprints/2026-09-09-provisioning-completeness-followup.md`. _(added 2026-09-09)_
 
 ---
 
@@ -52,13 +66,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: labour-hire batch-intake portal copy simplified and shipped; madagins-tenant readiness audit — re-landed after a same-day clobber (F17 recurrence); RLS gap confirmed fixed, local dev blocker still open (2026-09-09)
+## eq-shell: labour-hire batch-intake portal copy simplified and shipped; madagins-tenant readiness audit — re-landed after a same-day clobber (F17 recurrence); RLS gap + local dev blocker still open (2026-09-09)
 *Original section (commit `b83f9524`, ~16:03) was wholesale-replaced within seconds by another session's own `safe_commit.py` push — the same-day F17 recurrence (`system/failures.md`). Recovered via `git show b83f9524 -- eq/pending/eq-shell.md`. Royce asked whether the labour-hire licence zip-intake feature works for the new `madagins` tenant, to simplify a wordy line of portal copy, and to audit + confirm readiness.*
 
 - **Feature confirmed real, working, and already production-proven for SKS** — the "drop a zip, it sorts the documents" batch intake (`BatchIntakePanel.tsx` + `labour-hire-portal-batch-*.ts` + `_shared/labour-hire-batch.ts`). Already battle-tested against real Madagins-agency zips on 2026-08-20 (PR #1490) — for the **SKS tenant**, where "Madagins" is an existing labour-hire agency with its own live portal link. **Not ready for the new, separate `madagins` tenant** provisioned that morning — blocked on the same tenant-provisioning gap tracked in the "tenant creation doesn't actually apply the real schema" section above.
 - Portal copy simplified and shipped: [PR #1831](https://github.com/eq-solutions/eq-shell/pull/1831), squash-merged, confirmed live (bundle-hash change + a real click-through on core.eq.solutions, not just merge-time trust).
 
-- [x] **RLS gap on madagins's `app_data._eq_migrations`** (project `ornndtbdkxfsewspbrwk`) — confirmed fixed, live: `rls_enabled=true`, grants restricted to `postgres`/`service_role` only (no `anon`/`authenticated`), and the table doesn't appear anywhere in the Supabase security advisor's current output — not even the benign "RLS Enabled No Policy" INFO tier the other 11 similarly-locked-down tables on this project get, since it has no external-facing grant for that linter to flag. Someone closed this since the original ~16:03 finding; not traced to a specific PR or migration. Row count is now 364 (was 314 at original discovery) — that's the separate, still-open ledger-corruption issue in the "tenant creation..." section above, unaffected by this fix. _(added 2026-09-09, restored 2026-09-09, confirmed fixed 2026-09-09)_
+- [ ] **RLS gap on madagins's `app_data._eq_migrations`** (project `ornndtbdkxfsewspbrwk`) — Supabase advisor flagged RLS disabled on this table (anon-exposed). Same table the "tenant creation..." section above independently found holding 314 falsely-stamped ledger rows from the `--bootstrap` misuse — likely two symptoms of the same under-provisioned tenant, but access-control and ledger-integrity are separate fixes; this one needs its own governed-pipeline dispatch (RLS-enabled-with-no-policy + revoke public/anon/authenticated + grant service_role, added to both repos' `SERVICE_ROLE_ONLY` lists) regardless of how the ledger gets corrected. No evidence of a fix as of this restore, but re-verify live before acting — madagins's schema state has changed hands and shape several times today. Royce's call on timing. _(added 2026-09-09, restored 2026-09-09)_
 - [ ] **Local dev server CSP-vs-Vite-preamble conflict** — `netlify dev` blanks the entire SPA on load; the app's CSP `script-src` header (`netlify.toml`) blocks Vite's dev-mode inline preamble script (`@vitejs/plugin-react can't detect preamble`). Confirmed still present as of this restore: current `netlify.toml`'s `script-src` directive carries no `'unsafe-inline'` and no nonce/hash carve-out for dev. Blocks all local click-testing in this repo, not just this feature. Root cause not yet investigated. _(added 2026-09-09, restored 2026-09-09)_
 
 ---

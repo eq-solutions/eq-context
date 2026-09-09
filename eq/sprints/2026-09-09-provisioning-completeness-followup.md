@@ -54,11 +54,15 @@ being handled directly, per the eq-field session working that tenant today).
 `0308_legacy_public_schema_baseline.sql` (37 objects) and
 `0309_app_data_legacy_baseline_and_tenant_members.sql` (63 objects) — read in full before
 landing these, they're higher-risk than they look:
-- **Numbering collision has gotten worse, not better.** Both `0308` and `0309` are now taken on
-  `main` (`0308_sites_deleted_at.sql` PR #1829, `0309_wipe_backup_schema_rls_lockdown.sql`
-  PR #1833 — both merged today, after this pair was drafted). Renumber to `0310`/`0311` —
-  and re-check again at land time; `main` has claimed both of this pair's original numbers since
-  this doc last checked a few hours ago.
+- **Numbering collision keeps getting worse, not better — third update to this same note.**
+  `0308`, `0309`, AND NOW `0310` are all taken on `main` (`0308_sites_deleted_at.sql` #1829,
+  `0309_wipe_backup_schema_rls_lockdown.sql` #1833, `0310_eq_migrations_ledger_rls_lockdown.sql`
+  — [PR #1835](https://github.com/eq-solutions/eq-shell/pull/1835), open). Target is now
+  `0311`/`0312` — **re-check yet again at actual land time**, this file's own numbers are stale
+  within hours every time someone checks. The files themselves are still sitting under their
+  original `0308_`/`0309_` names, uncommitted, in `eq-shell-wt-pgcron` — a same-day
+  eq-context commit (`49f38487`) describes them as already "renumbered to 0310/0311," which
+  the actual worktree does not bear out; don't trust that line over a live check.
 - **Both files' own headers flag real, unresolved correctness bugs**, not just style nits: most
   RLS policies in the first file hardcode ehow's own tenant/org UUIDs as literals, so on any
   *other* tenant these ~37 objects become permanently zero-access for real users (service_role
@@ -82,7 +86,7 @@ review, or fold into whichever of the two halves above ends up touching madagins
 Depends on PR #1834 actually merging and a fresh tenant being provisioned after it (or a direct
 live check against the next provisioning run). Expect the `pg_cron` extension finding to clear.
 **Won't clear** (separate, still open — see #3): `vector`, `pg_net`. The legacy-baseline half
-(0308/0309→0310/0311) is a separate re-run trigger of its own once/if it lands.
+(0308/0309→0311/0312, re-verify at land time) is a separate re-run trigger of its own once/if it lands.
 
 ## 3. Triage the live-only inventory
 
@@ -122,7 +126,7 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 | # | Item | Status | Depends on |
 |---|---|---|---|
 | 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) open, not merged** — awaiting your go | — |
-| 1b | Legacy-baseline migrations (0308/0309, renumber to 0310/0311) | Uncommitted, needs review + your calls on the open questions above | — |
+| 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | Uncommitted, needs review + your calls on the open questions above | — |
 | 1c | madagins's 50-migration backlog | Needs your decision | — |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | 1a merged + dispatched |
 | 3 | Triage ~71 tables / ~65 functions / 2 extensions / 2 schemas | Not started | Independent — can run anytime |
