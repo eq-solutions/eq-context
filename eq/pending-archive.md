@@ -16,18 +16,6 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
-## eq-shell: workspace-switcher menu was clipped by the viewport, fixed and confirmed live (PR #1837, 2026-09-09)
-*Royce sent a screenshot of the "Switch workspace" popover cut off at the bottom of the screen and asked for it to fold up instead.*
-
-- **Root cause**: `TenantSwitcher.tsx`'s menu anchored with `top: 100%` (opens downward). Its only usage site (`HubSidebar`'s footer) always sits at the bottom of the sidebar, so the menu routinely ran off the bottom of the viewport, hiding some or all of the listed workspaces.
-- **Fix**: flipped the anchor to `bottom: 100%` so the menu opens upward instead — 2-line change, one file, confirmed `TenantSwitcher` has no other usage site.
-- **Verified via an isolated, pixel-accurate style reproduction** (before/after screenshots using the component's own exact style values), not the live authenticated app — no Shell credentials in this environment, and the real popover sits behind login.
-- **Shipped and confirmed live**: [PR #1837](https://github.com/eq-solutions/eq-shell/pull/1837), squash-merged (`5c62d73b`) after CI went fully green (typecheck/test/lint, schema drift + anon-grant + policy-lint, gitleaks, function grants preserved, migration ledger hygiene). Confirmed live on `core.eq.solutions` directly, not just trusted from the merge: watched the served JS bundle hash change (`index-DdnyHsnN.js` → `index-DrITrpD4.js`) and confirmed via `git merge-base --is-ancestor` that `5c62d73b` is in the history of the commit actually serving (`6e1793c3`, one commit ahead — PR #1838 merged immediately after and built on top of it, so still carries this fix).
-
-**Notes:** Full session detail: `sessions/2026-09-09.md`. Written directly to archive at session close — zero open items, no live `eq/pending/eq-shell.md` entry needed.
-
----
-
 ## eq-shell: PR #1834 merged clean but the deploy pipeline itself was broken — self-resolved, confirmed live (2026-09-09)
 
 - **Merge landed, deploy did not, at first.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit for a while; confirmed directly against GitHub's deployments API, not assumed from the merge alone.
@@ -9769,5 +9757,19 @@ Full query trail (PostHog funnel re-query + Supabase cohort join used to separat
 - [x] Root cause of Luke's specific report not confirmed live — no signer credentials in this environment to reproduce the exact fetch he hit. This closes a real, verified gap in the same code path; needs a retry on a fresh tab to confirm it actually resolves his report. _(added 2026-08-28)_
 - [x] Two PRs collided on the same version number this session — #821 and #822 both opened as "v3.5.592", neither merged as of 2026-08-28. This session used v3.5.593 to avoid the clash; whichever of #821/#822 merges next will need to renumber. Worth a glance next session before picking a version. _(added 2026-08-28)_
 - [x] Still genuinely root-cause-unknown — v3.5.595's telemetry hasn't caught a real event yet as of 2026-08-30. Next step depends entirely on a real Sentry event from an affected device, not further code changes. _(added 2026-08-30 — resolved 2026-09-09: Sentry EQ-FIELD-1K caught the real event, root cause confirmed as a Samsung Internet Map.getOrInsertComputed gap, fixed via PR #952)_
+
+---
+
+## eq-shell: public.tenants had drifted from public.organisations in both directions — self-syncing trigger built, merged, live (PR #1839, 2026-09-09)
+*Found mid-investigation of an unrelated EQ Field question ("could creating a new tenant affect SKS") — checking eq-canonical's `organisations` table for real led to the sibling `tenants` table, which turned out stale in both directions.*
+
+- [x] **`public.tenants` had drifted from `public.organisations`**: demo-trades/melbourne still `status='active'` despite being deleted from `organisations` 2026-06-28; madagins (provisioned earlier the same day) had no row at all. `tenants` is what `eq_cards_lookup_invite_by_phone()`/`eq_cards_find_invites_by_phone()` join against for phone-invite claiming, filtered on `status='active'` — a live-correctness gap, not cosmetic, though zero `worker_invites` rows referenced either stale org_id at the time (verified before changing anything).
+- [x] **One-time fix applied live**: archived demo-trades/melbourne, inserted the missing madagins row (Royce's explicit go — favour-perfect deliberately excluded, its `organisations` row has no hostname/supabase_url yet, not actually provisioned).
+- [x] **Structural fix**: new `eq_canonical_sync_tenants()` + trigger `trg_sync_tenants` on `organisations` (AFTER INSERT/UPDATE/DELETE) keeps `tenants` mirrored automatically going forward, gated on the org actually having both `hostname` + `supabase_url`.
+- [x] **First instinct (backfill the migration in eq-context) was wrong — caught before writing anything there.** eq-context has no jvkn migration convention at all; the real one (`supabase/CONTROL-PLANE-LEDGER.md` + `scripts/check-control-plane-drift.mjs`) lives in eq-shell. Ran `/brief eq-shell` before writing, which caught that eq-shell's `main` had moved (PR #1834 merged) since a doc read minutes earlier had described it as still pending — a small, live instance of exactly the drift class today's other Madagins sessions hit at larger scale.
+- [x] **[PR #1839](https://github.com/eq-solutions/eq-shell/pull/1839), merged `0ff4300`** — migration file + `CONTROL-PLANE-LEDGER.md` entry, DDL re-applied via `apply_migration` (not the `execute_sql` used for the original live fix) so `schema_migrations` carries a proper row (`20260909082529`). All CI green, including the required `Schema drift + anon-grant + policy-lint` gate. Held for Royce's explicit go before merge, per this repo's control-plane convention; merged on his instruction.
+- [x] **Deliberately scoped narrow** — does not touch any other in-flight Madagins item (`shell_control.tenant_routing` gap, `ALLOWED_FIELD_TENANT_SLUGS`, tier split-brain, 0308/0309 legacy-baseline) — those are already tracked in `eq/pending/eq-shell.md` and `eq/sprints/2026-09-09-tenant-provisioning-review.md`.
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`. Rotated straight to archive at session close (zero open items in the section).
 
 ---

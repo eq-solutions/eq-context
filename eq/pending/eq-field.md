@@ -15,6 +15,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Contacts briefly showed zero people on load — not reproducible, self-resolved via hard refresh (2026-09-09)
+*Royce shared a screenshot of the SKS tenant's Contacts screen (via core.eq.solutions/sks/field) showing "No contacts yet" with every team pill at (0), including "All" — which reads straight off `STATE.people` with no team filter applied, so the underlying fetch had to be empty, not just filtered. Investigated the day's most recent merge (791f31b, PR #953, the Team-filter fix) as the obvious first suspect.*
+
+- [x] **Ruled out the Team-filter fix as the cause.** `personInActiveTeam()`'s change only affects which people a NAMED team pill counts — it can't zero out the "All" pill, whose count reads directly from `STATE.people` before any team filtering runs. A live reproduction on the same URL immediately after loaded 72 people across all 7 real teams + Unassigned, working normally.
+- [x] **Root cause not confirmed** — most likely a load-timing race (render running before the initial people-fetch resolved), matching a documented pattern this codebase already has a name for (Sentry EQ-FIELD-17, "cross-file reference racing lazy-chunk load order"), but no console/network log from the actual moment exists to prove it either way.
+- [x] **Royce did a hard refresh and it came back up** — consistent with a transient client-side state, not a data-loss or RLS/auth issue. No code change made.
+- [ ] **Watch for recurrence.** If this happens again, the useful capture is the browser console + network tab at the moment it's seen — that's what would actually distinguish a load-timing race from a real fetch failure, which this session couldn't get after the fact. _(added 2026-09-09)_
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`.
+
+---
+
 ## eq-field: role-string literals (`'manager'`/`'supervisor'`) hand-typed across 5 files — wired up `eq-roles-canon.js`, FIXED, merged, live (PR #961, v3.5.708, 2026-09-09)
 *Multi-lens review decision #13 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 13): `scripts/eq-roles-canon.js` looked like the intended shared role constant, but its own header claimed it was unreferenced dead code — review flagged it as "wire up or delete."*
 
