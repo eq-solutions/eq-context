@@ -1,13 +1,28 @@
 ---
 title: SKS — Pending
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-09
 scope: SKS Technologies operational TODO list
 read_priority: critical
 status: live
 ---
 
 # SKS Pending
+
+## SKS team-less workers gap (21 people) — re-verified live, drift found, assignments pending (2026-09-09)
+*Follow-up to the 2026-08-23 "Contacts/Roster/Timesheets team-pill filter didn't account for supervisors" entry below — same underlying mechanism, now scoped tenant-wide. Flagged: active timesheet-eligible SKS workers with no row in `app_data.team_members`/`team_supervisors` are invisible the moment a supervisor explicitly picks a specific named team pill (not the default view, not "Unassigned" — confirmed live against `origin/main`'s `scripts/teams.js`, PR [#953](https://github.com/eq-solutions/eq-field/pull/953)/#934). Royce confirmed (2026-09-09): login/access is completely unaffected — filter-visibility only — and chose to fix it properly rather than drop it, since it can hide someone's timesheet from a supervisor reviewing their own crew.*
+
+*Re-verified live against `ehow` before acting (list had drifted since first framed): now **21 people, not 18** — Jordan A. Sample dropped (deactivated 2026-09-08), Rhys Scott + Wayne Rowe now flagged `is_supervisor=true` (both still team-less), 4 new Labour Hire people surfaced (Sam Davey, Gareth Healy, Phil McGrath, Jack Wilson).*
+
+- [ ] **Team assignments for all 21 not yet collected** — waiting on Royce + Collin Toohey to say which of the 7 real teams (Amazon Syd 53, Comms, Construction - Health, CT Team, Equinix, Schneider, Vans) each person belongs to, or confirm they're deliberately floating. Full list with agencies in `sessions/2026-09-09.md`. Once confirmed, write to `app_data.team_members` (reviewed direct write via Supabase MCP, connected this session). _(added 2026-09-09)_
+- [ ] **Rhys Scott + Wayne Rowe may need a `team_supervisors` row too, not just `team_members`** — both now flagged `is_supervisor=true` on `app_data.staff`, matching the "player-coach" pattern already live for David Boyd/Amazon Syd 53, John Angangan/Comms+Vans, Matthew Miller & Simon Bramall/Equinix+Vans. Needs Collin to confirm which team each actually runs. _(added 2026-09-09)_
+
+**Resolved same day, elsewhere:** a related gap this session spawned as background task `task_b890d1c8` (8 management-tier staff — Leif Lundberg, Sharon Maroni, Ian Marston, John McKee, Royce Milmlow, Johannes Otto, Dave Rimmer, Jonathan Ryan — with zero `app_data.team_supervisors` rows) was independently answered by Royce in a concurrent session the same day: by design, none of them need one ("none of them need a team - it doesnt matter"). See that session's entry further down `sessions/2026-09-09.md`. **Note for whoever reads both entries:** that entry's own note claims Rhys Scott + Wayne Rowe "already have team_supervisors rows" — re-checked live just now (this session, after that entry was written) and that's not correct as of 2026-09-09: both still have zero rows in `team_members` and `team_supervisors`. Flagging the discrepancy rather than silently picking one; the bullet above (live-verified this session) is the one to trust.
+
+**Notes:**
+- Full session detail (live verification queries, a stale-local-branch gotcha worth remembering, the artifact-publish block on personnel data): `sessions/2026-09-09.md`.
+
+---
 
 ## sks-nsw-labour: retired — repo archived, DB left active, anon-CRUD/secrets exposure NOT fixed (Royce's explicit call, 2026-09-07)
 
