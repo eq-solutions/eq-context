@@ -1279,32 +1279,14 @@ Items when triggered:
 
 ---
 
-## eq-field: madagins tenant — schema provisioning script ran successfully live, then state changed again under a concurrent session — needs a fresh check, not another blind fix
+## eq-field: tenant provisioning tooling — real gaps found closing out madagins, not yet generalized
 
-- [ ] **Re-verify madagins's actual current state before doing anything else here.** This
-  session's provisioning script ran successfully live (Royce confirmed, no errors after a
-  `pg_net` fix) — but a check immediately before this close found `public` schema back to 0
-  tables and `jvkn.shell_control.tenant_routing`'s row for madagins gone entirely, both
-  different from what this session left. At least one other, later session was concurrently
-  working the same tenant from eq-shell's side with a broader fix in progress on an
-  uncommitted, unpushed branch (`eq-shell-wt-pgcron` / `fix/tenant-provisioning-pg-cron` —
-  see `eq/pending/eq-shell.md`). Full evidence and reasoning in `sessions/2026-09-09.md`'s
-  final entry. Needs Royce to arbitrate which session's work is current before anyone
-  dispatches or hand-applies anything else. (added 2026-09-09)
-  - **Correction (later session, same day):** this was already arbitrated — see
-    `sessions/2026-09-09.md`'s "Diagnosed why `madagins` is broken" entry. Royce: "let the
-    other sessions do their thing... they are on the right path," stood this session down
-    rather than dispatch further. Root cause there is more specific too: a wrongly-run
-    `migrate-tenants.mjs --bootstrap` falsely stamped 314 ledger rows against a schema that
-    was never actually applied — not just "state changed." A normal catch-up dispatch
-    correctly trusted that ledger and failed clean on the first real gap
-    (`public.app_config`), no further damage done. `fix/tenant-provisioning-pg-cron` is the
-    real fix already in flight. (added 2026-09-09, later same session)
-- [ ] **Add Michelle (and any other initial madagins users) as staff/Shell users.** Blocked on
-  the item above — no point adding people until the schema state is confirmed settled. Normal
-  Shell/Core admin action (same as onboarding any new SKS hire) once it is. (added 2026-09-09)
-- [ ] **Verify end-to-end** — no session has actually signed in as a real madagins user through
-  Core yet. Blocked on the item above. (added 2026-09-09)
+Madagins itself is done: schema fully replayed, RLS/grants verified correct under a real
+simulated session, security advisor down to 2 accepted exceptions (see
+`sessions/2026-09-09.md` for the full close-out), Royce signed in through Core and confirmed
+Contacts/Supervision/Roster/Timesheets all load. What's below is what's still open in the
+*tooling*, so the next tenant doesn't repeat tonight's ~15-round live-debugging loop.
+
 - [ ] **Also confirm `pg_net` is enabled before replaying onto any future new tenant** — a
   fresh Supabase project doesn't have it by default; both eq-field's migrations and the
   generator (`scripts/generate-tenant-provision-sql.mjs`) assume it's already there
@@ -1331,3 +1313,27 @@ Items when triggered:
   PR #967's live-shape reconstruction showed they never carry org_id at all). Documented as a
   design principle in the script's own header, not applied wholesale — next concrete failure a
   live run surfaces is the trigger to extend it, not speculative work now. (added 2026-09-09)
+- [ ] **`DROP VIEW` + `CREATE VIEW` (the fix for Postgres's "cannot change column name/drop
+  columns" error on `CREATE OR REPLACE VIEW`) silently drops all grants on the old object** —
+  a later explicit `GRANT` is required and easy to miss for a view only redefined once. Real,
+  live-hit gap: `field_people` and `field_sites` lost their `authenticated` SELECT grant this
+  way tonight, and Field's Contacts screen came up empty even though sign-in, schema, and RLS
+  were all otherwise correct — took a simulated-session RLS test to isolate from "no data" vs
+  "no roster built yet" vs "actually a permissions error." Not yet in the generator; worth a
+  post-apply grant-diff check (compare `information_schema.role_table_grants` before/after)
+  rather than trusting each view's own script section to re-grant itself correctly.
+  (added 2026-09-09)
+- [ ] **A migration should capture `security_invoker=on` for 5 views that only have it live on
+  SKS via an old out-of-band fix, never a committed migration**: `field_audit_log`,
+  `field_prestarts`, `field_toolbox_talks`, `field_site_diaries`, `nomination_clashes`.
+  Confirmed live on ehow — all 5 already carry `security_invoker=on/true` there — but no
+  migration file sets it, so replaying the committed files onto madagins reproduced the
+  original (pre-fix) insecure state and tripped 5 of Supabase's 9 "Security Definer View"
+  advisor errors. Same root cause CLAUDE.md's `field_people` gotcha already documents
+  (`CREATE OR REPLACE VIEW` resets the full reloptions list, and the original fix was
+  hand-applied, never turned into a file) — this is 5 more instances of that exact pattern.
+  Fixed live on madagins directly; SKS/EQ are fine already (verified), just undocumented in
+  any migration. A real migration file matching the existing pattern for
+  `field_schedule`/`field_timesheets`/`field_leave_requests`
+  (`20260630_field_operational_views_security_invoker.sql`) would close this for good.
+  (added 2026-09-09)
