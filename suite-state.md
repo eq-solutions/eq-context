@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #959 tool: generate-tenant-provision-sql.mjs — replay eq-field's own migrations onto a new tenant
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
