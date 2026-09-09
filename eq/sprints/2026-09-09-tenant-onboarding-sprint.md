@@ -35,33 +35,39 @@ Two mechanisms existed for "where does a tenant's Field roster live," half-built
 
 **Crux, if it matters later:** this flips if a real near-term customer (not Madagins) turns out to need guaranteed data isolation — then dedicated-project stops being a rare escape hatch and becomes the thing worth investing in properly. Nothing currently known points that way.
 
+### 2. Cards-side admin-create zero-member gap: lazy self-seed, not a webhook
+
+`task_4f5989fb` (eq-shell, 2026-07-04) already seeds the Shell-side half correctly — confirmed live on Madagins: its 3 auto-seeded `shell_control` managers are real contacts (Royce, Michelle Moore `accounts@madagins.com.au`, Aditi Rajbhandari `aditi@madagins.com.au`), not placeholder ops accounts. eq-cards' own `org_memberships` table never gets touched by that fix though — separate repo, separate DB concern — so a brand-new tenant still has zero Cards-side admins, and the in-app "invite a worker" flow (`eq_cards_request_worker_access`, gated on `is_org_admin`) has nobody able to call it.
+
+**Call: eq-cards self-seeds its own `org_memberships` admin row lazily, the first time an authenticated user who already holds `shell_control.user_tenant_memberships.role = 'manager'` for that tenant touches Cards** — not a new webhook from eq-shell. Reasoning: no new cross-repo coupling, no new failure mode (a webhook that can silently fail is exactly how you get a *third* zero-admin gap with a different cause); and the trigger signal is already proven trustworthy rather than assumed — verified live above, not hypothetical.
+
+**Crux:** flips if eq-shell's "Add tenant" form doesn't reliably capture a real intended admin as a `shell_control` manager for every *future* tenant, not just this once — worth a quick look at that form before building, not assumed true by extrapolation from one data point.
+
+### 3. Tier field split-brain: confirmed bug, not two intentional axes
+
+Checked `AdminTenantsPage.tsx` / `admin-tenants.ts` directly: `shell_control.tenants.tier` (`trial`/`standard`/`advanced`/`enterprise`) is the real field the actual "Add Tenant" admin UI sets and edits — Madagins was deliberately set to `advanced` there. `organisations.tier` is a separate, older, EQ-Field-specific column (its own comment: "drives `tierAtLeast()` UI gating in EQ Field") that was never wired to read from the canonical value — it's sitting at its schema default (`'Standard'`) because nothing ever set it otherwise. Not two intentional axes; a live bug — **EQ Field is currently gating Madagins' features off the wrong, stale tier.**
+
+**Call: sync `organisations.tier` from `shell_control.tenants.tier`** — backfill Madagins now, then either a trigger keeping the two aligned going forward, or stop storing a separate copy on `organisations` and have `tierAtLeast()` read `shell_control.tenants.tier` directly through the existing `organisations.tenant_id` join.
+
 ---
 
 ## Wave 1 — ship now, no more decisions needed
 
-### 2. Generalise `workers-canonical-sync` beyond the SKS/ehow hardcode
+### 4. Generalise `workers-canonical-sync` beyond the SKS/ehow hardcode
 
-Make `TENANT_ROUTES` data-driven (read off `organisations`/`shell_control.tenants` directly, or a small dedicated mapping table) instead of a const requiring a code deploy per tenant — the literal opposite of "seamless." **Must ship with** a test that deliberately tries to cross tenant boundaries in `findStaffId()`'s phone/email adoption logic and asserts it fails (the guardrail above). Once live, register Madagins as a normal shared-ehow tenant.
+Make `TENANT_ROUTES` data-driven (read off `organisations`/`shell_control.tenants` directly, or a small dedicated mapping table) instead of a const requiring a code deploy per tenant — the literal opposite of "seamless." **Must ship with** a test that deliberately tries to cross tenant boundaries in `findStaffId()`'s phone/email adoption logic and asserts it fails (the guardrail from decision #1). Once live, register Madagins as a normal shared-ehow tenant.
 
-### 3. Archive the orphaned `eq-tenant-madagins` Supabase project
+### 5. Archive the orphaned `eq-tenant-madagins` Supabase project
 
-Empty, never wired to anything (`organisations.supabase_url` and `shell_control.tenants.supabase_project_ref` both still null), not needed under the shared-ehow-default model. A `/_platform/tenants` admin action, not code — do this once #2 is live so Madagins isn't briefly homeless.
+Empty, never wired to anything (`organisations.supabase_url` and `shell_control.tenants.supabase_project_ref` both still null), not needed under the shared-ehow-default model. A `/_platform/tenants` admin action, not code — do this once #4 is live so Madagins isn't briefly homeless.
 
----
+### 6. Lazy-seed the Cards-side `org_memberships` admin row
 
-## Wave 2 — small decision needed first, each independently buildable, unrelated to the isolation-model call
+Per decision #2: on a Cards-side authenticated action, if the user holds `shell_control.user_tenant_memberships.role = 'manager'` for a tenant and has no `org_memberships` row for its `organisations` counterpart yet, create one (`role: 'admin'`, `status: 'active'`). No backfill pass needed — self-corrects the first time Michelle or Aditi actually uses Cards for Madagins.
 
-### 4. Cards-side admin-create zero-member gap
+### 7. Sync `organisations.tier` from `shell_control.tenants.tier`
 
-`task_4f5989fb` (eq-shell, 2026-07-04) covers the Shell-side half of "a new tenant has nobody in it" — confirmed still working tonight, Madagins got 3 auto-seeded `shell_control.user_tenant_memberships` managers. But that fix lives in eq-shell and only touches `shell_control`. It never reaches eq-cards' own `org_memberships` table — a separate repo, separate concern — so Madagins still had zero Cards-side admins tonight. Without one, the normal in-app "invite a worker" flow (`eq_cards_request_worker_access`, gated on `is_org_admin`) has nobody able to call it on a brand-new tenant.
-
-**Needs a decision:** should eq-shell's tenant-creation flow call out to eq-cards (webhook/API) to seed the equivalent `org_memberships` admin row, or should eq-cards seed it itself, lazily, the first time someone from that tenant authenticates? Either is a small, scoped build once picked.
-
-### 5. Tier field split-brain
-
-`organisations.tier` = `'Standard'` and `shell_control.tenants.tier` = `'advanced'` — same Madagins org, two different tables, no visible sync between them, no migration or trigger keeping them aligned.
-
-**Needs a decision, and it hasn't been investigated which answer is true:** are these meant to be one source of truth (pick one, have the other read from it), or are they genuinely independent axes — e.g. an EQ-Field-feature tier vs. a platform/billing tier — that just happen to share the word "tier" and read as a bug when they aren't one? Nobody has confirmed intent either way; this sprint is flagging the split, not asserting which it is.
+Per decision #3: backfill Madagins' `organisations.tier` to `'advanced'` now (EQ Field is reading the stale default today), then close the sync gap structurally so a future tenant's Field-gating tier can't drift from what the admin UI actually set.
 
 ---
 
@@ -69,8 +75,10 @@ Empty, never wired to anything (`organisations.supabase_url` and `shell_control.
 
 | # | Item | Status | Action |
 |---|---|---|---|
-| 1 | Isolation model: shared-ehow default, dedicated project opt-in | **Decided 2026-09-09** | Unblocks #2/#3 below |
-| 2 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | Ready to build | Build on your go |
-| 3 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, after #2 ships |
-| 4 | Cards-side admin-create zero-member gap | Needs a small decision | Webhook from eq-shell, or lazy self-seed in eq-cards? |
-| 5 | Tier field split-brain (`organisations` vs `shell_control.tenants`) | Needs a small decision | One source of truth, or genuinely two axes?
+| 1 | Isolation model: shared-ehow default, dedicated project opt-in | **Decided 2026-09-09** | Unblocks #4/#5 below |
+| 2 | Cards-side admin-create gap: lazy self-seed off `shell_control` manager role | **Decided 2026-09-09** | Unblocks #6 below |
+| 3 | Tier split-brain: confirmed bug, sync from `shell_control.tenants.tier` | **Confirmed 2026-09-09** | Unblocks #7 below |
+| 4 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | Ready to build | Build on your go |
+| 5 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, after #4 ships |
+| 6 | Lazy-seed Cards-side `org_memberships` admin | Ready to build | Build on your go |
+| 7 | Backfill + sync `organisations.tier` | Ready to build | Build on your go
