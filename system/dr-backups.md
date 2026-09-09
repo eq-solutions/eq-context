@@ -249,10 +249,19 @@ covers it: reads [`eq/identity/tenant-projects.json`](../eq/identity/tenant-proj
 `tenant/<slug>/` prefix. No auth capture — tenant projects hold operational
 data only; identity stays solely on jvkn, never duplicated per tenant.
 
-**Adding a tenant needs three things** (see the workflow's own header for why
-the middle one can't be automated away): a row in `tenant-projects.json`, one
-line in the workflow's own secret-mapping `env:` block, and the actual DB URL
-secret added in GitHub Settings → Secrets → `production-ops`.
+**Adding a tenant:**
+```
+python scripts/register_tenant_backup.py --slug <slug> --project-ref <ref>
+python scripts/safe_commit.py -m "feat(dr): register tenant <slug> for backup" \
+  eq/identity/tenant-projects.json .github/workflows/backup-tenants.yml
+gh secret set TENANT_<SLUG>_DB_URL --env production-ops   # run this part yourself — pastes interactively, never on the command line or into an AI session
+```
+The script writes the registry row and the workflow's secret-mapping `env:`
+line (both git-tracked, neither sensitive) — see the workflow's own header
+for why that one `env:` line can't be automated away (GitHub Actions can't
+look up a secret by a name computed at runtime). The actual DB URL secret is
+the one step that has to stay a human action, since Supabase doesn't expose
+a project's DB password via the Management API after creation.
 
 **Currently registered:** `madagins` (`ornndtbdkxfsewspbrwk`, created
 2026-09-09 — found with zero backup coverage the same day it was created).

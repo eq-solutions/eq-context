@@ -11,14 +11,19 @@ name: Backup tenant DBs (dedicated per-tenant Supabase → R2)
 #
 # Registry: eq/identity/tenant-projects.json lists every dedicated tenant
 # project (slug, project_ref, db_url_secret). This workflow reads it and
-# loops — adding a tenant needs THREE things, not a new workflow file:
+# loops — adding a tenant needs THREE things, not a new workflow file.
+# scripts/register_tenant_backup.py automates the first two (both
+# git-tracked, neither sensitive) — see its own docstring for usage:
 #   1. One line in eq/identity/tenant-projects.json
 #   2. One line in this workflow's own `env:` block below, mapping the new
 #      literal secret name to an env var (GitHub Actions cannot look up a
 #      secret by a name computed at runtime — `${{ secrets.X }}` needs a
 #      literal X at the workflow-definition level, so this one step can't be
-#      removed, only kept to a single line)
+#      removed, only kept to a single line — the script writes the line, a
+#      human still has to land it)
 #   3. The actual secret added in GitHub Settings → Secrets → production-ops
+#      — stays a human-only step regardless of tooling: Supabase doesn't
+#      expose a project's DB password via the Management API after creation
 #
 # No auth capture — per-tenant projects hold operational data only. Identity
 # (`shell_control.users`) lives solely on jvkn (eq-canonical), never
