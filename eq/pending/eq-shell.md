@@ -15,6 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Madagins' app-tile entitlements didn't match what Royce selected — live-fixed; the write-path bug that caused it is still open (2026-09-09)
+
+*Royce asked how Madagins was set up and what a tenant `manager` role can see vs platform admin. That answer surfaced a second, separate finding: he intended field+intake only, but live entitlements had nearly everything on.*
+
+- **Confirmed live**: `public.org_module_entitlements` (jvkn, org-keyed — the "app-tile entitlements are canonical" concept from the 2026-07-04 session further down this file, working as originally designed) for Madagins (`org_id dd5d8622-9688-4dea-b5ed-ca42fc18487c`) had `cards/comms/field/intake/ops/service = true`, only `quotes = false` — not the field+intake-only selection made on the tenant form.
+- **Two-layer check confirms this only ever affected dashboard tiles, never data or permissions**: `scripts/migrate-tenants.mjs` has zero concept of "modules" — the full canonical baseline (132 `app_data` tables, 38 `public`, 8 `service` on Madagins' own project) provisions unconditionally regardless of entitlements. `src/permissions.ts`'s `useCan()` never reads entitlements either — a tenant `manager`'s permissions (the full 62-key matrix) are unaffected by tile visibility either way.
+- **Root cause not found — two leads for whoever picks this up**: `comms` isn't in either the client `ALL_MODULES` (`AdminTenantsPage.tsx:68`, 5 keys) or server `ALLOWED_MODULES` (`admin-tenants.ts:45`, 6 keys) — neither includes it — yet it was live-enabled; something outside the tenant-settings form set it. Separately, `upsertAppEntitlements` is also called from `invite-user.ts`, `invite-users-batch.ts`, `edit-user.ts`, and `accept-invite.ts` — **possible existing lead: fleet bug #736 "invite-users-batch entitlements"** is already tracked further down this file (armed, not yet built) — check whether it's the same root cause before building a second fix for one bug.
+- **Fixed live by hand, Royce's explicit call** (chose fix-now over trace-first): Madagins' row set to `field=true, intake=true`, everything else `false`. Known side effect: `cards=false` hides the EQ Cards tile, so Madagins' own managers (Aditi, accounts@) have no dashboard surface for `admin.review_cards` (reviewing future worker-onboarding submissions) unless it's turned back on or they're given a direct link.
+
+- [ ] **Trace what actually set `comms`/`service`/`ops`/`cards` true for Madagins, and whether inviting/editing a user can silently re-open any tenant's entitlements.** Check fleet bug #736 first — it may already be this. Royce deferred this (fixed by hand instead of tracing), then started a background session on it himself; check whether that session already has an answer before re-doing the legwork. _(added 2026-09-09)_
+
+---
+
 ## eq-shell: rescued an uncommitted migration that's the ready-made fix for the "madagins missing ~20-25 CMMS tables" gap — not yet applied (2026-09-09)
 
 - **Before deleting the orphaned `eq-shell-wt-pgcron` folder (see section below), checked what was actually still in it.** Two large uncommitted migrations were sitting there: `0308_legacy_public_schema_baseline.sql` (37 public-schema objects) and `0309_app_data_legacy_baseline_and_tenant_members.sql` (29 app_data/service objects). Checked both against madagins live before touching anything.
