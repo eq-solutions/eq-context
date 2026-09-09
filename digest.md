@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 07:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 07:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 07:00 UTC → 2026-09-09 07:54 UTC)
+## Since last refresh (2026-09-09 07:54 UTC → 2026-09-09 07:59 UTC)
 
-- Merged: eq-shell [#1835](https://github.com/eq-solutions/eq-shell/pull/1835) fix(security): enable RLS on app_data._eq_migrations (all te
-- Merged: eq-shell [#1826](https://github.com/eq-solutions/eq-shell/pull/1826) fix(chunk-reload): recognize Firefox's MIME-type wording for
-- Merged: eq-shell [#1822](https://github.com/eq-solutions/eq-shell/pull/1822) feat(documents): expose bulk multi-document push
-- Merged: eq-shell [#1818](https://github.com/eq-solutions/eq-shell/pull/1818) fix(documents): scope site/customer tags to Person, make Rol
-- Merged: eq-shell [#1816](https://github.com/eq-solutions/eq-shell/pull/1816) fix(migrations): drop document_register before document_sign
-- Merged: eq-shell [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an ex
-- Merged: eq-shell [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load 
-- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
-- ⚠ Needs you: 8 → 9 (new items)
+- Merged: eq-shell [#1825](https://github.com/eq-solutions/eq-shell/pull/1825) feat(documents): add an outstanding-count badge to My docume
+- Merged: eq-shell [#1824](https://github.com/eq-solutions/eq-shell/pull/1824) feat(staff): let a conversation carry a reminder date
+- Merged: eq-shell [#1823](https://github.com/eq-solutions/eq-shell/pull/1823) fix(responsive): let iPad join the phone breakpoint instead 
+- Merged: eq-shell [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view
+- Merged: eq-shell [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAud
+- Merged: eq-shell [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabili
+- Merged: eq-shell [#1817](https://github.com/eq-solutions/eq-shell/pull/1817) feat(staff): backdate conversations, Casual notes attach a s
+- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
 
 ## ⚠ Needs you (9)
 
@@ -32,7 +31,7 @@ _2026-09-09 07:54 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-09.md](sessions/2026-09-09.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [Error: column sites.deleted_at does not exist](https://eq-solutions.sentry.io/issues/145817362/)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/)
-- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
+- 🟠 **Deploy uploading** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (293)
 
@@ -58,7 +57,7 @@ _…and 281 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
-| eq-field | ✓ success | 0d ago | 4 | 6d |
+| eq-field | ✓ success | 0d ago | 3 | 6d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -66,7 +65,7 @@ _…and 281 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-09 |
+| eq-shell | uploading | 2026-09-09 |
 
 ## Live errors (Sentry)
 
@@ -92,20 +91,20 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1829](https://github.com/eq-solutions/eq-shell/pull/1829) fix(schema): add app_data.sites.deleted_at, missing on every tena |
 | 2026-09-09 | eq-shell | [#1830](https://github.com/eq-solutions/eq-shell/pull/1830) test(staff): add coverage for staff-resourcing's pure rollup logi |
 | 2026-09-09 | eq-shell | [#1828](https://github.com/eq-solutions/eq-shell/pull/1828) fix(documents): stop clipping the "..." menu behind the next row |
+| 2026-09-09 | eq-field | [#959](https://github.com/eq-solutions/eq-field/pull/959) tool: generate-tenant-provision-sql.mjs — replay eq-field's own m |
 | 2026-09-09 | eq-field | [#962](https://github.com/eq-solutions/eq-field/pull/962) docs: fix stale eq-context path refs in CLAUDE.md session-end pro |
 | 2026-09-09 | eq-field | [#961](https://github.com/eq-solutions/eq-field/pull/961) v3.5.708 — Role-string literals: wire up eq-roles-canon.js instea |
 | 2026-09-09 | eq-field | [#960](https://github.com/eq-solutions/eq-field/pull/960) v3.5.707 — Leave: extract balance/business-day math into leave-ru |
 | 2026-09-09 | eq-field | [#958](https://github.com/eq-solutions/eq-field/pull/958) v3.5.706 — sbFetch's core fetch had no timeout, hanging initApp() |
 | 2026-09-09 | eq-field | [#956](https://github.com/eq-solutions/eq-field/pull/956) DRAFT (not applied): track app_data.staff write-restriction polic |
 | 2026-09-09 | eq-field | [#957](https://github.com/eq-solutions/eq-field/pull/957) v3.5.705 — chore: delete 4 confirmed zero-caller functions |
-| 2026-09-09 | eq-field | [#955](https://github.com/eq-solutions/eq-field/pull/955) chore: guard directory-view tenant scope, fix audit-multi-lens te |
-_Showing 15 of 80 · full record in [sessions/](sessions/)_
+_Showing 15 of 79 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (309 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (310 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (64 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (254 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (253 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (68 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -135,9 +134,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1594 | 212 / 100 | 2 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1608 | 215 / 100 | 2 | 78 |
 | [eq-cards](eq/pending/eq-cards.md) | 349 | 47 / 17 | 0 | 8 |
-| [eq-field](eq/pending/eq-field.md) | 1316 | 187 / 69 | 32 | 48 |
+| [eq-field](eq/pending/eq-field.md) | 1333 | 188 / 69 | 32 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 390 | 50 / 19 | 0 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 164 | 13 / 6 | 2 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
@@ -193,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 07:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 07:59 UTC._
