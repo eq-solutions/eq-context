@@ -9,10 +9,10 @@ status: live
 
 # eq-shell changelog
 
-## 2026-09-09 (PR #1834 MERGED, NOT YET LIVE — pg_cron enabled on new tenant projects)
+## 2026-09-09 (PR #1834 MERGED + LIVE — pg_cron enabled on new tenant projects)
 - New-tenant provisioning (`provision-tenant-background.ts`) failed partway through the fleet migration apply the first time it hit `cron.schedule()` — confirmed live on `eq-tenant-madagins`, 189 migrations in — because a from-scratch Supabase project doesn't have the `pg_cron` extension, and nothing in provisioning enabled it. sks/eq never hit this because pg_cron was already on those projects before this flow existed. Fix: idempotent `CREATE EXTENSION IF NOT EXISTS pg_cron` added as a new provisioning step. Also bumped `tenant-routing.ts`'s warm-cache tenant list to include `madagins` (cache-only, not a correctness fix).
 - Deliberately scoped to just this one gap — the branch's other uncommitted work (a much larger, self-documented-as-risky legacy-schema-capture migration pair) was split out rather than bundled in. See `eq/sprints/2026-09-09-provisioning-completeness-followup.md`.
-- **Merged (`d9d8c89a`) but NOT live** — this repo's usual "merge is the deploy" auto-publish did not fire (2nd unexplained occurrence today, see `eq/pending/eq-shell.md`), and the manual-deploy fallback failed twice on Netlify's own upload endpoint. `core.eq.solutions` is still serving the prior commit as of this entry. Don't treat this fix as live until confirmed otherwise.
+- **Merged (`d9d8c89a`), confirmed live.** This repo's usual "merge is the deploy" auto-publish stalled for about an hour first (2nd unexplained occurrence that day, self-resolved — see `eq/pending-archive.md`) — re-checked afterward and confirmed via `git merge-base --is-ancestor` that this commit is in the history of the current production deploy.
 
 ## 2026-09-09 (PR #1829 MERGED + DISPATCHED LIVE — sites.deleted_at backfilled on sks and eq)
 - `app_data.sites.deleted_at` existed on ehow (sks) only — applied out-of-band at some point, never captured as a tracked migration — so it was missing on every other tenant plane, breaking `push-document-audience.ts`'s site-lookup queries there. Migration `0308_sites_deleted_at.sql` (idempotent `ADD COLUMN IF NOT EXISTS`) closes the gap. No application code changed; the existing queries were always correct once the schema actually matched them everywhere.

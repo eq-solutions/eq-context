@@ -30,17 +30,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: PR #1834 merged clean but the deploy pipeline itself is broken — 2 independent mechanisms failing, 2nd occurrence today (2026-09-09)
-
-- **Merge landed, deploy did not.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit; confirmed directly against GitHub's deployments API, not assumed from the merge alone.
-- **Not a one-off — the SAME symptom hit PR #1826 earlier today** (per `eq/sprints/2026-09-09-eq-shell-sentry-sprint.md` item 3, still unexplained there). This is the 2nd confirmed occurrence in one day.
-- **The documented workaround from the 1st occurrence (manual deploy via the Netlify MCP) also failed** — twice, identical `zipAndBuild: 500 Internal Server Error` from Netlify's own upload endpoint, no partial/bad deploy left behind either time.
-- **Ruled out**: a platform-wide incident (netlifystatus.com: all green, Build Pipeline "Operational," nothing reported today) and a classic GitHub webhook misfire (none configured on this repo at all — `GET /hooks` returns `[]` — confirms the integration runs through Netlify's GitHub App, whose delivery logs need app-level credentials this session doesn't have).
-- **Points at this site's specific GitHub App connection**, not the code, not a platform outage. `core.eq.solutions` was still correctly serving the prior commit throughout — nothing broken live, just not current.
-
-- [ ] **Check Site settings → Build & deploy → Git provider in the Netlify dashboard** (or re-link the GitHub App) — needs your login, couldn't be done from this session. Two clean deploy mechanisms failing identically in one day is a real, not cosmetic, gap. _(added 2026-09-09)_
-- [ ] **Once fixed, confirm `core.eq.solutions` is actually serving `d9d8c89a` or later** before treating PR #1834 as live. _(added 2026-09-09)_
-
 ---
 
 ## eq-shell: tenant creation doesn't actually apply the real schema, and `madagins` got further corrupted by a wrongly-run `--bootstrap` (2026-09-09)

@@ -43,10 +43,11 @@ SQL that self-documents real unresolved correctness questions (see below).
 (`d9d8c89a`).** `provision-tenant-background.ts`'s new `ensureExtensions()` (idempotent
 `CREATE EXTENSION IF NOT EXISTS pg_cron`, Step 4 of new-tenant provisioning) +
 `tenant-routing.ts`'s `KNOWN_TENANT_SLUGS` warm-cache bump. Rebased clean onto current `main`,
-`pnpm run build` clean, merged on your go. **Not yet live** — this repo's usual merge-deploys
-auto-publish did not fire (a same-day recurring gap, see `eq/pending/eq-shell.md`); confirm
-`core.eq.solutions` is actually serving this commit before treating it as shipped. Note: this
-only prevents the pg_cron gap from recurring on the *next* tenant provisioned — it does not
+`pnpm run build` clean, merged on your go. **Confirmed live** — auto-deploy stalled for about
+an hour after merge (a same-day recurring gap, self-resolved, see `eq/pending-archive.md`),
+but `d9d8c89a` is confirmed (via `git merge-base --is-ancestor`) in the history of the current
+production deploy. Note: this only prevents the pg_cron gap from recurring on the *next*
+tenant provisioned — it does not
 retroactively touch madagins (handled directly by the eq-field session working that tenant).
 
 **Legacy-baseline half — still uncommitted, still in `eq-shell-wt-pgcron`, not part of #1834.**
@@ -107,8 +108,8 @@ review, or fold into whichever of the two halves above ends up touching madagins
 
 ## 2. Re-run `check-provisioning-completeness.mjs`
 
-Depends on PR #1834 actually going live (merged, but see its "not yet live" note above) and a
-fresh tenant being provisioned after it. Expect the `pg_cron` extension finding to clear.
+PR #1834 is confirmed live (see item 1 above) — this can now run against a fresh tenant
+provisioned after it. Expect the `pg_cron` extension finding to clear.
 **Won't clear** (separate, still open — see #3): `vector`, `pg_net`. The legacy-baseline half
 (0308/0309→0311/0312, re-verify at land time) is a separate re-run trigger of its own once/if it lands.
 
@@ -149,7 +150,7 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 
 | # | Item | Status | Depends on |
 |---|---|---|---|
-| 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) merged**, not yet live (deploy pipeline broken, see `eq/pending/eq-shell.md`) | — |
+| 1a | pg_cron fix | **[PR #1834](https://github.com/eq-solutions/eq-shell/pull/1834) merged and confirmed live** — done | — |
 | 1b | Legacy-baseline migrations (0308/0309, renumber to 0311/0312 — re-verify at land time) | **Reviewed** — 4 concrete decisions needed from you (scoping now covers 2 files, ordering has a 3rd interlocking bug, 2 missing `service.*` objects, 1 dead function to keep-or-drop) | — |
 | 1c | madagins's 50-migration backlog | Needs your decision | — |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | 1a merged + dispatched |

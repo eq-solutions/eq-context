@@ -16,6 +16,18 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: PR #1834 merged clean but the deploy pipeline itself was broken — self-resolved, confirmed live (2026-09-09)
+
+- **Merge landed, deploy did not, at first.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit for a while; confirmed directly against GitHub's deployments API, not assumed from the merge alone.
+- **Not a one-off — the SAME symptom hit PR #1826 earlier the same day** (per `eq/sprints/2026-09-09-eq-shell-sentry-sprint.md` item 3, also unexplained there). 2nd confirmed occurrence that day.
+- **The documented workaround from the 1st occurrence (manual deploy via the Netlify MCP) also failed** — twice, identical `zipAndBuild: 500 Internal Server Error` from Netlify's own upload endpoint, no partial/bad deploy left behind either time.
+- **Ruled out at the time**: a platform-wide incident (netlifystatus.com: all green, Build Pipeline "Operational") and a classic GitHub webhook misfire (none configured on this repo — `GET /hooks` returns `[]`, confirming a GitHub App integration instead, whose delivery logs need app-level credentials this session didn't have).
+- **Self-resolved, root cause never identified.** Re-checked roughly an hour later: `d9d8c89a` had deployed (twice — 07:11 and 07:31 UTC), and two further same-day merges (`9442ab2b`, then PR #1837's `5c62d73b`) deployed normally after it, with `5c62d73b` live as the current deploy. Confirmed via `git merge-base --is-ancestor` that `d9d8c89a` is genuinely in that commit's history, not just coincidentally similar. Whatever broke the GitHub App connection cleared on its own (or Royce fixed it outside this session) — never diagnosed further since the dashboard itself needed a login this session didn't have.
+
+---
+
+---
+
 ## eq-field: `leave.js` balance/business-day math had zero unit coverage — extracted to `leave-rules.js`, FIXED, merged, live (PR #960, v3.5.707, 2026-09-09)
 *Multi-lens review decision #12 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 12): `_leaveGetBalances`/`_leaveBizDays` were the one piece of business logic across the five extracted-or-extractable domains (timesheets/roster/apprentices/sks-pipeline-resource/leave) with zero unit coverage, despite being payroll-adjacent.*
 
