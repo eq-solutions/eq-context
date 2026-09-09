@@ -9,6 +9,12 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-09-09 (PR #838 MERGED + LIVE — canonical roster lookups no longer default to SKS for every tenant, SEC-76)
+- `lib/canonical-members.ts` defaulted an unset tenant slug to `'sks'`; 19 call sites across 15 files called `getCanonicalMembers()`/`getCanonicalMemberMap()` bare, so every one of them silently rendered SKS's staff roster regardless of which tenant was actually viewing (assignee dropdowns, notification recipients incl. the pre-visit-brief cron, report names, audit log, admin roster).
+- Made the tenant argument required on both functions — no more silent default, so a missed call site is now a `tsc --noEmit` compile error (how completeness was verified). Added `getCanonicalMemberMapForTenantId`, fixed a related edge case in `lib/calendar/supervisor-digest.ts`, threaded `tenantId` through `lib/reports/resolve-user-names.ts` and its 5 callers.
+- Found during a research pass scoping `system/tenant-identity-drift-scoping-2026-09-09.md` (eq-context) — independently re-verified against live code before touching anything, not just taken on the handed-in report's word. Logged as [SEC-76](https://github.com/eq-solutions/eq-context/blob/main/ops/security-register.md).
+- Merged via admin override past 2 pre-existing, unrelated failing checks (chronic `npm audit` finding, chronically-broken integration-test suite) — `tsc + next build`, the real gate, was clean. Live-verified after merge via Netlify + commit ancestry.
+
 ## 2026-09-09 (PR #839 MERGED + LIVE — removed 2 stale duplicate migration files that turned out to belong to eq-field)
 - `supabase/migrations/0146_acknowledgments_rls.sql` and `0146b_acknowledgments_authenticated_write.sql` removed — orphaned duplicates of eq-field's own migration for the same tables (`public.acknowledgments`, `public.app_config`), which this repo's application code never actually reads or writes. Full investigation: [SEC-77](https://github.com/eq-solutions/eq-context/blob/main/ops/security-register.md), eq-context.
 - `service._eq_migrations` ledger rows for these files left untouched by design — `migrate-service.mjs` never cross-checks for a ledger row with no matching file, so this has no CI or apply-pipeline effect.

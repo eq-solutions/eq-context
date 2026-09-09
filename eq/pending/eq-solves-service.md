@@ -15,15 +15,14 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: cross-tenant roster leak found and fixed — every canonical-roster lookup silently defaulted to SKS (2026-09-09)
+## eq-solves-service: cross-tenant roster leak found and fixed — MERGED, LIVE (SEC-76, 2026-09-09)
 *Surfaced during a research pass scoping a suite-wide tenant-identity-drift doc in eq-context. `lib/canonical-members.ts` defaulted an unset tenant slug to `'sks'`, and 19 call sites across 15 files called the roster functions bare (no tenant argument) — assignee dropdowns, notification recipients (incl. the pre-visit-brief cron), report "tested by"/"assigned to" names, the audit log, and the admin user roster all silently rendered SKS's staff regardless of the actual signed-in tenant. Independently re-verified against live code before touching anything — grep found the same 19 sites, same lines, the handed-in report named. Logged as [SEC-76](../../ops/security-register.md).*
 
-- Made the tenant argument required on `getCanonicalMembers`/`getCanonicalMemberMap` (no more silent default) — turns any missed call site into a `tsc --noEmit` compile error, which is how completeness was verified. Added `getCanonicalMemberMapForTenantId` alongside the existing `getCanonicalMembersForTenantId`, fixed a related edge case in `supervisor-digest.ts`, and threaded `tenantId` through `resolve-user-names.ts`'s 5 callers.
-- Not live-exploitable today — only SKS exists as a tenant on ehow — but a primed landmine for the next one.
-- `tsc --noEmit` and `eslint` both pass clean across all 23 touched files (23 files, +92/-57).
+- [x] Made the tenant argument required on `getCanonicalMembers`/`getCanonicalMemberMap` (no more silent default) — turns any missed call site into a `tsc --noEmit` compile error, which is how completeness was verified. Added `getCanonicalMemberMapForTenantId` alongside the existing `getCanonicalMembersForTenantId`, fixed a related edge case in `supervisor-digest.ts`, and threaded `tenantId` through `resolve-user-names.ts`'s 5 callers.
+- [x] **[PR #838](https://github.com/eq-solutions/eq-service/pull/838) — merged, live on service.eq.solutions.** Merged via admin override past 2 pre-existing, unrelated failing checks (chronic `npm audit` finding on `js-yaml`/`next`/`sharp`; this repo's chronically-broken integration-test suite) — `tsc + next build`, the real gate, was clean. Live-verified after merge via Netlify + commit ancestry that the fix reached production, not just `main`.
+- Was not live-exploitable at the time — only SKS existed as a tenant on ehow — but was a primed landmine for the next one.
 
 **Deferred:**
-- [ ] **Not committed or pushed** — waiting on Royce's explicit go (hard rule: no commit without instruction). Diff is sitting in the working tree at `C:\Projects\eq-service`. _(added 2026-09-09)_
 - [ ] **`lib/canonical-sync.ts` also reads `CANONICAL_TENANT_SLUG`** — separate consumer, deliberately left out of scope for this fix; worth checking whether it has the same class of issue. _(added 2026-09-09)_
 - [ ] **No live click-test against a second tenant** — can't be exercised until a second tenant (e.g. a re-provisioned `favour-perfect`) exists; verify then that a non-SKS session shows its own roster, not SKS's. _(added 2026-09-09)_
 

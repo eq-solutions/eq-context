@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-09 (PR #970 MERGED + LIVE — Shell-ownership gate on sites/managers no longer hardcoded to 'sks')
+- `sites.js`/`managers.js` hid the Edit/Delete/Save write paths (toast + no-op) whenever `TENANT.ORG_SLUG === 'sks'` — the intended rule is "Shell owns canonical sites/staff for any Shell-integrated tenant," not "for SKS specifically." Now keys off `TENANT.CORE_ONLY` (already live, canonical-driven via `organisations.branding.coreOnly`), matching `auth.js`'s own already-established `_isCoreOnly()` pattern — `'sks'` kept only as the same hard fallback that pattern already uses.
+- Scope correction found while building: this is a client-side UX guard only (toast + no-op) — no server-side RLS/API enforcement lives in this file. Any real server-side gap is separate, likely overlapping SEC-77's ~31-table hardcoded-tenant-ID RLS finding.
+- Found via `system/tenant-identity-drift-scoping-2026-09-09.md` (eq-context), finding #5. [PR #970](https://github.com/eq-solutions/eq-field/pull/970).
+
 ## 2026-09-09 (PR #972 OPEN, v3.5.713 — Tenant routing: a rejected ?tenant= override is now visible, not silent)
 - `_loadCanonicalConfig()` silently fell back to the host-matched tenant on a rejected `?tenant=` override — a `console.warn` only for a hostname mismatch, and zero signal at all (found reading the code, not in the original ask) for a slug matching no canonical org. Both paths now show a dismissible banner naming the requested and actually-served slugs via `loadTenantConfig()`; which tenant gets served is unchanged.
 - Found investigating why the freshly onboarded `madagins` tenant would silently render `eq` sandbox data on `field.eq.solutions/?tenant=madagins` — confirmed live (DNS + the canonical `organisations` table) that both `sks` and `madagins` carry a `field.{slug}.eq.solutions` hostname with no real Netlify domain behind it. Companion fix on the eq-shell side ([PR #1862](https://github.com/eq-solutions/eq-shell/pull/1862), merged) stops that at the source for new onboards.
