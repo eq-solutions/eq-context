@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-09)
 
 **eq-cards:**
-- #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
@@ -69,6 +68,7 @@ _If this file is >48h old, the cron is broken._
 - #973 fix(madagins): restore security_invoker=on for field_site_projects/field_timesheet_locks
 
 **eq-service:**
+- #840 fix(ehow): role-gate site-credential fns, tenant-guard get_defect_counts
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
@@ -77,6 +77,9 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1877 chore(deps): bump @eq-solutions/ui to v1.16.5
+- #1876 fix(documents): warm push-document-audience's tenant-client cache
+- #1875 fix(cards): let a worker cancel their own pending access request
 - #1873 Make Multi the Add-workers homepage, fold agency links into upload
 - #1871 fix(control-plane): mirror liveness off the data plane, not DNS
 - #1870 Fix crash on outgoing connect requests with a revoked status
@@ -89,7 +92,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -100,8 +103,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | building | 2026-09-09 |
-| eq-field | ready | 2026-09-09 |
+| eq-shell | new | 2026-09-09 |
+| eq-field | enqueued | 2026-09-09 |
 
     **Migrations:** eq-service has 244 (latest: 0240) applied
 
