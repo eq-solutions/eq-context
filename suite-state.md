@@ -64,11 +64,7 @@ _If this file is >48h old, the cron is broken._
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
-**eq-field:**
-- #970 fix(sites,managers): Shell-ownership gate keys off CORE_ONLY, not a hardcoded 'sks' literal
-
 **eq-service:**
-- #839 chore: remove stale duplicate acknowledgments migrations
 - #838 fix(canonical-members): scope every roster lookup to the actual tenant
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -78,12 +74,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1857 fix(licences): resolve staff_id per-tenant, not via workers.staff_id
-- #1856 fix: idempotency guards for 0256/0267 policies + registry array drift
-- #1855 ci(tenant-drift): skip drift-check cleanly on dependency-only Dependabot PRs
+- #1858 feat(staff): backdate signal on conversations, Casual attach-on-first-save
 - #1854 fix(check-tenant-drift): fail loud when a real tenant has no CANONICAL_PROJECTS entry
-- #1852 Add Multi screen for group-adding workers
-- #1850 fix(token-exchange): stop gating a caller's own tenant slug against a static allowlist
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -104,11 +96,11 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-09 |
+    | eq-service | new | 2026-09-09 |
 | eq-shell | new | 2026-09-09 |
 | eq-field | new | 2026-09-09 |
 
-    **Migrations:** eq-service has 246 (latest: 0240) applied
+    **Migrations:** eq-service has 244 (latest: 0240) applied
 
 ---
 
