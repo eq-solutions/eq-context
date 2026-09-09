@@ -70,7 +70,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1885 docs(control-plane-ledger): record #1875's cancel-my-access-request migration
-- #1882 fix(field): make the Field-workspace picker read tenants live
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
 ---
