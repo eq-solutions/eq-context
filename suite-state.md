@@ -68,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #966 fix: harden tenant-provision generator against 4 live collision classes
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
-- #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
 
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
