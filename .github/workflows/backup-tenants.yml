@@ -96,8 +96,14 @@ jobs:
       - name: Install Supabase CLI + AWS CLI + jq
         run: |
           set -euo pipefail
-          curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz | tar xz
-          sudo mv supabase /usr/local/bin/
+          # Extract into a scratch dir, never the checkout root -- this repo
+          # already tracks a supabase/ directory (supabase/migrations/), which
+          # collides with the CLI tarball's own top-level `supabase` binary
+          # ("tar: supabase: Cannot open: File exists"). The 3 platform backup
+          # jobs never hit this because they never check out the repo at all.
+          mkdir -p /tmp/supabase-cli
+          curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz | tar xz -C /tmp/supabase-cli
+          sudo mv /tmp/supabase-cli/supabase /usr/local/bin/
           supabase --version
           pip install awscli --quiet
           jq --version
