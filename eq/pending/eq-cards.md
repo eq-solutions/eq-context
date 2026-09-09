@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,23 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-cards: retention-purge arm decision prepped (still open); PRs #349 + #347 merged and deployed live (2026-09-10)
+*Retention/purge cron arm-or-not decision (first flagged 2026-08-25, below) prepped into a decision brief for Royce — exact retention rule, current dry-run numbers, and a gap in the two-phase dispatch/reconcile design (migration 0151) that would leave real photos deleted with no matching DB cleanup if armed as-is. Nothing armed — analysis only, per the task. Separately, asked "anything to do" surfaced two already-open, all-green PRs waiting on `main`; merged and deployed both on Royce's explicit instruction ("merge both", then "deploy it").*
+
+**Shipped, merged + deployed live:**
+1. [PR #349](https://github.com/eq-solutions/eq-cards/pull/349) — `MaterialApp.router`'s legitimate brief-null-child gap during a router rebuild was falling back to a blank white frame; now a spinner. Presentational only, no auth/routing touched.
+2. [PR #347](https://github.com/eq-solutions/eq-cards/pull/347) — `WalletCompletionNudge` gets its own card boundary (was blending into `SetupChecklistCard` directly above it, making the wallet's "N things need a look" count look wrong); profile edit folded in-place into the Profile tab instead of a separate screen.
+
+**Deferred:**
+- [ ] **Retention/purge: arming needs a third job, not two.** Migration `0151`'s two-phase dispatch/reconcile design means a real run of `purge-deleted-licences` or `sweep-orphaned-licence-photos` dispatches the storage delete (which really happens) and returns `dispatched_pending_confirmation` — nothing finalises the DB row unless `confirm-retention-purge-dispatch` also exists and runs shortly after. That job's SQL is written (commented out, bottom of `0151`) but has never been created. Arming just the two existing jobs today would delete real photos for real with the matching `licences` rows never cleaned up. Full brief (exact retention rule, last dry-run numbers — 2 licences/3 photos/6 orphans, 13 days stale as of this pass — and the rollback/audit story) published as an artifact this session, not duplicated here. Royce's call to arm remains open. _(added 2026-09-10)_
+- [ ] **Confirmed live: the 30-day retention promise is real and current, not a stale internal doc.** `cards.eq.solutions`'s actual served Privacy Policy (Settings → Privacy Policy) matches `assets/legal/privacy-policy.md` word-for-word — same effective date (2026-04-29), version 1.1, and retention table. The gap between that promise and the disabled purge job is live today, not theoretical. _(added 2026-09-10)_
+
+**Notes:**
+- eq-cards' Netlify deploys carry no `commit_ref`/`commit_message` metadata (`deploy_source: api`, `manual_deploy: true` — pushed via CLI/API from the GitHub Action, not Netlify's git-linked builds), unlike eq-shell. The documented "poll for `state: ready` + `published_at`" verification method (see the 2026-08-31 product-polish entry below) still works and confirmed this deploy went live (`published_at` 2026-09-09T17:58:44Z, after both merges) — but the commit-ancestry cross-check the eq-shell method also uses doesn't apply here; there's no SHA on the deploy record to match against. Worth knowing for the next eq-cards deploy verification.
+- Both PR branches came back `BEHIND` on first merge attempt (branch protection requires up-to-date, not just green CI). Used the GitHub API's `update-branch` endpoint rather than `--admin`, consistent with this file's own PR #312 precedent (2026-08-25 deep-dive entry below) of preferring the real fix over an authorized override. #347 needed a second branch update after #349's own merge landed and pushed it behind again — an expected ripple from merging two PRs into a protected branch back to back, not a problem.
 
 ---
 

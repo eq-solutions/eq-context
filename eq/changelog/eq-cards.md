@@ -1,13 +1,23 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-09-09 (PR #349 MERGED + LIVE — router-rebuild blank frame replaced with a spinner)
+- `MaterialApp.router`'s `builder` can legitimately receive a null `child` briefly during a router rebuild (Flutter's own contract) — was falling back to `SizedBox.shrink()`, painting a genuinely blank white screen for however long the gap lasted. Now falls back to a small spinner instead. Presentational only, no auth/redirect/routing logic touched.
+- Investigated against a user-reported blank screenshot and Sentry `EQ-CARDS-1N` (`AuthRetryableFetchException` on a background token refresh) as the suspected cause; ruled out as unrelated.
+- [PR #349](https://github.com/eq-solutions/eq-cards/pull/349), squash-merged (`1afee93`), deployed and confirmed live via Netlify (`state: ready`, `published_at` 2026-09-09T17:58:44Z).
+
+## 2026-09-09 (PR #347 MERGED + LIVE — wallet card boundary + in-place profile edit)
+- `WalletCompletionNudge` wrapped in `EqCard` so it reads as its own distinct item next to `SetupChecklistCard` inside the wallet's "N things need a look" summary — previously ran together with the card above it with no boundary, making the count look wrong even though it wasn't.
+- `ProfileEditScreen` folded into `ProfileScreen`: tap the pencil to flip the Profile tab into an in-place edit mode (every field editable right there), Cancel/Save to return to read-only. `/profile/edit` still resolves — now opens `ProfileScreen` pre-set to edit mode. `ProfileEditScreen` and its test removed; coverage moved 1:1 onto the new `ProfileEditForm` widget.
+- [PR #347](https://github.com/eq-solutions/eq-cards/pull/347), squash-merged (`6f1c7b1`), deployed and confirmed live via Netlify (`state: ready`, `published_at` 2026-09-09T17:58:44Z) in the same deploy as PR #349 above.
 
 ## 2026-09-09 (PR #352 MERGED + LIVE — `organisations.tier` synced from `shell_control.tenants.tier`, jvkn control-plane pipeline bootstrapped)
 - Structural fix for the tier split-brain surfaced onboarding Madagins: `shell_control.tenants.tier` is canonical (set by eq-shell's tenant-admin console, lowercase enum); `organisations.tier` is a separate, older column EQ Field reads directly (`netlify/functions/tenant-config.js`) to gate `tierAtLeast()`, Title Case, never wired to follow the canonical value.
