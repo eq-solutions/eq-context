@@ -65,7 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #972 v3.5.713 — Tenant routing: a rejected ?tenant= override is now visible, not silent
+- #973 fix(madagins): restore security_invoker=on for field_site_projects/field_timesheet_locks
 
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
@@ -74,6 +74,11 @@ _If this file is >48h old, the cron is broken._
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
 - #832 chore(deps): bump @eq-solutions/roles from v2.7.5 to v2.7.7 in the eq-design-system group
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
+
+**eq-shell:**
+- #1866 fix(security): add authenticated read policy for zaap's organisations table
+- #1865 Rebuild Add worker to the Claude Design spec
+- #1864 fix(documents): actually stop clipping the "..." menu (#1828 didn't)
 
 ---
 
@@ -94,7 +99,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | new | 2026-09-09 |
+| eq-shell | ready | 2026-09-09 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 244 (latest: 0240) applied
