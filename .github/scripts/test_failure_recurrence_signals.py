@@ -23,6 +23,20 @@ self-description on the same line, rather than requiring a positive anchor
 -- F10's genuine incidents don't share one consistent anchor term the way
 F1's do, but they never say "resolves correctly" / "working as intended".
 
+F14 (2026-09-10) was a harder, structural problem, not one clean false
+positive: alternative 1 had a latent directional bug (stale-word-THEN-
+filename only, never the reverse), so its own real incidents were matching
+by accident via an unrelated later "substrate" mention, not the real
+"suite-state.md...stale" connection. Fixed bidirectional; dropped
+`pending.md` and bare `substrate` as anchors (the former is routine,
+expected latency per this file's own 2026-09-09 note; the latter is too
+generic and was the source of two live false triggers, including this same
+fix's own write-up). HONEST LIMIT: there is no textual marker that reliably
+separates a genuine incident from routine "found and fixed a stale doc
+line" hygiene -- both are the identical short phrase. This fix removes the
+specific, provable noise sources found by full-corpus audit; it does not
+claim F1/F10-level precision.
+
 Run: python .github/scripts/test_failure_recurrence_signals.py
 """
 import re
@@ -227,9 +241,90 @@ def test_f10():
     )
 
 
+def test_f14():
+    pat = re.compile(load_signal("F14"), re.I)
+
+    # --- must CATCH: real historical incidents, verbatim from session logs -
+    check(
+        "F14: 2026-08-30 real incident, reversed order -- filename before trigger word "
+        "(verbatim; the directional-bug case this fix closes)",
+        pat,
+        "- Same as the earlier close today: not click-tested live with a real "
+        "non-supervisor SKS account; Anthony Hartley's original brief staff_id "
+        "resolution failure still unexplained (low priority); "
+        "`eq-context/suite-state.md`'s stale \"Prestart is supervisor-only\" "
+        "framing still needs correcting.",
+        True,
+    )
+    check(
+        "F14: 2026-09-04 real incident (suite-state.md Import/write-time tooling table, verbatim)",
+        pat,
+        "Fixed the stale `@eq/intake` row in `suite-state.md`'s \"Import/write-time "
+        "tooling\" table — its Shell cell said Shell's Contacts dedup \"reimplements "
+        "Intake's fuzzy matcher instead of importing it,\" describing the pre-#1287 "
+        "state.",
+        True,
+    )
+    # Synthetic -- no verbatim session-log text survives from the urjh/EQ-Quotes/
+    # SKS-brand era for these two shapes.
+    check(
+        "F14: synthetic CLAUDE.md-shaped claim aging false (proxy for the urjh/"
+        "EQ-Quotes-era incidents)",
+        pat,
+        "Global CLAUDE.md still said the urjh project was live, weeks after it was "
+        "deleted.",
+        True,
+    )
+    check(
+        "F14: synthetic brand- file carrying a stale value (proxy for the SKS hex incident)",
+        pat,
+        "rules/brand-sks.md was stale -- it still listed the old SKS hex, #1F335C, "
+        "after the real palette moved to #203060.",
+        True,
+    )
+
+    # --- must NOT catch: currently-live false triggers + adversarial near-misses
+    check(
+        "F14: this session's own F1/F10 write-up (self-reference that motivated "
+        "dropping bare 'substrate' as an anchor)",
+        pat,
+        "Tightened system/failures.md's F1 signal regex: gated all three shape "
+        "alternatives (raw.githubusercontent+stale / serving-stale+no-error-or-200-ok "
+        "/ CDN-cache+stale) behind a same-line substrate-specific anchor (eq-context, "
+        "CLAUDE.md, digest.md, suite-state, substrate, lessons.md, the literal id F1, "
+        "or session-start/session-gate wording).",
+        False,
+    )
+    check(
+        "F14: 2026-09-09 pending.md latency (already analyzed by the ledger as a "
+        "different, unescalated flavor -- confirms dropping pending.md was right)",
+        pat,
+        "The real gap: pending.md's own staleness was never checked before it was "
+        "used to build a /decide question, describing an eq/pending/eq-shell.md entry "
+        "that said 'not built, Royce's call' when another concurrent session had "
+        "already shipped the fix.",
+        False,
+    )
+    check(
+        "F14: real noise -- 'not stale' negation coinciding with an unrelated substrate mention",
+        pat,
+        "A 20-item spread sample of the residue backlog found most of it genuinely "
+        "still-open work, not stale cruft.",
+        False,
+    )
+    check(
+        "F14: real noise -- a code TODO comment going stale, not a hand-written state claim",
+        pat,
+        "The NSX checklist's field-tech-trim TODO comment was stale, not a genuine "
+        "open item.",
+        False,
+    )
+
+
 def main():
     test_f1()
     test_f10()
+    test_f14()
     print(f"\n{passed} passed, {failed} failed")
     if failed:
         raise SystemExit(1)
