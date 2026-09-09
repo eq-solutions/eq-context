@@ -78,7 +78,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1841 docs(env): document VITE_FIELD_URL, the one undocumented required var
 - #1840 fix(dev): allow Vite's React-refresh preamble under the CSP
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -101,7 +100,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | uploading | 2026-09-09 |
+| eq-shell | new | 2026-09-09 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
