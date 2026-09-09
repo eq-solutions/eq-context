@@ -15,60 +15,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Luke's "document can't be found" sign error root-caused (transient, not a data bug) + separate "app zooms in, can't zoom out" bug fixed with a Reset zoom button, merged, live (PR #951, 2026-09-09)
-*Royce relayed two live reports from the same Android testing session: Luke Wheeler got "document cant be found" trying to sign SWMS-005, and separately "the app zooms in and you cant zoom out." Investigated as two distinct issues rather than assumed related.*
-
-- **Sign 404 investigated against live data, not assumed a regression from the same-week Documents sign-off rework (eq-shell migration 0305)**: traced to `document-signoffs.js`'s `sign` action 404 branch (client shows "Couldn't sign — Not found"). Confirmed live via direct SQL that Luke's actual `document_signoffs` row was healthy (outstanding, correct version, never signed) moments later — a transient/timing issue, not data corruption. That 404 branch had zero server-side logging (its sibling failure branches in the same file all log) — spawned as a background task, started by Royce in a separate session, shipped same-day as [PR #947](https://github.com/eq-solutions/eq-field/pull/947) (adds the missing `console.error`) and a self-initiated follow-up [PR #948](https://github.com/eq-solutions/eq-field/pull/948) (adds an explicit Sentry capture, since a deliberate 404 `return` never reaches Sentry through `withSentry`'s throw-only capture — #947 alone wouldn't have actually surfaced there).
-- **Zoom bug root-caused via a live 375px-viewport repro of pdf.js's own toolbar, then confirmed the exact location with Royce (`AskUserQuestion`) before building**: the Documents-to-Sign inline PDF viewer deliberately allows pinch-zoom for reading small print, but the only way back out was pdf.js's own zoom-out button — present, but easy to miss in a toolbar crowded at mobile widths. [PR #951](https://github.com/eq-solutions/eq-field/pull/951) adds a persistent "Reset zoom" button in EQ's own header (`scripts/sign-documents-viewer.js`, outside the iframe, always reachable regardless of PDF zoom state), jumping to page-width via the same cross-frame `PDFViewerApplication` access the existing view-gate poll already uses safely.
-- **Distinct from, and shipped the same day as, [PR #952](https://github.com/eq-solutions/eq-field/pull/952)** (Samsung Internet `getOrInsertComputed` crash — a separate concurrent session's fix, see that section below) — two different root causes hitting the same feature on the same day, from the same live Android testing session.
-- First time this session hit eq-field's `reflection-gate` commit hook (pairs a `docs/reflection-log.md` entry with any code commit) — ran `/reflect` properly rather than skip it. Also hit a real merge conflict on that same log file against `origin/main` (PRs #947/#948 landed mid-flight, from the same spawned task) — rebased cleanly, no code conflict, only the shared append-only log needed reconciling.
-
-- [ ] **Luke's retry not yet confirmed** — his row was healthy at time of investigation; nothing in this environment can confirm whether his next sign attempt actually succeeds. _(added 2026-09-09)_
-- [ ] **Not click-tested against a real loaded PDF or a real signing session** — no Field session token available in this environment; verified instead by rendering the exact header markup against real CSS at a 375px viewport (screenshot confirmed no layout overflow) and `node --check` on the edited file. _(added 2026-09-09)_
-
----
-
-## eq-field: Screenshot review (6 SKS screens) → Home eyebrow removed + Timesheets completion-chasing chrome cut — both FIXED, merged, live (PRs #943/#946, v3.5.700/v3.5.699, 2026-09-09)
-*Royce asked whether Claude could see 6 EQ Field/SKS screenshots he'd uploaded to Google Drive that day (5 phone captures, 1 iPad photo). Downloaded, rotated/compressed the iPad photo, self-scanned all 6 for issues (15 findings across Data/Display/Voice/Note categories), published as an HTML review page for Royce to comment on (needed his explicit override — the publish classifier initially blocked it, since the page carries real SKS names/DOB/phone/leave dates, not demo content). Royce came back with two concrete asks from the page.*
-
-- [x] **Home screen "tiny bit squashed" → dropped the "EQ FIELD" eyebrow label** ([PR #943](https://github.com/eq-solutions/eq-field/pull/943), final v3.5.700 after two renumbers). Staff Home only (`renderStaffHomeScreen`, `scripts/home.js`) — Supervisor Home keeps its brand line since it also carries the `SUPERVISOR` role chip, out of scope for the ask.
-- [x] **Timesheets "very busy, do we need this view at all?" → kept the entry grid, cut the completion-chasing chrome** ([PR #946](https://github.com/eq-solutions/eq-field/pull/946), v3.5.699). Root-caused first: the per-person "N pending" popover + "Send reminder" emails + 6-week completion tracker (always read 0%) all assume individual workers self-submit — Royce confirmed supervisors complete timesheets themselves, checked Mondays, so that apparatus was chasing a pattern that doesn't happen. Removed `sendTsReminder()`/`_togglePendingPopover()`, the this-week progress bar, the 6-week tracker, and a redundant desktop-only 4-tile stat row (its own comment already called it redundant). Team-group pills, Status & tools filters, and the entry grid untouched, per Royce's explicit "Trim hard" choice over two lighter options offered via `AskUserQuestion`.
-- [x] **Both merged same session ("merge") — 2 version collisions with other concurrently-merging sessions resolved along the way**: #943 first collided with #944 (Shell-handoff fix, below — also v3.5.697) → renumbered 698; then #945 (Roster contact popover, also v3.5.698) landed between a `git fetch` and the merge attempt → merged #946 first (699, clean), rebased #943 a second time → final v3.5.700, changelog banner manually re-ordered back to newest-first. Full test/lint/bundle-drift/cache-buster suite re-run clean after every rebase. Both confirmed live via `curl field.eq.solutions/sw.js` (deploy lagged ~3min behind the usual ~30s, likely queued behind the same burst of concurrent merges).
-- [ ] **Neither change click-tested live by a person** — the Browser pane wasn't visible on Royce's end this session, so simulated clicks timed out past filling in the demo-gate's form fields; both diffs are small/mechanical and verified from source + green CI instead. _(added 2026-09-09)_
-- [x] **Separate, unrelated live bug noticed in passing, spawned as its own task — now FIXED, merged, live.** Sentry `ReferenceError: _isPhoneViewport is not defined` (eq-field, EQ-FIELD-1J). A later same-day session found the fix already built and open as [PR #949](https://github.com/eq-solutions/eq-field/pull/949) (green CI, deploy preview ready) and merged it on Royce's go — v3.5.702, confirmed live via `sw.js`. _(added 2026-09-09, resolved 2026-09-09)_
-
-**Notes:**
-- Full technical detail (the image download/rotate/compress pipeline, the artifact-publish classifier override, the exact code investigation behind the Timesheets recommendation, and the full collision/rebase sequence): `sessions/2026-09-09.md`, `eq/changelog/eq-field.md` (two 2026-09-09 entries).
-
----
-
-## eq-field: Documents to Sign — Samsung Internet root-caused + fixed, merged, live (PR #952, v3.5.703, 2026-09-09)
-*Royce: Luke's phone (new Samsung S26 Ultra) still couldn't sign documents, plus a report of "menus don't show properly" (Workbench/ESS tiles missing on the dashboard). Investigated via live Sentry evidence rather than re-theorizing — this closes the root-cause gap the 2026-08-28 "Documents to Sign" investigation chain (rotated to archive) had been stuck on for 12 days.*
-
-- [x] **Root cause confirmed live, not correlated**: Sentry EQ-FIELD-1K — `TypeError: this[#methodPromises].getOrInsertComputed is not a function`, 4 occurrences/36min, SKS tenant, UA `SamsungBrowser/30.0 Chrome/143.0.0.0`. The vendored pdf.js build calls `Map`/`WeakMap.prototype.getOrInsertComputed` (a recent TC39 "upsert" method) unconditionally, no feature check — Samsung Internet's engine doesn't implement it. Confirmed a browser-engine gap, not a device one: Luke's retry on the brand-new S26 Ultra still failed, same browser.
-- [x] **Fixed**: new `_signdocPatchPdfjsCompat()` in `scripts/sign-documents-viewer.js` polyfills the Map methods on the iframe's own document (pdf.mjs's thread); new `scripts/pdfjs-worker-compat-shim.mjs` does the same inside the PDF worker's separate global scope (unreachable from the iframe patch) via a `GlobalWorkerOptions.workerSrc` redirect. Neither vendored pdf.js file touched. [PR #952](https://github.com/eq-solutions/eq-field/pull/952), merged on Royce's go, confirmed live via `sw.js` (v3.5.703).
-- [ ] **Not yet confirmed by Luke's actual retry** — verified by reading every `getOrInsertComputed`/`getOrInsert` call site in the vendored source directly, full test/lint/bundle-drift/cache-buster suite clean, and the polyfill is a no-op on any engine that already has the native method (so no regression risk elsewhere) — but no Samsung Internet available in this environment to prove the fix itself works, only that it's safe. _(added 2026-09-09)_
-- [ ] **"Workbench/ESS menu tiles missing" — still unresolved, waiting on evidence.** Ruled out the one concrete hypothesis available from code alone (a `TENANT.ORG_SLUG` boot-race before Home renders — confirmed live in `index.html` that `initApp()` runs strictly after `loadTenantConfig()` resolves, so that's not it). Both candidate gates (`home.js`'s `externalLinksSplit()`, tenant-slug-gated; the mobile drawer's `ditem-workbench`/`ditem-ess`, sharing the same `isSks` toggle as the long-shipped, presumably-working Safety/Teams nav items) look structurally sound from static reading. Royce sent 2 screenshots mid-session — one directly reproduced the pdf.js signing bug live (independent confirmation, no new info on this thread), the other showed the Home tile screen with no Workbench/ESS row visible, but the crop doesn't rule out it being just below the fold. Asked for one more screenshot (the "More" tab's list view itself, before tapping into a document) — not yet received. No further code changes made without that evidence. _(added 2026-09-09)_
-
-**Notes:**
-- Full technical detail (the exact Sentry queries, the worker-thread-vs-main-thread reasoning, the version-collision handling with 2 other concurrently-merging sessions): `sessions/2026-09-09.md`, `eq/changelog/eq-field.md`.
-- Also merged, unrelated to this session's own build but found in flight: [PR #949](https://github.com/eq-solutions/eq-field/pull/949) (the `_isPhoneViewport` fix, see the screenshot-review section above) and [PR #951](https://github.com/eq-solutions/eq-field/pull/951) (Reset zoom button for the same PDF viewer, shipped concurrently by Royce/another session — "the app zooms in and you cant zoom out").
-
----
-
-## eq-field: SKS shell-embedded boot could hang silently past Shell's 30s watchdog — Sentry EQ-SHELL-1R root-caused, FIXED, merged, live (PR #944, v3.5.697, 2026-09-09)
-*Continuation of a Task Brief opened against Sentry [EQ-SHELL-1R](https://eq-solutions.sentry.io/issues/EQ-SHELL-1R) "EQ Field handoff auto-recovery (timeout)" — 3 occurrences since 2026-08-18, all tenant `sks`, 2 users. Shell's own mint/watchdog side was already verified healthy in a prior pass; this session's job was finding what's actually slow in eq-field's own load path.*
-
-- [x] **Root cause: two fetches in the SKS shell-token verify path had no timeout** — `scripts/auth-shell-handoff.js`'s `_verifyShellToken()`/`_consumeShellCookie()` (client) and `netlify/functions/_shared/field-person.js`'s `resolveFieldPerson()` (server, called only for the `sks` tenant — matches 3/3 occurrences; `eq` never hits it). A rare transient stall anywhere in that chain hung `checkAccess()` forever with zero postMessage telemetry, silently exceeding Shell's 30s watchdog. Confirmed live via Sentry breadcrumbs: Shell's mint completes in 1.6s every time, then 33.7s of total silence.
-- [x] **Ruled out a chronic slow-query cause before concluding anything** — checked live against ehow: `field_person_by_user_id` filters an indexed column (`staff_user_id_idx`) on a 109-row table. This is a rare transient stall, not a slow query.
-- [x] **Fix mirrors the existing pattern**, not a new one: wrapped both fetches in `_fetchWithTimeout` (8s client / 5s server, nested) — the same helper the parallel canonical-config chain (`app-state.js`) already uses. On timeout, both fall into their existing catch blocks — no new postMessage kind, no change to the Shell-side contract.
-- [ ] **Not click-tested against a real SKS/Core shell-embedded session** — no Shell credentials in this environment. Verified instead: full demo-tenant boot end-to-end on the deploy preview (zero console errors), all 45 tests, lint clean, bundle/cache-buster checks green. _(added 2026-09-09)_
-
-**Notes:**
-- Full technical detail: `sessions/2026-09-09.md` and `eq/changelog/eq-field.md` (2026-09-09 entry).
-
----
-
 ## eq-field: iPad renders full desktop density under touch — phone breakpoint extended to touch tablets, FIXED, merged, live (PR #942, v3.5.696, 2026-09-08)
 *Royce shared an iPad screenshot: the nav was a mix of the phone top-strip and the full desktop sidebar at once, and asked to debug the iPad mobile view. Traced the nav-mix to a stale service-worker cache on his device (not a code bug — `/styles/` is served cache-first, a plain reload doesn't refetch it); current `mobile.css`/`base.css` on `origin/main` were already internally consistent. Separately, a PostHog device-mix check (SKS project, 90 days) showed iPad-pattern traffic real but small (~6-53 of 969 unique visitors) — informed the decision to extend the existing phone components rather than build a bespoke tablet design.*
 
@@ -411,6 +357,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **[PR #832](https://github.com/eq-solutions/eq-field/pull/832)'s fix may have blocked a real workflow with no replacement.** If a supervisor was using the old manager-bypass to help an apprentice fill in their own self-assessment together in person, that now hard-stops. Additive fix available if wanted: stamp `entered_by`/`on_behalf_of` instead of blocking outright. _(added 2026-08-30)_
 
 ---
+
+## eq-field: Documents to Sign — Schneider handbook "wouldn't load" traced to a silent-forever spinner (2026-08-28)
+
+- [ ] **Root cause of Luke's specific report not confirmed live** — no signer credentials in this environment to reproduce the exact fetch he hit. This closes a real, verified gap in the same code path; needs a retry on a fresh tab to confirm it actually resolves his report. _(added 2026-08-28)_
+- [ ] **Two PRs collided on the same version number this session** — [#821](https://github.com/eq-solutions/eq-field/pull/821) and [#822](https://github.com/eq-solutions/eq-field/pull/822) both opened as "v3.5.592", neither merged as of 2026-08-28. This session used v3.5.593 to avoid the clash; whichever of #821/#822 merges next will need to renumber. Worth a glance next session before picking a version. _(added 2026-08-28)_
+- [ ] **Still genuinely root-cause-unknown** — v3.5.595's telemetry hasn't caught a real event yet as of 2026-08-30. Next step depends entirely on a real Sentry event from an affected device, not further code changes. _(added 2026-08-30)_
 
 ---
 
@@ -1292,3 +1244,39 @@ Items when triggered:
 - [ ] **Not click-tested by anyone but Royce himself** — standing Core-only sandbox limitation blocked every attempt from this session (deploy preview, production root, even the demo tenant all redirect to "Sign in through Core"). Royce confirmed live post-merge; no automated click-through exists for this page. _(added 2026-09-02)_
 
 ---
+
+## eq-field: madagins tenant — schema provisioning script ready, needs Royce to run it
+
+*Royce reported "field doesn't work" for a colleague (Michelle) trying to use a brand-new
+tenant, `madagins`, half-provisioned earlier the same day: a Supabase project
+(`ornndtbdkxfsewspbrwk`) and `shell_control.tenant_routing`/`organisations` rows existed, but
+zero schema — nobody had ever dispatched the apply. Royce dispatched eq-shell's
+`tenant-migrate.yml --slug=madagins` mid-session (335 files), landing the canonical layer live.
+This item covers what is left: eq-field's own ~76 hand-applied migrations were never designed
+to be replayed onto a THIRD tenant — 24 of them hardcode SKS's literal `org_id`/`tenant_id` in
+RLS policies, trigger functions, or seed data (not parameterized), which would silently lock
+madagins's own users out (RLS checking for SKS's identity, not madagins's) rather than error
+loudly.*
+
+- [ ] **Run `madagins_eqfield_provision.sql`** against `ornndtbdkxfsewspbrwk` via the Supabase
+  SQL editor (sent to Royce as a file this session, not committed anywhere — ask him for a copy).
+  64 of eq-field's 76 own migration files, replayed in original order, SKS's `org_id`/`tenant_id`
+  substituted for madagins's own (`dd5d8622-9688-4dea-b5ed-ca42fc18487c` /
+  `fc06cd56-ec63-4507-a03e-c3c552ea09a9`). Ends with a verification query (expect 0 hits).
+  Claude Code's auto-mode classifier blocked direct execution of this DDL from the session that
+  built it (see `sessions/2026-09-09.md`) — needs a human at the Supabase dashboard. Control
+  plane side (organisations row, module_entitlements) is already wired live — this is the only
+  remaining piece. (added 2026-09-09)
+- [ ] **eq-field's `tenant-migrate-apply.yml` is NOT safe to fire at a new tenant as-is**, even
+  once its 3 missing secrets (`SUPABASE_ACCESS_TOKEN`/`CONTROL_PROJECT_REF`/
+  `EQ_SHELL_CHECKOUT_TOKEN`, absent as of 2026-08-30) are provisioned. Its plane-scope guard
+  only understands `-- Plane: <tenant> ONLY.` headers as exclusion — a few files carry that
+  header and would correctly skip for a new tenant (silently losing e.g. Teams infra), but most
+  SKS-hardcoded files have no formal header (just prose), so the guard treats them as fleet-wide
+  and would apply them verbatim, with SKS's literal IDs, to any new tenant. Real fix needs an
+  ID-substitution mode for a genuinely-new tenant plane, not just header hygiene. Not built.
+  (added 2026-09-09)
+- [ ] **The same by-hand classification will be needed for the next new tenant** unless this
+  gets automated first. Full per-file reasoning (which of the 76 files needed substitution vs.
+  exclusion, and why) is in `sessions/2026-09-09.md` — worth turning into a real script or
+  runbook before a 4th tenant, not re-derived from scratch again. (added 2026-09-09)
