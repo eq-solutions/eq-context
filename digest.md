@@ -8,28 +8,28 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 17:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 17:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 17:24 UTC → 2026-09-09 17:32 UTC)
+## Since last refresh (2026-09-09 17:32 UTC → 2026-09-09 17:47 UTC)
 
-- Merged: eq-shell [#1867](https://github.com/eq-solutions/eq-shell/pull/1867) feat(mobile): add workspace switcher to the mobile account s
-- Merged: eq-shell [#1855](https://github.com/eq-solutions/eq-shell/pull/1855) ci(tenant-drift): skip drift-check cleanly on dependency-onl
-- Merged: eq-shell [#1853](https://github.com/eq-solutions/eq-shell/pull/1853) fix(field-iframe): stop the memory-saver restore stall-notic
-- Merged: eq-shell [#1849](https://github.com/eq-solutions/eq-shell/pull/1849) fix(migrations): scope 0311 to ehow only
-- Merged: eq-shell [#1845](https://github.com/eq-solutions/eq-shell/pull/1845) fix(migrations): add missing UNIQUE constraint on licences.c
-- Merged: eq-shell [#1843](https://github.com/eq-solutions/eq-shell/pull/1843) fix(migrations): guard 0257's REVOKE against a from-scratch 
-- Merged: eq-shell [#1842](https://github.com/eq-solutions/eq-shell/pull/1842) fix(provisioning): recover and land the app_data legacy-base
-- Merged: eq-shell [#1840](https://github.com/eq-solutions/eq-shell/pull/1840) fix(dev): allow Vite's React-refresh preamble under the CSP
+- Merged: eq-shell [#1856](https://github.com/eq-solutions/eq-shell/pull/1856) fix: idempotency guards for 0256/0267 policies + registry ar
+- Merged: eq-shell [#1851](https://github.com/eq-solutions/eq-shell/pull/1851) fix(field-iframe): pause the 30s handoff watchdog while the 
+- Merged: eq-shell [#1848](https://github.com/eq-solutions/eq-shell/pull/1848) feat(workers): redesign the Add worker screen (follow-up to 
+- Merged: eq-shell [#1847](https://github.com/eq-solutions/eq-shell/pull/1847) fix(entitlements): allowlist modules in upsertAppEntitlement
+- Merged: eq-shell [#1844](https://github.com/eq-solutions/eq-shell/pull/1844) feat(workers): merge Invite worker + Connect existing into o
+- Merged: eq-field [#972](https://github.com/eq-solutions/eq-field/pull/972) v3.5.714 — Tenant routing: a rejected ?tenant= override is n
+- Merged: eq-field [#971](https://github.com/eq-solutions/eq-field/pull/971) v3.5.713 — canon-read: allow the madagins tenant
+- Merged: eq-field [#970](https://github.com/eq-solutions/eq-field/pull/970) fix(sites,managers): Shell-ownership gate keys off CORE_ONLY
 
 ## ⚠ Needs you (9)
 
 - 🔴 **CI failure** — eq-solves-service `main`
 - 🔴 **CI failure** — eq-solves-intake `main`
+- 🔴 **Sentry new error** — `eq-field` [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/145909030/)
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-09.md](sessions/2026-09-09.md) · [failures.md](system/failures.md)
-- 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
+- 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-09-10.md](sessions/2026-09-10.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
-- 🟠 **Sentry new error** — `eq-field` [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/145909030/)
 - 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 
@@ -55,10 +55,10 @@ _…and 212 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
-| eq-solves-service | ✗ failure | 0d ago | 6 | 4d |
+| eq-shell | ✓ success | 0d ago | 6 | 0d |
+| eq-solves-service | ✗ failure | 0d ago | 7 | 4d |
 | eq-field | ✓ success | 0d ago | 2 | 0d |
-| eq-cards | ✓ success | 0d ago | 2 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✗ failure | 0d ago | 0 | — |
 
 ## Deploys
@@ -71,11 +71,11 @@ _…and 212 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/145909030/) | 9 | 2026-09-09 |
+| eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/145909030/) | 11 | 2026-09-09 |
 | eq-shell | [EQ Field handoff stalled at "booted" (38s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145052767/) | 8 | 2026-09-09 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 7 | 2026-09-09 |
+| eq-field | [Error: canon-read: body.tenant_slug fallback used](https://eq-solutions.sentry.io/issues/146010412/) | 6 | 2026-09-09 |
 | eq-shell | [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/) | 4 | 2026-09-09 |
-| eq-field | [Error: canon-read: body.tenant_slug fallback used](https://eq-solutions.sentry.io/issues/146010412/) | 3 | 2026-09-09 |
 | eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-09-09 |
 | eq-solves-service | [auth handoff: expired](https://eq-solutions.sentry.io/issues/135281279/) | 2 | 2026-09-09 |
 | eq-cards | [minified:B2: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 2 | 2026-09-08 |
@@ -104,7 +104,7 @@ _Showing 15 of 80 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (292 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (291 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (63 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (233 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (70 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -136,7 +136,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1731 | 231 / 65 | 16 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1733 | 230 / 64 | 20 | 78 |
 | [eq-cards](eq/pending/eq-cards.md) | 348 | 47 / 16 | 0 | 8 |
 | [eq-field](eq/pending/eq-field.md) | 1356 | 195 / 40 | 38 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 403 | 51 / 20 | 2 | 20 |
@@ -194,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 17:32 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 17:47 UTC._
