@@ -15,6 +15,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: 5 aging Dependabot PRs merged — root cause was a structural CI gap, not staleness, still open (2026-09-09)
+*Royce asked to merge the 5 aging (8d) dependency-bump PRs the digest kept flagging. All 5 failed the same required check ("Schema drift + anon-grant + policy-lint"); root-caused rather than assumed stale or force-merged blind.*
+
+- **Not a real violation, not staleness.** Confirmed via GitHub's compare API (`behind_by: 0`) the branches were already current with `main` before touching anything. The actual failure, from the job log: `ERROR: missing env var SUPABASE_ACCESS_TOKEN (Supabase Management API token)` — the check can't even query the DB to look for a violation. GitHub withholds repo secrets from Dependabot-triggered workflow runs by default (anti-exfiltration protection); this repo has never granted `SUPABASE_ACCESS_TOKEN` to Dependabot secrets specifically, so this check structurally cannot pass on **any** Dependabot PR, past or future — not specific to these 5.
+- All 5 otherwise green (typecheck/test/lint, gitleaks, deploy-preview) and content-verified safe — none touch `supabase/migrations` or any schema file, only `package.json`/lockfile. Presented the finding + 3 options to Royce (admin-override these 5 / grant the Dependabot secret / leave open); he chose admin-override for these 5 specifically and declined the secret grant — a real security trade-off, that token is project-admin-level and Dependabot is a lower-trust trigger context.
+- Merged via `gh pr merge --admin --squash --delete-branch`: [#1695](https://github.com/eq-solutions/eq-shell/pull/1695) papaparse, [#1696](https://github.com/eq-solutions/eq-shell/pull/1696) @sentry/react 10.53→10.73, [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) unpdf (hit a real lockfile conflict once the other 4 landed first — `@dependabot rebase` resolved it cleanly, then merged), [#1698](https://github.com/eq-solutions/eq-shell/pull/1698) react-hook-form 7.77→7.86, [#1699](https://github.com/eq-solutions/eq-shell/pull/1699) eslint-plugin-react-refresh. eq-shell auto-deploys on merge — all 5 live within seconds of each merge.
+
+- [ ] **The structural gap itself is still open** — every future Dependabot PR in this repo will hit the identical `SUPABASE_ACCESS_TOKEN` failure and need the same admin-override, until one of: (a) grant the token to Dependabot secrets (security trade-off, declined for now), or (b) change the workflow to skip this check gracefully when triggered by Dependabot AND the diff touches no schema-relevant files. Neither built — Royce's call which way, if either. _(added 2026-09-09)_
+
+---
+
 ## eq-shell: document register "..." menu no longer clips behind the next row, merged, live (PR #1828, 2026-09-09)
 *Follow-up to the "My documents" nav badge session (below) — the dropdown-clip bug found in passing there. Root-caused properly rather than assumed: `.eq-card` (the row wrapper's className) has no matching CSS rule anywhere in this codebase or its dependencies (checked `src/`, the vendored `@eq-solutions/ui`/`@eq-solutions/tokens` packages, and the tokens package's Tailwind preset) — the `overflow: hidden` clipping the popover was serving no visual purpose at all, not protecting a rounded corner. Every other `eq-card` usage in the repo (`AdminTenantsPage.tsx`, `AdminWorkersPage.tsx`) already omits it.*
 
