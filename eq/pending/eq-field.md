@@ -11,6 +11,20 @@ status: live
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
+---
+
+## eq-field: two tenant-identity-drift items from Royce's "fix it now" — one built, one flagged back with a bigger discovered scope (2026-09-09)
+*§0 items 4–6 of `system/tenant-identity-drift-scoping-2026-09-09.md` were flagged for Royce's call, not spawned. Asked directly which to build; all three ("fix it now"). eq-shell's (item 6) shipped clean — see that repo's own pending file. eq-field had two, with very different outcomes once actually investigated (Rule 0.5 — verify against live before building).*
+
+- [x] **Item 5 — sites.js/managers.js Shell-ownership gate.** [PR #970](https://github.com/eq-solutions/eq-field/pull/970): both files now key off `TENANT.CORE_ONLY` (already live, canonical-driven) instead of a hardcoded `'sks'` literal, matching `auth.js`'s own already-established `_isCoreOnly()` pattern exactly. Turned out lower-risk than scoped — it's a client-side UX guard only (toast + no-op), no server-side enforcement in this file. Not merged/deployed.
+- [ ] **Item 4 — Apprentice module tenant fallback — NOT built, scope is bigger than originally stated.** `apprentice-data.js`/`apprentice-write.js` don't just gate on `tenant_slug !== 'sks'` — the whole endpoint (`_shared/field-person.js`) is hardcoded to SKS's own `EHOW_URL`/`EHOW_SERVICE_ROLE_KEY`, for any caller. Widening the tenant check alone, without also resolving the correct per-tenant Supabase project, would have shipped a REAL cross-tenant leak (another tenant's apprentice data read/written against SKS's own database) — worse than the current per-tenant-only privacy gap this item actually describes. Needs per-tenant Supabase client resolution first; not a quick fix. Flagged back rather than built narrow-and-wrong. _(added 2026-09-09)_
+
+**Deferred:**
+- [ ] **Item 4 needs a real scoping pass of its own** — how `verify-pin.js`'s `DATA_TENANT_IDS`/`TENANT_JWT_SECRETS` resolve a per-tenant Supabase client elsewhere in this repo is the likely template; not investigated deeply enough yet to size the work. _(added 2026-09-09)_
+- [ ] **Neither PR #970 nor eq-shell#1854/eq-service#838 merged or deployed** — all three waiting on Royce's explicit go. _(added 2026-09-09)_
+
+---
+
 **Budget:** ~500 lines (currently 1,284 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
 
 ---
