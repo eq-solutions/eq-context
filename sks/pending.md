@@ -24,6 +24,15 @@ status: live
 
 ---
 
+## Cameron Tregoning (SKS) leave replace — verified fired correctly, roster gap flagged (2026-09-09)
+*Royce replaced an existing leave request for Cam Tregoning (hard-delete old + approve new) and asked for a check that it fired correctly end-to-end — audit log, the live leave table, the roster grid, and the calendar's leave + normal layers.*
+
+Verified live against `ehow`: hard-delete (07:57:10) + approve (07:57:12) both landed clean, ~2s apart, no duplicates (`audit_log`). Old request (Nov 23–27 RDO) is gone from `app_data.leave_requests`; new request (Nov 9–13 RDO) shows `status=approved`. Confirmed no stale entries either side by checking the actual roster table (`app_data.schedule_entries`) directly — Cam has zero raw schedule rows across the whole Nov 9–27 span, so the leave overlay renders clean with no double-booking conflict, and the deleted range falls back to a genuinely blank cell (not a stray leave marker).
+
+- [ ] **Cam has nothing rostered Nov 23–27 now** — the leave that covered those days is gone, but nobody re-rostered him to a site. If he's meant to be working, needs an actual roster entry. _(added 2026-09-09)_
+
+---
+
 ## sks-nsw-labour: retired — repo archived, DB left active, anon-CRUD/secrets exposure NOT fixed (Royce's explicit call, 2026-09-07)
 
 - [ ] **The anon-CRUD/secrets-exposure vulnerability from 2026-07-20 (below) is still fully open — explicitly NOT fixed this session, Royce's deliberate call after being told it doesn't go away on its own.** Confirmed live: `app_config`'s exposed `canonical_api_key_field` is a bearer token for `core.eq.solutions/.netlify/functions/canonical-api` (the ACTIVE Shell/Field system, not the retiring app) and `digest_fn_token` is seeded as a raw Supabase service-role JWT for nspbmir itself — both readable by anyone with the still-public, still-served anon key, regardless of the app's retirement status. The zero-risk, no-soak Step 0 patch (`~/.claude/plans/nspbmir-EMERGENCY-anon-select-narrowing.sql`) remains un-run. Royce was walked through the distinction (token exposure into the *active* system ≠ the retiring app's own roster data) and chose to stop spending time on this repo entirely rather than run even the isolated Step 0 fix. His call to make; flagging plainly so nobody assumes this was closed out. _(added 2026-09-07)_
