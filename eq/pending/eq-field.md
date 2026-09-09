@@ -1314,16 +1314,6 @@ Items when triggered:
   Shell/Core admin action (same as onboarding any new SKS hire) once it is. (added 2026-09-09)
 - [ ] **Verify end-to-end** — no session has actually signed in as a real madagins user through
   Core yet. Blocked on the item above. (added 2026-09-09)
-- [ ] **Also confirm `pg_net` is enabled before replaying onto any future new tenant** — a
-  fresh Supabase project doesn't have it by default; both eq-field's migrations and the
-  generator (`scripts/generate-tenant-provision-sql.mjs`) assume it's already there
-  (`net.http_post` calls in `trigger_tafe_weekly_fill` and `field_people_iud`'s
-  upward-identity-push). Hit live on madagins, fixed with one
-  `CREATE EXTENSION IF NOT EXISTS pg_net;` statement — still not folded into the generator
-  itself as of eq-field [PR #967](https://github.com/eq-solutions/eq-field/pull/967)
-  (auto-creates the ~18-object prerequisite block, doesn't touch extensions) or
-  [PR #966](https://github.com/eq-solutions/eq-field/pull/966) (collision-hardening pass,
-  out of that scope too). Real gap, next one to close. (added 2026-09-09)
 - [ ] **eq-field's `tenant-migrate-apply.yml` is NOT safe to fire at a new tenant as-is**, even
   once its 3 missing secrets (`SUPABASE_ACCESS_TOKEN`/`CONTROL_PROJECT_REF`/
   `EQ_SHELL_CHECKOUT_TOKEN`, absent as of 2026-08-30) are provisioned. Its plane-scope guard
