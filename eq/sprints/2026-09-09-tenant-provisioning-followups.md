@@ -20,7 +20,7 @@ already said.
 
 ## Needs you
 
-### 1. The legacy-baseline migration — moved a lot since it was first flagged, still needs 2 calls
+### 1. The legacy-baseline migration — moved a lot since it was first flagged, now fully resolved
 
 **Re-verified live, not restated** — the picture has changed materially since the original review:
 
@@ -32,9 +32,21 @@ already said.
   user on any tenant SKS's own live job numbers and customer names. Real cross-tenant exposure,
   correctly caught and cut rather than shipped. This covers the `0309`→`0311` (app_data) half —
   63 objects, 28 tables + 10 views + 22 functions + `service.tenant_members`.
-- **The `0308` half (public-schema baseline, 37 objects) has no matching PR found this pass** —
-  status genuinely unclear; may still be sitting wherever the original hand-built draft was, not
-  independently reviewed the way `0311` was.
+- **Correction: the `0308` half (public-schema baseline, 37 objects) was already resolved before
+  this thread went looking for it.** A different concurrent session had the original draft in
+  hand (from the same `eq-shell-wt-pgcron` worktree, before it was deleted), checked all 37
+  target objects against live madagins, found every one already existed there via a direct
+  apply, and correctly discarded the draft as redundant — documented in `eq/pending/eq-shell.md`
+  ("rescued an uncommitted migration..." section). Live-verified again this pass: madagins'
+  `public` schema currently holds 35 populated, RLS-enabled tables matching the expected
+  legacy-baseline shape (`organisations`, the Tender Pipeline cluster, `prestarts`/
+  `toolbox_talks`/`incidents`, `apprentice_profiles`, `roster_presence`, etc.) — nothing missing.
+  A `git log --all` search for the draft's filename, run before this cross-reference was found,
+  correctly turned up nothing — the objects went live by direct apply, never through a commit, so
+  no amount of git archaeology could have found the resolution; only cross-checking the live
+  pending-doc record (or the database itself) surfaced it. One real, much smaller residual gap:
+  that direct apply was never captured as a committed, reviewed migration file, so a future
+  tenant provisioned from scratch won't get it automatically — see Deferred below.
 - **One of the two ordering blockers is fixed**: [PR #1843](https://github.com/eq-solutions/eq-shell/pull/1843)
   (merged) guards `0257`'s `REVOKE` so it no longer crashes a from-scratch tenant.
 - **Correction: the second "blocker" isn't actually live.** `0311`'s own header (and PR #1842's
@@ -59,7 +71,7 @@ already said.
 
 **What actually needs your call:**
 - [x] ~~Merge (or don't) PR #1842~~ — **merged**, by Royce directly, 2026-09-09T10:10:09Z (`6232792`). Confirmed via the merge's own CI run, not assumed: "Apply to all tenants" and "Reconcile tenant ledgers" both show `skipped`, not run — the file is in the repo now, still not applied to any database. That dispatch is still open, separate from this checkbox.
-- [ ] Say whether `0308` (public-schema half) still needs the same rescue-and-review treatment, or whether it's already been handled somewhere this pass didn't find.
+- [x] ~~Say whether `0308` still needs the rescue-and-review treatment~~ — **already handled, confirmed live**: the 37-object public-schema baseline is live on madagins (direct apply by a different session; this pass live-verified 35 populated tables). The draft file itself was correctly found redundant and discarded before this thread started looking. Residual, smaller, not urgent: formalize that direct apply as a committed migration — see Deferred.
 - [x] ~~Say when to run `--reconcile-ledger`~~ — **run**, via the governed `tenant-migrate.yml` dispatch (not local, no credentials handled directly), whole fleet. Result confirmed from the actual run log: zero rename/stamp/dedupe/drop-legacy on all three real tenants (eq, madagins, sks) — the ledger was already consistent everywhere, nothing needed fixing. `leave-pending` counts (eq 11, madagins 14, sks 1) are separate and unaffected — genuinely unapplied migrations, not a reconcile concern. Any future checksum-drift refusal on a real dispatch is now ruled out.
 - [x] ~~Decide whether `0260`'s ordering gap needs fixing~~ — **no fix needed, verified**: the plane-scope guard already excludes `0260` from any non-SKS tenant by reading its own header, traced directly against the guard's code. Nothing to build; the original concern didn't hold up under verification.
 
@@ -90,7 +102,13 @@ been about.
 **Still running, no action needed, just watch for it:**
 - [ ] Canary tenant provisioning check — scoping task, no output yet as of this write.
 
-**Real, scoped, genuinely just not started (from the drift-check doc's ~35 non-urgent findings):**
+**Real, scoped, genuinely just not started:**
+- [ ] Formalize madagins' live-applied 37-object public-schema baseline as a committed,
+  reviewed migration (currently only on-disk-as-applied, not tracked) — so the next
+  from-scratch tenant gets it automatically instead of needing the same manual rescue.
+  Not urgent: nothing broken today, madagins itself is fine.
+
+**From the drift-check doc's ~35 non-urgent findings:**
 - [ ] Category A: move ~10 more hardcoded tenant-slug call sites (eq-shell/eq-field/eq-service) onto the `app_tenant_scope`-table pattern already proven twice in this codebase. Est. 2–4 days.
 - [ ] Category B: build the drift-check tool itself (informational-first, same rollout sequence as `check-provisioning-completeness.mjs`). Est. 1–2 days.
 - [ ] Triage `check-provisioning-completeness.mjs`'s ~136-item live-only inventory into `KNOWN_LIVE_ONLY` — turns it from a warning into something that can actually gate a bad provision.
