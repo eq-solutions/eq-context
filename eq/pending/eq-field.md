@@ -1245,28 +1245,40 @@ Items when triggered:
 
 ---
 
-## eq-field: madagins tenant — schema provisioning script ready, needs Royce to run it
+## eq-field: madagins tenant — schema provisioning script ran successfully live, then state changed again under a concurrent session — needs a fresh check, not another blind fix
 
-*Royce reported "field doesn't work" for a colleague (Michelle) trying to use a brand-new
-tenant, `madagins`, half-provisioned earlier the same day: a Supabase project
-(`ornndtbdkxfsewspbrwk`) and `shell_control.tenant_routing`/`organisations` rows existed, but
-zero schema — nobody had ever dispatched the apply. Royce dispatched eq-shell's
-`tenant-migrate.yml --slug=madagins` mid-session (335 files), landing the canonical layer live.
-This item covers what is left: eq-field's own ~76 hand-applied migrations were never designed
-to be replayed onto a THIRD tenant — 24 of them hardcode SKS's literal `org_id`/`tenant_id` in
-RLS policies, trigger functions, or seed data (not parameterized), which would silently lock
-madagins's own users out (RLS checking for SKS's identity, not madagins's) rather than error
-loudly.*
-
-- [ ] **Run `madagins_eqfield_provision.sql`** against `ornndtbdkxfsewspbrwk` via the Supabase
-  SQL editor (sent to Royce as a file this session, not committed anywhere — ask him for a copy).
-  64 of eq-field's 76 own migration files, replayed in original order, SKS's `org_id`/`tenant_id`
-  substituted for madagins's own (`dd5d8622-9688-4dea-b5ed-ca42fc18487c` /
-  `fc06cd56-ec63-4507-a03e-c3c552ea09a9`). Ends with a verification query (expect 0 hits).
-  Claude Code's auto-mode classifier blocked direct execution of this DDL from the session that
-  built it (see `sessions/2026-09-09.md`) — needs a human at the Supabase dashboard. Control
-  plane side (organisations row, module_entitlements) is already wired live — this is the only
-  remaining piece. (added 2026-09-09)
+- [ ] **Re-verify madagins's actual current state before doing anything else here.** This
+  session's provisioning script ran successfully live (Royce confirmed, no errors after a
+  `pg_net` fix) — but a check immediately before this close found `public` schema back to 0
+  tables and `jvkn.shell_control.tenant_routing`'s row for madagins gone entirely, both
+  different from what this session left. At least one other, later session was concurrently
+  working the same tenant from eq-shell's side with a broader fix in progress on an
+  uncommitted, unpushed branch (`eq-shell-wt-pgcron` / `fix/tenant-provisioning-pg-cron` —
+  see `eq/pending/eq-shell.md`). Full evidence and reasoning in `sessions/2026-09-09.md`'s
+  final entry. Needs Royce to arbitrate which session's work is current before anyone
+  dispatches or hand-applies anything else. (added 2026-09-09)
+- [ ] **Add Michelle (and any other initial madagins users) as staff/Shell users.** Blocked on
+  the item above — no point adding people until the schema state is confirmed settled. Normal
+  Shell/Core admin action (same as onboarding any new SKS hire) once it is. (added 2026-09-09)
+- [ ] **Verify end-to-end** — no session has actually signed in as a real madagins user through
+  Core yet. Blocked on the item above. (added 2026-09-09)
+- [ ] **Review eq-field [PR #959](https://github.com/eq-solutions/eq-field/pull/959)**
+  (`scripts/generate-tenant-provision-sql.mjs`) — the reusable tenant-onboarding script built
+  this session, open, not merged. (added 2026-09-09)
+- [ ] **PR #959's generator doesn't yet auto-generate the ~20-object prerequisite block**
+  (`acknowledgments`, `app_config`, `audit_log`, the whole Tender Pipeline cluster,
+  `prestarts`/`toolbox_talks`/`incidents`, `apprentice_profiles`, `people_notes`,
+  `supervisor_notes`, `nomination_clashes`, `trigger_tafe_weekly_fill`,
+  `app_data.teams`/`team_members`) that eq-field's own migrations reference constantly but
+  never create anywhere in this repo's history — out-of-band original creation for SKS/EQ,
+  predates every committed migration. Confirmed live and hand-fixed for madagins this session;
+  the tool only warns about the gap today, doesn't close it. Worth folding in before a 4th
+  tenant. (added 2026-09-09)
+- [ ] **Also confirm `pg_net` is enabled before replaying onto any future new tenant** — a
+  fresh Supabase project doesn't have it by default; both eq-field's migrations and PR #959's
+  generator assume it's already there (`net.http_post` calls in `trigger_tafe_weekly_fill` and
+  `field_people_iud`'s upward-identity-push). Hit live on madagins, fixed with one
+  `CREATE EXTENSION IF NOT EXISTS pg_net;` statement. (added 2026-09-09)
 - [ ] **eq-field's `tenant-migrate-apply.yml` is NOT safe to fire at a new tenant as-is**, even
   once its 3 missing secrets (`SUPABASE_ACCESS_TOKEN`/`CONTROL_PROJECT_REF`/
   `EQ_SHELL_CHECKOUT_TOKEN`, absent as of 2026-08-30) are provisioned. Its plane-scope guard
@@ -1280,10 +1292,3 @@ loudly.*
   gets automated first. Full per-file reasoning (which of the 76 files needed substitution vs.
   exclusion, and why) is in `sessions/2026-09-09.md` — worth turning into a real script or
   runbook before a 4th tenant, not re-derived from scratch again. (added 2026-09-09)
-- [ ] **No labour-hire portal intake link exists for madagins yet either** — checked
-  independently in a separate session (live query, `shell_control.labour_hire_intake_links`):
-  only one link is active, and it's scoped to the `sks` tenant (labeled "Madagins" — the agency,
-  a different thing from the new tenant of the same name). Even once the Field schema above
-  lands, the self-serve "agency drops a zip" entry point still needs a link created via
-  eq-shell's `AdminLabourHireIntakeLinks.tsx` before anyone external can use it. (added
-  2026-09-09)
