@@ -291,13 +291,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ## ⏩ Session close — 2026-07-10 (eq-cards) — storage/security review: worker sync made reconcilable (enterprise-grade); Kurt's photos actually fixed; licence-photo admin RLS tightened
 
-*Royce asked about storage limits, then the real risks (photos on the control layer; tenant↔control wiring redundancy / weak link). Review found the sync had no reconciliation backstop and Kurt's photos were silently un-viewable. Both fixed + a loose RLS policy tightened — all live-verified.*
-
-**Done this session:**
-
-**Follow-ups flagged, NOT built (surfaced in the review):**
 - [ ] **Storage concentration risk (design):** every worker's licence image for every tenant lives in one private bucket in jvkn — jvkn's service-role key / RLS is the platform's crown-jewels blast radius. Inherent to the worker-owned model. Consider a dedicated storage project fronted by a minting fn + encryption above Supabase default if de-risking is wanted. _(added 2026-07-10)_
-- [ ] **Generalise `workers-canonical-sync` beyond SKS/ehow** (still hardcodes `SKS_TENANT_ID` + ehow) — Madagins hit this exact wall onboarding 2026-09-09, folded into `eq/sprints/2026-09-09-tenant-onboarding-sprint.md`. _(added 2026-07-10)_
 
 ---
 

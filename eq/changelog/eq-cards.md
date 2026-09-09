@@ -1,13 +1,20 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-02
+last_updated: 2026-09-09
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-09-09 (PR #348 MERGED + LIVE — workers-canonical-sync generalised off the SKS-only hardcode)
+- Onboarding a second tenant (Madagins) hit a wall flagged two months earlier: `workers-canonical-sync`'s `TENANT_ROUTES` was a hardcoded const mapping only SKS's org to its ehow tenant — any other tenant's worker silently got skipped from ever reaching a Field roster.
+- Replaced with a new `tenant-routing.ts` module (`resolveTenantRoute()`) that reads `organisations.tenant_id` live — a new shared-database tenant needs zero code changes going forward. An org with its own dedicated database is explicitly refused rather than silently mis-routed into the shared one.
+- Shipped with the guardrail this needed: a test asserting two different orgs never resolve to each other's tenant, and a new `deno test` CI job for edge functions (there was none before this). 6/6 passing in CI.
+- [PR #348](https://github.com/eq-solutions/eq-cards/pull/348), merged (`df07f8c`) and deployed same session (`Build & Deploy` run 34316810026, both jobs confirmed green via `gh run view`, not just the dispatch).
+- Full context: `eq/sprints/2026-09-09-tenant-onboarding-sprint.md`.
 
 ## 2026-09-02 (PR #342 MERGED + LIVE — stale-session self-heal on the wallet licence fetch; wallet nudge stack consolidated)
 - Investigated a live report (Conor Horgan, then Nelson Sareto — both SKS labour-hire) of the Wallet screen failing to show licences on Core. Data checked out clean on both ends (ehow + jvkn) — no duplicate records, correct cross-plane links, valid non-private licences. Root cause: the wallet's licence fetch trusted whatever Supabase session was cached, with no live-check or refresh — a session gone stale while the Shell iframe tab was backgrounded (GoTrue's own refresh timer lagging) failed straight to the "Sign in again" error screen. Matches a same-day Sentry `AuthRetryableFetchException` (144338444) and the same failure class already fixed once in this repo (`not_provisioned_screen.dart`, EQ-CARDS-1C).

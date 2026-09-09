@@ -36,6 +36,19 @@ status: live
 
 ---
 
+## eq-cards + eq-shell: Madagins tenant onboarding hit two real provisioning gaps — one shipped, one in progress elsewhere (2026-09-09)
+*Royce asked to add two workers to a newly-created "Madagins" tenant — surfaced real gaps in new-tenant provisioning that eq-cards and eq-shell both own a piece of. Full detail and decision history: `eq/sprints/2026-09-09-tenant-onboarding-sprint.md`.*
+
+- **Shipped and deployed**: `workers-canonical-sync` (eq-cards) no longer hardcodes SKS as the only tenant — [eq-cards#348](https://github.com/eq-solutions/eq-cards/pull/348), merged and deployed same session, guardrail test in CI.
+- **Correction, not a build**: the sprint's own decision #1 ("shared database by default, dedicated project as a rare opt-in") is wrong and needs revisiting — Royce corrected it directly, explicit and emphatic: tenants must never share a database, full stop. Separately, Madagins' own dedicated database turned out to already be properly provisioned (`shell_control.tenant_routing`, status `active`) — the "orphaned project, nobody wants it" premise behind sprint item 5 was wrong, caught live before archiving anything.
+- **Real root cause, actively being fixed elsewhere — checked before duplicating**: another live session (eq-shell branch `fix/tenant-provisioning-pg-cron`, uncommitted work) is mid-fix for why Madagins' database is incomplete — pg_cron was never enabled on new tenant projects, and ~37 public-schema + ~60 app_data objects predate the tracked migration system entirely (no CREATE statement for them exists anywhere in `supabase/tenant-migrations/`). Confirmed via `ListAgents` + reading (not editing) that worktree directly. Standing down until it lands rather than writing a competing fix.
+
+- [ ] **Revisit tenant-onboarding sprint decision #1** once the pg_cron/legacy-schema fix lands — needs to reflect "dedicated database always," not "shared by default." _(added 2026-09-09)_
+- [ ] **Finish Madagins' own database setup** — blocked on the eq-shell fix above landing; then re-run the tenant-migrate dispatch scoped to `slug=madagins` (confirmed safe/scoped, failed cleanly last time, zero cross-tenant risk). _(added 2026-09-09)_
+- [ ] **Two real eq-cards client bugs found, not yet fixed** (sprint items 8/9, full detail in the sprint doc): `org_admin_provider.dart` truncates a multi-org admin to `rows.first` despite the backing RPC supporting multiple orgs — matters now, since Royce, Michelle Moore and Aditi Rajbhandari already span more than one tenant between them; `required_by_org_strip.dart` groups by `orgName` (string) instead of `orgId`. _(added 2026-09-09)_
+
+---
+
 ## eq-cards + eq-shell + jvkn: labour-hire licence-photo fix re-verified live, full roster checked — no one else exposed (2026-09-07)
 *Royce asked whether Conor Horgan/Nelson Sareto can now see their licences via Core, and to check the rest of the labour-hire roster too. Re-confirmed the 2026-08-25/26 photo-promotion fix directly against live jvkn rather than trusting old migration/PR comments at face value: `eq_cards_claim_invite` (eq-cards migration `0161`) and eq-shell's `shell-join-tenant.ts`/`accept-invite.ts` (PRs #1517/#1519/#1603) all now dispatch to the shared `promote-labour-hire-photo` edge function on claim. Both workers' claimed accounts show all 8 licences between them (4 each) with a photo or document attached — zero gaps.*
 
