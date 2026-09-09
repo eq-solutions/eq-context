@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 18:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 18:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 18:32 UTC → 2026-09-09 18:48 UTC)
+## Since last refresh (2026-09-09 18:48 UTC → 2026-09-09 18:56 UTC)
 
-- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
-- Merged: eq-shell [#1862](https://github.com/eq-solutions/eq-shell/pull/1862) fix(onboard): stop stamping a guessed EQ Field hostname by d
-- Merged: eq-shell [#1859](https://github.com/eq-solutions/eq-shell/pull/1859) docs(shared): explain the active=false/is_personal overlap i
-- Merged: eq-shell [#1858](https://github.com/eq-solutions/eq-shell/pull/1858) feat(staff): backdate signal on conversations, Casual attach
-- Merged: eq-shell [#1856](https://github.com/eq-solutions/eq-shell/pull/1856) fix: idempotency guards for 0256/0267 policies + registry ar
-- Merged: eq-shell [#1852](https://github.com/eq-solutions/eq-shell/pull/1852) Add Multi screen for group-adding workers
-- Merged: eq-shell [#1850](https://github.com/eq-solutions/eq-shell/pull/1850) fix(token-exchange): stop gating a caller's own tenant slug 
-- Merged: eq-field [#974](https://github.com/eq-solutions/eq-field/pull/974) fix(ehow): field_job_numbers_src() had no caller-tenant chec
+- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
+- Merged: eq-shell [#1863](https://github.com/eq-solutions/eq-shell/pull/1863) fix(security): add missing tenant-scoped RLS policies on zaa
+- Merged: eq-shell [#1861](https://github.com/eq-solutions/eq-shell/pull/1861) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1860](https://github.com/eq-solutions/eq-shell/pull/1860) fix(admin): add Madagins to the Field workspace dropdown
+- Merged: eq-shell [#1857](https://github.com/eq-solutions/eq-shell/pull/1857) fix(licences): resolve staff_id per-tenant, not via workers.
+- Merged: eq-shell [#1855](https://github.com/eq-solutions/eq-shell/pull/1855) ci(tenant-drift): skip drift-check cleanly on dependency-onl
+- Merged: eq-shell [#1854](https://github.com/eq-solutions/eq-shell/pull/1854) fix(check-tenant-drift): fail loud when a real tenant has no
+- Merged: eq-field [#975](https://github.com/eq-solutions/eq-field/pull/975) fix(canon-read): drop the redundant ALLOWED_SLUGS gate
 
 ## ⚠ Needs you (8)
 
@@ -54,7 +54,7 @@ _…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -84,6 +84,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-09 | eq-shell | [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants live |
 | 2026-09-09 | eq-shell | [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts truncating |
 | 2026-09-09 | eq-shell | [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the picked |
 | 2026-09-09 | eq-shell | [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug |
@@ -98,7 +99,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1869](https://github.com/eq-solutions/eq-shell/pull/1869) docs(onboard): catch the runbook up to step 6 + --field-hostname |
 | 2026-09-09 | eq-shell | [#1865](https://github.com/eq-solutions/eq-shell/pull/1865) Rebuild Add worker to the Claude Design spec |
 | 2026-09-09 | eq-shell | [#1866](https://github.com/eq-solutions/eq-shell/pull/1866) fix(security): add authenticated read policy for zaap's organisat |
-| 2026-09-09 | eq-shell | [#1864](https://github.com/eq-solutions/eq-shell/pull/1864) fix(documents): actually stop clipping the "..." menu (#1828 didn |
 _Showing 15 of 83 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 18:48 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 18:56 UTC._
