@@ -61,11 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-09)
 
 **eq-cards:**
+- #351 fix(cards): correct stale tenant-isolation policy in code comments
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
-- #967 feat: auto-create the ~18-object prerequisite block for new-tenant provisioning
 - #966 fix: harden tenant-provision generator against 4 live collision classes
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
@@ -105,7 +105,7 @@ _If this file is >48h old, the cron is broken._
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
 | eq-shell | building | 2026-09-09 |
-| eq-field | prepared | 2026-09-09 |
+| eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
