@@ -1280,3 +1280,10 @@ loudly.*
   gets automated first. Full per-file reasoning (which of the 76 files needed substitution vs.
   exclusion, and why) is in `sessions/2026-09-09.md` — worth turning into a real script or
   runbook before a 4th tenant, not re-derived from scratch again. (added 2026-09-09)
+- [ ] **No labour-hire portal intake link exists for madagins yet either** — checked
+  independently in a separate session (live query, `shell_control.labour_hire_intake_links`):
+  only one link is active, and it's scoped to the `sks` tenant (labeled "Madagins" — the agency,
+  a different thing from the new tenant of the same name). Even once the Field schema above
+  lands, the self-serve "agency drops a zip" entry point still needs a link created via
+  eq-shell's `AdminLabourHireIntakeLinks.tsx` before anyone external can use it. (added
+  2026-09-09)

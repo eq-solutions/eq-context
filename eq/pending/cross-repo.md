@@ -1,7 +1,7 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-07
+last_updated: 2026-09-09
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
@@ -10,6 +10,29 @@ status: live
 # Cross-Repo — Pending
 
 **Budget:** ~500 lines (currently 912 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## GitHub MCP connector can't access eq-solutions' private repos — needs Royce's authorization grant (2026-09-09)
+*Surfaced while pushing/opening a PR for eq-shell#1831: `create_pull_request` and
+`list_pull_requests` both 404'd against eq-solutions/eq-shell despite the connector's own
+`get_me` succeeding.*
+
+- **Confirmed root cause, not guessed**: `search_repositories` with `org:eq-solutions` returns
+  only the org's 8 *public* repos (eq-ui, eq-roles, eq-contracts, eq-design-tokens,
+  eq-solves-intake, eq-context, sks-nsw-labour, test) — never eq-shell, eq-field,
+  eq-solves-service, or eq-cards, which are private. Rules out an org-SSO block (that would 404
+  the public search too); the connector's own GitHub grant just doesn't extend to private repos
+  in this org.
+- **Worked around via `gh` CLI** (already fully authorized, `repo` scope) for this session's
+  push/PR/merge — reliable fallback, not blocking day-to-day work.
+
+- [ ] **Needs Royce to grant the connector private-repo access** — check github.com → Settings →
+  Applications → Installed GitHub Apps (or the org's own page,
+  `github.com/organizations/eq-solutions/settings/installations`) for the Claude/Anthropic
+  connector entry and add the missing private repos, or claude.ai → Settings → Connectors →
+  GitHub if it's managed there instead. Verify by re-running `search_repositories
+  org:eq-solutions` — eq-shell should appear once granted. _(added 2026-09-09)_
 
 ---
 

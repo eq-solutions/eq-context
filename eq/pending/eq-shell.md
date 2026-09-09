@@ -15,15 +15,46 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: EQ-SHELL-23 test-data account fully cleaned up; Madagins tenant-provisioning gap root-caused, fix left to a session already building a better one (2026-09-09)
-*Continuation of the Sentry-sweep entry below (this file, EQ-SHELL-22/1P/1R/T-V) — same day, same thread. Two more issues surfaced on a follow-up sweep.*
+## eq-shell: labour-hire batch-intake portal copy simplified and shipped; audited feature + madagins-tenant readiness (not ready) (2026-09-09)
+*Royce asked whether the labour-hire licence zip-intake feature works for the new `madagins`
+tenant, to simplify a wordy line of portal copy, and to audit + confirm readiness.*
 
-- **EQ-SHELL-23** ("Workers missing an active org_membership") — not a code bug, a deliberately alert-only monitor (`check-missing-org-memberships.ts`) correctly reporting a real state. Traced to "Jordan A. Sample," an SKS Apprentice test record with fake-looking address/emergency-contact fields, created 2026-09-01. Its org_membership + original 2 test licences were already cleaned up by something else at 2026-09-08 08:16 UTC, but 2 NEW test licences landed on the same account 2 hours later with no re-grant — that's what fired the alert. On Royce's go: `app_data.staff` deactivated (ehow) and both new licences soft-deleted (jvkn `public.licences`). Will likely still fire once more, downgraded to the milder `at_risk` class (0 licences now, nothing actually hidden) — fully silencing it needs the jvkn-side shell account/tenant-membership closed too, a bigger action Royce didn't ask for this round.
-- **EQ-SHELL-24/25 root-caused as one thing**: a real new tenant, "Madagins" (`madagins.com.au`, 5 real members including Royce, tier "advanced"), self-serve-provisioned ~2026-09-09 00:56 UTC — the actual first live test of that path. Its database only ever got the deliberate bare-minimum provisioning baseline; the real migration set was never dispatched. Root-caused all the way down: ~37 `public.*` objects (`organisations`, `app_config`, the tender pipeline, apprentice/feedback tables) predate this repo's tracked migration system entirely and were hand-created on ehow years ago — no migration anywhere creates them, so any brand-new tenant hits a hard wall the moment a migration touches one (first hit: `0257_close_sec30_32_both_planes.sql`'s unconditional `REVOKE ALL ON public.app_config`, no existence guard). Attempted a live fix (dispatched `tenant-migrate.yml --slug=madagins`) — failed exactly there, confirming the diagnosis rather than resolving it.
-- **Did not build the fix** — mid-scoping, found another session already had a far more thorough one in progress: `eq-shell-wt-pgcron` (branch `fix/tenant-provisioning-pg-cron`, uncommitted) reconstructs all 37 objects from ehow's live schema (1870-line migration, extensively self-documented caveats) plus a second layer this session hadn't found yet (`pg_cron` extension missing, needed by 2 older migrations). Checked via `ListAgents`/session tools before touching anything: at least 5-6 sessions today are converged on Madagins across eq-shell/eq-field/eq-cards, one of them ("Build a tenant-provisioning completeness check") actively running at the time of checking. Stood down rather than risk a duplicate/conflicting 7th.
+- **Feature confirmed real, working, and already production-proven for SKS** — the "drop a zip,
+  it sorts the documents" batch intake (`BatchIntakePanel.tsx` + `labour-hire-portal-batch-*.ts`
+  + `_shared/labour-hire-batch.ts`): safe unzip (zip-slip hardened, size-capped), per-document
+  OCR, name/zip matching, human review before anything is created. Already battle-tested against
+  real Madagins-agency zips on 2026-08-20 (PR #1490) — for the **SKS tenant**, where "Madagins" is
+  an existing labour-hire agency with its own live portal link. **Not ready for the new, separate
+  `madagins` tenant** provisioned this morning — see `eq/pending/eq-field.md`'s "madagins tenant"
+  section (Field-schema blocker, now also carrying the missing-portal-link gap found this
+  session).
+- **Portal copy simplified and shipped**: [PR #1831](https://github.com/eq-solutions/eq-shell/pull/1831),
+  squash-merged, production confirmed live (bundle-hash change + a real click-through on
+  core.eq.solutions, not just merge-time trust) — the batch tab's intro line dropped a
+  rhetorical-question opener, kept the "lands with `{tenant}` for review" assurance.
+- **Live security finding, surfaced not fixed**: RLS is disabled on `app_data._eq_migrations` in
+  the new madagins tenant plane (`ornndtbdkxfsewspbrwk`) — flagged by Supabase's own advisor.
+  Proper fix is RLS-enabled-with-no-policy + revoke public/anon/authenticated + grant
+  service_role, added to both repos' `SERVICE_ROLE_ONLY` lists, per this repo's own governed
+  pipeline — not hand-applied. Royce's call on timing.
 
-- [ ] **Madagins is still not fully provisioned** — whichever session lands the `eq-shell-wt-pgcron` work (or a successor) needs to finish it: commit, test against madagins directly, dispatch. Not this session's to finish, per the above. _(added 2026-09-09)_
-- [ ] **EQ-SHELL-23 residual, same as the note above** — will refire as `at_risk`; Royce's call whether the jvkn-side account closure is worth doing. _(added 2026-09-09)_
+**Notes:**
+- **Local dev server can't render the app at all right now** — `netlify dev` hits a real,
+  reproducible CSP-vs-Vite conflict: the app's own CSP `script-src` header blocks Vite's
+  dev-mode inline preamble script ("@vitejs/plugin-react can't detect preamble"), blanking the
+  entire SPA on load. Unrelated to this session's change — confirmed via the real Netlify
+  deploy-preview build instead, which rendered correctly. Blocks any local click-testing in this
+  repo right now, not just this feature.
+- **GitHub MCP connector can't reach this repo, or any private eq-solutions repo** — confirmed
+  via `search_repositories org:eq-solutions`, which only returns the org's public repos. Worked
+  around via `gh` CLI (fully authorized) for this session's push/PR/merge. Full detail + fix path
+  in `eq/pending/cross-repo.md`'s new entry.
+
+- [ ] **RLS gap on madagins's `app_data._eq_migrations`** — needs the governed-pipeline fix
+  above; Royce's call on timing. _(added 2026-09-09)_
+- [ ] **Local dev server CSP-vs-Vite-preamble conflict** — blocks local click-testing entirely
+  until fixed; root cause not yet investigated (likely needs a dev-mode CSP carve-out or a
+  nonce/hash for Vite's preamble script). _(added 2026-09-09)_
 
 ---
 

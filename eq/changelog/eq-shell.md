@@ -9,6 +9,16 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-09 (PR #1831 MERGED + LIVE — labour-hire batch-intake portal copy simplified)
+- Public labour-hire portal's "A batch" tab intro line (`src/portal/LabourHirePortal.tsx`)
+  dropped a rhetorical-question opener ("Got an email covering several people at once?"), kept
+  the "lands with `{tenant}` for review before anyone is contacted" assurance. Copy-only, no
+  logic changed.
+- Prompted by an audit of the labour-hire batch-zip intake feature's readiness for a new
+  `madagins` tenant — feature itself confirmed working and already production-proven (against
+  real Madagins-agency zips, under the SKS tenant); the new tenant is not yet ready (separate,
+  unrelated gap — see `eq/pending/eq-field.md` and `eq/pending/eq-shell.md`).
+
 ## 2026-09-08 (PR #1823 MERGED + LIVE — sidebar/nav extended to touch tablets up to 1024px wide)
 - Same cross-suite iPad audit as eq-service's #837. Shell's sidebar/hamburger-drawer (native pages) and icon-rail/MobileTabBar (embedded Field/Service/Cards iframe pages) only ever had a phone breakpoint and a desktop breakpoint — every iPad width rendered full desktop density under touch input.
 - Mirrored eq-field's own same-day fix (PR #942) exactly: extended each relevant `max-width:767px` query into `max-width: 767px, (pointer: coarse) and (hover: none) and (max-width: 1024px)`. Landscape iPad (1024px+) deliberately out of scope, matching eq-field's precedent.
