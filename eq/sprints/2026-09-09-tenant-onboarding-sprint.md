@@ -84,23 +84,27 @@ verified live the same day, `shell_control.tenant_routing.supabase_project_ref` 
 
 ~~Empty, never wired to anything (`organisations.supabase_url` and `shell_control.tenants.supabase_project_ref` both still null), not needed under the shared-ehow-default model. A `/_platform/tenants` admin action, not code — do this once #4 is live so Madagins isn't briefly homeless.~~
 
-### 6. Lazy-seed the Cards-side `org_memberships` admin row
+### 6. ~~Lazy-seed the Cards-side `org_memberships` admin row~~ — CLOSED, unnecessary
 
-Per decision #2: on a Cards-side authenticated action, if the user holds `shell_control.user_tenant_memberships.role = 'manager'` for a tenant and has no `org_memberships` row for its `organisations` counterpart yet, create one (`role: 'admin'`, `status: 'active'`). No backfill pass needed — self-corrects the first time Michelle or Aditi actually uses Cards for Madagins.
+**Closed (2026-09-09, later same day): no code needed.** Checked `is_org_admin()`'s actual live definition rather than assuming from data alone — it already has a third clause checking `shell_control.user_tenant_memberships.role = 'manager'` directly, no `org_memberships` row required. Every admin RPC in the app (`eq_cards_admin_list_workers`, `_upsert_worker`, `_create_invite`, `_revoke_invite`) gates through exactly this function. Michelle and Aditi can already list Madagins' team, invite workers, and manage credentials right now, purely from their existing Shell manager role. The original item was scoped from checking `org_memberships` directly and assuming that was the only path — it isn't.
+
+~~Per decision #2: on a Cards-side authenticated action, if the user holds `shell_control.user_tenant_memberships.role = 'manager'` for a tenant and has no `org_memberships` row for its `organisations` counterpart yet, create one (`role: 'admin'`, `status: 'active'`). No backfill pass needed — self-corrects the first time Michelle or Aditi actually uses Cards for Madagins.~~
 
 ### 7. Sync `organisations.tier` from `shell_control.tenants.tier`
 
-Per decision #3: backfill Madagins' `organisations.tier` to `'advanced'` now (EQ Field is reading the stale default today), then close the sync gap structurally so a future tenant's Field-gating tier can't drift from what the admin UI actually set.
+**Backfill done (2026-09-09, later same day)**: Madagins' `organisations.tier` is now `Advanced`, matching `shell_control.tenants.tier`. EQ Field reads the correct value now.
 
-### 8. Fix the Cards-side multi-org-admin picker truncation
+**The structural half is real, but bigger than a quick fix — deferred, needs your call on scheduling.** Closing the sync gap for every future tenant means either patching eq-shell's tenant admin code or adding a database trigger, applied through eq-cards' own migration-apply pipeline for this database (`jvkn-control-plane-apply.yml`) — checked, and that pipeline **has never been dispatched, not once**. Its own header warns that bootstrapping it over unreconciled migrations "stamps them applied without ever running them." First-time-running a never-exercised, no-approval-gate DDL pipeline isn't something to fold into a quick fix — it needs its own deliberate pass.
 
-`org_admin_provider.dart:16-24` calls `my_admin_org_ids` — an RPC that's plural *by design* (its own doc comment: an admin can legitimately belong to more than one org since Access-Model Phase 2) — but the client truncates to `rows.first` and treats it as a single org everywhere: the Team screen, whether Settings even shows an Admin section, and which org it points to. No picker exists for an admin of multiple orgs; whichever org "wins" is arbitrary.
+### 8. Fix the Cards-side multi-org-admin picker truncation — done, [eq-cards#350](https://github.com/eq-solutions/eq-cards/pull/350)
 
-**Ship this alongside #6, not after.** Royce, Michelle Moore, and Aditi Rajbhandari already span more than one tenant's `shell_control` manager role between them. The moment #6 lands and someone becomes a Cards-side admin of a second org, this bug reappears as "wrong-org-admin," silently — the same zero-admin-shaped problem this sprint exists to fix, one layer up.
+**Merged and deployed 2026-09-09 (`84d1bb3`)**, confirmed live three independent ways (GitHub Actions conclusion, Netlify's own `state: ready` + `published_at`, and a timestamp cross-match between the two). `org_admin_provider.dart`'s `my_admin_org_ids` truncation (`rows.first`, arbitrary) replaced with a pure `selectActiveAdminOrg()` function that prefers whichever admin org matches the JWT's current `tenant_id` — the workspace already active via the existing switcher — falling back to the first result only when none match. No new picker UI, no signature or call-site changes. 5 new unit tests, no live Supabase client needed (same extraction pattern as `tenant-routing.ts`).
 
-### 9. Fix `required_by_org_strip` grouping key
+Turned out item 6 closing as unnecessary doesn't reduce this one's value — `is_org_admin()`'s widened predicate means an admin can already be treated as an admin of 2+ orgs purely via Shell manager roles, with no `org_memberships` row at all. This fix was arguably more load-bearing than originally scoped, not less.
 
-`required_by_org_strip.dart:42-46` groups required-credential cards by `orgName` (a display string) instead of `orgId`. Two distinct orgs that happen to share a display name would have their required-credential lists incorrectly merged into one card. Low severity/edge-case, independent of everything else here — a straightforward one-line key fix.
+### 9. Fix `required_by_org_strip` grouping key — done, same PR as #8
+
+**Merged and deployed 2026-09-09**, same [PR #350](https://github.com/eq-solutions/eq-cards/pull/350) as item 8. Grouping key changed from `orgName` (display string) to `orgId`. 1 new regression test (two orgs sharing a display name now render as separate cards), plus the 3 pre-existing tests still passing.
 
 ---
 
@@ -108,12 +112,12 @@ Per decision #3: backfill Madagins' `organisations.tier` to `'advanced'` now (EQ
 
 | # | Item | Status | Action |
 |---|---|---|---|
-| 1 | Isolation model: shared-ehow default, dedicated project opt-in | **Decided 2026-09-09** | Unblocks #4/#5 below |
-| 2 | Cards-side admin-create gap: lazy self-seed off `shell_control` manager role | **Decided 2026-09-09** | Unblocks #6 below |
+| 1 | Isolation model: shared-ehow default, dedicated project opt-in | **Corrected 2026-09-09 — rejected; madagins keeps its dedicated project** | #4 unaffected (works either way); #5 retracted |
+| 2 | Cards-side admin-create gap: lazy self-seed off `shell_control` manager role | **Decided 2026-09-09 — build found unnecessary** | #6 closed, `is_org_admin()` already covers it |
 | 3 | Tier split-brain: confirmed bug, sync from `shell_control.tenants.tier` | **Confirmed 2026-09-09** | Unblocks #7 below |
 | 4 | Generalise `workers-canonical-sync` off the SKS/ehow hardcode + cross-tenant-leak test | **Done — [PR #348](https://github.com/eq-solutions/eq-cards/pull/348), live** | — |
-| 5 | Archive orphaned `eq-tenant-madagins` project | Ready, admin action | Your click, whenever |
-| 6 | Lazy-seed Cards-side `org_memberships` admin | Ready to build | Build together with #8 |
-| 7 | Backfill + sync `organisations.tier` | Ready to build | Build on your go |
-| 8 | Fix multi-org-admin picker truncation (`org_admin_provider.dart`) | Ready to build | Build together with #6 |
-| 9 | Fix `required_by_org_strip` grouping key (name → id) | Ready to build | Build on your go, independent
+| 5 | Archive orphaned `eq-tenant-madagins` project | **Retracted — do not do this** | Madagins keeps its dedicated project |
+| 6 | Lazy-seed Cards-side `org_memberships` admin | **Closed — unnecessary**, `is_org_admin()` already covers it | — |
+| 7 | Backfill + sync `organisations.tier` | **Backfill done 2026-09-09** | Structural fix deferred — needs your call on scheduling |
+| 8 | Fix multi-org-admin picker truncation (`org_admin_provider.dart`) | **Done — [PR #350](https://github.com/eq-solutions/eq-cards/pull/350), live** | — |
+| 9 | Fix `required_by_org_strip` grouping key (name → id) | **Done — same PR as #8** | — |

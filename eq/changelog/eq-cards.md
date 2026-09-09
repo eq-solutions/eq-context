@@ -9,6 +9,14 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-09-09 (PR #350 MERGED + LIVE — multi-org-admin picker truncation + `required_by_org_strip` grouping key fixed)
+- Same tenant-onboarding sprint as PR #348: a background sweep of the Flutter client for multi-org gaps found `org_admin_provider.dart`'s `my_admin_org_ids` silently truncating a multi-org admin to `rows.first` (arbitrary), and `required_by_org_strip.dart` grouping licence requirements by `orgName` (a display string) instead of `orgId` — two orgs sharing a display name would silently merge into one card.
+- `org_admin_provider.dart`: extracted a pure `selectActiveAdminOrg()` function — prefers whichever admin org matches the JWT's current `tenant_id` (the workspace already active via the existing switcher), falling back to the first result only when none match. No UI or call-site signature changes. Same live-client-free extraction pattern as `tenant-routing.ts` (PR #348).
+- `required_by_org_strip.dart`: grouping key changed from `g.orgName` to `g.orgId`.
+- Turned out more load-bearing than originally scoped: sprint item 6 (a planned Cards-side lazy-seed fix) closed as unnecessary once `is_org_admin()`'s live definition was checked — it already treats a `shell_control` manager as an org admin with no `org_memberships` row needed, so an admin can legitimately span 2+ orgs via Shell roles alone, exactly the case this PR's fix protects.
+- 5 new unit tests for `selectActiveAdminOrg`, 1 new regression test for the grouping-key fix. [PR #350](https://github.com/eq-solutions/eq-cards/pull/350), merged (`84d1bb3`), deployed and confirmed live three independent ways (GitHub Actions conclusion, Netlify `state: ready` + `published_at`, timestamp cross-match).
+- Full context: `eq/sprints/2026-09-09-tenant-onboarding-sprint.md`.
+
 ## 2026-09-09 (PR #348 MERGED + LIVE — workers-canonical-sync generalised off the SKS-only hardcode)
 - Onboarding a second tenant (Madagins) hit a wall flagged two months earlier: `workers-canonical-sync`'s `TENANT_ROUTES` was a hardcoded const mapping only SKS's org to its ehow tenant — any other tenant's worker silently got skipped from ever reaching a Field roster.
 - Replaced with a new `tenant-routing.ts` module (`resolveTenantRoute()`) that reads `organisations.tenant_id` live — a new shared-database tenant needs zero code changes going forward. An org with its own dedicated database is explicitly refused rather than silently mis-routed into the shared one.
