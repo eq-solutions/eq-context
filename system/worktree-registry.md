@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -87,6 +87,8 @@ different naming schemes, illustrating exactly the problem F16 fixes:
 
 
 `C:\Projects\eq-shell-join-tenant-ratelimit (eq-shell)` | `claude/join-tenant-rate-limit` | session b2e0fcec-2328-4eed-88f1-4900baf6ea21 — adding rate-limiting to shell-join-tenant.ts (no throttle on this self-serve registration endpoint, unlike its shell-login-phone-otp.ts sibling); same root-checkout collision as the row above (root was mid-use by a concurrent session on `claude/entity-view-gate-crm-read-rpcs`), hence a sibling worktree instead of working in root | 2026-09-01 | active — will move to Stale (or delete the row + worktree) once the PR is open and reviewed.
+
+`C:\Projects\eq-shell-wt-conversations-wave2 (eq-shell)` | `claude/conversations-wave2` | building the 2 approved Wave-2 items from `eq/sprints/2026-09-09-conversations-followup-sprint.md` — "logged after the fact" backdate indicator + Casual-note attach-before-first-save; root checkout (`C:\Projects\eq-shell`) was mid-use by a concurrent session on `feat/add-worker-multi`, hence a sibling worktree instead of working in root | 2026-09-09 | active — will move to Stale (or delete the row + worktree) once the PR is open and reviewed.
 
 ---
 
