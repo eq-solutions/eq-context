@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-09)
 
 **eq-cards:**
-- #350 fix(cards): multi-org admin no longer truncated to first org; licence gaps grouped by org id
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
@@ -111,7 +110,7 @@ _If this file is >48h old, the cron is broken._
 ## Field Data Plane — SKS tenant (as of 2026-09-09)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 70 | ✓ 70 |
+| Directory | app_data.field_people | 72 | ✓ 72 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,262 | ✓ 2,262 |
