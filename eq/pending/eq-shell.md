@@ -15,13 +15,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: document register "..." menu no longer clips behind the next row, merged, live (PR #1828, 2026-09-09)
+*Follow-up to the "My documents" nav badge session (below) — the dropdown-clip bug found in passing there. Root-caused properly rather than assumed: `.eq-card` (the row wrapper's className) has no matching CSS rule anywhere in this codebase or its dependencies (checked `src/`, the vendored `@eq-solutions/ui`/`@eq-solutions/tokens` packages, and the tokens package's Tailwind preset) — the `overflow: hidden` clipping the popover was serving no visual purpose at all, not protecting a rounded corner. Every other `eq-card` usage in the repo (`AdminTenantsPage.tsx`, `AdminWorkersPage.tsx`) already omits it.*
+
+- One-line fix (`DocumentListView.tsx:378`): removed `overflow: 'hidden'` from the row wrapper. `tsc -b --force`, eslint, full test suite (607/607) all clean. Visually confirmed with a side-by-side repro using the real `@eq-solutions/ui` dropdown CSS — before, the menu is clipped to a sliver; after, it renders cleanly over the row below.
+- [ ] **Not click-tested against the real authenticated page** — no Shell session/credentials in this environment; verified instead via the isolated CSS repro above. _(added 2026-09-09)_
+
+---
+
 ## eq-shell: "My documents" nav badge closes the signer-notification gap, merged, live (PR #1825, 2026-09-09)
-*Royce, live-testing the Documents feature shipped 09-08, asked "how does the user know they have documents to sign?" Investigated both eq-shell and eq-field's actual mechanisms live rather than guessing: EQ Field's own nav item already gates on a live per-signer check; Shell's "My documents" sidebar item had zero count/signal, and the reminder email can take up to 7 days to fire for a push with no `due_at`. Ran a full `/decide` pass before building: chose a nav badge (cheap, reuses the existing endpoint) over touching the reminder cadence (a tuning decision, not mine to change as a side effect of this).*
 
-- New `useMySignoffsSummaryQuery` hook (`src/hooks/useHomeQueries.ts`) reuses the existing `resource=my-signoffs` endpoint (already scoped server-side to the caller) to badge the sidebar item with an outstanding count + an overdue-alert state. Wired into both `HubLayout` and `TenantHome` — the two places that render the sidebar directly — so the badge shows from the very first page a session lands on, not only after navigating into Documents. Viewer-tier only (`documents.view` without `documents.assign`); Assigners already see per-document counts on the full register. Confirmed the mobile hamburger drawer renders the identical sidebar instance as desktop (`AppShell.tsx` renders the same `{sidebar}` node twice, CSS-toggled by breakpoint) — no separate mobile work needed.
-- **Also found, not fixed**: a real dropdown/z-index bug on the document register's "..." menu (`DocumentListView.tsx:378`) — each row's `overflow:hidden` card wrapper clips the menu's popover before it can render over the row below. Real fix needs either a portal-based popover in the shared `@eq-solutions/ui` package (cross-repo, needs a release-tag bump) or restructuring which element owns the corner-clip — not a quick inline fix.
-
-- [ ] **Document register "..." menu renders clipped behind the next row, not in front** — see above; needs a scoped decision (eq-ui portal fix vs. local restructure) before building. _(added 2026-09-09)_
 - [ ] **Not click-tested live by a person** — verified via `tsc -b --force`, eslint, and the full test suite (606/606) only; no Shell session/credentials in this environment. _(added 2026-09-09)_
 
 ---
