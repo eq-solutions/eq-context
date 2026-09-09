@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 08:34 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 08:36 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 08:12 UTC → 2026-09-09 08:34 UTC)
+## Since last refresh (2026-09-09 08:34 UTC → 2026-09-09 08:36 UTC)
 
-- Merged: eq-shell [#1838](https://github.com/eq-solutions/eq-shell/pull/1838) fix(field): add madagins to the Field tenant allowlist + pic
-- Merged: eq-shell [#1826](https://github.com/eq-solutions/eq-shell/pull/1826) fix(chunk-reload): recognize Firefox's MIME-type wording for
-- Merged: eq-shell [#1822](https://github.com/eq-solutions/eq-shell/pull/1822) feat(documents): expose bulk multi-document push
-- Merged: eq-shell [#1818](https://github.com/eq-solutions/eq-shell/pull/1818) fix(documents): scope site/customer tags to Person, make Rol
-- Merged: eq-shell [#1816](https://github.com/eq-solutions/eq-shell/pull/1816) fix(migrations): drop document_register before document_sign
-- Merged: eq-shell [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an ex
-- Merged: eq-shell [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load 
-- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
-- ✅ Needs you: 9 → 8
+- Merged: eq-shell [#1839](https://github.com/eq-solutions/eq-shell/pull/1839) fix(control-plane): keep tenants mirrored from organisations
+- Merged: eq-shell [#1825](https://github.com/eq-solutions/eq-shell/pull/1825) feat(documents): add an outstanding-count badge to My docume
+- Merged: eq-shell [#1824](https://github.com/eq-solutions/eq-shell/pull/1824) feat(staff): let a conversation carry a reminder date
+- Merged: eq-shell [#1823](https://github.com/eq-solutions/eq-shell/pull/1823) fix(responsive): let iPad join the phone breakpoint instead 
+- Merged: eq-shell [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view
+- Merged: eq-shell [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAud
+- Merged: eq-shell [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabili
+- Merged: eq-shell [#1817](https://github.com/eq-solutions/eq-shell/pull/1817) feat(staff): backdate conversations, Casual notes attach a s
 
 ## ⚠ Needs you (8)
 
@@ -31,7 +30,7 @@ _2026-09-09 08:34 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-09.md](sessions/2026-09-09.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/)
-- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
+- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (294)
 
@@ -55,7 +54,7 @@ _…and 282 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
 | eq-field | ✓ success | 0d ago | 3 | 6d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
@@ -65,7 +64,7 @@ _…and 282 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-09 |
+| eq-shell | new | 2026-09-09 |
 
 ## Live errors (Sentry)
 
@@ -82,6 +81,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-09 | eq-shell | [#1839](https://github.com/eq-solutions/eq-shell/pull/1839) fix(control-plane): keep tenants mirrored from organisations, bac |
 | 2026-09-09 | eq-shell | [#1838](https://github.com/eq-solutions/eq-shell/pull/1838) fix(field): add madagins to the Field tenant allowlist + picker |
 | 2026-09-09 | eq-shell | [#1837](https://github.com/eq-solutions/eq-shell/pull/1837) fix(sidebar): open workspace switcher menu upward, not down off-s |
 | 2026-09-09 | eq-shell | [#1835](https://github.com/eq-solutions/eq-shell/pull/1835) fix(security): enable RLS on app_data._eq_migrations (all tenant  |
@@ -96,7 +96,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-field | [#959](https://github.com/eq-solutions/eq-field/pull/959) tool: generate-tenant-provision-sql.mjs — replay eq-field's own m |
 | 2026-09-09 | eq-field | [#962](https://github.com/eq-solutions/eq-field/pull/962) docs: fix stale eq-context path refs in CLAUDE.md session-end pro |
 | 2026-09-09 | eq-field | [#961](https://github.com/eq-solutions/eq-field/pull/961) v3.5.708 — Role-string literals: wire up eq-roles-canon.js instea |
-| 2026-09-09 | eq-field | [#960](https://github.com/eq-solutions/eq-field/pull/960) v3.5.707 — Leave: extract balance/business-day math into leave-ru |
 _Showing 15 of 77 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -191,4 +190,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 08:34 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 08:36 UTC._
