@@ -8,21 +8,21 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 02:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 03:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 02:27 UTC → 2026-09-09 02:43 UTC)
+## Since last refresh (2026-09-09 02:43 UTC → 2026-09-09 03:48 UTC)
 
-- Merged: eq-shell [#1817](https://github.com/eq-solutions/eq-shell/pull/1817) feat(staff): backdate conversations, Casual notes attach a s
-- Merged: eq-shell [#1816](https://github.com/eq-solutions/eq-shell/pull/1816) fix(migrations): drop document_register before document_sign
-- Merged: eq-shell [#1815](https://github.com/eq-solutions/eq-shell/pull/1815) fix(documents): one signature per person, site becomes an ex
-- Merged: eq-shell [#1814](https://github.com/eq-solutions/eq-shell/pull/1814) perf(documents): parallelize signer-name lookups, lazy-load 
-- Merged: eq-shell [#1812](https://github.com/eq-solutions/eq-shell/pull/1812) chore(intake): re-vendor eq-intake to eq-solves-intake@cfeca
-- Merged: eq-shell [#1811](https://github.com/eq-solutions/eq-shell/pull/1811) Delete retired AdminDocumentUpload.tsx
-- Merged: eq-shell [#1807](https://github.com/eq-solutions/eq-shell/pull/1807) feat(customers): give the customer detail view its own URL
-- Merged: eq-shell [#1805](https://github.com/eq-solutions/eq-shell/pull/1805) fix(deps): close 3 Dependabot advisories (browserslist, ffla
-- ✅ Needs you: 8 → 7
+- Merged: eq-shell [#1830](https://github.com/eq-solutions/eq-shell/pull/1830) test(staff): add coverage for staff-resourcing's pure rollup
+- Merged: eq-shell [#1818](https://github.com/eq-solutions/eq-shell/pull/1818) fix(documents): scope site/customer tags to Person, make Rol
+- Merged: eq-shell [#1813](https://github.com/eq-solutions/eq-shell/pull/1813) My documents: fix row alignment on wrapped titles
+- Merged: eq-shell [#1810](https://github.com/eq-solutions/eq-shell/pull/1810) feat(equipment): give the asset detail drawer its own URL
+- Merged: eq-shell [#1809](https://github.com/eq-solutions/eq-shell/pull/1809) fix(quotes): remove board-only Closed column from EQ Ops kan
+- Merged: eq-shell [#1808](https://github.com/eq-solutions/eq-shell/pull/1808) feat(staff): give the staff detail panel its own URL
+- Merged: eq-shell [#1806](https://github.com/eq-solutions/eq-shell/pull/1806) fix(migrations): renumber 0303_tidy_read_entity_columns -> 0
+- Merged: eq-shell [#1804](https://github.com/eq-solutions/eq-shell/pull/1804) chore(intake): re-vendor eq-intake to eq-solves-intake@81bd4
+- ⚠ Needs you: 7 → 8 (new items)
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (8)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Guard bypass? rung 4** — F1: Substrate read path served 8-12 day stale content, 200 OK, no error · possibly recurred in [2026-08-23.md](sessions/2026-08-23.md) · [failures.md](system/failures.md)
@@ -31,11 +31,14 @@ _2026-09-09 02:43 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-08-30.md](sessions/2026-08-30.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-shell` [Error: column sites.deleted_at does not exist](https://eq-solutions.sentry.io/issues/145817362/)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (287)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **"Logged after the fact" indicator, Casual attachment friction, "overall score per person"** — 3 items from the follow-up sprint still waiting on Royce's own decisions, none urgent. Full detail in the sprint doc. _(added 2026-09-09)_
+- **eq-shell** · **The structural gap itself is still open** — every future Dependabot PR in this repo will hit the identical `SUPABASE_ACCESS_TOKEN` failure and need the same admin-override, until one of: (a) grant the token to Dependabot secrets (security trade-off, declined for now), or (b) change the workflow to skip this check gracefully when triggered by Dependabot AND the diff touches no schema-relevant files. Neither built — Royce's call which way, if either. _(added 2026-09-09)_
 - **eq-shell** · **Not click-tested against the real authenticated page** — no Shell session/credentials in this environment; verified instead via the isolated CSS repro above. _(added 2026-09-09)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b --force`, eslint, and the full test suite (606/606) only; no Shell session/credentials in this environment. _(added 2026-09-09)_
 - **eq-shell** · **Not click-tested live by a person** — verified via a clean `pnpm exec tsc -b` plus an isolated before/after reproduction of the actual CSS cascade at 768px and 1400px, not a real authenticated session on a physical iPad. No Shell/demo credentials in this environment. _(added 2026-09-08)_
@@ -46,17 +49,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live** — same auth-wall limitation as most of this file's open items: `/sks/ops` is behind `RequireSession`, no way to sign in from this environment. Worth a real pass: confirm the board shows only the 5 pipeline-stage columns, confirm lost/cancelled/expired/superseded quotes are still reachable via Table + the status_stage filter. _(added 2026-09-08)_
 - **eq-shell** · **Not click-tested live by a person** — verified via `tsc -b`, `eslint`, full `vite build`, and the live-deploy check above; no Shell session/credentials in this environment. Worth a real pass on all three: open a record, refresh, confirm it reopens the same one instead of dropping back to the list. _(added 2026-09-07)_
 - **eq-shell** · **Not click-tested live by a person** — verified via full build/test/lint, live DB queries (ledger + catalog), and production deploy-ancestry only. Worth a real pass: open `/intake`'s Health score, Decay, and Licence-expiry views for the SKS tenant and confirm they still show correct data now that they're reading a narrower column set. _(added 2026-09-07)_
-- **eq-shell** · **Bulk backfill still blocked on Royce** — `scripts/import-sks-manager-lines.mjs` exists (double-gated dry-run/`--apply`, reuses the identity-bridge resolver from `etl-nspbmir-to-ehow.mjs`) but its `parseExport()` shape is provisional — nobody has seen a real export from `SKS_NSW_Org_Chart_Interactive.html`'s own Export function yet. Needs Royce to supply the file; run dry-run first, review the unmatched/ambiguous report with him before `--apply`. _(added 2026-09-07)_
-- **eq-shell** · **Not click-tested live by a person** — verified via full build/test/lint (591/593 passing) + live DB queries (migration applied, security-group grant confirmed, production deploy confirmed via exact commit-ref match), not an actual signed-in click-through. Worth a real pass: as Royce, confirm the Manager field shows/edits correctly on a real staff profile; as any other account, confirm it's completely absent (view and edit). _(added 2026-09-07)_
 _…and 275 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 3d |
-| eq-field | ✓ success | 0d ago | 3 | 6d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 4d |
+| eq-field | ✓ success | 0d ago | 5 | 6d |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -64,17 +65,14 @@ _…and 275 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | ready | 2026-09-09 |
+| eq-shell | building | 2026-09-09 |
 
 ## Live errors (Sentry)
 
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
-| eq-shell | [auth-stall: verify-timeout](https://eq-solutions.sentry.io/issues/134128583/) | 14 | 2026-09-06 |
-| eq-shell | [auth-stall: session-spinner-timeout](https://eq-solutions.sentry.io/issues/134128584/) | 13 | 2026-09-06 |
-| eq-shell | [Error: column sites.deleted_at does not exist](https://eq-solutions.sentry.io/issues/145817362/) | 4 | 2026-09-09 |
+| eq-shell | [Error: column sites.deleted_at does not exist](https://eq-solutions.sentry.io/issues/145817362/) | 6 | 2026-09-09 |
 | eq-shell | [EQ Field accepted the handoff but never reported 'rendered' (23s)](https://eq-solutions.sentry.io/issues/145332293/) | 3 | 2026-09-08 |
-| eq-shell | [EQ Field handoff stalled at "minting" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145002211/) | 2 | 2026-09-09 |
 | eq-cards | [minified:B2: AuthRetryableFetchException(message: ClientException: Failed to fet](https://eq-solutions.sentry.io/issues/144338444/) | 2 | 2026-09-08 |
 | eq-shell | [Error: events query failed: Could not find the table 'app_data.canonical_events'](https://eq-solutions.sentry.io/issues/145816473/) | 1 | 2026-09-09 |
 | eq-shell | [Error: Workers missing an active org_membership: 1 (1 already hiding licences)](https://eq-solutions.sentry.io/issues/145797834/) | 1 | 2026-09-08 |
@@ -84,7 +82,10 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-09 | eq-shell | [#1830](https://github.com/eq-solutions/eq-shell/pull/1830) test(staff): add coverage for staff-resourcing's pure rollup logi |
 | 2026-09-09 | eq-shell | [#1828](https://github.com/eq-solutions/eq-shell/pull/1828) fix(documents): stop clipping the "..." menu behind the next row |
+| 2026-09-09 | eq-field | [#957](https://github.com/eq-solutions/eq-field/pull/957) v3.5.705 — chore: delete 4 confirmed zero-caller functions |
+| 2026-09-09 | eq-field | [#955](https://github.com/eq-solutions/eq-field/pull/955) chore: guard directory-view tenant scope, fix audit-multi-lens te |
 | 2026-09-09 | eq-field | [#954](https://github.com/eq-solutions/eq-field/pull/954) docs: land the 2026-09-07 multi-lens review (v7) |
 | 2026-09-08 | eq-shell | [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) chore(deps): bump unpdf from 0.12.1 to 0.12.2 |
 | 2026-09-08 | eq-shell | [#1699](https://github.com/eq-solutions/eq-shell/pull/1699) chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0 |
@@ -96,14 +97,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-08 | eq-shell | [#1824](https://github.com/eq-solutions/eq-shell/pull/1824) feat(staff): let a conversation carry a reminder date |
 | 2026-09-08 | eq-shell | [#1823](https://github.com/eq-solutions/eq-shell/pull/1823) fix(responsive): let iPad join the phone breakpoint instead of fu |
 | 2026-09-08 | eq-shell | [#1822](https://github.com/eq-solutions/eq-shell/pull/1822) feat(documents): expose bulk multi-document push |
-| 2026-09-08 | eq-shell | [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view |
-| 2026-09-08 | eq-shell | [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAudience |
-| 2026-09-08 | eq-shell | [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabilize oc |
 _Showing 15 of 78 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (302 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (304 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (247 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (68 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -135,9 +133,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1522 | 208 / 95 | 1 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1546 | 209 / 97 | 1 | 78 |
 | [eq-cards](eq/pending/eq-cards.md) | 355 | 48 / 17 | 0 | 9 |
-| [eq-field](eq/pending/eq-field.md) | 1294 | 180 / 71 | 35 | 48 |
+| [eq-field](eq/pending/eq-field.md) | 1282 | 182 / 69 | 26 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 390 | 50 / 19 | 0 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 164 | 13 / 6 | 2 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
@@ -193,4 +191,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 02:43 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 03:48 UTC._
