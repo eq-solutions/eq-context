@@ -2,7 +2,7 @@
 title: Conversations backdating/attachments — follow-up sprint
 owner: Royce Milmlow
 created: 2026-09-09
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: Everything left open from the 2026-09-08 Conversations backdating/attachments feature (session-close card's 5 "Deferred" + 1 "Needs you" rows), plus a reminders idea Royce raised the next day with a live example — scoped via AskUserQuestion in-conversation and folded in here as a 6th item rather than tracked separately.
 read_priority: high
 status: live
@@ -58,8 +58,8 @@ Can't attach a document on a Casual note's very first save — has to be saved o
 
 ## Wave 3 — needs a bigger decision before any code
 
-### 5. "Overall score per person" — ⛔ HELD, explicitly NOT approved (2026-09-09)
-Considered in the same 2026-09-09 pending-items triage pass that approved items 3 & 4 above, and deliberately NOT approved — do not pick this up without a fresh decision from Royce, even though 3 & 4 are now done. Sketched in conversation 2026-09-08, no code. Raw material already exists and is unused: the `happy_engaged` trend across Check-ins/Dev Reviews, the 7 tech-skill + 4 values ratings. **The real blocker is access, not UI**: `staff_conversations`' RLS is creator-only, so a genuine cross-manager score needs a narrow derived-data path (compute server-side, expose only the number/trend — the same boundary `staff-resourcing.ts` already draws for "was this person spoken to"), not a broader RLS loosening. Needs a decision on who's allowed to see it before this is buildable at all — this is the shape of the feature, not a small toggle.
+### 5. "Overall score per person" — ✅ DECIDED (2026-09-10): hold
+Held 2026-09-09 pending an access decision; decided 2026-09-10 — hold, don't build now. Full access design was scoped in chat the same day (not persisted to the substrate): it's cheap — mirror `staff-resourcing.ts`'s `redactForViewer`, gate a new endpoint behind a permission, no RLS change needed — so access was never the real blocker once examined closely. The actual blocker is data sparsity: only 14/77 active people have ever had a conversation logged, zero in the last 90 days. `StaffResourcingPage.tsx`'s own 2026-09-07 rejection of a "team pulse" treatment of this exact `happy_engaged` data applies here too, more directly than the `staffLib.ts` mobilisation-readiness precedent originally flagged (weighed and found not to veto on its own — that rule targets binary operational gates with one owner each, not a sentiment/skills trend). Two corrections found during scoping: RLS is tenant+creator+permission, not pure creator-only; and the tech/values/engagement signals are already computed and shown per-person on `StaffResourcingPage.tsx` today as 3 separate badges, just never combined or cross-manager. Revisit once conversation cadence recovers — worth checking again in a few months given the reminders feature (item 2 above) shipped the same day this was first raised.
 
 ---
 
@@ -78,5 +78,5 @@ Turned out not to need your own phone check after all — a second attempt at fo
 | 2 | Reminders on conversations | ✅ Done — live | Nothing — watch for a real reminder to confirm the badge |
 | 3 | "Logged after the fact" indicator | ✅ Done — PR #1858 merged, live | Nothing |
 | 4 | Casual attachment friction | ✅ Done — PR #1858 merged, live | Nothing |
-| 5 | "Overall score per person" | ⛔ Held — explicitly not approved | Needs a fresh decision from Royce |
+| 5 | "Overall score per person" | ✅ Decided (2026-09-10) — hold | Revisit once conversation cadence recovers |
 | 6 | Mobile view check | ✅ Confirmed live | Nothing |
