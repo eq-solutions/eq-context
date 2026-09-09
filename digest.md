@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 08:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-09 09:17 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 08:45 UTC → 2026-09-09 08:49 UTC)
+## Since last refresh (2026-09-09 08:49 UTC → 2026-09-09 09:17 UTC)
 
-- Merged: eq-shell [#1825](https://github.com/eq-solutions/eq-shell/pull/1825) feat(documents): add an outstanding-count badge to My docume
-- Merged: eq-shell [#1824](https://github.com/eq-solutions/eq-shell/pull/1824) feat(staff): let a conversation carry a reminder date
-- Merged: eq-shell [#1823](https://github.com/eq-solutions/eq-shell/pull/1823) fix(responsive): let iPad join the phone breakpoint instead 
-- Merged: eq-shell [#1821](https://github.com/eq-solutions/eq-shell/pull/1821) feat(documents): wire up the Matrix view
-- Merged: eq-shell [#1820](https://github.com/eq-solutions/eq-shell/pull/1820) test(documents): add regression coverage for pushDocumentAud
-- Merged: eq-shell [#1819](https://github.com/eq-solutions/eq-shell/pull/1819) fix(staff): regenerate Formal headline date on edit, stabili
-- Merged: eq-shell [#1817](https://github.com/eq-solutions/eq-shell/pull/1817) feat(staff): backdate conversations, Casual notes attach a s
-- Merged: eq-shell [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) chore(deps): bump unpdf from 0.12.1 to 0.12.2
-- ⚠ Needs you: 7 → 8 (new items)
+- Merged: eq-shell [#1843](https://github.com/eq-solutions/eq-shell/pull/1843) fix(migrations): guard 0257's REVOKE against a from-scratch 
+- Merged: eq-shell [#1841](https://github.com/eq-solutions/eq-shell/pull/1841) docs(env): document VITE_FIELD_URL, the one undocumented req
+- Merged: eq-shell [#1826](https://github.com/eq-solutions/eq-shell/pull/1826) fix(chunk-reload): recognize Firefox's MIME-type wording for
+- Merged: eq-shell [#1822](https://github.com/eq-solutions/eq-shell/pull/1822) feat(documents): expose bulk multi-document push
+- Merged: eq-shell [#1818](https://github.com/eq-solutions/eq-shell/pull/1818) fix(documents): scope site/customer tags to Person, make Rol
+- Merged: eq-shell [#1816](https://github.com/eq-solutions/eq-shell/pull/1816) fix(migrations): drop document_register before document_sign
+- Merged: eq-shell [#1699](https://github.com/eq-solutions/eq-shell/pull/1699) chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2
+- Merged: eq-shell [#1698](https://github.com/eq-solutions/eq-shell/pull/1698) chore(deps): bump react-hook-form from 7.77.0 to 7.87.0
 
 ## ⚠ Needs you (8)
 
@@ -33,10 +32,11 @@ _2026-09-09 08:49 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-shell` [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/)
 - 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
-## 🙋 Waiting on you (294)
+## 🙋 Waiting on you (297)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Once CI is unblocked: review + merge PR #1842, then dispatch `0311` to madagins via `tenant-migrate.yml`** — closes the CMMS-tables gap for real. Royce's call on timing. _(added 2026-09-09)_
 - **eq-shell** · **`madagins`'s ledger needs correcting before any real apply can succeed on it** — the 314 falsely-stamped rows have to be cleared/reset first, or every future apply attempt will keep trusting them and skipping real work. Not done here — Royce's call on timing/ownership, and who ran the original bootstrap (and why) is still unknown. _(added 2026-09-09)_
 - **eq-shell** · **EQ-SHELL-23 residual** — re-checked live in Sentry as of this restore: issue still `unresolved`/`new`, exactly 1 occurrence (2026-09-08T21:50 UTC), no re-fire since. Silencing it for good needs the jvkn-side shell account/tenant-membership closed too — Royce's call whether that's worth doing; not requested yet. _(added 2026-09-09, restored 2026-09-09)_
 - **eq-shell** · **RLS gap on madagins's `app_data._eq_migrations`** (project `ornndtbdkxfsewspbrwk`) — Supabase advisor flagged RLS disabled on this table (anon-exposed). Same table the "tenant creation..." section above independently found holding 314 falsely-stamped ledger rows from the `--bootstrap` misuse — likely two symptoms of the same under-provisioned tenant, but access-control and ledger-integrity are separate fixes; this one needs its own governed-pipeline dispatch (RLS-enabled-with-no-policy + revoke public/anon/authenticated + grant service_role, added to both repos' `SERVICE_ROLE_ONLY` lists) regardless of how the ledger gets corrected. No evidence of a fix as of this restore, but re-verify live before acting — madagins's schema state has changed hands and shape several times today. Royce's call on timing. _(added 2026-09-09, restored 2026-09-09)_
@@ -48,16 +48,15 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Not click-tested live by a person** — verified via a clean `pnpm exec tsc -b` plus an isolated before/after reproduction of the actual CSS cascade at 768px and 1400px, not a real authenticated session on a physical iPad. No Shell/demo credentials in this environment. _(added 2026-09-08)_
 - **eq-shell** · **No signal anywhere that an entry was backdated** — once `occurred_at` differs from `created_at`, the UI shows the chosen date as if it were contemporaneous, with nothing like "logged 4d later." Named during the critique as a real product gap, not fixed — Royce's call whether it's worth a small label. _(added 2026-09-08)_
 - **eq-shell** · **Not click-tested live by a person** — no Shell credentials in this environment (confirmed again at close: hit the real login wall navigating to `/sks/admin/documents/mine` directly). Worth a real pass, in order of importance: (1) as a Viewer-tier account, confirm `my-signoffs`' Network response never contains another person's name or email — the one check that actually matters; (2) as Assigner, the person/site matrix renders real data and bulk push/remind actually create/notify; (3) as Manager (`documents.manage` without `documents.assign` — not a stock role, needs a custom Access Control group grant to even test), confirm `admin/documents` redirects to the library instead of a dead end, and the Upload tab's "pushing needs assign permission" copy shows instead of a silently missing step.
-- **eq-shell** · **`PdfBackfillButton` relocated, not re-verified live** — moved from the Reference-library tab (where it landed by accident, per that component's own dated comment) onto the new `admin/documents` List page, matching Royce's original 2026-09-02 placement call. Not click-tested.
-_…and 282 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 285 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 4 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
-| eq-field | ✓ success | 0d ago | 3 | 6d |
+| eq-field | ✓ success | 0d ago | 5 | 6d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 1d ago | 0 | — |
 
@@ -82,6 +81,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-09 | eq-shell | [#1843](https://github.com/eq-solutions/eq-shell/pull/1843) fix(migrations): guard 0257's REVOKE against a from-scratch tenan |
+| 2026-09-09 | eq-shell | [#1841](https://github.com/eq-solutions/eq-shell/pull/1841) docs(env): document VITE_FIELD_URL, the one undocumented required |
 | 2026-09-09 | eq-shell | [#1839](https://github.com/eq-solutions/eq-shell/pull/1839) fix(control-plane): keep tenants mirrored from organisations, bac |
 | 2026-09-09 | eq-shell | [#1838](https://github.com/eq-solutions/eq-shell/pull/1838) fix(field): add madagins to the Field tenant allowlist + picker |
 | 2026-09-09 | eq-shell | [#1837](https://github.com/eq-solutions/eq-shell/pull/1837) fix(sidebar): open workspace switcher menu upward, not down off-s |
@@ -95,27 +96,26 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1828](https://github.com/eq-solutions/eq-shell/pull/1828) fix(documents): stop clipping the "..." menu behind the next row |
 | 2026-09-09 | eq-field | [#965](https://github.com/eq-solutions/eq-field/pull/965) fix: harden tenant-provision generator against 13 review findings |
 | 2026-09-09 | eq-field | [#964](https://github.com/eq-solutions/eq-field/pull/964) fix: reject SQL-comment injection and migrations/ overwrite in te |
-| 2026-09-09 | eq-field | [#959](https://github.com/eq-solutions/eq-field/pull/959) tool: generate-tenant-provision-sql.mjs — replay eq-field's own m |
-| 2026-09-09 | eq-field | [#962](https://github.com/eq-solutions/eq-field/pull/962) docs: fix stale eq-context path refs in CLAUDE.md session-end pro |
 _Showing 15 of 77 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (315 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (320 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (64 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (253 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (251 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (68 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
-- **eq-context** (41 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
+- **eq-context** (43 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
 - **cross-repo** (183 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
 
 - **Rhys Scott + Wayne Rowe may need a `team_supervisors` row too, not just `team_members`** — both now flagged `is_supervisor=true` on `app_data.staff`, matching the "player-coach" pattern already live for David Boyd/Amazon Syd 53, John Angangan/Comms+Vans, Matthew Miller & Simon Bramall/Equinix+Vans. Needs Collin to confirm which team each actually runs. _(added 2026-09-09)_
+- **Cam has nothing rostered Nov 23–27 now** — the leave that covered those days is gone, but nobody re-rostered him to a site. If he's meant to be working, needs an actual roster entry. _(added 2026-09-09)_
 - **The anon-CRUD/secrets-exposure vulnerability from 2026-07-20 (below) is still fully open — explicitly NOT fixed this session, Royce's deliberate call after being told it doesn't go away on its own.** Confirmed live: `app_config`'s exposed `canonical_api_key_field` is a bearer token for `core.eq.solutions/.netlify/functions/canonical-api` (the ACTIVE Shell/Field system, not the retiring app) and `digest_fn_token` is seeded as a raw Supabase service-role JWT for nspbmir itself — both readable by anyone with the still-public, still-served anon key, regardless of the app's retirement status. The zero-risk, no-soak Step 0 patch (`~/.claude/plans/nspbmir-EMERGENCY-anon-select-narrowing.sql`) remains un-run. Royce was walked through the distinction (token exposure into the *active* system ≠ the retiring app's own roster data) and chose to stop spending time on this repo entirely rather than run even the isolated Step 0 fix. His call to make; flagging plainly so nobody assumes this was closed out. _(added 2026-09-07)_
 - **Cross-reference: "Track 2 RLS STEP 2" (anon SELECT lockdown on ehow, further down this file) was deferred "until standalone retired."** Ops has moved off sks-nsw-labour as of today, even though the app/DB itself is still technically live (archived repo, active DB, no hard redirect). Worth whoever picks up ehow RLS work checking whether that's enough to count as "retired" for that gate, rather than assuming either way. _(added 2026-09-07)_
 - **Affects 45 of 81 active SKS staff** (everyone Cards-linked with no wizard-entered full date of birth) — fixed going forward, but nobody's birthday has actually been re-entered yet. No action needed unless Royce wants a nudge to re-save. Most should self-resolve as people go through Cards' own licence-scan step, which fills a real date of birth in automatically. _(added 2026-08-24)_
@@ -124,8 +124,7 @@ _Showing 15 of 77 · full record in [sessions/](sessions/)_
 - **Not verified live by a person** — the specific pill-click behavior needs a real Core+SKS session to exercise (Teams is SKS-only, gated behind Core auth, not reachable from a standalone deploy-preview session). Confirmed the fix mirrors an already-shipped, working code pattern (the crew-supervisor picker), not watched working fresh. _(added 2026-08-23)_
 - **SKS's own number, for reference: 6 of 32 active SKS members are currently missing White Card** — visible today in Shell's Training Matrix; nothing blocks them from working while missing it (soft-flag by design, not an oversight). Worth a look if Royce wants a harder rule for SKS specifically. _(added 2026-08-19)_
 - **A reported roster-grid "alignment" issue (one person's row looked off) couldn't be reproduced from the code** — most likely just placeholder text in blank cells reading like real data at a glance, not an actual bug, but left open rather than guessed at. _(added 2026-08-19)_
-- **Still not applied to the live database — checked directly, and Royce turned down the shortcut that would have unblocked it today.** Confirmed merging the PR didn't secretly switch it on. Turning it on for real right now would lock the people who haven't signed in yet out of their own timesheet and leave the moment they do, since the fix depends on their login already being linked to their staff record — 37 of 83 active SKS staff, checked again today. A workaround exists (let just those specific people keep today's wider access until they sign in, instead of holding up everyone else) but Royce said no — waiting for them to actually sign in through the real onboarding process instead, however long that takes. _(added 2026-08-16, decision confirmed 2026-08-16)_
-_…and 84 more · [sks/pending.md](sks/pending.md)_
+_…and 85 more · [sks/pending.md](sks/pending.md)_
 
 ## Queue health
 
@@ -133,18 +132,18 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1650 | 220 / 100 | 3 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1680 | 223 / 102 | 7 | 78 |
 | [eq-cards](eq/pending/eq-cards.md) | 349 | 47 / 17 | 0 | 8 |
-| [eq-field](eq/pending/eq-field.md) | 1333 | 188 / 69 | 32 | 48 |
+| [eq-field](eq/pending/eq-field.md) | 1314 | 185 / 69 | 35 | 48 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 390 | 50 / 19 | 0 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 164 | 13 / 6 | 2 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 46 | 3 / 1 | 0 | 3 |
-| [eq-context](eq/pending/eq-context.md) | 227 | 30 / 11 | 0 | 9 |
+| [eq-context](eq/pending/eq-context.md) | 243 | 31 / 12 | 0 | 9 |
 | [cross-repo](eq/pending/cross-repo.md) | 945 | 134 / 49 | 2 | 77 |
 | [sks](eq/pending/sks.md) | 55 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 506 | 94 / 15 | 0 | 62 |
+| [SKS](sks/pending.md) | 515 | 95 / 15 | 0 | 62 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 627 | 52 / 4 | 0 | 13 |
 
@@ -191,4 +190,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 08:49 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 09:17 UTC._
