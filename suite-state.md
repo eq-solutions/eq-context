@@ -78,8 +78,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1833 fix(security): enable RLS on 4 dead wipe_backup tables (ehow)
-- #1832 chore(provisioning): audit ehow for objects the tracked pipeline can't reproduce
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
