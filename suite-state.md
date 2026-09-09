@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-09)
 
+**eq-field:**
+- #975 fix(canon-read): drop the redundant ALLOWED_SLUGS gate
+
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -69,9 +72,9 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1882 fix(field): make the Field-workspace picker read tenants live
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 - #1879 fix(security): lock field_tenant_slug to a tenant's own slug
-- #1875 fix(cards): let a worker cancel their own pending access request
 - #1871 fix(control-plane): mirror liveness off the data plane, not DNS
 - #1870 Fix crash on outgoing connect requests with a revoked status
 
@@ -94,8 +97,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | building | 2026-09-09 |
-| eq-field | ready | 2026-09-09 |
+| eq-shell | new | 2026-09-09 |
+| eq-field | new | 2026-09-09 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
 
