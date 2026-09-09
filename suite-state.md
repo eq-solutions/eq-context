@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-field:**
 - #958 v3.5.705 — sbFetch's core fetch had no timeout, hanging initApp() forever (Sentry EQ-SHELL-21)
-- #956 DRAFT (not applied): track app_data.staff write-restriction policy
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
