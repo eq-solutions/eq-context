@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-09 (docs fix, direct push `e2d7e558` — add-field-trial-tenant runbook corrected)
+- `docs/runbooks/add-field-trial-tenant.md` pointed at `netlify/functions/mint-iframe-token.ts`, retired in the Phase 2→3 migration to `token-exchange.ts` — the exact gap PR #1838's own entry below flagged as "spawned as its own task." Rewrote the "Two files to edit" section (now `token-exchange.ts` + `fieldTenants.ts`, both illustrative code snippets corrected to match live shape, not just the filename), "Field-side requirements" (`EQ_SECRET_SALT` → `SUPABASE_JWT_SECRET`, verified via this repo's own `CLAUDE.md` auth-boundary table), and a stale "SKS has its own Netlify site" claim. Cites PR #1838 as a worked example.
+- Left "Current state of Field" / "Per-tenant data" flagged, not fixed — depends on `FIELD-UNIFICATION-PLAN.md`, itself marked SUPERSEDED; needs an eq-field-rooted re-check.
+- Docs-only, no application code touched. Direct push to `main` on explicit instruction (not a PR) — confirmed this bypasses 4 of the 5 required status checks structurally (they're `pull_request`-triggered only, never fire on a push at all), not just via the branch-protection admin-bypass flag GitHub reported.
+
 ## 2026-09-09 (PR #1838 MERGED + LIVE — Field access unblocked for madagins, two allowlists not one)
 - Madagins (provisioned earlier today) couldn't reach EQ Field at all — `ALLOWED_FIELD_TENANT_SLUGS` in `token-exchange.ts` (gates Field JWT minting) didn't include it. Last touched 2026-06-02, three months before this tenant existed; the earlier same-day fix ([#1834](https://github.com/eq-solutions/eq-shell/pull/1834)) updated a different, unrelated hardcoded tenant list (`KNOWN_TENANT_SLUGS`, warm-cache only) with no reason to know this second one existed.
 - `src/lib/fieldTenants.ts` has its own separate copy of this allowlist (`TENANT_OPTIONS`, drives the Field tenant picker; `FIELD_TENANT_URLS`) with a header comment requiring both files be updated together — also still missing madagins, caught only by grepping for other usages before committing rather than assumed complete after the first fix.
