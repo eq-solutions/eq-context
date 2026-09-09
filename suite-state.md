@@ -97,7 +97,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | new | 2026-09-09 |
+| eq-shell | ready | 2026-09-09 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 244 (latest: 0240) applied
