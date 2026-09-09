@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed on merge (repository_dispatch from EQ repos) + nightly backstop by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-08 (auto-refreshed on merge + nightly backstop)_
+_Last verified: 2026-09-09 (auto-refreshed on merge + nightly backstop)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,12 +58,13 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-08)
+## Open PRs (as of 2026-09-09)
 
 **eq-cards:**
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
+- #954 docs: land the 2026-09-07 multi-lens review (v7)
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
 - #895 v3.5.653 -- Apprentices: 6 follow-ups from the full-module audit
 - #890 v3.5.649 — FIX: Copy Last Week could say "saved" when the writes failed
@@ -76,9 +77,12 @@ _If this file is >48h old, the cron is broken._
 - #832 chore(deps): bump @eq-solutions/roles from v2.7.5 to v2.7.7 in the eq-design-system group
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
+**eq-shell:**
+- #1827 chore(intake): auto re-vendor eq-intake/eq-platform
+
 ---
 
-## System Health (as of 2026-09-08)
+## System Health (as of 2026-09-09)
 
     **CI on main:**
 
@@ -95,28 +99,28 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | ready | 2026-09-08 |
+| eq-shell | building | 2026-09-09 |
 | eq-field | ready | 2026-09-08 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-08)
+## Field Data Plane — SKS tenant (as of 2026-09-09)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 71 | ✓ 71 |
+| Directory | app_data.field_people | 70 | ✓ 70 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,259 | ✓ 2,259 |
-| Operational | app_data.field_timesheets | 474 | ✓ 474 |
+| Operational | app_data.field_schedule | 2,262 | ✓ 2,262 |
+| Operational | app_data.field_timesheets | 481 | ✓ 481 |
 | Safety | public.prestarts | 242 | ✓ 242 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-08)
+## Product Pulse (as of 2026-09-09)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
@@ -129,7 +133,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 50 |  |
+| Active users (Shell sign-ins, jvkn) | 49 |  |
 
 _No flips this run._
 ---
