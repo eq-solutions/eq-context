@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,18 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,394 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-shell: zaap's own migration-replay conflicts — 2 real RLS gaps found, fixed, merged, dispatched, verified live; 1 checked clean (2026-09-09)
+*Follow-up to the madagins migration-reconciliation pass: asked to also check the 9 zaap items that reconciliation had classified "genuinely different, not reparameterized." Investigated all 9 live rather than trusting the earlier summary — found the framing was too coarse: some were fine, one was a real bug with live data blocked, one was a real-but-latent gap, one was a non-issue.*
+
+- **`public.tender_enrichment` — real, active bug, now fixed.** RLS enabled, `authenticated` had full table grants, but ZERO policies — meaning zero access for anyone but `service_role`. 3 real, non-archived tenders' enrichment data (Telstra Haymarket, St George Private Hospital, SY5 COLO 12 Cage 560) was completely inaccessible. Caught via 3 already-tracked eq-field migrations that `ALTER POLICY te_tenant_read`/`te_tenant_write` on this table, assuming they already existed (matching the live, working `pending_schedule` pattern) — they didn't. **[PR #1863](https://github.com/eq-solutions/eq-shell/pull/1863)** (migration `0314`, `Plane: zaap ONLY`) — live-verified via `BEGIN...ROLLBACK` before committing, merged (`32c05b37`), dispatched (`--slug=eq`), confirmed live via `pg_policies` afterward.
+- **`public.organisations` — real but latent gap, also fixed.** Same shape (RLS + full grants + no `authenticated` policy, only an `anon`-scoped one) but confirmed via a grep of `eq-field/scripts/**` that no current client code reads this table as `authenticated` — not an active break, just asymmetric. Fixed anyway on your go: **[PR #1866](https://github.com/eq-solutions/eq-shell/pull/1866)** (migration `0315`, `Plane: zaap ONLY`, read-only policy matching the existing anon policy's scope) — same live-verify/merge/dispatch/confirm cycle, merge `d58f651f`.
+- **`app_data.field_job_numbers` — checked, not a bug.** Already has its own working, dynamic tenant-scoped policy (`field_job_numbers_tenant_isol`). It's architecturally simpler than ehow's version (a real table vs. ehow's `SECURITY DEFINER` view merging Ops data) — which is exactly why eq-field's `20260704_field_job_numbers_canonical_view.sql` would conflict if ever applied here (`CREATE VIEW` against an existing table), but nothing has tried, so nothing's broken.
+- **The other 6 of the original 9** (`pending_schedule`'s shape difference, `competencies` dormant/deny-all, and 4 more not individually re-verified this pass) were already covered by the earlier reconciliation pass's live checks and don't need repeating here — see that pass's own findings if picking this up later.
+
+Both fixes used the "check live state (including grants, not just policies) → verify via rollback → migrate → merge → dispatch scoped to the one tenant → confirm live" cycle established earlier the same day on the madagins/`0257`/`0311` fixes.
 
 ---
 

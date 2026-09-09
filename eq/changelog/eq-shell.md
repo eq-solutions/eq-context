@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-09 (PR #1863 + #1866 MERGED + LIVE — 2 zaap RLS gaps closed)
+- `public.tender_enrichment` on zaap: RLS enabled, zero policies, 3 real active tenders' enrichment data completely inaccessible to authenticated users. Added `te_tenant_read`/`te_tenant_write`, scoped through `tenders.org_id` (the table itself has no org_id/tenant_id column on zaap, unlike ehow's copy). [PR #1863](https://github.com/eq-solutions/eq-shell/pull/1863), migration `0314`, `Plane: zaap ONLY`.
+- `public.organisations` on zaap: same RLS-plus-no-policy shape, but latent (no live client code reads it as `authenticated`). Added `organisations_tenant_read` (read-only, matching the existing anon policy's scope). [PR #1866](https://github.com/eq-solutions/eq-shell/pull/1866), migration `0315`, `Plane: zaap ONLY`.
+- Both live-verified via `BEGIN...ROLLBACK` before committing, dispatched individually (`--slug=eq`), confirmed live via `pg_policies` afterward. Found while reconciling eq-field's migration replay against zaap, following the same day's madagins reconciliation work.
 
 ## 2026-09-09 (PR #1850 + #1854 MERGED + LIVE — two tenant-identity-drift fixes)
 - `netlify/functions/token-exchange.ts`'s non-admin Field-token path no longer re-checks a caller's own `field_tenant_slug`/`slug` (already sourced from `shell_control.tenants`, scoped to their signed session) against the static `ALLOWED_FIELD_TENANT_SLUGS` allowlist — that check added no security value, only a completeness trap that had already silently blocked a real tenant once (#1838). The platform-admin cross-tenant picker's genuine input-validation use of the array is untouched. Auth-adjacent: flagged by the Claude Code auto-mode classifier, applied only after explicit confirmation. 2 new regression tests. [PR #1850](https://github.com/eq-solutions/eq-shell/pull/1850).
