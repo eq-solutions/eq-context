@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-09)
 
+**eq-field:**
+- #976 fix(csp): allowlist madagins's Supabase project in connect-src/wss
+
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -104,9 +107,9 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 76 | ✓ 76 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,262 | ✓ 2,262 |
-| Operational | app_data.field_timesheets | 493 | ✓ 493 |
-| Safety | public.prestarts | 242 | ✓ 242 |
+| Operational | app_data.field_schedule | 2,270 | ✓ 2,270 |
+| Operational | app_data.field_timesheets | 498 | ✓ 498 |
+| Safety | public.prestarts | 244 | ✓ 244 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -121,7 +124,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 2 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 12 |  |
+| Prestarts created | 13 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
