@@ -15,6 +15,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: `/decide` pass found two branches already shipped by concurrent sessions (cleaned up); a live checkout collision caught in the act; EQ-SHELL-25 re-verified and re-closed (2026-09-09)
+
+- **`fix/document-menu-clipped-dropdown` and `fix/tenant-provisioning-pg-cron` were both stale duplicates.** Ran `/decide "what to do next"`; the top candidate (document-menu branch — committed, pushed, CI green, no PR yet) turned out already shipped: `gh pr create` failed with "no commits between main and the branch" — a concurrent session had merged the identical fix as [#1828](https://github.com/eq-solutions/eq-shell/pull/1828). Same story for `fix/tenant-provisioning-pg-cron` (already merged as #1834, matches the section below). Deleted both local branches (git confirmed "merged to origin" before allowing the delete) and removed the `eq-shell-wt-pgcron` worktree — unregistered cleanly from git, but the directory itself failed to delete (`Filename too long`, a Windows path-length limit); the folder is still on disk, orphaned.
+- **Live concurrent-session collision, directly observed**: the primary `C:\Projects\eq-shell` checkout's branch changed from `main` to `fix/dev-csp-vite-preamble` between two consecutive git commands in this session, with no action from this session in between — a different concurrent session actively driving the same shared checkout in real time. Stopped further work there once seen.
+- **EQ-SHELL-25 re-fired after the "two fresh Sentry errors" section below closed it** — 7 fresh occurrences 01:09–06:18 UTC, still `unresolved` in Sentry when checked. Identified the affected tenant as madagins via live query on jvkn (`fc06cd56-ec63-4507-a03e-c3c552ea09a9`) — that section's sks/eq-only dispatch had, by design, left madagins untouched. Re-verified live: `app_data.sites.deleted_at` now exists on madagins (`ornndtbdkxfsewspbrwk`), consistent with the governed re-dispatch in the section above (38 applied through `0308_sites_deleted_at.sql`). No re-fire since; re-closed in Sentry with root cause + verification on the issue.
+- **Cross-check on the section below's CRITICAL claim** (`shell_control.tenant_routing` row missing for madagins) — queried it while identifying the Sentry tenant: as of this check, the row **exists and is populated** (`status: active`, `supabase_project_ref: ornndtbdkxfsewspbrwk`). That section itself warns the row has flapped present/missing repeatedly today — treat this as a timestamped data point, not a resolution.
+
+- [ ] **`C:\Projects\eq-shell-wt-pgcron` orphaned directory** — git no longer tracks it as a worktree, but the folder is still on disk (Windows long-path deletion failure). Safe to delete by hand; not blocking anything. _(added 2026-09-09)_
+- [ ] **Local `eq-context` clone was 130+ commits behind `origin/main` this session** — didn't block anything (read everything via `git show origin/main:...` instead), but worth a `git pull --ff-only` next time someone's idle in that checkout. _(added 2026-09-09)_
+
+---
+
 ## eq-shell: madagins's own database now fully caught up (governed pipeline: 38 applied, 0 failures); critical control-plane gap found at close — `shell_control.tenant_routing` row missing entirely (2026-09-09)
 *Continuation of the bootstrap-ledger corruption + `0257` crash described in "tenant creation doesn't actually apply the real schema" below.*
 
@@ -29,6 +41,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **314 falsely-stamped `_eq_migrations` ledger rows** (see "tenant creation doesn't actually apply the real schema" below) — still not cleared. Didn't block this session's work; ledger itself remains inaccurate. _(added 2026-09-09)_
 
 ---
+
+## eq-shell: PR #1834 merged clean but the deploy pipeline itself is broken — 2 independent mechanisms failing, 2nd occurrence today (2026-09-09)
+
+- **Merge landed, deploy did not.** PR #1834 (pg_cron provisioning fix) squash-merged to `main` (`d9d8c89a`) — CI green, mergeable clean. `core.eq.solutions` stayed on the prior commit; confirmed directly against GitHub's deployments API, not assumed from the merge alone.
+- **Not a one-off — the SAME symptom hit PR #1826 earlier today** (per `eq/sprints/2026-09-09-eq-shell-sentry-sprint.md` item 3, still unexplained there). This is the 2nd confirmed occurrence in one day.
+- **The documented workaround from the 1st occurrence (manual deploy via the Netlify MCP) also failed** — twice, identical `zipAndBuild: 500 Internal Server Error` from Netlify's own upload endpoint, no partial/bad deploy left behind either time.
+- **Ruled out**: a platform-wide incident (netlifystatus.com: all green, Build Pipeline "Operational," nothing reported today) and a classic GitHub webhook misfire (none configured on this repo at all — `GET /hooks` returns `[]` — confirms the integration runs through Netlify's GitHub App, whose delivery logs need app-level credentials this session doesn't have).
+- **Points at this site's specific GitHub App connection**, not the code, not a platform outage. `core.eq.solutions` was still correctly serving the prior commit throughout — nothing broken live, just not current.
+
+- [ ] **Check Site settings → Build & deploy → Git provider in the Netlify dashboard** (or re-link the GitHub App) — needs your login, couldn't be done from this session. Two clean deploy mechanisms failing identically in one day is a real, not cosmetic, gap. _(added 2026-09-09)_
+- [ ] **Once fixed, confirm `core.eq.solutions` is actually serving `d9d8c89a` or later** before treating PR #1834 as live. _(added 2026-09-09)_
 
 ---
 
@@ -52,6 +75,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 *Ran /decide "next best option" against the live health digest — picked two fresh, unaddressed Sentry errors on eq-shell (EQ-SHELL-24, EQ-SHELL-25) as the highest-certainty next step given TODAY.md's GOALS are still unset. First pass on EQ-SHELL-25 was wrong: assumed `sites.deleted_at` was a phantom column and drafted a fix removing it — before committing anything, checking for existing worktrees/branches surfaced that Royce (via a Claude Code session) had already root-caused it correctly the opposite way and opened PR #1829. Discarded the wrong fix, never pushed.*
 
 - **EQ-SHELL-25 — closed.** `app_data.sites.deleted_at` existed on ehow (sks) only, applied out-of-band, never captured as a migration — missing everywhere else, breaking `push-document-audience.ts`'s 3 site-lookup queries on every other tenant. [PR #1829](https://github.com/eq-solutions/eq-shell/pull/1829) (migration `0308_sites_deleted_at.sql`, idempotent `ADD COLUMN IF NOT EXISTS`) merged by Royce. Dispatched live this session, scoped individually to `sks` and `eq` (NOT the whole fleet — see below) via `tenant-migrate.yml`. Verified directly against both databases post-dispatch: `deleted_at timestamptz` now present on zaap; unaffected on ehow.
+  - **Correction (later session, same day): re-fired for madagins**, which this dispatch deliberately left out (see below) — 7 occurrences 01:09–06:18 UTC. Column landed on madagins separately via the governed re-dispatch recorded in the section above; re-verified live and re-closed. See the new top section for detail.
 - **EQ-SHELL-24 — no action needed.** `app_data.canonical_events` table-not-found error, single occurrence, tenant "madagins" (`ornndtbdkxfsewspbrwk`) — confirmed live the table exists now. Reads as a one-off timing race during that tenant's provisioning window (the 15-min `quote-job-consumer` scheduler querying before the schema/PostgREST cache had caught up), not a standing bug.
 - **Deliberately did NOT fleet-wide dispatch.** The read-only `plan` job (auto-run on PR #1829) showed `sks` and `eq` each had exactly the 1 expected migration pending — but **`madagins` had 50 pending, back to migration `0257`**, despite being described as a tenant provisioned "the same day." A blank-slug dispatch would have silently applied 49 other, unreviewed historical migrations (security/RLS/role-gate changes among them) to a live tenant as a side effect of fixing one column. Dispatched to `sks` and `eq` individually instead; `madagins` left untouched on purpose.
 - **Real, separate finding, not fixed here**: `madagins` being 50 migrations behind on what was framed as a brand-new signup suggests new-tenant provisioning isn't actually baselining onto current schema. Very likely overlaps with `fix/tenant-provisioning-pg-cron` — a different, uncommitted, in-progress branch (worktree `eq-shell-wt-pgcron`) already touching `provision-tenant-background.ts`/`tenant-routing.ts` with its own new migration draft — not touched, since it's someone else's live work-in-progress.
