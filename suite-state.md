@@ -61,13 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-09)
 
 **eq-cards:**
-- #352 fix(cards): sync organisations.tier from shell_control.tenants.tier
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
 **eq-field:**
 - #930 v3.5.685 — Dashboard: Headcount tiles now show who's working today
-- #895 v3.5.710 -- Apprentices: 5 follow-ups from the full-module audit
 
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
@@ -91,7 +89,7 @@ _If this file is >48h old, the cron is broken._
     |------|--------|
     | eq-service | ✓ success |
 | eq-shell | ✓ success |
-| eq-field | ✓ success |
+| eq-field | ? in_progress |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
 
@@ -100,8 +98,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-08 |
-| eq-shell | building | 2026-09-09 |
-| eq-field | ready | 2026-09-09 |
+| eq-shell | uploading | 2026-09-09 |
+| eq-field | building | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
 
