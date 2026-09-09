@@ -102,7 +102,7 @@ fails on **new** exposure while keeping the open ones visible.
 | SEC-74 | ~~P2~~ **CLOSED 2026-09-05 (reversed same day)** | `_shared/permissions.ts`'s `resolvePrincipal()` fails open on a `tenant_role_overrides` read that times out, is rejected, or errors — same root cause as SEC-72, left out of that fix deliberately (as originally found — see the fix cell for what changed). It hydrates every cookie-authed `Principal` passed to `requirePerm()`/`can()`, called from roughly 124 independently-bundled Netlify functions (2026-08-15 count, this file's own comment) — far more than the six call sites SEC-72 and its follow-ups (eq-shell [#1762](https://github.com/eq-solutions/eq-shell/pull/1762)/[#1767](https://github.com/eq-solutions/eq-shell/pull/1767)/[#1768](https://github.com/eq-solutions/eq-shell/pull/1768)) closed. On a lookup failure it returned the principal unchanged, so a tenant admin's denial silently didn't apply for that one request. | eq-shell (core.eq.solutions, ~124 functions behind `requirePerm()`) | **CLOSED 2026-09-05 — reverses the "leave as-is" call recorded earlier the same day (kept below for the record).** eq-shell [#1770](https://github.com/eq-solutions/eq-shell/pull/1770) (`claude/resolve-principal-fail-closed`) adopts `resolveRoleOverridesFailClosed()` in `resolvePrincipal()` after all — merged by Royce directly at 2026-09-04T23:00:01Z (squash `4dc8e8e9abafc8fe35a8f34ea4819b8297ef07bc`), confirmed live via Netlify `getDeploy` (`6a9b4d73c35710000894d845`: `state: ready`, `commit_ref` matches the merge SHA, `published_at` 2026-09-04T23:06:05Z, 358s build) plus a live 401 from `verify-shell-session`. Same policy as the six sites SEC-72 already closed: live read → this container's last-known denials (≤10 min, denials only) → every `OVERRIDABLE_PERM_KEYS` entry denied. Tests added: a slow-past-the-6s-deadline case, a failed-read case (asserting `admin.*`/`audit.*` stay untouched — Access Control itself must stay reachable through a fail-closed episode), a failed-after-a-good-read case (proving denials-only caching, never a stale grant survives), and a `requirePerm()`-level case proving the actual security fix — a failed read now 403s a write it would otherwise have silently granted, audited as `override_deny`. All CI green (typecheck · test · lint, gitleaks, tenant-drift, deploy preview). Not click-tested (no live Shell session in any reviewing environment). **Why the call reversed:** the "leave as-is" reasoning below weighed a wider blast radius (~124 low-traffic functions landing on the hard-deny tier more readily) against closing the gap. Reconsidered: the failure mode traded away is a *silent* security bypass (a write proceeding as though a tenant admin's denial never happened) for one that is *loud*, audited, and self-correcting (a 403 on that one write, fixed by the very next request once the read recovers or the 10-min cache starts serving); nothing here re-signs into a longer-lived token the way the JWT minters' output does, so there is no propagation past the one in-flight request; and it brings `resolvePrincipal()` in line with `denyIfDeactivated()`, the other per-request DB read in the same `requirePerm()` chain, which already failed closed on its own lookup error. **Original "leave as-is" record, preserved for context, no longer the live decision:** Presented to Royce with the trade-off spelled out, not left as a default follow-up: adopting the same fail-closed resolver (`_shared/role-overrides.ts`) here would close the gap, but these ~124 functions are mostly far lower-traffic than the six sites already fixed — a low-traffic function's own Lambda container rarely holds a warm cached-denials tier, so it would land on the resolver's hard-deny tier (every overridable permission denied) far more readily on any transient blip than the fixed endpoints do. Turning today's narrow, rarely-hit gap into tenant-wide 403s across most of the app's mutating surface during a bad few minutes for the database was judged the worse failure mode at the time. Superseded same day — see above. **Follow-up decided 2026-09-05 (`/decide` pass): #1770 stands, not reverted — closes a real gap, has run live for hours with nothing reported wrong, and the operational downside was always theoretical rather than observed. Paired with a short, deliberately non-default check-back (not the usual 3-month cadence, since this is the one call site with no real production traffic data yet): by 2026-09-15, check Sentry for `[role-overrides] resolvePrincipal` fail-closed events (`_shared/role-overrides.ts`'s own throttled reporting, tier 2 warning / tier 3 error) and whether they cluster with genuine `tenant_role_overrides` read slowness or with routine cold starts (a burst of fresh containers, e.g. right after a deploy, could look like the same signal without anything actually wrong). If it's mostly cold starts, that's the fact that flips this back toward reverting or at least raising this caller's specific cache floor. Tracked as its own item in `eq/pending/eq-shell.md` so it surfaces outside this closed row.** |
 | SEC-75 | ~~P3~~ **CLOSED 2026-09-09** | 4 tables in `wipe_backup` schema (ehow) had RLS disabled — Supabase advisor CRITICAL, anon/authenticated exposed. Not empty: 914/323/2636/758 rows (see Detail) | sks-canonical (ehow) | **CLOSED 2026-09-09** — eq-shell [#1833](https://github.com/eq-solutions/eq-shell/pull/1833) merged `e0f815bd`, dispatched via `tenant-migrate.yml` (`--slug=sks` — ehow's actual routing slug, not "ehow"), applied 06:08:49 UTC. Live-verified: all 4 tables `rls_enabled=true`, advisor no longer reports the finding. See Detail. |
 | SEC-76 | P2 | `lib/canonical-members.ts` defaulted an unset tenant slug to `'sks'`, and `getCanonicalMembers()`/`getCanonicalMemberMap()` used that as their default arg — 19 call sites across 15 files called them bare, so every one silently rendered SKS's staff roster regardless of which tenant was actually viewing | eq-service | **FIX READY, not committed** — code-complete, `tsc --noEmit` + `eslint` clean across all 23 touched files, waiting on Royce's go to commit/push (no commit without explicit instruction). Not live-exploitable today (only SKS exists as a tenant) but a primed landmine for the next one. See Detail. |
-| SEC-77 | P2 — live, wider than first scoped (see Detail) | SKS's tenant ID + the canonical-sentinel org ID hardcoded into RLS on `public.acknowledgments`/`public.app_config` (eq-service); live introspection found the identical pattern on ~31 tables suite-wide, including the **active** `public.audit_log` (5,886 rows, written to this morning) that 0146b's comment cites as its safe reference model | eq-service / sks-canonical (ehow) | **OPEN — eq-service's own footprint confirmed (3 tables: `acknowledgments`, `app_config`, `audit_log`); live introspection found the same pattern far more widely across ehow, mostly owned by eq-shell/eq-field, not eq-service.** Fix mechanism not decided. See Detail. **Originally numbered SEC-76 — renumbered after a concurrent session's own SEC-76 push (`canonical-members.ts`, above) overwrote this row via `safe_commit.py`'s full-file-copy mechanism; see the note at the end of this row's Detail section.** |
+| SEC-77 | ~~P2~~ **CLOSED 2026-09-09 — wrong repo, not a bug** | SKS's tenant ID + the canonical-sentinel org ID hardcoded into RLS on `public.acknowledgments`/`public.app_config` (originally attributed to eq-service) | eq-field / sks-canonical (ehow) — **not eq-service** | **CLOSED — both tables belong to eq-field, not eq-service** (eq-service's `0146`/`0146b` are stale orphaned duplicates of eq-field's own `20260625_acknowledgments_write_enable.sql`; zero eq-service app code touches either table). On their real home the hardcode is a **deliberate, already-shipped fix** for a real Demo↔SKS cross-tenant leak (`20260823_ehow_second_wave_jwt_tenant_gate.sql` — before it, these tables checked only `org_id`, letting any authenticated ehow session, including Demo's, read/write SKS's business data). Future-tenant provisioning already correct: eq-field's generator classifies both files `action: 'substitute'` in its own manifest, verified directly. `public.audit_log` separately resolved (also eq-field's); `service.audit_logs` needs no fix. Nothing left open for eq-service. See Detail. **Originally numbered SEC-76 — renumbered after a concurrent session's own SEC-76 push (`canonical-members.ts`, above) overwrote this row via `safe_commit.py`'s full-file-copy mechanism; see the note at the end of this row's Detail section.** |
 
 ## Weekend tasks (Field go-live + cutover)
 
@@ -1742,7 +1742,7 @@ environment either way. `lib/canonical-sync.ts` also reads
 `CANONICAL_TENANT_SLUG` — a separate consumer, deliberately left
 untouched, out of scope for this fix.
 
-### SEC-77 — SKS tenant ID hardcoded into eq-service RLS policies on acknowledgments/app_config — and, live-verified, far more widely across ehow (P2, OPEN)
+### SEC-77 — SKS tenant ID hardcoded into RLS on acknowledgments/app_config/audit_log — turned out to be eq-field's, not eq-service's (CLOSED)
 `supabase/migrations/0146b_acknowledgments_authenticated_write.sql:36` and
 `0151_fix_app_config_id.sql:46` (eq-service) hardcode SKS's real tenant ID
 (`7dee117c-98bd-4d39-af8c-2c81d02a1e85`, JWT `app_metadata.tenant_id`)
@@ -1924,11 +1924,52 @@ the ADR doesn't cover.
 **Net effect on this row:** the "`audit_log`/`audit_logs` split needs its own
 answer before touching either" line above is answered — they're unrelated
 systems, not a split needing reconciliation. `service.audit_logs` needs no
-fix. Status stays **OPEN** — this closes only the audit_log/audit_logs
-sub-question; the main fix-mechanism question for the ~31-table hardcoded-
-literal pattern (this row's actual subject) is untouched, and for
-`public.audit_log` specifically the answer now points at eq-field rather than
-eq-service, same direction the ownership split above already indicated.
+fix. This closed only the audit_log/audit_logs sub-question at the time —
+the main fix-mechanism question below is what finally closes the row.
+
+**CLOSED 2026-09-09, same session, on "start the eq-service RLS fix" —
+`acknowledgments`/`app_config` turned out to be the same wrong-repo shape as
+`audit_log` above, not a fix eq-service needed at all.** Before writing any
+migration: checked which application code actually reads/writes these two
+tables. Zero hits anywhere in eq-service's `app/`/`lib/` — `0146_
+acknowledgments_rls.sql` and `0146b_acknowledgments_authenticated_write.sql`
+sit in eq-service's migration history as **stale, orphaned duplicates** with
+no live consumer in this repo. The real, live consumer is eq-field:
+`scripts/recognitions.js` (client), two Supabase edge functions read
+`app_config` directly (`tafe-weekly-fill`, `supervisor-digest`), and eq-field
+carries its own independent migration for the identical change —
+`20260625_acknowledgments_write_enable.sql`, functionally identical to
+eq-service's `0146b`, same day, same policies, same key-UUID header — plus 4
+more `app_config` migrations evolving it since (`20260731`, `20260819` ×2,
+`20260823`).
+
+**The hardcode itself is not a bug on eq-field's side either — it's a
+deliberate, already-shipped security fix.** `20260823_ehow_second_wave_
+jwt_tenant_gate.sql`'s own header: before it, `acknowledgments`/`app_config`
+(+ 13 more tables) checked only `org_id = <sentinel>` — no tenant claim at
+all — so *any* authenticated session on ehow, **including the Demo tenant
+sharing this database**, could read and write SKS's real business data
+(tenders, site audits, job numbers, recognitions, config). Adding the SKS
+JWT-tenant check closed that live cross-tenant leak. Given SKS/Demo are
+ehow's only two possible sessions and Demo must never see SKS's operational
+data, hardcoding "must be SKS" here is the *correct* exclusion, not a
+forward-compatibility miss.
+
+**Forward-compatibility (the concern this row was originally raised
+over) is also already handled, verified directly rather than assumed:**
+eq-field's tenant-provision generator (`scripts/generate-tenant-provision-
+sql.mjs`) classifies both `20260625_acknowledgments_write_enable.sql` and
+`20260823_ehow_second_wave_jwt_tenant_gate.sql` as `action: 'substitute'` in
+its own manifest — read directly, not inferred from the tool's general
+substitution-policy comment. A future tenant provisioned through it gets its
+own literal, not SKS's.
+
+**Status: CLOSED.** Nothing remains open for eq-service in this row —
+`acknowledgments`, `app_config`, and `audit_log` all turned out to belong to
+eq-field, and all three are already correctly handled there. eq-service's
+two stale duplicate migration files are a minor, low-priority hygiene item
+(safe to leave or remove at eq-service's own convenience — not a security
+question), not tracked further here.
 
 ## Clean projects (probe + advisors, 2026-06-05)
 - eq-canonical, eq-canonical-internal, sks-canonical, eq-solves-field,
