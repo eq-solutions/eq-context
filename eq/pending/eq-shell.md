@@ -29,14 +29,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ---
 
 ## eq-shell: `onboard-trial-tenant.mjs` no longer stamps a guessed EQ Field hostname by default — FIXED, merged, live (PR #1862, 2026-09-09)
-*Companion to an eq-field investigation (visible-rejection banner for a rejected `?tenant=` override, that repo's own pending file) into why a freshly onboarded tenant (`madagins`) silently rendered the `eq` sandbox tenant's data on `field.eq.solutions/?tenant=madagins`. Traced to this script, not eq-field's own logic.*
-
-- [x] **Root cause: step 6 defaulted `--field-hostname` to `field.{slug}.eq.solutions` and wrote it straight to `public.organisations`, but this script only provisions the Supabase data plane — it never touches Netlify DNS/domains.** Confirmed live via Supabase MCP: both `sks` and `madagins` carried this exact dangling hostname with zero real domain behind it. `eq`'s matching hostname is real only because it's EQ Field's own default deploy, not because this script provisioned it.
-- [x] **[PR #1862](https://github.com/eq-solutions/eq-shell/pull/1862), merged, live** (eq-shell auto-deploys on merge to main). `--field-hostname` now has no default — omitting it leaves `hostname` null (Shell-embed-only access via `core.eq.solutions/{slug}`); an existing-row update only touches `hostname` when the flag is explicitly passed, so a bare re-run no longer clobbers a deliberately-set value back to null. Verified: `node --check`, manual diff review (no dedicated test file covers this script; `node_modules` wasn't installed in the worktree used, so the workspace `eslint .` wasn't run).
-- [x] **Residual cleanup, done directly on Royce's go:** nulled the existing dangling `hostname` on `sks` and `madagins`'s `organisations` rows via Supabase MCP.
 - [ ] **`docs/runbooks/onboard-trial-tenant.md` predates step 6 entirely and never documented `--field-hostname`, even pre-2026-09-09** — pre-existing drift, not caused by this fix. Spun off as a background task chip (`task_4eee9c2c`), not started as of this close. _(added 2026-09-09)_
-
-**Notes:** Full session detail lives in eq-field's own `sessions/2026-09-09.md` (this was primarily an eq-field-repo session that reached into eq-shell for this one file). Companion eq-field fix: [PR #972](https://github.com/eq-solutions/eq-field/pull/972) — visible-rejection banner, held unmerged per Royce's explicit "not yet."
 
 ---
 

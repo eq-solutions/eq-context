@@ -13,17 +13,9 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: `?tenant=` override rejection was silent (two paths, one had zero signal) — FIXED, PR open, held for merge; onboarding hostname-stamping fixed in eq-shell too (2026-09-09)
-*Asked to investigate whether a rejected `?tenant=` override should be made visible, and to weigh three options for the newly-onboarded `madagins` tenant's dangling `field.madagins.eq.solutions` hostname. Investigated and recommended before building (global CLAUDE.md Task Brief) — Royce approved "(a) now + (b) for new onboards."*
-
-- [x] **(a) — a rejected `?tenant=` override now shows a dismissible banner instead of silently rendering a different tenant's data.** `_loadCanonicalConfig()` (`scripts/app-state.js`) had two silent-fallback paths: a hostname-mismatch (console.warn only) and — found reading the code, not in the original ask — a completely unknown slug (zero signal, not even a log line). Both now surface via `loadTenantConfig()`. [PR #972](https://github.com/eq-solutions/eq-field/pull/972), v3.5.713 — all checks green (49/49 tests, eslint, cache-buster, bundle-drift), live-verified on the deploy preview across both rejection paths + a clean normal load + Dismiss. **Held, not merged — Royce's explicit "not yet."**
-- [x] **(b) — eq-shell's `onboard-trial-tenant.mjs` no longer stamps a guessed `field.{slug}.eq.solutions` hostname by default.** That script only provisions the Supabase data plane, never Netlify DNS/domains — confirmed live both `sks` and `madagins` had this exact dangling hostname. [eq-shell PR #1862](https://github.com/eq-solutions/eq-shell/pull/1862) — merged, live (eq-shell auto-deploys on merge). Full detail in eq-shell's own pending file.
-- [x] **Residual cleanup done directly, not deferred:** nulled `hostname` on the existing `sks`/`madagins` `organisations` rows in eq-canonical via Supabase MCP, per Royce's explicit go — confirmed via the UPDATE's own `returning` clause.
+## eq-field: `?tenant=` override rejection was silent (two paths, one had zero signal) — FIXED, merged, live (v3.5.714, PR #972); onboarding hostname-stamping fixed in eq-shell too (2026-09-09)
 - [ ] **(c) — real per-tenant Netlify custom domains — explicitly not built.** No live use case: both `eq` and `sks` are Core-only today, and the standalone PIN gate is already a documented dead end. Revisit only if standalone (non-Shell) tenant access is actually wanted. _(added 2026-09-09)_
-- [ ] **eq-field PR #972 still needs Royce's merge call** — held this session, not declined. _(added 2026-09-09)_
 - [ ] **`eq-shell/docs/runbooks/onboard-trial-tenant.md` predates step 6 entirely and never documented `--field-hostname`** — pre-existing drift, spun off as a background task chip (`task_4eee9c2c`), not started as of this close. _(added 2026-09-09)_
-
-**Notes:** Full session detail: `sessions/2026-09-09.md`. A companion Claude session (`local_c7f5ae66…`, "EQ field empty for Madagins tenant") independently re-checked `fix/field-workspace-madagins-option` for overlap with (b) and reported back "Royce says: branch off origin/main and build (b)" — by the time that arrived, (b) was already shipped as PR #1862. That peer session had already archived by the time this one tried to reply, so no duplicate work resulted — flagging in case Royce reviews that session's own transcript and wonders why its conclusion wasn't actioned.
 
 ---
 
