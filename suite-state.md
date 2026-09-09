@@ -64,7 +64,11 @@ _If this file is >48h old, the cron is broken._
 - #349 fix(cards): don't let a blank frame stand in for a router rebuild
 - #347 fix(cards): wallet card boundary + edit profile in place
 
+**eq-field:**
+- #968 fix: fold pg_net extension check into tenant-provision generator
+
 **eq-service:**
+- #838 fix(canonical-members): scope every roster lookup to the actual tenant
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
@@ -73,7 +77,9 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1845 fix(migrations): add missing UNIQUE constraint on licences.cards_credential_id
+- #1848 feat(workers): redesign the Add worker screen (follow-up to #1844)
+- #1847 fix(entitlements): allowlist modules in upsertAppEntitlements
+- #1846 fix(entitlements): enforce module allowlist in upsertAppEntitlements
 - #1842 fix(provisioning): recover and land the app_data legacy-baseline migration (0311)
 - #1827 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -95,8 +101,8 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-08 |
-| eq-shell | ready | 2026-09-09 |
+    | eq-service | ready | 2026-09-09 |
+| eq-shell | building | 2026-09-09 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 246 (latest: 0240) applied
