@@ -1855,7 +1855,26 @@ live-verified after dispatch: zaap's `nominations` now carries `nom_tenant_read`
 `nom_tenant_write`, madagins's `nomination_clashes` grants are `postgres`/`authenticated`/
 `service_role` only, ehow untouched. **The structural gap above (no tracked mechanism for a
 future 4th tenant) still stands** — this closed the two live instances of it, not the
-mechanism itself. eq-service's own real
+mechanism itself.
+
+**Follow-up, 2026-09-10 — `apprentice_profiles`/`tenders` checked, both clean, but the
+ownership attribution was wrong on both.** Same trap as `tender_enrichment`: the original
+`CREATE TABLE` grep matched a dead, 0-row `app_data.*` table from `0002_remaining_tables.sql`
+(confirmed via row count on ehow: `app_data.apprentice_profiles` 0 rows vs. `public.apprentice_profiles`
+4, `public.tenders` 404 — `app_data.tenders` no longer exists at all, dropped as an orphan
+stub per the same 2026-06-28 tombstone that covers `tender_enrichments`/`tender_review_decisions`/
+`tender_nominations`/`tender_import_runs`). The real, live tables are the `public.*` ones —
+same out-of-band, non-`tenant-migrate.yml`-covered family as `tender_enrichment`/`nominations`.
+Live state, no bug found on either: **`public.tenders`** is correct on all 3 planes — ehow/
+madagins hardcoded-but-correctly-substituted, **zaap has the best version of the pattern**:
+fully dynamic (`org_id = (auth.jwt()->...)::uuid`), no hardcoding, needs no substitution for
+any future tenant. **`public.apprentice_profiles`** has no `authenticated` grant on any
+plane, including ehow — consistent with the already-known finding above (item 4: all
+apprentice reads/writes currently go through eq-field's `EHOW_SERVICE_ROLE_KEY` path, not
+per-tenant RLS); zaap additionally carries an explicit `deny_all` policy, consistent with the
+EQ tenant not using Apprentices. Nothing to fix here. **Not yet checked**: `tender_import_runs`/
+`tender_review_decisions`/`tender_nominations` — same dead-stub trap likely applies (all three
+are named in the same 2026-06-28 drop-stubs tombstone) but not individually re-verified. eq-service's own real
 contribution to this list is `acknowledgments`/`app_config`/`audit_log` (3
 tables); the rest belong to eq-shell and eq-field.
 
