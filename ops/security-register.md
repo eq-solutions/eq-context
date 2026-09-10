@@ -1833,8 +1833,29 @@ dynamic self-referential policies from eq-shell PR #1863 (migration `0314`, gove
 UUIDs correctly substituted (cross-checked against `organisations.id`/`shell_control.tenants.id`
 on jvkn — exact match, not a lockout). **The real gap**: no tracked mechanism creates this
 table or its policies for a new plane at all — every tenant's correctness here depends on a
-human remembering the manual step. `nominations`/`tender_phases` share the identical
-lineage, not individually re-verified. Royce's call: record-only for now (no live risk today). eq-service's own real
+human remembering the manual step. Royce's call at the time: record-only, no live risk yet.
+
+**Follow-up, same day — `nominations`/`tender_phases` checked, one was NOT just a future
+risk.** `tender_phases`: correct everywhere it exists (ehow/madagins hardcoded-but-substituted,
+same shape as `tender_enrichment`; doesn't exist on zaap at all, confirmed live, matching the
+2026-07-11 anon-lockdown migration's own comment). `nomination_clashes` (view): correct on
+ehow (`security_invoker=on`, anon revoked); `security_invoker` was already correctly set on
+madagins too, but `anon` still held a superfluous grant there (not exploitable — the
+underlying `nominations` table has no anon policy for it to expose — but inconsistent with
+ehow's posture). **`nominations` on zaap was the real one: RLS enabled, `authenticated`
+granted, ZERO policies — the identical live silent-lockout bug as `tender_enrichment`, not
+hypothetical.** 0 rows on zaap at the time so no data had been hidden yet, but the mechanism
+was live-broken for any EQ-tenant authenticated user. Both fixed: [eq-shell#1878](https://github.com/eq-solutions/eq-shell/pull/1878)
+(migration `0316`, mirrors `0314`'s join-through-`tenders` pattern since `nominations` has no
+org_id/tenant_id column on zaap either; migration `0317`, guarded anon-revoke on madagins's
+`nomination_clashes`), merged via admin override past an unrelated required-check regression
+(control-plane `shell_control` table-drift check, confirmed failing on other, unrelated PRs
+too — not caused by this change), dispatched fleet-wide via `tenant-migrate.yml`, and
+live-verified after dispatch: zaap's `nominations` now carries `nom_tenant_read`/
+`nom_tenant_write`, madagins's `nomination_clashes` grants are `postgres`/`authenticated`/
+`service_role` only, ehow untouched. **The structural gap above (no tracked mechanism for a
+future 4th tenant) still stands** — this closed the two live instances of it, not the
+mechanism itself. eq-service's own real
 contribution to this list is `acknowledgments`/`app_config`/`audit_log` (3
 tables); the rest belong to eq-shell and eq-field.
 
