@@ -304,9 +304,12 @@ migration-count guess, and it turns out not to be eq-field's alone. Ownership re
 `CREATE TABLE` across both repos' migrations, not by naming: **eq-field owns ~15**
 (`apprentice_journal`, `competencies`, `email_templates`, `feedback_requests`,
 `leave_cc_recipients`, `organisations`, `pending_schedule`, `roster_presence`, `site_audits`,
-`site_audit_items`, plus the 6 shared tables below) — almost certainly already covered by the
-generator's own stated substitution policy ("ANY file containing either SKS literal ANYWHERE... is
-substituted in full," above), not independently re-verified against its MANIFEST line-by-line.
+`site_audit_items`, plus the 6 shared tables below) — **checked live 2026-09-10, not just
+trusted on the generator's stated design intent: confirmed clean.** No RLS-enabled-zero-policies
+lockout on any of the ~16 names across ehow/zaap/madagins; every literal-substitution spot-check
+on madagins came back correctly scoped. zaap's gaps (several tables absent, two carrying
+explicit `deny_all`) are deliberate — the EQ demo tenant simply doesn't use those features, not
+a provisioning miss. Full detail: `ops/security-register.md` SEC-77.
 **eq-shell owns ~10** (`apprentice_profiles`, `tender_enrichment`, `tender_import_runs`,
 `tender_review_decisions`, `tenders`, `tender_nominations`, plus shared) — **not** covered by
 eq-field's generator (different repo, different pipeline) and not checked this pass whether

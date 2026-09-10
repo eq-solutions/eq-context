@@ -1889,7 +1889,31 @@ all 6 originally-named tables**: only `nominations` had a real live bug; `tender
 correct; `tender_nominations` was never a live thing to begin with. The ownership-attribution
 trap (a `CREATE TABLE` grep matching a dead `app_data` stub instead of the real `public` table)
 held on all 6 without exception — worth remembering as a standing caveat on any future grep-
-based ownership attribution in this repo, not just this list. eq-service's own real
+based ownership attribution in this repo, not just this list.
+
+**Follow-up, 2026-09-10 (same day) — eq-field's ~15+6-shared table share checked live too, not
+just trusted on the generator's stated design intent.** All ~16 named tables (`apprentice_journal`,
+`competencies`, `email_templates`, `feedback_requests`, `leave_cc_recipients`, `organisations`
+[tenant-plane, not jvkn's control-plane table of the same name], `pending_schedule`,
+`roster_presence`, `site_audits`, `site_audit_items`, plus the 6 shared: `team_supervisors`,
+`feedback_entries`, `quarterly_reviews`, `rotations`, `skills_ratings`,
+`field_job_number_overrides`) checked for the RLS-enabled-zero-policies lockout signature
+across all 3 planes — **none found.** Every literal-substitution spot-check on madagins came
+back correctly scoped to its own org_id/tenant_id (12 for 12 across this whole SEC-77
+investigation now, eq-shell and eq-field sides combined, zero exceptions). zaap is a mix of
+deliberate exclusions, not gaps: `competencies`/`roster_presence` carry explicit `deny_all`
+policies (EQ tenant doesn't use these features); `organisations`/`pending_schedule` are already
+correctly dynamic (`organisations` is eq-shell PR #1866 from earlier the same session, not
+previously connected to this SEC-77 thread); `field_job_number_overrides`/`leave_cc_recipients`/
+`site_audit_items`/`site_audits`/`team_supervisors`/`email_templates` **don't exist on zaap at
+all** — never provisioned for the demo tenant, not a lockout. **One correction to the
+"`app_data` = dead twin" rule established above: it doesn't hold universally.** `team_supervisors`
+reverses it — `app_data.team_supervisors` is the live table (13 real rows on ehow), no `public`
+duplicate exists. That reversal is specific to eq-shell's misfiled tender/apprentice family;
+eq-field's own properly-governed tables correctly live in `app_data`, as the architecture
+intends. **Net result, both sides of SEC-77 combined: `nominations` on zaap was the only real
+live bug found across the entire ~31-table sweep.** Everything else was either already correct,
+deliberately excluded, or never a live thing. eq-service's own real
 contribution to this list is `acknowledgments`/`app_config`/`audit_log` (3
 tables); the rest belong to eq-shell and eq-field.
 
