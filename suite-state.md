@@ -60,6 +60,10 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-10)
 
+**eq-field:**
+- #978 fix(canon-read): reject the body.tenant_slug fallback instead of trusting it
+- #977 fix(ehow): field_people_iud() no longer guesses a tenant on a null JWT claim
+
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -100,7 +104,7 @@ _If this file is >48h old, the cron is broken._
 ## Field Data Plane — SKS tenant (as of 2026-09-10)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 76 | ✓ 76 |
+| Directory | app_data.field_people | 70 | ✓ 70 |
 | Directory | app_data.field_sites | 58 | ✓ 58 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,270 | ✓ 2,270 |
@@ -124,7 +128,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 55 |  |
+| Active users (Shell sign-ins, jvkn) | 54 |  |
 
 _No flips this run._
 ---
