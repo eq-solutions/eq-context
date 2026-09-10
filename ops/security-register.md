@@ -1872,9 +1872,24 @@ any future tenant. **`public.apprentice_profiles`** has no `authenticated` grant
 plane, including ehow — consistent with the already-known finding above (item 4: all
 apprentice reads/writes currently go through eq-field's `EHOW_SERVICE_ROLE_KEY` path, not
 per-tenant RLS); zaap additionally carries an explicit `deny_all` policy, consistent with the
-EQ tenant not using Apprentices. Nothing to fix here. **Not yet checked**: `tender_import_runs`/
-`tender_review_decisions`/`tender_nominations` — same dead-stub trap likely applies (all three
-are named in the same 2026-06-28 drop-stubs tombstone) but not individually re-verified. eq-service's own real
+EQ tenant not using Apprentices. Nothing to fix here.
+
+**Follow-up, 2026-09-10 (same day) — `tender_import_runs`/`tender_review_decisions`/
+`tender_nominations` checked. This closes out every table in the original ~10-table list.**
+`tender_import_runs` and `tender_review_decisions`: both clean on all 3 planes, same shape as
+everything else in this family (zaap fully dynamic, ehow/madagins hardcoded-but-correctly-
+substituted) — dead `app_data.*` stubs still sit inert on zaap/madagins (never got ehow's
+out-of-band drop-stubs cleanup) but hold 0 rows and no grant, no live effect.
+`tender_nominations` **doesn't exist live anywhere** — not on ehow (already dropped per the
+2026-06-28 tombstone), not on zaap/madagins either (never existed there beyond the same dead
+`app_data` stub). Its living equivalent is `public.nominations` — the one table in this whole
+family that WAS actually broken (the zaap lockout above), already fixed. **Net result across
+all 6 originally-named tables**: only `nominations` had a real live bug; `tender_enrichment`,
+`tenders`, `apprentice_profiles`, `tender_import_runs`, `tender_review_decisions` were already
+correct; `tender_nominations` was never a live thing to begin with. The ownership-attribution
+trap (a `CREATE TABLE` grep matching a dead `app_data` stub instead of the real `public` table)
+held on all 6 without exception — worth remembering as a standing caveat on any future grep-
+based ownership attribution in this repo, not just this list. eq-service's own real
 contribution to this list is `acknowledgments`/`app_config`/`audit_log` (3
 tables); the rest belong to eq-shell and eq-field.
 
