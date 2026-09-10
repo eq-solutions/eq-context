@@ -1,25 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-09 23:41 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-10 01:12 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-09 20:24 UTC → 2026-09-09 23:41 UTC)
+## Since last refresh (2026-09-09 23:41 UTC → 2026-09-10 01:12 UTC)
 
-- Merged: eq-shell [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with 
-- Merged: eq-shell [#1865](https://github.com/eq-solutions/eq-shell/pull/1865) Rebuild Add worker to the Claude Design spec
-- Merged: eq-shell [#1864](https://github.com/eq-solutions/eq-shell/pull/1864) fix(documents): actually stop clipping the "..." menu (#1828
-- Merged: eq-shell [#1862](https://github.com/eq-solutions/eq-shell/pull/1862) fix(onboard): stop stamping a guessed EQ Field hostname by d
-- Merged: eq-shell [#1859](https://github.com/eq-solutions/eq-shell/pull/1859) docs(shared): explain the active=false/is_personal overlap i
-- Merged: eq-shell [#1858](https://github.com/eq-solutions/eq-shell/pull/1858) feat(staff): backdate signal on conversations, Casual attach
-- Merged: eq-shell [#1852](https://github.com/eq-solutions/eq-shell/pull/1852) Add Multi screen for group-adding workers
-- Merged: eq-field [#974](https://github.com/eq-solutions/eq-field/pull/974) fix(ehow): field_job_numbers_src() had no caller-tenant chec
+- Merged: eq-shell [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filt
+- Merged: eq-shell [#1869](https://github.com/eq-solutions/eq-shell/pull/1869) docs(onboard): catch the runbook up to step 6 + --field-host
+- Merged: eq-shell [#1866](https://github.com/eq-solutions/eq-shell/pull/1866) fix(security): add authenticated read policy for zaap's orga
+- Merged: eq-shell [#1863](https://github.com/eq-solutions/eq-shell/pull/1863) fix(security): add missing tenant-scoped RLS policies on zaa
+- Merged: eq-shell [#1861](https://github.com/eq-solutions/eq-shell/pull/1861) chore(intake): auto re-vendor eq-intake/eq-platform
+- Merged: eq-shell [#1860](https://github.com/eq-solutions/eq-shell/pull/1860) fix(admin): add Madagins to the Field workspace dropdown
+- Merged: eq-shell [#1857](https://github.com/eq-solutions/eq-shell/pull/1857) fix(licences): resolve staff_id per-tenant, not via workers.
+- Merged: eq-shell [#1854](https://github.com/eq-solutions/eq-shell/pull/1854) fix(check-tenant-drift): fail loud when a real tenant has no
 
 ## ⚠ Needs you (8)
 
@@ -64,7 +64,7 @@ _…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-09 |
+| eq-shell | building | 2026-09-10 |
 
 ## Live errors (Sentry)
 
@@ -75,15 +75,16 @@ _…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-shell | [EQ Field handoff stalled at "booted" (38s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145052767/) | 8 | 2026-09-09 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 7 | 2026-09-09 |
 | eq-shell | [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/) | 4 | 2026-09-09 |
+| eq-solves-service | [auth handoff: expired](https://eq-solutions.sentry.io/issues/135281279/) | 3 | 2026-09-10 |
 | eq-field | [TypeError: Load failed](https://eq-solutions.sentry.io/issues/145900945/) | 2 | 2026-09-09 |
 | eq-shell | [Error: Workers missing an active org_membership: 1 (1 already hiding licences)](https://eq-solutions.sentry.io/issues/145797834/) | 2 | 2026-09-09 |
-| eq-shell | [EQ Field handoff auto-recovery (timeout)](https://eq-solutions.sentry.io/issues/141463602/) | 2 | 2026-09-09 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-10 | eq-shell | [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filters i |
 | 2026-09-09 | eq-shell | [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with team/ |
 | 2026-09-09 | eq-shell | [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or signers |
 | 2026-09-09 | eq-shell | [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped reques |
@@ -98,7 +99,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1877](https://github.com/eq-solutions/eq-shell/pull/1877) chore(deps): bump @eq-solutions/ui to v1.16.5 |
 | 2026-09-09 | eq-shell | [#1876](https://github.com/eq-solutions/eq-shell/pull/1876) fix(documents): warm push-document-audience's tenant-client cache |
 | 2026-09-09 | eq-shell | [#1873](https://github.com/eq-solutions/eq-shell/pull/1873) Make Multi the Add-workers homepage, fold agency links into uploa |
-| 2026-09-09 | eq-shell | [#1867](https://github.com/eq-solutions/eq-shell/pull/1867) feat(mobile): add workspace switcher to the mobile account sheet |
 _Showing 15 of 83 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -135,18 +135,18 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1733 | 230 / 64 | 20 | 78 |
+| [eq-shell](eq/pending/eq-shell.md) | 1733 | 230 / 64 | 20 | 83 |
 | [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 8 |
-| [eq-field](eq/pending/eq-field.md) | 1356 | 195 / 40 | 38 | 48 |
+| [eq-field](eq/pending/eq-field.md) | 1356 | 195 / 40 | 38 | 50 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 403 | 51 / 20 | 2 | 20 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 182 | 14 / 6 | 2 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 46 | 3 / 1 | 0 | 3 |
 | [eq-context](eq/pending/eq-context.md) | 242 | 29 / 12 | 1 | 9 |
-| [cross-repo](eq/pending/cross-repo.md) | 943 | 134 / 46 | 3 | 77 |
+| [cross-repo](eq/pending/cross-repo.md) | 943 | 134 / 46 | 3 | 83 |
 | [sks](eq/pending/sks.md) | 55 | 3 / 5 | 0 | 6 |
-| [SKS](sks/pending.md) | 515 | 95 / 15 | 0 | 62 |
+| [SKS](sks/pending.md) | 515 | 95 / 15 | 0 | 65 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
 | [OPS](ops/pending.md) | 627 | 52 / 3 | 1 | 13 |
 
@@ -154,6 +154,11 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-26) · **Hit the recurring "two sessions, one folder" hazard again mid-task** — another concurrent session was actively working in the same shared eq-shell folder at the same time, on a different branch, with its own unsaved work in progress. Worked around it safely (moved to an isolated copy, touched nothing of theirs) — no data lost, but this is the same known hazard logged elsewhere in this file, not a new one. _(added 2026-07-26)_
+- **eq-shell** (2026-07-26) · **Real end-to-end confirmation still open**: re-archived the 4 originally-affected people (Aaron Clohessy, Emma Curth, Jack Fitzpatrick, Ross Davidson) as a live test. Need to check after tomorrow's nightly run (and ideally after their Cards profile syncs in real time) that they're still archived — that's the actual proof the fix holds, not just a clean deploy. _(added 2026-07-26)_
+- **eq-shell** (2026-07-26) · **Bob Smith** (one of the 5 originally reported) still doesn't match any current staff record in the SKS tenant by name — never resolved, possibly a name-spelling mismatch or a different tenant. Worth a quick manual look. _(added 2026-07-26)_
+- **eq-shell** (2026-07-26) · **The old, now-unused sync function is still sitting in Supabase** (edge function `credentials-canonical-sync`) — harmless since nothing calls it anymore, but there's no way to delete an edge function via a migration; would need a manual removal via the Supabase dashboard if Royce wants it gone entirely. _(added 2026-07-26)_
+- **eq-shell** (2026-07-26) · **Real-world confirmation still open** — have a manager ask Zemi Asri (or another affected worker) to retry logging into core.eq.solutions now that #992 is live, and confirm it worked. _(added 2026-07-26)_
 - **eq-shell** (2026-07-24) · **What's the actual remaining pain point for direct employees, now that the Cards→Field pipe is confirmed live end-to-end?** Asked Royce directly — is it that head office doesn't trust/re-checks Field data before their manual Upvise upload, or a different gap not yet found. Not answered yet this session. _(added 2026-07-24)_
 - **eq-shell** (2026-07-24) · **An automatic check is scheduled for the morning of 2026-07-25 to confirm the fix actually held overnight** — will look at the 5 originally-reported people directly, check for any suspicious mass-reactivation pattern across staff generally, and report back. Not yet confirmed by Royce himself. _(added 2026-07-24)_
 - **eq-shell** (2026-07-24) · **`eq_reconcile_worker_sync()` (the nightly dispatcher itself, jvkn `pg_cron` job id 2) still isn't tracked in any repo migration** — a governance gap independent of the bug above, not touched by this fix. Not urgent now that the harmful write is gone, but worth bringing under the normal migration pipeline at some point. _(added 2026-07-24)_
@@ -164,12 +169,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-21) · **Worth a quick look once deployed:** confirm the Company field shows/saves correctly for Labour Hire and Subcontractor (desktop + mobile), and re-export SKS-17386 to confirm Clarifications now sits left-aligned without needing a manual fix in Word. _(added 2026-07-21)_ **Checked 2026-09-07 via `/triage`: same blocker as the rest of this bucket — no live Shell session in this environment for either the UI click-test or the SKS-17386 doc re-export (`quoteDocGenerator.ts` needs an authed session). Still open; needs a real Shell sign-in to close out.**
 - **eq-shell** (2026-07-21) · **The third — a simple "how sure are we this credential is real" label on licences — is deliberately parked**, not forgotten: Royce's 90/10 decision (90% on the SKS career, company-scale Cards parked) puts this on the wrong side of the line, since it's a cross-company trust signal SKS's own onboarding doesn't need. Revisit only if the company-scale question reopens. Full detail in the audit doc (`eq-context/eq/cards/portable-trade-identity-audit-2026-07-20.md`). _(added 2026-07-21)_
 - **eq-shell** (2026-07-19) · **Still open, not urgent:** the exact reason EQ Field was slow to load for that one person on 2026-07-19 is unconfirmed — likely just a poor connection, but couldn't fully rule out anything worse. Nothing else has reported it since. _(added 2026-07-19)_
-- **eq-shell** (2026-07-17) · **Deferred: who should get the weekly summary email?** Built and ready, just needs a recipient list from Royce before it's switched on. _(added 2026-07-17)_
-- **eq-shell** (2026-07-17) · **Declined for now (Royce's call): a personal calendar feed per crew member, and a weather warning near Microsoft dock dates.** Offered as options alongside the above; not built. _(added 2026-07-17)_
-- **eq-shell** (2026-07-16) · **Deferred: bigger first-load speedup** — breaking one large file into smaller pieces that only load when needed. Real win, but a bigger change that needs a hands-on check, not just automated tests. _(added 2026-07-19)_
-- **eq-shell** (2026-07-16) · **Deferred: extend the "you'll lose this" warning** to other forms — site details, invites, admin settings. Currently only on quotes. _(added 2026-07-19)_
-- **eq-shell** (2026-07-16) · **Deferred: make long lists load a page at a time** instead of everything at once (quotes, comms roster, staff, customers). _(added 2026-07-19)_
-_…and 327 more — see each file's Queue health row above._
+_…and 343 more — see each file's Queue health row above._
 
 ## Possible recurring failures (unconfirmed)
 
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-09 23:41 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-10 01:12 UTC._
