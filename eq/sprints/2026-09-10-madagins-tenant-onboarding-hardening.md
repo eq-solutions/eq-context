@@ -7,6 +7,14 @@ read_priority: standard
 status: live
 ---
 
+**This is a continuation, not a parallel track.** The primary record for
+madagins onboarding is [`eq/sprints/2026-09-09-tenant-onboarding-sprint.md`](2026-09-09-tenant-onboarding-sprint.md)
+(Royce-directed, six `/decide` passes, the actual tenant-isolation call) plus
+`eq/sprints/2026-09-09-provisioning-completeness-followup.md`. This session
+didn't know that doc existed until late in its own audit — read it first if
+picking this up next, rather than treating anything below as the origin
+story.
+
 # Sprint: madagins tenant-onboarding hardening — 2026-09-10
 
 **Trigger:** a session confirming Royce's mental model of the per-tenant SaaS

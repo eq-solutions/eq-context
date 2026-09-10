@@ -15,6 +15,13 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## Two small substrate-tooling gaps found while auditing madagins onboarding (2026-09-10)
+
+- [ ] **`suite-state-refresh.yml`'s `SUPABASE_URL` env var is hardcoded to ehow** — the refresh script structurally cannot query any tenant's data but SKS's, which is why madagins (active since 2026-09-09) still isn't in suite-state.md's tenant/Supabase-projects tables and the nightly cron can't self-correct it. Needs either the script generalized to read `shell_control.tenant_routing` live, or a manual patch each time a tenant is added. _(added 2026-09-10)_
+- [ ] **`rules/reflection-protocol.md`'s actual scope (4 fixed checks + an eq-field commit-staging step tied to a `guard.js` gate) doesn't match `CLAUDE.md` §4's framing of it as the general answer to "critique this"/"stress test this" requests.** Found by hitting the mismatch directly — a broad "critique what we've built" ask didn't fit the protocol's shape. Narrow the CLAUDE.md language or broaden the protocol. _(added 2026-09-10)_
+
+---
+
 ## eq-context: EQ suite redundancy review — 4-layer score, cron root-caused (not broken), code backup built (2026-09-08)
 
 - [ ] **Royce to add a second Netlify team member + turn on `enforce_mfa`** — cheapest, highest-leverage item from the review; live-confirmed today the team still has 1 member and MFA off. Not started. _(added 2026-09-08)_

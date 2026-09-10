@@ -1,13 +1,16 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-09-10 (PR #976 open, not merged — CSP allowlists madagins's Supabase project)
+- `_headers`' CSP `connect-src`/`wss:` allowlisted jvkn+zaap+ehow only, not `ornndtbdkxfsewspbrwk` (madagins) — any direct browser fetch to madagins's own project was silently CSP-blocked. Additive fix, no existing tenant's entries touched. [PR #976](https://github.com/eq-solutions/eq-field/pull/976).
 
 ## 2026-09-09 (PR #970 MERGED + LIVE — Shell-ownership gate on sites/managers no longer hardcoded to 'sks')
 - `sites.js`/`managers.js` hid the Edit/Delete/Save write paths (toast + no-op) whenever `TENANT.ORG_SLUG === 'sks'` — the intended rule is "Shell owns canonical sites/staff for any Shell-integrated tenant," not "for SKS specifically." Now keys off `TENANT.CORE_ONLY` (already live, canonical-driven via `organisations.branding.coreOnly`), matching `auth.js`'s own already-established `_isCoreOnly()` pattern — `'sks'` kept only as the same hard fallback that pattern already uses.

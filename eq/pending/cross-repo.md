@@ -1,7 +1,7 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
@@ -10,6 +10,15 @@ status: live
 # Cross-Repo — Pending
 
 **Budget:** ~500 lines (currently 912 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## Madagins onboarding — 3 items from tonight's audit not already tracked elsewhere (2026-09-10)
+*Full detail: `eq/sprints/2026-09-10-madagins-tenant-onboarding-hardening.md`. This audit mostly rediscovered ground already covered by `eq/sprints/2026-09-09-tenant-onboarding-sprint.md` and digest.md's "Waiting on you" — these 3 are the parts that weren't.*
+
+- [ ] **eq-field PR #976 open, not merged** — CSP fix so madagins's own Supabase project isn't silently connect-src-blocked in the browser. Royce's call. _(added 2026-09-10)_
+- [ ] **`eq-field/scripts/{roster,timesheets,leave}-adapter.js`** each hardcode a `CANONICAL_*_DB_REFS = ['ehowgjardagevnrluult']` ground-truth fallback for a known Shell-embed restore bug — madagins has no equivalent protection. Same shape of fix as `check-tenant-drift.mjs`'s already-tracked gap; bundle them. _(added 2026-09-10)_
+- [ ] **Is Comms (`comms-jobs.ts`/`comms-weekly-digest.ts`, hardcoded `SKS_TENANT_ID`) meant to ever be tenant-generic, or intentionally SKS-only like SKS NSW Labour?** Product call, not a bug fix. _(added 2026-09-10)_
 
 ---
 
