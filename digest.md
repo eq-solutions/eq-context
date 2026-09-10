@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-10 01:47 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-10 01:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-10 01:18 UTC → 2026-09-10 01:47 UTC)
+## Since last refresh (2026-09-10 01:47 UTC → 2026-09-10 01:49 UTC)
 
-- Merged: eq-shell [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scri
-- Merged: eq-shell [#1873](https://github.com/eq-solutions/eq-shell/pull/1873) Make Multi the Add-workers homepage, fold agency links into 
-- Merged: eq-shell [#1869](https://github.com/eq-solutions/eq-shell/pull/1869) docs(onboard): catch the runbook up to step 6 + --field-host
-- Merged: eq-shell [#1866](https://github.com/eq-solutions/eq-shell/pull/1866) fix(security): add authenticated read policy for zaap's orga
-- Merged: eq-shell [#1863](https://github.com/eq-solutions/eq-shell/pull/1863) fix(security): add missing tenant-scoped RLS policies on zaa
-- Merged: eq-shell [#1861](https://github.com/eq-solutions/eq-shell/pull/1861) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1860](https://github.com/eq-solutions/eq-shell/pull/1860) fix(admin): add Madagins to the Field workspace dropdown
-- Merged: eq-shell [#1854](https://github.com/eq-solutions/eq-shell/pull/1854) fix(check-tenant-drift): fail loud when a real tenant has no
+- Merged: eq-shell [#1876](https://github.com/eq-solutions/eq-shell/pull/1876) fix(documents): warm push-document-audience's tenant-client 
+- Merged: eq-shell [#1867](https://github.com/eq-solutions/eq-shell/pull/1867) feat(mobile): add workspace switcher to the mobile account s
+- Merged: eq-shell [#1865](https://github.com/eq-solutions/eq-shell/pull/1865) Rebuild Add worker to the Claude Design spec
+- Merged: eq-shell [#1864](https://github.com/eq-solutions/eq-shell/pull/1864) fix(documents): actually stop clipping the "..." menu (#1828
+- Merged: eq-shell [#1862](https://github.com/eq-solutions/eq-shell/pull/1862) fix(onboard): stop stamping a guessed EQ Field hostname by d
+- Merged: eq-shell [#1858](https://github.com/eq-solutions/eq-shell/pull/1858) feat(staff): backdate signal on conversations, Casual attach
+- Merged: eq-field [#976](https://github.com/eq-solutions/eq-field/pull/976) fix(csp): allowlist madagins's Supabase project in connect-s
+- Merged: eq-field [#975](https://github.com/eq-solutions/eq-field/pull/975) fix(canon-read): drop the redundant ALLOWED_SLUGS gate
 
 ## ⚠ Needs you (8)
 
@@ -32,7 +32,7 @@ _2026-09-10 01:47 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 - 🟠 **Cron failing** — `index-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 
-## 🙋 Waiting on you (227)
+## 🙋 Waiting on you (226)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
@@ -48,7 +48,7 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **#711/SEC-71 — mandatory TOTP enforcement is genuinely client-side only**, reconfirmed live (`shell-login.ts:476-495` issues a full session regardless of the flag). The issue itself says it needs Royce's call on intended grace-period semantics before anyone implements a fix — not built.
 - **eq-shell** · **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05; deferred again 2026-09-07 via `/triage` — still nobody pointed at a disposable test account)_
 - **eq-shell** · **3 of the 4 fixes verified only via `tsc -b --force` + eslint + `pnpm test` (including a negative-proof test per fix: fails on the pre-fix code, passes on the fix) — not a real click-through.** Only PR #1760's rate-limit reordering got an end-to-end live check (real HTTP requests against its deploy preview, cross-checked against the live `rate_limit_buckets`/`audit_log` tables). Worth a real pass on the other three: trigger `update_site`/`add_site` with an inactive contact and confirm it's rejected before any write lands; delete a user with linked staff/worker records and confirm the purge stays inside one tenant; open a PR with a deliberately colliding migration prefix and confirm CI fails it. _(added 2026-09-04)_
-_…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
@@ -56,7 +56,7 @@ _…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 4d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | -1d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✗ failure | 0d ago | 0 | — |
 
@@ -87,6 +87,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-10 | eq-shell | [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scripts |
 | 2026-09-10 | eq-shell | [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-reque |
 | 2026-09-10 | eq-shell | [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filters i |
+| 2026-09-10 | eq-field | [#976](https://github.com/eq-solutions/eq-field/pull/976) fix(csp): allowlist madagins's Supabase project in connect-src/ws |
 | 2026-09-09 | eq-shell | [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with team/ |
 | 2026-09-09 | eq-shell | [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or signers |
 | 2026-09-09 | eq-shell | [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped reques |
@@ -98,7 +99,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1871](https://github.com/eq-solutions/eq-shell/pull/1871) fix(control-plane): mirror liveness off the data plane, not DNS |
 | 2026-09-09 | eq-shell | [#1875](https://github.com/eq-solutions/eq-shell/pull/1875) fix(cards): let a worker cancel their own pending access request |
 | 2026-09-09 | eq-shell | [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking tender_ |
-| 2026-09-09 | eq-shell | [#1877](https://github.com/eq-solutions/eq-shell/pull/1877) chore(deps): bump @eq-solutions/ui to v1.16.5 |
 _Showing 15 of 83 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -112,7 +112,7 @@ _Showing 15 of 83 · full record in [sessions/](sessions/)_
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
 - **eq-context** (43 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
-- **cross-repo** (181 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **cross-repo** (180 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
@@ -193,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-10 01:47 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-10 01:49 UTC._
