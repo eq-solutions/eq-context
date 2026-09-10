@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-10)
 
-**eq-field:**
-- #976 fix(csp): allowlist madagins's Supabase project in connect-src/wss
-
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -94,7 +91,7 @@ _If this file is >48h old, the cron is broken._
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
 | eq-shell | building | 2026-09-10 |
-| eq-field | ready | 2026-09-09 |
+| eq-field | ready | 2026-09-10 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
 
