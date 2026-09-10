@@ -72,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1885 docs(control-plane-ledger): record #1875's cancel-my-access-request migration
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
 ---
@@ -94,7 +93,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-09 |
-| eq-shell | building | 2026-09-10 |
+| eq-shell | new | 2026-09-10 |
 | eq-field | ready | 2026-09-09 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
