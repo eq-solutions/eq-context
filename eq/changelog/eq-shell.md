@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-10 (PR #1885 MERGED + LIVE — control-plane ledger gap closed for #1875's cancel-my-access-request migration)
+- The required "Schema drift + anon-grant + policy-lint" check's control-plane-function-drift step had already been fixed by [PR #1875](https://github.com/eq-solutions/eq-shell/pull/1875) (`eq_cards_cancel_my_access_request`, merged 2026-09-09) before this task started — confirmed via GitHub Actions logs, not assumed. The remaining gap: `supabase/CONTROL-PLANE-LEDGER.md` never got a row for that migration, unlike its two same-day siblings.
+- Added the missing row, independently re-verified live against jvkn (Supabase MCP): function body matches the migration byte-for-byte, grants exactly `authenticated`+`service_role`, no `anon`. Docs-only — no schema or behavior change. [PR #1885](https://github.com/eq-solutions/eq-shell/pull/1885).
+
 ## 2026-09-09 (PR #1860 MERGED + LIVE — Field workspace dropdown was missing Madagins)
 - `AdminTenantSettings.tsx`'s platform-admin-only "Field workspace" `<select>` — a third, undocumented hardcoded copy of the tenant-slug list, separate from `token-exchange.ts`'s `ALLOWED_FIELD_TENANT_SLUGS` and `fieldTenants.ts`'s `TENANT_OPTIONS` — was still missing `madagins` even after the same day's #1838/#1850 fixes to the other two. Added the missing `<option value="madagins">`. [PR #1860](https://github.com/eq-solutions/eq-shell/pull/1860).
 - Confirmed live via Netlify's own published-deploy `commit_ref` matched against the merge commit — the GitHub Deployments API recorded nothing for this merge at all.

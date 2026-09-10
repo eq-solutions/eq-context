@@ -15,6 +15,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: control-plane drift check's #1875 gap closed — missing CONTROL-PLANE-LEDGER.md row for `eq_cards_cancel_my_access_request` (2026-09-10)
+*Assigned as a live CI-failure fix — "Schema drift + anon-grant + policy-lint" failing on `main` and every open PR since the 2026-09-09T16:30:03Z scheduled run. Investigation found the underlying cause was already resolved before work started.*
+
+- [x] **Root cause was already fixed** — PR #1875 (merged 2026-09-09T18:04:32Z, from the locked worktree `cards-worker-cancel-access-request`) had already added the missing migration for `public.eq_cards_cancel_my_access_request`. Confirmed via GitHub Actions logs: run 34386477967 named the function as unsourced pre-merge, run 34388170080 passed the same step post-merge. No new migration or `KNOWN_UNSOURCED` entry was needed. _(added 2026-09-10, closed 2026-09-10)_
+- [x] **Real gap found and fixed: `CONTROL-PLANE-LEDGER.md` was missing a row for #1875's own migration** — its two same-day sibling migrations got ledger rows, this one didn't. Independently re-verified live against jvkn via Supabase MCP (not just trusting #1875's own recorded check): `pg_get_functiondef` matches the migration file byte-for-byte; grants exactly `authenticated`+`service_role`, no `anon`. Fixed and merged: [eq-shell#1885](https://github.com/eq-solutions/eq-shell/pull/1885), Royce's explicit go-ahead to merge. _(added 2026-09-10, closed 2026-09-10)_
+- [x] **eq-shell's local clone was 3 commits behind `origin/main`** at the start of this investigation (missing #1870/#1871/#1875) — fast-forwarded clean, nothing lost. Worth noting the local-clone-staleness pattern already tracked for `eq-context` isn't `eq-context`-specific — it hit eq-shell's own clone this session too. _(added 2026-09-10, closed 2026-09-10)_
+
+---
+
 ## eq-shell: Field-workspace picker had a fourth, undocumented copy of the tenant-slug list — found, fixed, merged, live; a matching eq-field copy found the same day also fixed (2026-09-09)
 *Started as a walkthrough of two Madagins admin-settings screenshots Royce shared — what the "Apps" checkboxes actually gate (cosmetic dashboard-tile toggle only, `org_module_entitlements`) versus what the "Field workspace" dropdown gates (real, server-enforced routing, `field_tenant_slug`). Investigating the second one surfaced a gap neither the tenant-identity-drift doc nor the same day's #1838/#1850 fixes had caught.*
 
