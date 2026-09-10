@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -58,14 +58,6 @@ naming conventions, two holding real unpushed commits.*
 A brand-new Windows PC's first eq-context session found `core.hooksPath` completely unset (git clone can't populate local config for itself — a structurally different shape from F10's 3 earlier "wrong value" mechanisms, already guarded at rung 4). `hooks/session_start.py`'s HOOKS check now runs the fix itself and re-verifies instead of only printing when it finds every scope unset; a wrong-but-set value (mechanisms 1-3) still only warns, unchanged. Added a "First-time setup" step to `system/onboarding.md` + `README.md` for the human/non-Claude-Code path, labeled the never-adopted `.pre-commit-config.yaml` rather than deleting it (Royce's call), and fixed `scripts/pre-commit-secrets.sh`'s own stale install instructions, which pointed straight at the `.git/hooks` shadow-copy shape that caused the 2026-08-04 incident. 4 new adversarial cases, full suite 150/150. Full detail: `system/failures.md` F10. eq-context commit `bcfbcbcb`.
 
 No open items — closed same session. One unrelated bug found in passing, not bundled in: `hooks/adversarial_test.sh` fails 0/36 on any machine where `python3` resolves to the Windows Store app-execution-alias stub rather than a real interpreter (confirmed on this machine; doesn't affect CI, which only runs the Python suite). Spun off as its own task — Royce already started it running. **Fixed 2026-09-07** — the runner now resolves a working interpreter (tries `python3`, falls back to `python` if it doesn't actually execute) instead of hardcoding `python3`; 36/36 verified, eq-context commit `cc22cfc4`. Fully closed, no open items remain.
-
----
-
-## F10 — possible 5th recurrence (wrong-but-set), self-corrected before it could be investigated (2026-09-07)
-
-A second, unrelated session today hit `core.hooksPath` resolving to the wrong-but-set shape (absolute path, matching mechanisms 1-3) via `hooks/session_start.py`'s HOOKS check — this session's own gate reported the identical symptom independently, minutes later. Both times the *effective* value was observed wrong, not just a stale print (`failures.md` F10's own distinction between a genuine recurrence and its documented LATENT SHADOW false-positive). Not the 2026-09-06 self-heal: that fix only covers a fully-*unset* value at every scope, and this was wrong-but-set. Not mechanism 3 (worktree-shadow): `extensions.worktreeConfig` confirmed off (`--worktree` queries fail outright), so a `--worktree` scope cannot have been winning. By the time this session checked live — a few minutes after its own gate output — the value was already back to the correct `.githooks`; re-asserted defensively (no-op). Cause unconfirmed: the other session (working via `EnterWorktree`) explicitly logged that it did not fix this itself; whether Royce corrected it by hand, or some other mechanism did, is unknown.
-
-- [x] **Needs Royce's call**: log this as F10's 5th recurrence in `system/failures.md` (per the file's own process, that's a proposal `guard-ratchet.yml`/Royce decides, not something a session should self-file), and worth someone actually testing whether `EnterWorktree` is the trigger the other session suspected — untested as of this entry. _(added 2026-09-07, closed 2026-09-09 via `/triage` — Royce: yes, log it. F10 now `recurrences: 5`, `confirmed_in` includes `sessions/2026-09-07.md`. The `EnterWorktree` trigger test is still untested — not carried forward as a separate item here.)_
 
 ---
 

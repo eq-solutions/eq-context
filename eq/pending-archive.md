@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -9887,5 +9887,113 @@ list.
 
 ## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-09 — open items remain in eq-field.md)
 
+
+---
+
+## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+- [x] **#981 — fast-uri bumped past the 4 newer GHSAs**, both places it actually lives: root `pnpm.overrides` (4.1.2 → 4.1.4) and the vendored `eq-intake/eq-platform` subtree's own separate override (3.1.4 → 3.1.7, within the `<4.0.0` ceiling it already had for an `ajv` compatibility reason). Patched versions confirmed via GitHub's `dependabot/alerts` API, not guessed. Full build + 591/593 tests green. [PR #1800](https://github.com/eq-solutions/eq-shell/pull/1800) merged, confirmed live via deploy ancestry. Per #1290 (still open, not solved here): the vendored copy could be silently reverted by tomorrow's auto-revendor job unless the same floor lands upstream in eq-solves-intake too. `browserslist`/`fflate` (the 2 smaller siblings found alongside this) not touched then — lower severity, not blocking; closed for the root lockfile in a later session the same day (see the dated section above), vendored-copy siblings (#204/#205) still open there.
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-10 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-field: Sharon Maroni couldn't see anyone's timesheets — the "supervisors see every crew" fix from 2026-09-04 never reached the database — FIXED, merged, live (2026-09-07) (rotated 2026-09-10 — open items remain in eq-field.md)
+
+- [x] **Root cause: the 2026-09-04 "supervisors see every crew" fix (section further down this file, [PR #910](https://github.com/eq-solutions/eq-field/pull/910)/v3.5.668) was client-side only** — confirmed via `git show 07c98b10 --stat`: zero `.sql` files touched. `permission-matrix.js` has granted every supervisor `field.view_all_crews` since that day, but the database RLS function (`app_data.eq__timesheets_caller_has_broad_read`, hardened 2026-08-24, PR #768) still checked `eq_role='manager'` only — never `'supervisor'`. The client has been assuming unscoped reads the database was silently narrowing back down, for 3 days, for every supervisor who wasn't already a manager.
+- [x] **Immediate fix for Sharon:** granted her `field.view_all_crews` directly via a new Shell security group (`shell_control.security_groups`/`user_security_groups` on jvkn) — live same session, takes effect on her next sign-in. No code change.
+- [x] **Full DB reconciliation, [PR #936](https://github.com/eq-solutions/eq-field/pull/936):** `eq__timesheets_caller_has_broad_read()` and `eq__leave_caller_has_broad_read()` now grant broad read to any supervisor with a resolved staff identity, matching the client. Requires a resolved identity — does not reopen the "unresolved identity" hole 2026-08-24 deliberately closed (verified: a simulated unresolved-supervisor JWT still returns false).
+- [x] **Second, independent bug found and fixed in the same migration:** `leave_requests_own_crew_read` had been silently calling the wrong (more lenient) RLS function since some point after 2026-08-23 — the correct function (`eq__leave_caller_has_broad_read`, built for it that day, PR #756) was never actually wired to the policy. `20260831_field_permission_denials_enforce.sql` had already found this and documented it without fixing it. Repointed as part of PR #936.
+- [x] **Named blast radius, reviewed by Royce before applying:** 10 SKS supervisors gain (or formally keep) tenant-wide read on both tables — Sharon Maroni, David Boyd, Collin Toohey, Jack Cluff, Todd Wilson, Anthony Hartley, Kurt Sticker, Rumen Iliev, William Brown, Richard Brown. Verified post-apply with 6 real claims-shape tests in rolled-back transactions (manager, unresolved-supervisor, Sharon, David Boyd, employee, leave-magic-link) — all matched the pre-apply prediction.
+
+---
+
+## eq-field: Timesheets raw RLS error fixed; write-side RLS assumption corrected; EQ-FIELD-1B triaged, not a bug (2026-09-07) (rotated 2026-09-10 — open items remain in eq-field.md)
+
+- [x] **Root cause:** `timesheets_own_crew_read` is a SELECT-only RESTRICTIVE policy, but PostgREST's upsert uses `RETURNING` internally even under `Prefer: return=minimal` — so Postgres re-checks the new row against it and rejects the write whenever the caller's actor identity doesn't resolve to their own `staff_id` or a crew member's. Confirmed via 5 identical failures in Postgres logs (one iPhone session, 2026-09-06 21:32-21:34 UTC, matching `supabase-canon-write.js`'s upsert shape) — nothing else failed on `timesheets` in the following 24h.
+- [x] **Anthony's own identity is linked** (`staff.user_id` populated, not a duplicate per the 2026-08-31 sweep, not a supervisor) — he is NOT in the tracked unlinked-staff bucket. Most likely a stale session token; his actual unblock is re-signing in through Core, not a code fix.
+- [x] **Fixed the symptom, not the identity gap:** [PR #933](https://github.com/eq-solutions/eq-field/pull/933) (v3.5.688, merged, confirmed live) — `_tsFriendlySaveError` in `timesheets.js` pattern-matches Postgres's own fixed "new row violates row-level security policy ..." phrasing (not the SQLSTATE — confirmed via Sentry EQ-FIELD-1H that a real business-rule denial shares the same 42501 code) and swaps in "try signing out and back in" instead. No RLS/auth posture change.
+- [x] **Correction to the write-side RLS hold** (tracked further down this file, "6 more tables found writable... write-side re-audited and still held," 2026-08-19): the premise that writes are unrestricted until that migration applies is wrong. The already-applied READ policy above already blocks writes today for the unlinked population, via this same RETURNING mechanism — not gated behind the pending migration at all. Doesn't change the hold decision (still Royce's, still declined twice), changes what's already true.
+- [x] **EQ-FIELD-1B (Sentry) triaged as not a bug, marked ignored (until escalating).** Separate, lower-urgency issue checked in the same session: a rare JWT-mint timeout on the `people` fetch for SKS falls back to anon, which correctly 401s (SKS has no anon grants) — but `_loadSafe`/`_emitSyncHealth` (shipped v3.5.304) already catches this, preserves last-known `STATE.people`, and shows a "Sync degraded — people not updating" toast. Working as designed for a rare real network blip (2 events/9 days, 2 different users); no code change made.
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-10 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-10 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-10 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-10 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-10 — open items remain in eq-field.md)
+
+
+---
+
+## eq-solves-intake: full product review + duplicate-scan perf fix shipped live; RPC column-projection drafted (2026-09-07) (rotated 2026-09-10 — open items remain in eq-solves-intake.md)
+
+- [x] **Dispatch `tenant-migrate.yml` to actually apply migration 0303** — done same day: renamed to `0304` first (first-come-first-served numbering collided with a concurrent PR's own `0303_staff_manager_id.sql`), dispatched via `workflow_dispatch` scoped to `slug=ehow`, confirmed live by direct query (ledger row + `pg_proc` catalog grant), not just dispatch-API success. zaap (EQ tenant) deliberately not dispatched — its callers stay on the fallback path. _(added 2026-09-07, closed 2026-09-07)_
+- [x] **Wire `health-score.ts` / `licence-expiry-check.ts` / `decay-detect.ts` to the new `eq_tidy_read_entity_columns` RPC** — done: new shared `read-entity-columns.ts` helper calls the projected RPC and falls back to the original full-row RPC when it errors (covers zaap, which never got the migration). All 3 callers wired, each requesting only the columns it actually reads; `duplicate-detect.ts` deliberately left on the full-row RPC (needs every column for its completeness tie-break). eq-solves-intake `main` @ `81bd49a`. Re-vendored into eq-shell as [PR #1804](https://github.com/eq-solutions/eq-shell/pull/1804), merged `8520fdc6`, confirmed live via Netlify deploy record. _(added 2026-09-07, closed 2026-09-07)_
 
 ---

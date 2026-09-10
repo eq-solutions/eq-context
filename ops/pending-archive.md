@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-10
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -558,5 +558,13 @@ No open items.
 
 - [x] **Rotate/reissue the PAT and update the `EQ_CONTEXT_PAT` GitHub Actions secret** on `eq-solutions/eq-context`. _(added 2026-09-03)_ **DONE 2026-09-05** — Royce rotated it (secret timestamp 01:57 UTC); confirmed live, not just by timestamp: `jwt-contract-drift.yml` (zero-fallback, the cleanest test) succeeded at 02:10 UTC, first success since 2026-09-02, and the next `digest.md` regen (02:14 UTC) shows real Pulse data again across all 5 repos (eq-shell ✓/7 PRs, eq-service ✓/6, eq-field ✓/3, eq-cards ✓/0, eq-solves-intake ✓/0) — no more "? unknown"/"0".
 - [x] **Harden `refresh_digest.py`/the suite-state generator to fail loudly instead of silently zeroing cross-repo data** when `GH_TOKEN` is rejected. _(added 2026-09-03)_ **Already shipped independently** — a concurrent/later session built this exact fix before I circled back: eq-context [PR #202](https://github.com/eq-solutions/eq-context/pull/202) (`12a530f`), merged 2026-09-05. `refresh_digest.py` now records every 401/403, retries once with the runner's own `GITHUB_TOKEN`, and surfaces a 🔴 "GitHub token rejected" Needs-you item instead of silently reporting "unknown"/"0 open PRs". Confirmed live in the digest content itself.
+
+---
+
+## F10 — possible 5th recurrence (wrong-but-set), self-corrected before it could be investigated (2026-09-07) (rotated 2026-09-10)
+
+A second, unrelated session today hit `core.hooksPath` resolving to the wrong-but-set shape (absolute path, matching mechanisms 1-3) via `hooks/session_start.py`'s HOOKS check — this session's own gate reported the identical symptom independently, minutes later. Both times the *effective* value was observed wrong, not just a stale print (`failures.md` F10's own distinction between a genuine recurrence and its documented LATENT SHADOW false-positive). Not the 2026-09-06 self-heal: that fix only covers a fully-*unset* value at every scope, and this was wrong-but-set. Not mechanism 3 (worktree-shadow): `extensions.worktreeConfig` confirmed off (`--worktree` queries fail outright), so a `--worktree` scope cannot have been winning. By the time this session checked live — a few minutes after its own gate output — the value was already back to the correct `.githooks`; re-asserted defensively (no-op). Cause unconfirmed: the other session (working via `EnterWorktree`) explicitly logged that it did not fix this itself; whether Royce corrected it by hand, or some other mechanism did, is unknown.
+
+- [x] **Needs Royce's call**: log this as F10's 5th recurrence in `system/failures.md` (per the file's own process, that's a proposal `guard-ratchet.yml`/Royce decides, not something a session should self-file), and worth someone actually testing whether `EnterWorktree` is the trigger the other session suspected — untested as of this entry. _(added 2026-09-07, closed 2026-09-09 via `/triage` — Royce: yes, log it. F10 now `recurrences: 5`, `confirmed_in` includes `sessions/2026-09-07.md`. The `EnterWorktree` trigger test is still untested — not carried forward as a separate item here.)_
 
 ---
