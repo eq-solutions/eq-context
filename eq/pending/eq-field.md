@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -118,10 +118,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: iPad renders full desktop density under touch — phone breakpoint extended to touch tablets, FIXED, merged, live (PR #942, v3.5.696, 2026-09-08)
 *Royce shared an iPad screenshot: the nav was a mix of the phone top-strip and the full desktop sidebar at once, and asked to debug the iPad mobile view. Traced the nav-mix to a stale service-worker cache on his device (not a code bug — `/styles/` is served cache-first, a plain reload doesn't refetch it); current `mobile.css`/`base.css` on `origin/main` were already internally consistent. Separately, a PostHog device-mix check (SKS project, 90 days) showed iPad-pattern traffic real but small (~6-53 of 969 unique visitors) — informed the decision to extend the existing phone components rather than build a bespoke tablet design.*
 
-- [x] **Root cause of the original nav-mix bug: stale service-worker cache, not a live bug** — `sw.js`'s `CACHE_FIRST_PATHS` serves `/styles/` straight from Cache Storage; a reload re-asks the same stale-controlling worker rather than fetching fresh CSS. iOS Safari is known to lag on swapping in a new service worker in the background. No code fix — told Royce to clear site data (Settings → Safari → Advanced → Website Data) to force it.
-- [x] **[PR #942](https://github.com/eq-solutions/eq-field/pull/942), v3.5.696, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): touch devices up to 1024px wide now get the same mobile treatment as phone — `.eqf-mcard` dashboard/job-numbers/leave cards, Timesheets card-stack, roster person-strips, sidebar/nav swap. Reuses the existing ≤768px components verbatim — **explicitly not a new tablet tier**, per Royce's own correction mid-session ("I don't want a third view").
-- [x] **Gated on `(pointer:coarse) and (hover:none)`, not a plain width bump** — a narrow mouse-driven desktop window stays on the desktop layout; only touch devices in the 769–1024px range are affected. Verified on the deploy preview via direct `matchMedia` check at 820px (no touch): new rule correctly evaluates `false`. Same distinguishing pattern the shell-mode nav restore already used (v3.5.457).
-- [x] **Deliberately not touched:** the two Leaflet-map desktop-only hides (`mobile.css` ~L1098/L1119) — iPad has room for a 280px map; hiding it there would be a regression, not "give iPad the mobile view."
 - [ ] **The actual touch+1024px case (real iPad) is unverified** — this environment's Browser pane only emulates touch below 768px width, confirmed empirically (not just assumed) by checking `matchMedia('(pointer:coarse)')` at 820px, which reports `false` here regardless of viewport shape. Needs Royce's own iPad, post cache-clear, to confirm. _(added 2026-09-08)_
 - [ ] **Landscape iPad (1024–1366px) intentionally out of scope** — narrower ask this pass; widen later if actually wanted. _(added 2026-09-08)_
 
@@ -142,29 +138,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Copy-to-clipboard for staff contact info — shipped, then corrected same-day per live feedback (PRs #938/#939, v3.5.692→v3.5.693, 2026-09-08)
 *Royce: routinely copying staff phone numbers/emails out of both Contacts and Weekly Roster, one field at a time. First pass built a bulk "copy everyone visible" action on both screens; Royce's live correction right after it shipped ("i meant click and copy individual phone numbers / emails not the whole list") led to a same-day rework.*
 
-- [x] **v3.5.692 ([PR #938](https://github.com/eq-solutions/eq-field/pull/938)):** bulk "📋 Copy" button on Contacts (copies name/phone/email for the current filtered list) + per-group bulk-copy icons on Roster (desktop: whole group; mobile: only people rostered on for the selected day). Merged, verified live.
-- [x] **Concurrent-PR version collision caught before merge:** PR #937 landed as v3.5.691 first, same number this branch had also picked. Rebased, retargeted to v3.5.692, re-ran the full test/lint/bundle/cache-buster gate before re-pushing — not just re-tagged and hoped.
-- [x] **v3.5.693 ([PR #939](https://github.com/eq-solutions/eq-field/pull/939)), same-day correction:** removed the bulk Contacts button and Roster's bulk icons entirely; added a small per-field "📋" copy icon next to each individual phone/email in Contacts (desktop + mobile), sitting alongside the existing tel:/mailto: link rather than replacing it. Merged, verified live.
-- [x] **Feedback saved as durable memory** (`feedback_copy_individual_not_bulk.md`, this Claude session's eq-field memory) so a future "make copying contact info easier" request in EQ Field defaults to per-field, not bulk.
 - [ ] **Roster still has no way to quickly grab a person's number** — it never showed individual phone/email per row (only shift/site codes), so the per-field pattern doesn't map there; removed outright rather than invent new UI a second guess might also get wrong. Flagged to Royce: the more likely real fix is linking a person's name through to Contacts, not a roster-side copy icon. Not built, no decision yet. _(added 2026-09-08)_
 
 **Notes:**
 - Full technical detail (the `_rv9ApplyPostRender()` DOM-rebuild gotcha that silently stripped the first version's Roster button, the hand-merged `core-bundle-*.js` build step, the `check-cache-busters.mjs` tag mechanism): `sessions/2026-09-08.md` and eq-field's own `docs/reflection-log.md` (two entries, 2026-09-08).
 - Two unrelated Roster requests surfaced in the same live-feedback message (search should match site codes not just name; sticky day/date header like Timesheets) — spawned as separate background tasks, both started by Royce in independent sessions. **Both have now reported back, same day:** search-by-site shipped as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (`task_3e851158`); the sticky header has its own section directly below (`task_09f4cb3a`).
-
----
-
-## eq-field: Weekly Roster + Edit Roster — sticky day/date header, matching Timesheets — FIXED, merged, live (PR #941, v3.5.695, 2026-09-08)
-*Royce, comparing screenshots of Weekly Roster against Timesheets: the day/date header scrolled away with the rest of a long crew list on Roster/Edit Roster, unlike Timesheets' already-sticky one — "easy to lose track of which day column is which." One of two Roster requests from the same live-feedback message the copy-to-clipboard section above flagged as spawned background tasks (`task_09f4cb3a`) — this is that task reporting back.*
-
-- [x] **`.roster-grid thead th` (base.css) and Edit Roster's single `dayHeaderHtml` row both get `position: sticky; top: 0` plus their own opaque background** — same mechanism Timesheets already uses (`base.css` ~1217), including the "needs its own background or rows show through" gotcha.
-- [x] **Sticky needs a bounded scroller under it** — added `#page-roster .table-scroll` / `#page-editor .table-scroll` `max-height` rules so each crew group's box (Weekly Roster) or the one shared grid (Edit Roster) is what scrolls, not the whole page. Groups already large enough to virtualize (150+ people) keep their own inline 480px bound, untouched.
-- [x] **Verified click-tested, not just code-reviewed** — locally (static server, `?tenant=demo`, Demo Supervisor) AND on the actual Netlify deploy preview before merge: Weekly Roster By-Crew + Grid views, Edit Roster desktop + mobile (375px). Weekly Roster's mobile view confirmed unaffected (separate day-switcher render, no table).
-- [x] **Two concurrent-PR version collisions caught before merge** — `origin/main` claimed v3.5.693 (#939) and then v3.5.694 (#940) while this branch was open; rebased twice, renumbered to v3.5.695 both times, re-ran the full test/lint/bundle/cache-buster gate after each rebase rather than re-tag-and-hope.
-
-**Notes:**
-- Sibling task from the same live-feedback message, `task_3e851158` (Roster search should also match site code, not just name), separately shipped same-day as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (v3.5.694) by another concurrent session — confirmed via `origin/main`'s own commit log, not investigated further by this session.
-- Full technical detail (the `overflow-x:auto` implicitly coupling to `overflow-y:auto` and silently trapping `position:sticky` — the CSS gotcha that shaped the final bounded-scroller design over a simpler page-level-sticky alternative): `sessions/2026-09-08.md`.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -312,10 +312,8 @@ Both fixes used the "check live state (including grants, not just policies) → 
 - Live-verified anyway via Royce's own already-authenticated Chrome session (not a local dev server) — desktop confirmed correct against a real SKS staff record (David Boyd), including the date field defaulting to today; cancelled out rather than saving, to avoid writing test data to a real employee's record.
 
 - [ ] **Mobile viewport specifically not verified** — desktop confirmed live (above); forcing a real mobile viewport through available browser automation genuinely failed twice (window resize had no effect, confirmed via the app's own resize-listener hook never firing; Chrome DevTools' device-toolbar shortcut also had no effect) — a real dead end, not an untried option. Royce is checking on his actual phone whenever convenient; nothing blocking on it. _(added 2026-09-08)_
-- [x] **No signal anywhere that an entry was backdated** — ✅ DONE 2026-09-09: [eq-shell PR #1858](https://github.com/eq-solutions/eq-shell/pull/1858), merged and confirmed live (verified directly against the served JS chunk, not just deploy status — see `rules/deployment.md`'s corrected timing note). A small "Logged Nd later" label (`backdateLabel` in `staffHelpers.ts`) now shows next to the date in the Conversations list and view modal whenever `occurred_at` differs from `created_at`'s local day. _(added 2026-09-08, decided + spawned 2026-09-09, shipped 2026-09-09)_
 - [ ] **Zero test coverage on all 3 changed files** — this repo has an established `netlify/functions/_shared/*.test.ts` pattern (33+ files) never applied to `staff-resourcing.ts`'s pure logic (`avgRating`, `redactForViewer`, the new summary-regen/tiebreak). _(added 2026-09-08)_
 - [ ] **Casual-note attachment needs a save-then-reopen round trip** — can't attach a photo on the very first save (matches how Formal already worked, not a new inconsistency, but real friction for the "paper note, uploaded later" use case that motivated it). _(added 2026-09-08)_
-- [x] **"Overall score per person" — ✅ DECIDED 2026-09-10: hold.** Sketched 2026-09-08, held 2026-09-09 pending an access decision. Access design was fully scoped 2026-09-10 (chat writeup, not persisted) and turned out cheap — mirror `staff-resourcing.ts`'s `redactForViewer`, gate a new endpoint behind a permission, no RLS change needed — but the call became moot: the real blocker is data sparsity, not access. Only 14/77 active people have ever had a conversation logged, zero in the last 90 days; `StaffResourcingPage.tsx`'s own 2026-09-07 rejection of a "team pulse" treatment of this exact `happy_engaged` data applies here too, more directly than the `staffLib.ts` mobilisation-readiness precedent originally flagged (that one doesn't veto on its own — its rule targets binary operational gates, not a sentiment/skills trend — but the sparsity precedent does). Two corrections found along the way: `staff_conversations` RLS is tenant+creator+permission, not pure creator-only; and the tech/values/engagement signals are already computed and shown per-person on `StaffResourcingPage.tsx` today as 3 separate badges, just never combined or cross-manager. Revisit once conversation cadence recovers — worth checking again in a few months given the reminders feature (`remind_at`) shipped the same day this was first raised. _(added 2026-09-08, held 2026-09-09, decided 2026-09-10)_
 
 ---
 

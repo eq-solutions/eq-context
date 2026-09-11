@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -9995,5 +9995,129 @@ list.
 
 - [x] **Dispatch `tenant-migrate.yml` to actually apply migration 0303** — done same day: renamed to `0304` first (first-come-first-served numbering collided with a concurrent PR's own `0303_staff_manager_id.sql`), dispatched via `workflow_dispatch` scoped to `slug=ehow`, confirmed live by direct query (ledger row + `pg_proc` catalog grant), not just dispatch-API success. zaap (EQ tenant) deliberately not dispatched — its callers stay on the fallback path. _(added 2026-09-07, closed 2026-09-07)_
 - [x] **Wire `health-score.ts` / `licence-expiry-check.ts` / `decay-detect.ts` to the new `eq_tidy_read_entity_columns` RPC** — done: new shared `read-entity-columns.ts` helper calls the projected RPC and falls back to the original full-row RPC when it errors (covers zaap, which never got the migration). All 3 callers wired, each requesting only the columns it actually reads; `duplicate-detect.ts` deliberately left on the full-row RPC (needs every column for its completeness tie-break). eq-solves-intake `main` @ `81bd49a`. Re-vendored into eq-shell as [PR #1804](https://github.com/eq-solutions/eq-shell/pull/1804), merged `8520fdc6`, confirmed live via Netlify deploy record. _(added 2026-09-07, closed 2026-09-07)_
+
+---
+
+## eq-shell: sidebar/nav had no tablet tier — the same cross-suite iPad audit that fixed eq-service's embedded nav, extended to all 4 MobileTabBar consumers, merged, live (2026-09-08) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Conversations can be backdated (all 3 templates) + Casual notes get attachments — shipped, self-critique found 2 real bugs, fixed same day (2026-09-08) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+- [x] **No signal anywhere that an entry was backdated** — ✅ DONE 2026-09-09: [eq-shell PR #1858](https://github.com/eq-solutions/eq-shell/pull/1858), merged and confirmed live (verified directly against the served JS chunk, not just deploy status — see `rules/deployment.md`'s corrected timing note). A small "Logged Nd later" label (`backdateLabel` in `staffHelpers.ts`) now shows next to the date in the Conversations list and view modal whenever `occurred_at` differs from `created_at`'s local day. _(added 2026-09-08, decided + spawned 2026-09-09, shipped 2026-09-09)_
+- [x] **"Overall score per person" — ✅ DECIDED 2026-09-10: hold.** Sketched 2026-09-08, held 2026-09-09 pending an access decision. Access design was fully scoped 2026-09-10 (chat writeup, not persisted) and turned out cheap — mirror `staff-resourcing.ts`'s `redactForViewer`, gate a new endpoint behind a permission, no RLS change needed — but the call became moot: the real blocker is data sparsity, not access. Only 14/77 active people have ever had a conversation logged, zero in the last 90 days; `StaffResourcingPage.tsx`'s own 2026-09-07 rejection of a "team pulse" treatment of this exact `happy_engaged` data applies here too, more directly than the `staffLib.ts` mobilisation-readiness precedent originally flagged (that one doesn't veto on its own — its rule targets binary operational gates, not a sentiment/skills trend — but the sparsity precedent does). Two corrections found along the way: `staff_conversations` RLS is tenant+creator+permission, not pure creator-only; and the tech/values/engagement signals are already computed and shown per-person on `StaffResourcingPage.tsx` today as 3 separate badges, just never combined or cross-manager. Revisit once conversation cadence recovers — worth checking again in a few months given the reminders feature (`remind_at`) shipped the same day this was first raised. _(added 2026-09-08, held 2026-09-09, decided 2026-09-10)_
+
+---
+
+## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-11 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-field: iPad renders full desktop density under touch — phone breakpoint extended to touch tablets, FIXED, merged, live (PR #942, v3.5.696, 2026-09-08) (rotated 2026-09-11 — open items remain in eq-field.md)
+
+- [x] **Root cause of the original nav-mix bug: stale service-worker cache, not a live bug** — `sw.js`'s `CACHE_FIRST_PATHS` serves `/styles/` straight from Cache Storage; a reload re-asks the same stale-controlling worker rather than fetching fresh CSS. iOS Safari is known to lag on swapping in a new service worker in the background. No code fix — told Royce to clear site data (Settings → Safari → Advanced → Website Data) to force it.
+- [x] **[PR #942](https://github.com/eq-solutions/eq-field/pull/942), v3.5.696, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): touch devices up to 1024px wide now get the same mobile treatment as phone — `.eqf-mcard` dashboard/job-numbers/leave cards, Timesheets card-stack, roster person-strips, sidebar/nav swap. Reuses the existing ≤768px components verbatim — **explicitly not a new tablet tier**, per Royce's own correction mid-session ("I don't want a third view").
+- [x] **Gated on `(pointer:coarse) and (hover:none)`, not a plain width bump** — a narrow mouse-driven desktop window stays on the desktop layout; only touch devices in the 769–1024px range are affected. Verified on the deploy preview via direct `matchMedia` check at 820px (no touch): new rule correctly evaluates `false`. Same distinguishing pattern the shell-mode nav restore already used (v3.5.457).
+- [x] **Deliberately not touched:** the two Leaflet-map desktop-only hides (`mobile.css` ~L1098/L1119) — iPad has room for a 280px map; hiding it there would be a regression, not "give iPad the mobile view."
+
+---
+
+## eq-field: Copy-to-clipboard for staff contact info — shipped, then corrected same-day per live feedback (PRs #938/#939, v3.5.692→v3.5.693, 2026-09-08) (rotated 2026-09-11 — open items remain in eq-field.md)
+
+- [x] **v3.5.692 ([PR #938](https://github.com/eq-solutions/eq-field/pull/938)):** bulk "📋 Copy" button on Contacts (copies name/phone/email for the current filtered list) + per-group bulk-copy icons on Roster (desktop: whole group; mobile: only people rostered on for the selected day). Merged, verified live.
+- [x] **Concurrent-PR version collision caught before merge:** PR #937 landed as v3.5.691 first, same number this branch had also picked. Rebased, retargeted to v3.5.692, re-ran the full test/lint/bundle/cache-buster gate before re-pushing — not just re-tagged and hoped.
+- [x] **v3.5.693 ([PR #939](https://github.com/eq-solutions/eq-field/pull/939)), same-day correction:** removed the bulk Contacts button and Roster's bulk icons entirely; added a small per-field "📋" copy icon next to each individual phone/email in Contacts (desktop + mobile), sitting alongside the existing tel:/mailto: link rather than replacing it. Merged, verified live.
+- [x] **Feedback saved as durable memory** (`feedback_copy_individual_not_bulk.md`, this Claude session's eq-field memory) so a future "make copying contact info easier" request in EQ Field defaults to per-field, not bulk.
+
+---
+
+## eq-field: Weekly Roster + Edit Roster — sticky day/date header, matching Timesheets — FIXED, merged, live (PR #941, v3.5.695, 2026-09-08) (rotated 2026-09-11)
+*Royce, comparing screenshots of Weekly Roster against Timesheets: the day/date header scrolled away with the rest of a long crew list on Roster/Edit Roster, unlike Timesheets' already-sticky one — "easy to lose track of which day column is which." One of two Roster requests from the same live-feedback message the copy-to-clipboard section above flagged as spawned background tasks (`task_09f4cb3a`) — this is that task reporting back.*
+
+- [x] **`.roster-grid thead th` (base.css) and Edit Roster's single `dayHeaderHtml` row both get `position: sticky; top: 0` plus their own opaque background** — same mechanism Timesheets already uses (`base.css` ~1217), including the "needs its own background or rows show through" gotcha.
+- [x] **Sticky needs a bounded scroller under it** — added `#page-roster .table-scroll` / `#page-editor .table-scroll` `max-height` rules so each crew group's box (Weekly Roster) or the one shared grid (Edit Roster) is what scrolls, not the whole page. Groups already large enough to virtualize (150+ people) keep their own inline 480px bound, untouched.
+- [x] **Verified click-tested, not just code-reviewed** — locally (static server, `?tenant=demo`, Demo Supervisor) AND on the actual Netlify deploy preview before merge: Weekly Roster By-Crew + Grid views, Edit Roster desktop + mobile (375px). Weekly Roster's mobile view confirmed unaffected (separate day-switcher render, no table).
+- [x] **Two concurrent-PR version collisions caught before merge** — `origin/main` claimed v3.5.693 (#939) and then v3.5.694 (#940) while this branch was open; rebased twice, renumbered to v3.5.695 both times, re-ran the full test/lint/bundle/cache-buster gate after each rebase rather than re-tag-and-hope.
+
+**Notes:**
+- Sibling task from the same live-feedback message, `task_3e851158` (Roster search should also match site code, not just name), separately shipped same-day as [PR #940](https://github.com/eq-solutions/eq-field/pull/940) (v3.5.694) by another concurrent session — confirmed via `origin/main`'s own commit log, not investigated further by this session.
+- Full technical detail (the `overflow-x:auto` implicitly coupling to `overflow-y:auto` and silently trapping `position:sticky` — the CSS gotcha that shaped the final bounded-scroller design over a simpler page-level-sticky alternative): `sessions/2026-09-08.md`.
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-11 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-11 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-11 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-11 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-11 — open items remain in eq-field.md)
+
 
 ---
