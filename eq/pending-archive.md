@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -10118,6 +10118,334 @@ list.
 ---
 
 ## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-11 — open items remain in eq-field.md)
+
+
+---
+
+## eq-shell: two tenant-identity-drift fixes — MERGED, LIVE (findings #1/#6, 2026-09-09) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+- [x] **Finding #1 — `token-exchange.ts`'s `ALLOWED_FIELD_TENANT_SLUGS`.** [PR #1850](https://github.com/eq-solutions/eq-shell/pull/1850): the non-admin path's `homeFieldSlug` is now trusted directly from `shell_control.tenants` (already scoped to the signed session, never attacker-controlled) instead of re-checked against a static allowlist that had already silently blocked a real tenant once (the Madagins incident, #1838). The platform-admin cross-tenant picker's own use of the array — genuine input validation on caller-supplied `body.tenant_slug` — was deliberately left untouched. Auth-adjacent code: the edit itself was flagged by the Claude Code auto-mode classifier and only applied after explicit confirmation. 2 new regression tests, `tsc -b` + `eslint` clean, 9/9 passing. **Merged, live on core.eq.solutions.**
+- [x] **Finding #6 — `check-tenant-drift.mjs`'s `CANONICAL_PROJECTS` completeness.** [PR #1854](https://github.com/eq-solutions/eq-shell/pull/1854): new CHECK 15 queries live jvkn (via the file's own `loadActiveTenants()`) and flags any active tenant with no matching `CANONICAL_PROJECTS`/`TENANT_DATA_PLANES` entry — closes the gap that let Madagins' own Supabase project go completely unchecked by CHECK 2/6/7/9/10 after provisioning. **First version was a real bug, caught by this PR's own CI before merge**: shipped as immediately-blocking rather than informational-first, so it correctly detected the live Madagins gap and would have failed the required drift-check gate for every future PR in the repo. Fixed same session — added `--strict-canonical-completeness` (default off), matching the sequencing this file's own `--strict-drift`/`--strict-spine`/`--strict-identity` flags already established. Query itself needed a live correction too: the first draft read `shell_control.tenants.supabase_project_ref`, confirmed NULL for `sks`/`madagins` live via Supabase MCP before it shipped — rewritten to reuse the file's own `tenant_routing`-backed `loadActiveTenants()`. **Merged, live on core.eq.solutions** — confirmed via commit ancestry after eq-shell's deploy queue (backlogged behind ~10 other same-window merges from other sessions) caught up.
+
+---
+
+## eq-shell: root-caused a stray `comms=true` entitlement on Madagins to an out-of-band DB write, closed the code gap that let it happen, shipped and confirmed live (2026-09-09) (rotated 2026-09-12)
+
+- **Traced Madagins' `org_module_entitlements` (cards/comms/ops/service showing enabled=true instead of the intended field+intake only) to its root cause, live, not by elimination alone**: row timestamps, `audit_log`, and both real Madagins invites' stored `entitlements` arrays all cross-checked — the `comms` row was written directly against jvkn, ~1h44m after tenant creation, with a clean `audit_log` gap spanning that timestamp. Every application code path (admin-tenants.ts, the self-serve `provision_tenant` RPC, every client form, the legacy sync trigger) confirmed unable to originate it. Not a code bug — Royce had already hand-corrected the data before this session started.
+- **Real gap found and fixed**: `upsertAppEntitlements()` (`_shared/supabase.ts`) had no allowlist on the `module` string (and the table itself has no CHECK constraint) — `ignoreDuplicates:true` already stopped invite/edit/accept-invite from flipping an *existing* row, but nothing stopped them from silently creating a brand-new, permanent, tenant-wide row for any never-before-seen module string. Fixed by exporting `ALLOWED_MODULES` from `_shared/supabase.ts` and filtering every write against it — one chokepoint, covers `admin-tenants.ts`, `invite-user.ts`, `invite-users-batch.ts`, `edit-user.ts`, `accept-invite.ts` at once. `admin-tenants.ts` now imports the shared constant instead of keeping its own duplicate copy.
+- **Decision confirmed by Royce: "NSW Comms" stays SKS-only** — deliberately excluded from `ALLOWED_MODULES`, not a gap to close.
+- **Shipped**: [PR #1847](https://github.com/eq-solutions/eq-shell/pull/1847) merged (`cfae21b5`), confirmed live on core.eq.solutions via the site's `published_deploy` commit match, not just a green build. Duplicate PR #1846 (same commit bundled with unrelated worker-invite feature work already on another branch) closed as redundant.
+- **Checkout-collision note, same shape as other sessions today**: a commit made in the shared primary `eq-shell` checkout was silently dropped by a rebase run by another concurrent actor in the same checkout, between commit and push. Nothing lost — recovered via reflog + cherry-pick onto a fresh branch off `origin/main` — but another live instance of the multi-session collision risk this file already flags elsewhere today.
+
+- [x] **Shipped and confirmed live** — PR #1847 merged, deployed, verified via `published_deploy` commit match. _(added 2026-09-09, closed 2026-09-09)_
+
+---
+
+## eq-shell: rescued an uncommitted migration that's the ready-made fix for the "madagins missing ~20-25 CMMS tables" gap — not yet applied (2026-09-09) (rotated 2026-09-12)
+
+- **Before deleting the orphaned `eq-shell-wt-pgcron` folder (see section below), checked what was actually still in it.** Two large uncommitted migrations were sitting there: `0308_legacy_public_schema_baseline.sql` (37 public-schema objects) and `0309_app_data_legacy_baseline_and_tenant_members.sql` (29 app_data/service objects). Checked both against madagins live before touching anything.
+- **0308 — fully redundant, discarded.** All 37 objects it would create already exist live on madagins (via the governed re-dispatch described below). No unique value left in it.
+- **0309 — NOT redundant. This is the fix for the "~20-25 CMMS tables missing" finding logged below.** Checked all 29 target objects live: only 4 exist (`app_data.team_members`, `app_data.teams`, `app_data.timesheet_locks`, `service.tenant_members`). The other 25 — `maintenance_checks`, `defects`, `check_assets`, `acb_tests`/`nsx_tests`/`rcd_tests` + their reading/circuit tables, `instruments`, `pm_schedule`, `job_plans`, `notifications`, etc. — are genuinely still missing, matching that finding's "~20-25" estimate almost exactly (confirms 25). Rescued to a local scratch file rather than left to die with the folder; **not yet reviewed, renumbered, committed, or dispatched** — hand-reconstructed from ehow's live schema by an earlier session, unreviewed since, needs a human pass before it goes near a live database.
+- **Numbering collision — can't just be copied in.** Authored as `0308`/`0309`, but both numbers are already taken by unrelated, already-merged migrations (`0308_sites_deleted_at.sql` etc.) — needs renumbering to whatever's next in sequence.
+- **Also found `0310_eq_migrations_ledger_rls_lockdown.sql` in the same folder** — confirmed a duplicate of what shipped as [#1835](https://github.com/eq-solutions/eq-shell/pull/1835) (PR #1836 was closed as its duplicate, per the section below). Discarded, nothing lost.
+- **Folder itself is now deleted.** Ran a real content diff (not just mtimes, which were mostly noise from the worktree checkout) against `main` first to rule out anything else uncommitted — two source files also differed (`TenantSwitcher.tsx`, `fieldTenants.ts`), but both turned out to be the *old* pre-fix versions; `main` had already moved past them via other PRs today. Nothing else lost.
+
+- [x] **Get `0309` reviewed, renumbered, and dispatched to madagins.** Reviewed, renumbered to `0311`, committed, PR open — see the new section below for what changed and what's still blocking it. _(added 2026-09-09, closed 2026-09-09 — PR open, not yet merged/dispatched, see below)_
+
+---
+
+## eq-shell: `0311` (the rescued CMMS-baseline migration) reviewed and PR'd; found a real cross-tenant data leak in it, and a separate, unrelated CI failure now blocking every PR on this repo (2026-09-09) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+- [x] **PR #1842's control-plane-drift CI block** — evidently resolved (the PR went on to merge; likely by #1844, which this file's changelog cross-references as fixing the same `eq_cards_worker_claimed_by_phone` drift for #1840's blocker) — mechanism not independently re-verified this pass. _(added 2026-09-09, closed 2026-09-09)_
+- [x] **Review + merge PR #1842** — merged by Royce directly, 2026-09-09T10:10:09Z (`62327928`). _(added 2026-09-09, closed 2026-09-09)_
+- [x] **`--reconcile-ledger` dispatched fleet-wide** (unrelated to the above — this was PR #1843's own required follow-up, since it edits an already-applied migration file) — confirmed a genuine no-op on all three real tenants (eq/madagins/sks): 0 rename/stamp/dedupe/drop-legacy actions, ledger already consistent everywhere. Rules out a checksum-drift refusal on the next real dispatch. _(added 2026-09-09, closed 2026-09-09)_
+
+---
+
+## eq-shell: `/decide` pass found two branches already shipped by concurrent sessions (cleaned up); a live checkout collision caught in the act; EQ-SHELL-25 re-verified and re-closed (2026-09-09) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+- [x] **`C:\Projects\eq-shell-wt-pgcron` orphaned directory** — deleted (`rm -rf` succeeded where git's own removal choked on the long path), after checking its contents first — see the rescued-migration section above. _(added 2026-09-09, closed 2026-09-09)_
+
+---
+
+## eq-shell: Conversations reminders shipped, caused and fixed a same-day live outage, mobile verified, tests added (2026-09-09) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+- [x] **Casual-note attachment friction** — ✅ DONE 2026-09-09: same PR as the backdate-indicator item above, [eq-shell PR #1858](https://github.com/eq-solutions/eq-shell/pull/1858), merged and confirmed live. A Casual note's first "Save" click now creates the row and keeps the modal open (button becomes "Done") so a document can attach immediately, no reopen needed. Formal entries unchanged — Casual only, per Royce's decision. _(added 2026-09-09, decided + spawned 2026-09-09, shipped 2026-09-09)_
+- [x] **"Overall score per person"** — ✅ DECIDED 2026-09-10: hold, don't build now. Full access-design writeup done in chat (not persisted) — access turned out cheap, but the real blocker is data sparsity (14/77 people ever, 0 in 90d), independent of who's allowed to see it. See the full write-up below for the analysis. Revisit once conversation cadence recovers. _(added 2026-09-09, decided 2026-09-10)_
+
+---
+
+## eq-shell: 5 aging Dependabot PRs merged — root cause was a structural CI gap, not staleness, still open (2026-09-09) (rotated 2026-09-12)
+*Royce asked to merge the 5 aging (8d) dependency-bump PRs the digest kept flagging. All 5 failed the same required check ("Schema drift + anon-grant + policy-lint"); root-caused rather than assumed stale or force-merged blind.*
+
+- **Not a real violation, not staleness.** Confirmed via GitHub's compare API (`behind_by: 0`) the branches were already current with `main` before touching anything. The actual failure, from the job log: `ERROR: missing env var SUPABASE_ACCESS_TOKEN (Supabase Management API token)` — the check can't even query the DB to look for a violation. GitHub withholds repo secrets from Dependabot-triggered workflow runs by default (anti-exfiltration protection); this repo has never granted `SUPABASE_ACCESS_TOKEN` to Dependabot secrets specifically, so this check structurally cannot pass on **any** Dependabot PR, past or future — not specific to these 5.
+- All 5 otherwise green (typecheck/test/lint, gitleaks, deploy-preview) and content-verified safe — none touch `supabase/migrations` or any schema file, only `package.json`/lockfile. Presented the finding + 3 options to Royce (admin-override these 5 / grant the Dependabot secret / leave open); he chose admin-override for these 5 specifically and declined the secret grant — a real security trade-off, that token is project-admin-level and Dependabot is a lower-trust trigger context.
+- Merged via `gh pr merge --admin --squash --delete-branch`: [#1695](https://github.com/eq-solutions/eq-shell/pull/1695) papaparse, [#1696](https://github.com/eq-solutions/eq-shell/pull/1696) @sentry/react 10.53→10.73, [#1697](https://github.com/eq-solutions/eq-shell/pull/1697) unpdf (hit a real lockfile conflict once the other 4 landed first — `@dependabot rebase` resolved it cleanly, then merged), [#1698](https://github.com/eq-solutions/eq-shell/pull/1698) react-hook-form 7.77→7.86, [#1699](https://github.com/eq-solutions/eq-shell/pull/1699) eslint-plugin-react-refresh. eq-shell auto-deploys on merge — all 5 live within seconds of each merge.
+
+- [x] **The structural gap is closed** — option (b) built and merged: [eq-shell PR #1855](https://github.com/eq-solutions/eq-shell/pull/1855) adds a creds-free `dependabot-skip-gate` job that `drift-check` now `needs`. Skips only when the actor is `dependabot[bot]` AND every changed file is a plain dependency manifest (`package.json`/`pnpm-lock.yaml`, at any of this pnpm workspace's 8/2 paths — not just the root ones) AND none of them touch `@eq-solutions/roles` (the one dependency `check-orphan-perms.mjs` diffs against the live DB, so a roles bump still runs for real). Allowlist, not denylist — anything unanticipated in a diff still runs the real check, same admin-override path as before. Verified against all 5 real merged PRs (#1695–#1699, all correctly classified skip-eligible, including the 2 that touch the vendored `eq-intake` package.json rather than root) plus a real `@eq-solutions/roles` bump commit (correctly classified run-for-real, both via the non-manifest-file path and the regex path in isolation), plus the PR's own live run (`drift-check` executed normally and passed under its own human actor, confirming the non-Dependabot path is untouched). `drift-check`'s required-check name was left untouched — confirmed against live branch protection before editing. Merged `7c3861b9`, auto-deployed to core.eq.solutions. **Not yet confirmed against a live Dependabot PR** — none was open to observe the "skipped" badge directly; next one is due Monday per the weekly `dependabot.yml` schedule, worth a glance then. _(added 2026-09-09, spawned 2026-09-09, closed 2026-09-09)_
+
+---
+
+## eq-shell: document register "..." menu clip — actually fixed by PR #1864, not #1828 (2026-09-09) (rotated 2026-09-12)
+
+- [x] **Live click-test (2026-09-10) — confirmed fixed.** Logged in as Royce (his already-authenticated Chrome, no login step performed), `/sks/admin/documents`: clicked "..." on the first row (SWMS-005, with SWMS-008 directly below it) — the `DropdownMenu` now renders fully (Push to more people / Upload new version / Version history / Archive), no clipping, no sliver. #1828's premise was wrong (see below); #1864's fix holds live, deploy confirmed too, not just merged. `task_083ae6c6` (spawned to investigate this) is superseded — root cause found and fixed directly, not by that investigation.
+- [x] _Prior history_: #1828's premise ("`.eq-card` has no matching CSS rule anywhere") was wrong — `@eq-solutions/ui`'s `Card.css` has carried `overflow: hidden` since the package's first commit, just not in the barrel `index.css` that got checked. PR #1864 fixes the actual row. Full detail: `sessions/2026-09-10.md`, `eq/changelog/eq-shell.md`.
+
+---
+
+## eq-shell: "My documents" nav badge closes the signer-notification gap, merged, live (PR #1825, 2026-09-09) (rotated 2026-09-12)
+*No fix-specific narrative was recorded when this shipped; the bullet below was reconstructed from the live code during a same-day click-test pass.*
+
+- Badge renders in `HubSidebar.tsx` (new `myDocumentsCount`/`myDocumentsHasAlert` props), fed by `useHomeQueries.ts`'s `useMySignoffsSummaryQuery` (`outstandingCount` = signoffs where `signoff_status === "outstanding"`, `hasOverdue` = any of those also `is_overdue`). Query is enabled only for Viewer tier (`documents.view && !documents.assign`) — deliberately not shown to Assigner/Admin accounts. Route: `/:tenantSlug/admin/documents/mine` (`MyDocumentsPage`).
+
+---
+
+## eq-shell: sidebar/nav had no tablet tier — the same cross-suite iPad audit that fixed eq-service's embedded nav, extended to all 4 MobileTabBar consumers, merged, live (2026-09-08) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: workspace-switch flakiness found incidentally during the click-test pass above, not root-caused (2026-09-09) (rotated 2026-09-12)
+*Surfaced while switching tenant context (Madagins → SKS Technologies) to reach real document data for the click-test pass above — not one of that pass's 3 target items, so not chased further this session.*
+
+- [x] **Switching workspace via the sidebar control is unreliable.** One attempt surfaced a visible "Could not switch — try again" error. Separately, even after an apparently-successful switch, a fresh top-level navigation to a `/sks/...` URL sometimes bounced back to `/madagins` instead of honouring the tenant already switched to — as if the session's server-side active-tenant read is sometimes stale relative to a just-completed switch. Reproduced more than once across ~15 minutes; a retry of the same switch-then-navigate sequence always eventually worked. Spawned as `task_33c04bfa` for a proper look at the switch mutation / session-read race.
+- [x] **Live re-test (2026-09-10) — the visible symptom is gone.** [eq-shell PR #1837](https://github.com/eq-solutions/eq-shell/pull/1837) (from `task_33c04bfa`, merged 2026-09-09, "open workspace switcher menu upward, not down off-screen") turned out to fix a real but different bug than first suspected: the switcher popover was anchored to open downward and got clipped by the viewport bottom — not a session/tenant-state race. Re-ran the exact repro live: opened the switcher (now renders fully upward, both workspaces visible, nothing clipped), clicked "Enter" on SKS Technologies (clean switch, no "Could not switch" error, workspace badge updated immediately), then did a fresh top-level navigation to `/sks/admin/documents` (held on `/sks`, no revert to Madagins this time). Couldn't reproduce the original symptom at all — treating it as resolved unless it recurs. Note: `task_33c04bfa`'s own session never wrote this fix up in pending.md or a session log entry — recorded here instead so the record isn't lost.
+
+---
+
+## eq-shell: Sentry sweep — EQ-SHELL-22/1P (stale-chunk crash tied to the 09-08 merge train), EQ-SHELL-1R (Field handoff timeout points at eq-field, handoff prompt written), EQ-SHELL-T/V investigation continued — new repro context found, still unresolved (2026-09-09) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+- [x] **EQ-SHELL-22/1P fix** — shipped same day by a different concurrent session, [PR #1826](https://github.com/eq-solutions/eq-shell/pull/1826) (`61b06a02`), merged 2026-09-09T07:00 — *before* this line was ever marked done here. A later session picked this exact item from this file (still showing open) and re-verified it as still-current before scoping a rebuild; caught only because it re-read the live file (`src/lib/chunkReload.ts`) before writing any code, found the matcher and its test already covering the Firefox MIME-type case verbatim. No duplicate work landed — flagging the staleness gap itself, not just the fix. _(caught 2026-09-09)_
+- [x] **EQ-SHELL-1R resolved — turned out to be pure eq-shell, no eq-field session needed.** The "eq-field-rooted session" framing above was the wrong lead: root cause was entirely client-side in `FieldIframe.tsx`'s own 30s watchdog timer. Fixed and shipped same day by a later session — see the dedicated section below for the full writeup, [PR #1851](https://github.com/eq-solutions/eq-shell/pull/1851), and the related EQ-SHELL-20 fix it surfaced. _(resolved 2026-09-09)_
+
+---
+
+## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-12 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-field: two tenant-identity-drift items from Royce's "fix it now" — one built, one flagged back with a bigger discovered scope (2026-09-09) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+- [x] **Item 5 — sites.js/managers.js Shell-ownership gate.** [PR #970](https://github.com/eq-solutions/eq-field/pull/970): both files now key off `TENANT.CORE_ONLY` (already live, canonical-driven) instead of a hardcoded `'sks'` literal, matching `auth.js`'s own already-established `_isCoreOnly()` pattern exactly. Turned out lower-risk than scoped — it's a client-side UX guard only (toast + no-op), no server-side enforcement in this file. **Merged, live on field.eq.solutions** — verified via Netlify + commit ancestry, not just merge success.
+
+---
+
+## eq-field: Documents to Sign — Supervisor role had never been pushed to on SKS; 13 people (incl. Richard Brown, Collin Toohey) had zero signoffs — FIXED live (2026-09-09) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+- [x] **Root cause: `document_signoffs` (ehow) is written only when eq-shell's `push-document-audience.ts` is used — a role-based push resolves signers from `shell_control.user_tenant_memberships.role` (control plane, jvkn), completely independent of `app_data.staff` fields (`employment_type`/`is_supervisor`/`active`/`on_roster`).** Richard Brown and Collin Toohey both hold Shell role `supervisor`. Every document ever pushed on this tenant (3 total: SWMS-005/008/018) had only ever targeted roles `employee`/`apprentice`/`labour_hire`, or named individuals directly — `supervisor` and `manager` had never once been used as a push target (24 people tenant-wide: 13 supervisors + 11 managers, zero signoffs). eq-field's own nav gate (`_hasAnySignoffs`) was working correctly — there was genuinely nothing to show them.
+- [x] **Simon Bramall (and Royce Milmlow) could already sign SWMS-005 for an unrelated reason** — both were individually hand-picked as explicit `target_kind='person'` audience rows when that document was first pushed (8 named people, alongside the 3-role sweep), unrelated to role-matching. Simon's own Shell role is `manager` — also never targeted by role.
+- [x] **Fix, on Royce's explicit "yes, push SWMS-005/008/018 to the Supervisor role":** wrote `document_audiences` (3 rows, `target_kind='role'`, `target_role='supervisor'`) + `document_signoffs` (39 rows, `status='outstanding'`) directly against ehow, mirroring `push-document-audience.ts`'s exact insert shape/constraints (`document_audiences_unique_target` is `(document_id, target_kind, target_key)` — `target_key` is a GENERATED column, cannot be inserted directly; `document_signoffs_version_signer_uq` is `(version_id, signer_user_id)`). Confirmed working within minutes, not just inserted: Rumen Iliev signed SWMS-005 3.5 minutes after the push.
+
+---
+
+## eq-field: Documents to Sign inline PDF viewer — pdf.js "fake worker" fallback was broken for EVERY browser, not just iOS Safari — FIXED, merged, live (PR #969, v3.5.712, 2026-09-09) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+- [x] **Root cause (proven from source, not inferred):** `scripts/pdfjs-worker-compat-shim.mjs` (added v3.5.703/PR #952 for an unrelated Samsung Internet `Map.prototype` bug) redirects pdf.js's `workerSrc` to itself, but its body was a bare `import('./vendor/pdfjs/build/pdf.worker.mjs')` with no export. pdf.js's fake-worker fallback (used whenever the real dedicated Worker fails to start, for any reason) reads `WorkerMessageHandler` off exactly that import — always `undefined`, so the fallback always threw on any browser that ever reached it. iOS Safari hit it because its real Worker failed to start first (a known WebKit weak spot with dynamic `import()` inside a Worker's own module scope).
+- [x] **Fix ([PR #969](https://github.com/eq-solutions/eq-field/pull/969)):** made the import static and actually exported `WorkerMessageHandler`. Also caught and fixed an adjacent bug while there: `sign-documents-viewer.js`'s `workerSrc` reference had no cache-buster, and `/scripts/*` is served `Cache-Control: immutable` for a year — without this, the fix would never have reached any client whose browser had already cached the broken shim.
+- [x] **Verified thoroughly, including live:** 47/47 tests, lint clean, cache-buster + bundle-drift guards pass, all CI green, deploy preview fetched directly (correct MIME type, CSP `worker-src 'self' blob:` covers it — ruling CSP out with certainty, not assumption). Merged on Royce's "merge it"; production (`field.eq.solutions/sw.js`) confirmed serving v3.5.712.
+
+---
+
+## eq-field: Contacts briefly showed zero people on load — not reproducible, self-resolved via hard refresh (2026-09-09) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+- [x] **Ruled out the Team-filter fix as the cause.** `personInActiveTeam()`'s change only affects which people a NAMED team pill counts — it can't zero out the "All" pill, whose count reads directly from `STATE.people` before any team filtering runs. A live reproduction on the same URL immediately after loaded 72 people across all 7 real teams + Unassigned, working normally.
+- [x] **Root cause not confirmed** — most likely a load-timing race (render running before the initial people-fetch resolved), matching a documented pattern this codebase already has a name for (Sentry EQ-FIELD-17, "cross-file reference racing lazy-chunk load order"), but no console/network log from the actual moment exists to prove it either way.
+- [x] **Royce did a hard refresh and it came back up** — consistent with a transient client-side state, not a data-loss or RLS/auth issue. No code change made.
+
+---
+
+## eq-field: role-string literals (`'manager'`/`'supervisor'`) hand-typed across 5 files — wired up `eq-roles-canon.js`, FIXED, merged, live (PR #961, v3.5.708, 2026-09-09) (rotated 2026-09-12)
+*Multi-lens review decision #13 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 13): `scripts/eq-roles-canon.js` looked like the intended shared role constant, but its own header claimed it was unreferenced dead code — review flagged it as "wire up or delete."*
+
+- [x] **Re-verified live before acting — the review's framing was wrong.** `eq-roles-canon.js`'s "unreferenced" claim was false: `permission-matrix.js` already read `window.EQ_ROLES_CANON` for its startup guard (shipped via the `core-bundle-a1.js` hand-merge), and the server twin (`netlify/functions/_shared/eq-roles-canon.js`) was already wired into `verify-pin.js`'s role validation. Not dead code — just missing a named constant for the two roles actually hand-typed in privilege comparisons.
+- [x] **[PR #961](https://github.com/eq-solutions/eq-field/pull/961), v3.5.708, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): added `EQ_ROLE.MANAGER`/`EQ_ROLE.SUPERVISOR` to both vendor files, self-checked against the existing role array. Updated 19 real call sites: `auth.js` (10), `auth-shell-handoff.js` (2, not in the review's file list), `permissions.js` (6), `tender-pipeline.js` (1 of 8 — only the canonical-role one), `verify-pin.js` (7, also not in the review's list — including a `FIELD_DISPATCH_ROLES` set hardcoded next to an already-imported `EQ_ROLE_KEYS` in the same file).
+- [x] **Deliberately left untouched**, confirmed by reading each in context: `permission-matrix.js`'s one literal (an intentional documented fallback for when the canon file fails to load), and `sks-pipeline.js`/`sks-pipeline-resource.js`/`sks-pipeline-demo.js`'s 7 other literals (a different enum — tender-nomination slot type + a picker-source tag, not the employment-role vocabulary).
+- [x] **No behaviour change.** Full `tests/*.test.js` suite (48 files), eslint (0 errors), `build-bundles.mjs`/`check-cache-busters.mjs` all green. Hit and resolved a version-number collision with concurrent PR #960 (rebased 707→708). Smoke-tested both the supervisor and staff demo-login paths live on the deploy preview before merge (auth-adjacent files — merge approval confirmed with Royce first).
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`.
+
+---
+
+## eq-field: `leave.js` balance/business-day math had zero unit coverage — extracted to `leave-rules.js`, FIXED, merged, live (PR #960, v3.5.707, 2026-09-09) (rotated 2026-09-12)
+*Multi-lens review decision #12 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 12): `_leaveGetBalances`/`_leaveBizDays` were the one piece of business logic across the five extracted-or-extractable domains (timesheets/roster/apprentices/sks-pipeline-resource/leave) with zero unit coverage, despite being payroll-adjacent.*
+
+- [x] **[PR #960](https://github.com/eq-solutions/eq-field/pull/960), v3.5.707, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): extracted into new `scripts/leave-rules.js` — pure, headless-tested, matching the exact extract-plus-test-module pattern already proven on `timesheets-rules.js`/`roster-rules.js`/`apprentices-rules.js`/`sks-pipeline-resource-rules.js`. `leave.js` keeps thin same-name wrappers, zero call-site changes.
+- [x] **New `tests/leave-rules.test.js`, 20 cases** — closes the coverage gap the review flagged. Full test suite, eslint, and cache-buster checks green before push; verified click-tested on the deploy preview (worker balance cards + supervisor Leave Requests view), not just code-reviewed.
+
+**Notes:** Full session detail: `sessions/2026-09-09.md`.
+
+---
+
+## eq-field: site internal contacts — "Ask for / Backup" shown on schedule + site cards (2026-08-24) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: birthday (day + month) — root cause found and fixed in two passes; one thread still open (2026-08-24) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: Roster compliance gate — missing-required badge on both roster views, an assignment hold point, and a worker-facing self-compliance card (2026-08-21) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+
+---
+
+## eq-field: staff resource management (skills/reviews) — built, deployed, migration applied live (2026-08-11) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+
+---
+
+## EQ Field: real Incidents / Near Miss reporting, shipped and live (2026-07-22) (rotated 2026-09-12 — open items remain in eq-field.md)
+
+
+---
+
+## eq-solves-service: cross-tenant roster leak found and fixed — MERGED, LIVE (SEC-76, 2026-09-09) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+- [x] Made the tenant argument required on `getCanonicalMembers`/`getCanonicalMemberMap` (no more silent default) — turns any missed call site into a `tsc --noEmit` compile error, which is how completeness was verified. Added `getCanonicalMemberMapForTenantId` alongside the existing `getCanonicalMembersForTenantId`, fixed a related edge case in `supervisor-digest.ts`, and threaded `tenantId` through `resolve-user-names.ts`'s 5 callers.
+- [x] **[PR #838](https://github.com/eq-solutions/eq-service/pull/838) — merged, live on service.eq.solutions.** Merged via admin override past 2 pre-existing, unrelated failing checks (chronic `npm audit` finding on `js-yaml`/`next`/`sharp`; this repo's chronically-broken integration-test suite) — `tsc + next build`, the real gate, was clean. Live-verified after merge via Netlify + commit ancestry that the fix reached production, not just `main`.
+
+---
+
+## eq-solves-service: embedded Shell nav bar was unusable on iPad — found via a cross-suite iPad audit, fixed, merged, live (2026-09-08) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: attachment uploads were completely broken for everyone — root-caused, fixed, shipped live; a related security gap in the same feature closed too (2026-09-04/05) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: notification bell was silently broken for anyone signed in through Shell — found, fixed, reviewed, merged, live (2026-08-17) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-service: ACB/NSX cover masthead + blank page 2 fixed; live Secondary Injection load bug found and fixed (2026-08-17) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Settings page showed broken account controls to Shell-embedded users — fixed, merged, live (2026-08-16) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-service: migrations dispatched live; mobile check-detail header overflow found+fixed+deployed; eq-context accidental-checkout scare investigated (2026-08-13) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: fixed a broken safety check that was silently skipping every code review, then found the "176,000 findings" it surfaced was almost entirely noise, cleaned up what was real (2026-08-01) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Found why photo uploads were failing everywhere, then added a link/create/skip option to the paste-import flow (2026-07-31) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-solves-service: Field Run-Sheet asset headers now show the maintenance plan's Job Code (2026-07-29) (rotated 2026-09-12 — open items remain in eq-solves-service.md)
+
+
+---
+
+## eq-context: `safe_commit.py` silently overwrote a concurrent session's register entry — caught, restored, and independently hardened by another session (2026-09-09) (rotated 2026-09-12)
+*While investigating and logging a separate finding (SEC-77, see `eq/pending/eq-solves-service.md`), this session's push of a new `ops/security-register.md` row (as SEC-76) landed cleanly, then was silently overwritten minutes later by a concurrent session's own, unrelated SEC-76 push (`canonical-members.ts`, the other task spawned from the same scoping doc). `safe_commit.py` copied a file's bytes wholesale from the caller's local working tree into a fresh scratch worktree off `origin/main` — it did not diff or merge against what changed on `origin/main` since the caller's copy was last read. The other session's local copy predated this session's push, so its push replaced the whole file, silently dropping this session's row. No error, no conflict, no signal to either session. Caught only because this session's own `/close` re-read `origin/main` fresh before writing the session log and noticed SEC-76 was now a different finding than the one just pushed.*
+
+- Content restored as SEC-77 (both sessions' entries now coexist correctly) — `ops/security-register.md`, commit `a4d7ee33`.
+- [x] ~~`safe_commit.py` has no defense against this class of race~~ — **already fixed, by a different concurrent session, found live while this session went to go build the same thing.** `scripts/safe_commit.py` is now a thin bootstrap that fetches + execs the current `scripts/_safe_commit_impl.py` from fresh `origin/main` on every call (never a worktree's own possibly-stale copy — a second, related failure class, `system/failures.md` F17, that this session hadn't even considered). The impl adds `check_upstream_divergence()`: before staging, every requested file's content at the caller's own HEAD is compared against origin/main's current copy; if they differ and the caller's outgoing bytes don't already match origin (i.e. something real would be lost), it refuses with a full unified diff, overridable only with explicit `--force`. This is exactly the SEC-76/77 race, precisely targeted. Read the current implementation directly (not assumed from a docstring) — sound design, no gaps found. Nothing left to build here. _(added 2026-09-09, closed 2026-09-09)_
+
+---
+
+## eq-cards + eq-shell: Madagins tenant onboarding sprint — most gaps closed same day, 1 follow-up remains (2026-09-09) (rotated 2026-09-12 — open items remain in cross-repo.md)
+
+- [x] ~~Revisit tenant-onboarding sprint decision #1~~ — done, sprint doc (body + summary table) now reflects "dedicated database always," not "shared by default." _(added 2026-09-09, closed 2026-09-09)_
+- [x] ~~Two real eq-cards client bugs found, not yet fixed (sprint items 8/9)~~ — done, [eq-cards#350](https://github.com/eq-solutions/eq-cards/pull/350), merged/deployed/verified live. _(added 2026-09-09, closed 2026-09-09)_
+- [x] ~~Structural fix for `organisations.tier` sync (sprint item 7)~~ — done, [eq-cards#352](https://github.com/eq-solutions/eq-cards/pull/352), merged and live; also fixed a real, previously-unnoticed SKS tier mismatch found while shipping it. _(added 2026-09-09, closed 2026-09-09)_
+
+---
+
+## eq-field + eq-shell: access-control cleanup — Pipeline/Teams/Apprentices/Email Templates get their own permission switches, then a real gap in Shell's Access Control page found and closed (2026-08-16) (rotated 2026-09-12 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-cards + eq-shell: labour-hire licence intake — multi-document OCR extraction + PDF review + flag notifications, all merged + live (2026-08-13) (rotated 2026-09-12 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-solves-intake + eq-shell: duplicate-site console's two dead ends fixed, then a live permission bug found and fixed mid-testing (2026-08-01) (rotated 2026-09-12 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-shell + eq-solves-intake + eq-receipts: closed every open security alert across the EQ suite, found 5 repos where the alert system was switched off entirely (2026-08-01) (rotated 2026-09-12 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-intake + eq-shell: 4-part fix from Royce's live screenshot review of the Intake console (2026-07-31) (rotated 2026-09-12 — open items remain in cross-repo.md)
+
+
+---
+
+## eq-cards/eq-shell: onboarding minimum-requirements switch, bulk connect-worker, and a live anon-EXECUTE fix (2026-07-26) (rotated 2026-09-12 — open items remain in cross-repo.md)
 
 
 ---

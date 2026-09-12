@@ -1,7 +1,7 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-12
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
@@ -55,10 +55,7 @@ status: live
 - **Structural fix shipped the same night, and it caught something bigger than Madagins**: sprint item 7 (`organisations.tier` split-brain) is fully closed — [eq-cards#352](https://github.com/eq-solutions/eq-cards/pull/352), a trigger + one-time backfill, merged and applied live. Shipping it required bootstrapping eq-cards' own jvkn migration pipeline for the first time ever (never dispatched before tonight, no approval gate) — closed properly: all 163 pre-existing migrations individually verified safe first (132 by live-object match against jvkn, 31 read by hand), then bootstrapped. The live check run before shipping found SKS itself — not just Madagins — mismatched (`Standard` vs canonical `enterprise`), meaning Enterprise-gated EQ Field features (Forecast nav, apprentice-ratio widget, region picker) had been silently hidden from SKS users; corrected the moment the migration applied, verified live.
 - **Real root cause, actively being fixed elsewhere — checked before duplicating**: another live session (eq-shell branch `fix/tenant-provisioning-pg-cron`, uncommitted work) is mid-fix for why Madagins' database is incomplete — pg_cron was never enabled on new tenant projects, and ~37 public-schema + ~60 app_data objects predate the tracked migration system entirely (no CREATE statement for them exists anywhere in `supabase/tenant-migrations/`). Confirmed via `ListAgents` + reading (not editing) that worktree directly. Standing down until it lands rather than writing a competing fix.
 
-- [x] ~~Revisit tenant-onboarding sprint decision #1~~ — done, sprint doc (body + summary table) now reflects "dedicated database always," not "shared by default." _(added 2026-09-09, closed 2026-09-09)_
 - [ ] **Finish Madagins' own database setup** — blocked on the eq-shell fix above landing; then re-run the tenant-migrate dispatch scoped to `slug=madagins` (confirmed safe/scoped, failed cleanly last time, zero cross-tenant risk). _(added 2026-09-09)_
-- [x] ~~Two real eq-cards client bugs found, not yet fixed (sprint items 8/9)~~ — done, [eq-cards#350](https://github.com/eq-solutions/eq-cards/pull/350), merged/deployed/verified live. _(added 2026-09-09, closed 2026-09-09)_
-- [x] ~~Structural fix for `organisations.tier` sync (sprint item 7)~~ — done, [eq-cards#352](https://github.com/eq-solutions/eq-cards/pull/352), merged and live; also fixed a real, previously-unnoticed SKS tier mismatch found while shipping it. _(added 2026-09-09, closed 2026-09-09)_
 
 ---
 

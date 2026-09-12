@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -34,7 +34,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: two tenant-identity-drift items from Royce's "fix it now" — one built, one flagged back with a bigger discovered scope (2026-09-09)
 *§0 items 4–6 of `system/tenant-identity-drift-scoping-2026-09-09.md` were flagged for Royce's call, not spawned. Asked directly which to build; all three ("fix it now"). eq-shell's (item 6) shipped clean — see that repo's own pending file. eq-field had two, with very different outcomes once actually investigated (Rule 0.5 — verify against live before building).*
 
-- [x] **Item 5 — sites.js/managers.js Shell-ownership gate.** [PR #970](https://github.com/eq-solutions/eq-field/pull/970): both files now key off `TENANT.CORE_ONLY` (already live, canonical-driven) instead of a hardcoded `'sks'` literal, matching `auth.js`'s own already-established `_isCoreOnly()` pattern exactly. Turned out lower-risk than scoped — it's a client-side UX guard only (toast + no-op), no server-side enforcement in this file. **Merged, live on field.eq.solutions** — verified via Netlify + commit ancestry, not just merge success.
 - [ ] **Item 4 — Apprentice module tenant fallback — NOT built, scope is bigger than originally stated.** `apprentice-data.js`/`apprentice-write.js` don't just gate on `tenant_slug !== 'sks'` — the whole endpoint (`_shared/field-person.js`) is hardcoded to SKS's own `EHOW_URL`/`EHOW_SERVICE_ROLE_KEY`, for any caller. Widening the tenant check alone, without also resolving the correct per-tenant Supabase project, would have shipped a REAL cross-tenant leak (another tenant's apprentice data read/written against SKS's own database) — worse than the current per-tenant-only privacy gap this item actually describes. Needs per-tenant Supabase client resolution first; not a quick fix. Flagged back rather than built narrow-and-wrong. _(added 2026-09-09)_
 
 **Deferred:**
@@ -49,9 +48,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Documents to Sign — Supervisor role had never been pushed to on SKS; 13 people (incl. Richard Brown, Collin Toohey) had zero signoffs — FIXED live (2026-09-09)
 *Royce: "can you see why richard brown and collin toohey cant see documents to sign in eq field sks tenant?" Investigated against live ehow + jvkn before proposing anything.*
 
-- [x] **Root cause: `document_signoffs` (ehow) is written only when eq-shell's `push-document-audience.ts` is used — a role-based push resolves signers from `shell_control.user_tenant_memberships.role` (control plane, jvkn), completely independent of `app_data.staff` fields (`employment_type`/`is_supervisor`/`active`/`on_roster`).** Richard Brown and Collin Toohey both hold Shell role `supervisor`. Every document ever pushed on this tenant (3 total: SWMS-005/008/018) had only ever targeted roles `employee`/`apprentice`/`labour_hire`, or named individuals directly — `supervisor` and `manager` had never once been used as a push target (24 people tenant-wide: 13 supervisors + 11 managers, zero signoffs). eq-field's own nav gate (`_hasAnySignoffs`) was working correctly — there was genuinely nothing to show them.
-- [x] **Simon Bramall (and Royce Milmlow) could already sign SWMS-005 for an unrelated reason** — both were individually hand-picked as explicit `target_kind='person'` audience rows when that document was first pushed (8 named people, alongside the 3-role sweep), unrelated to role-matching. Simon's own Shell role is `manager` — also never targeted by role.
-- [x] **Fix, on Royce's explicit "yes, push SWMS-005/008/018 to the Supervisor role":** wrote `document_audiences` (3 rows, `target_kind='role'`, `target_role='supervisor'`) + `document_signoffs` (39 rows, `status='outstanding'`) directly against ehow, mirroring `push-document-audience.ts`'s exact insert shape/constraints (`document_audiences_unique_target` is `(document_id, target_kind, target_key)` — `target_key` is a GENERATED column, cannot be inserted directly; `document_signoffs_version_signer_uq` is `(version_id, signer_user_id)`). Confirmed working within minutes, not just inserted: Rumen Iliev signed SWMS-005 3.5 minutes after the push.
 - [ ] **Manager role (11 people) still has zero signoffs on any document — not touched.** Royce only asked for Supervisor this pass. _(added 2026-09-09)_
 - [ ] **Orphaned `user_tenant_memberships` row found in passing, not resolved:** both Richard Brown and Collin Toohey also carry a second ACTIVE membership row under `tenant_id=279a6da0-0b54-4da8-8eac-499dffaa44cb`, which has no matching row in `public.organisations` at all. Spun off as a background task (`task_e40938b4`), started by Royce in a separate session — not yet reported back as of this close. _(added 2026-09-09)_
 
@@ -62,9 +58,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Documents to Sign inline PDF viewer — pdf.js "fake worker" fallback was broken for EVERY browser, not just iOS Safari — FIXED, merged, live (PR #969, v3.5.712, 2026-09-09)
 *Surfaced checking Sentry for fallout from the Supervisor-role push above — EQ-FIELD-1P, "Setting up fake worker failed", 1 event, iPhone Safari, pre-dated the push by 40 minutes so confirmed unrelated to it. Royce: "yes, look into the pdf.js worker failure."*
 
-- [x] **Root cause (proven from source, not inferred):** `scripts/pdfjs-worker-compat-shim.mjs` (added v3.5.703/PR #952 for an unrelated Samsung Internet `Map.prototype` bug) redirects pdf.js's `workerSrc` to itself, but its body was a bare `import('./vendor/pdfjs/build/pdf.worker.mjs')` with no export. pdf.js's fake-worker fallback (used whenever the real dedicated Worker fails to start, for any reason) reads `WorkerMessageHandler` off exactly that import — always `undefined`, so the fallback always threw on any browser that ever reached it. iOS Safari hit it because its real Worker failed to start first (a known WebKit weak spot with dynamic `import()` inside a Worker's own module scope).
-- [x] **Fix ([PR #969](https://github.com/eq-solutions/eq-field/pull/969)):** made the import static and actually exported `WorkerMessageHandler`. Also caught and fixed an adjacent bug while there: `sign-documents-viewer.js`'s `workerSrc` reference had no cache-buster, and `/scripts/*` is served `Cache-Control: immutable` for a year — without this, the fix would never have reached any client whose browser had already cached the broken shim.
-- [x] **Verified thoroughly, including live:** 47/47 tests, lint clean, cache-buster + bundle-drift guards pass, all CI green, deploy preview fetched directly (correct MIME type, CSP `worker-src 'self' blob:` covers it — ruling CSP out with certainty, not assumption). Merged on Royce's "merge it"; production (`field.eq.solutions/sw.js`) confirmed serving v3.5.712.
 - [ ] **Not confirmed on a real iOS Safari device** — none available in this environment. The missing-export bug is proven from source; what's still open is only whether the real dedicated Worker now succeeds outright on Safari (vs. still falling back, just successfully) — flagged in the PR body, not assumed. _(added 2026-09-09)_
 
 **Notes:** Full session detail: `sessions/2026-09-09.md`.
@@ -84,32 +77,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-field: Contacts briefly showed zero people on load — not reproducible, self-resolved via hard refresh (2026-09-09)
 *Royce shared a screenshot of the SKS tenant's Contacts screen (via core.eq.solutions/sks/field) showing "No contacts yet" with every team pill at (0), including "All" — which reads straight off `STATE.people` with no team filter applied, so the underlying fetch had to be empty, not just filtered. Investigated the day's most recent merge (791f31b, PR #953, the Team-filter fix) as the obvious first suspect.*
 
-- [x] **Ruled out the Team-filter fix as the cause.** `personInActiveTeam()`'s change only affects which people a NAMED team pill counts — it can't zero out the "All" pill, whose count reads directly from `STATE.people` before any team filtering runs. A live reproduction on the same URL immediately after loaded 72 people across all 7 real teams + Unassigned, working normally.
-- [x] **Root cause not confirmed** — most likely a load-timing race (render running before the initial people-fetch resolved), matching a documented pattern this codebase already has a name for (Sentry EQ-FIELD-17, "cross-file reference racing lazy-chunk load order"), but no console/network log from the actual moment exists to prove it either way.
-- [x] **Royce did a hard refresh and it came back up** — consistent with a transient client-side state, not a data-loss or RLS/auth issue. No code change made.
 - [ ] **Watch for recurrence.** If this happens again, the useful capture is the browser console + network tab at the moment it's seen — that's what would actually distinguish a load-timing race from a real fetch failure, which this session couldn't get after the fact. _(added 2026-09-09)_
-
-**Notes:** Full session detail: `sessions/2026-09-09.md`.
-
----
-
-## eq-field: role-string literals (`'manager'`/`'supervisor'`) hand-typed across 5 files — wired up `eq-roles-canon.js`, FIXED, merged, live (PR #961, v3.5.708, 2026-09-09)
-*Multi-lens review decision #13 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 13): `scripts/eq-roles-canon.js` looked like the intended shared role constant, but its own header claimed it was unreferenced dead code — review flagged it as "wire up or delete."*
-
-- [x] **Re-verified live before acting — the review's framing was wrong.** `eq-roles-canon.js`'s "unreferenced" claim was false: `permission-matrix.js` already read `window.EQ_ROLES_CANON` for its startup guard (shipped via the `core-bundle-a1.js` hand-merge), and the server twin (`netlify/functions/_shared/eq-roles-canon.js`) was already wired into `verify-pin.js`'s role validation. Not dead code — just missing a named constant for the two roles actually hand-typed in privilege comparisons.
-- [x] **[PR #961](https://github.com/eq-solutions/eq-field/pull/961), v3.5.708, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): added `EQ_ROLE.MANAGER`/`EQ_ROLE.SUPERVISOR` to both vendor files, self-checked against the existing role array. Updated 19 real call sites: `auth.js` (10), `auth-shell-handoff.js` (2, not in the review's file list), `permissions.js` (6), `tender-pipeline.js` (1 of 8 — only the canonical-role one), `verify-pin.js` (7, also not in the review's list — including a `FIELD_DISPATCH_ROLES` set hardcoded next to an already-imported `EQ_ROLE_KEYS` in the same file).
-- [x] **Deliberately left untouched**, confirmed by reading each in context: `permission-matrix.js`'s one literal (an intentional documented fallback for when the canon file fails to load), and `sks-pipeline.js`/`sks-pipeline-resource.js`/`sks-pipeline-demo.js`'s 7 other literals (a different enum — tender-nomination slot type + a picker-source tag, not the employment-role vocabulary).
-- [x] **No behaviour change.** Full `tests/*.test.js` suite (48 files), eslint (0 errors), `build-bundles.mjs`/`check-cache-busters.mjs` all green. Hit and resolved a version-number collision with concurrent PR #960 (rebased 707→708). Smoke-tested both the supervisor and staff demo-login paths live on the deploy preview before merge (auth-adjacent files — merge approval confirmed with Royce first).
-
-**Notes:** Full session detail: `sessions/2026-09-09.md`.
-
----
-
-## eq-field: `leave.js` balance/business-day math had zero unit coverage — extracted to `leave-rules.js`, FIXED, merged, live (PR #960, v3.5.707, 2026-09-09)
-*Multi-lens review decision #12 ([`_reviews/multi-lens/2026-09-07.md`](https://github.com/eq-solutions/eq-field/blob/main/_reviews/multi-lens/2026-09-07.md), item 12): `_leaveGetBalances`/`_leaveBizDays` were the one piece of business logic across the five extracted-or-extractable domains (timesheets/roster/apprentices/sks-pipeline-resource/leave) with zero unit coverage, despite being payroll-adjacent.*
-
-- [x] **[PR #960](https://github.com/eq-solutions/eq-field/pull/960), v3.5.707, merged, confirmed live** (`field.eq.solutions/sw.js` curl-verified post-merge): extracted into new `scripts/leave-rules.js` — pure, headless-tested, matching the exact extract-plus-test-module pattern already proven on `timesheets-rules.js`/`roster-rules.js`/`apprentices-rules.js`/`sks-pipeline-resource-rules.js`. `leave.js` keeps thin same-name wrappers, zero call-site changes.
-- [x] **New `tests/leave-rules.test.js`, 20 cases** — closes the coverage gap the review flagged. Full test suite, eslint, and cache-buster checks green before push; verified click-tested on the deploy preview (worker balance cards + supervisor Leave Requests view), not just code-reviewed.
 
 **Notes:** Full session detail: `sessions/2026-09-09.md`.
 
