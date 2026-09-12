@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-11
+last_updated: 2026-09-12
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed on merge (repository_dispatch from EQ repos) + nightly backstop by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-11 (auto-refreshed on merge + nightly backstop)_
+_Last verified: 2026-09-12 (auto-refreshed on merge + nightly backstop)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-11)
+## Open PRs (as of 2026-09-12)
 
 **eq-cards:**
 - #353 fix(ci): stop check-function-grants.mjs truncating its own report
@@ -82,7 +82,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-09-11)
+## System Health (as of 2026-09-12)
 
     **CI on main:**
 
@@ -106,7 +106,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-11)
+## Field Data Plane — SKS tenant (as of 2026-09-12)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
 | Directory | app_data.field_people | 70 | ✓ 70 |
@@ -114,13 +114,13 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,273 | ✓ 2,273 |
 | Operational | app_data.field_timesheets | 590 | ✓ 590 |
-| Safety | public.prestarts | 248 | ✓ 248 |
+| Safety | public.prestarts | 249 | ✓ 249 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-11)
+## Product Pulse (as of 2026-09-12)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
@@ -129,11 +129,11 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 2 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 15 |  |
+| Prestarts created | 16 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 54 |  |
+| Active users (Shell sign-ins, jvkn) | 53 |  |
 
 _No flips this run._
 ---
