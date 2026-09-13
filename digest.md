@@ -1,26 +1,25 @@
 ---
 title: EQ Suite — Health Digest
 owner: Royce Milmlow
-last_updated: 2026-09-12
+last_updated: 2026-09-13
 scope: Push-style 'what needs your attention' feed across the EQ suite. Regenerated on merge (repository_dispatch: suite-state-changed) and nightly. Full snapshot in suite-state.md.
 read_priority: high
 status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-12 14:52 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-13 06:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-11 15:44 UTC → 2026-09-12 14:52 UTC)
+## Since last refresh (2026-09-12 14:52 UTC → 2026-09-13 06:58 UTC)
 
-- Merged: eq-shell [#1877](https://github.com/eq-solutions/eq-shell/pull/1877) chore(deps): bump @eq-solutions/ui to v1.16.5
-- Merged: eq-shell [#1873](https://github.com/eq-solutions/eq-shell/pull/1873) Make Multi the Add-workers homepage, fold agency links into 
-- Merged: eq-shell [#1869](https://github.com/eq-solutions/eq-shell/pull/1869) docs(onboard): catch the runbook up to step 6 + --field-host
-- Merged: eq-shell [#1866](https://github.com/eq-solutions/eq-shell/pull/1866) fix(security): add authenticated read policy for zaap's orga
-- Merged: eq-shell [#1863](https://github.com/eq-solutions/eq-shell/pull/1863) fix(security): add missing tenant-scoped RLS policies on zaa
-- Merged: eq-shell [#1861](https://github.com/eq-solutions/eq-shell/pull/1861) chore(intake): auto re-vendor eq-intake/eq-platform
-- Merged: eq-shell [#1860](https://github.com/eq-solutions/eq-shell/pull/1860) fix(admin): add Madagins to the Field workspace dropdown
-- Merged: eq-field [#974](https://github.com/eq-solutions/eq-field/pull/974) fix(ehow): field_job_numbers_src() had no caller-tenant chec
-- ✅ Needs you: 8 → 7
+- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
+- Merged: eq-shell [#1876](https://github.com/eq-solutions/eq-shell/pull/1876) fix(documents): warm push-document-audience's tenant-client 
+- Merged: eq-shell [#1867](https://github.com/eq-solutions/eq-shell/pull/1867) feat(mobile): add workspace switcher to the mobile account s
+- Merged: eq-shell [#1865](https://github.com/eq-solutions/eq-shell/pull/1865) Rebuild Add worker to the Claude Design spec
+- Merged: eq-shell [#1864](https://github.com/eq-solutions/eq-shell/pull/1864) fix(documents): actually stop clipping the "..." menu (#1828
+- Merged: eq-shell [#1862](https://github.com/eq-solutions/eq-shell/pull/1862) fix(onboard): stop stamping a guessed EQ Field hostname by d
+- Merged: eq-shell [#1858](https://github.com/eq-solutions/eq-shell/pull/1858) feat(staff): backdate signal on conversations, Casual attach
+- Merged: eq-field [#975](https://github.com/eq-solutions/eq-field/pull/975) fix(canon-read): drop the redundant ALLOWED_SLUGS gate
 
 ## ⚠ Needs you (7)
 
@@ -30,7 +29,7 @@ _2026-09-12 14:52 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Cron failing** — `shared-object-drift.yml` 3 consecutive scheduled run(s) failed, last success 2026-09-09 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-09.md](sessions/2026-09-09.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
-- 🟠 **PR aging 7d** — eq-solves-service [#829](https://github.com/eq-solutions/eq-service/pull/829) "fix(defects): consolidate raise-defect duplication, close ACB/NSX vali"
+- 🟠 **PR aging 8d** — eq-solves-service [#829](https://github.com/eq-solutions/eq-service/pull/829) "fix(defects): consolidate raise-defect duplication, close ACB/NSX vali"
 
 ## 🙋 Waiting on you (226)
 
@@ -54,10 +53,10 @@ _…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 2d ago | 2 | 2d |
-| eq-solves-service | ✓ success | 2d ago | 7 | 7d |
-| eq-field | ✓ success | 2d ago | 2 | 2d |
-| eq-cards | ✓ success | 2d ago | 1 | 2d |
+| eq-shell | ✓ success | 3d ago | 2 | 3d |
+| eq-solves-service | ✓ success | 3d ago | 7 | 8d |
+| eq-field | ✓ success | 3d ago | 2 | 3d |
+| eq-cards | ✓ success | 3d ago | 0 | — |
 | eq-solves-intake | ✗ failure | 3d ago | 0 | — |
 
 ## Deploys
@@ -73,17 +72,18 @@ _…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-field | [Error: canon-read: body.tenant_slug fallback used](https://eq-solutions.sentry.io/issues/146010412/) | 15 | 2026-09-09 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/145909030/) | 15 | 2026-09-09 |
 | eq-shell | [EQ Field handoff stalled at "booted" (162s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145052767/) | 13 | 2026-09-11 |
-| eq-shell | [Error: Active org_memberships held by non-members: 1](https://eq-solutions.sentry.io/issues/142429897/) | 9 | 2026-09-11 |
+| eq-shell | [Error: Active org_memberships held by non-members: 1](https://eq-solutions.sentry.io/issues/142429897/) | 9 | 2026-09-12 |
 | eq-shell | [EQ Field accepted the handoff but never reported 'rendered' (101s)](https://eq-solutions.sentry.io/issues/145332293/) | 6 | 2026-09-11 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-09 |
+| eq-shell | [Error: Workers missing an active org_membership: 1 (1 already hiding licences)](https://eq-solutions.sentry.io/issues/145797834/) | 5 | 2026-09-12 |
 | eq-shell | [auth-stall: render-crash](https://eq-solutions.sentry.io/issues/140924723/) | 5 | 2026-09-11 |
-| eq-shell | [Error: Workers missing an active org_membership: 1 (1 already hiding licences)](https://eq-solutions.sentry.io/issues/145797834/) | 4 | 2026-09-11 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-13 | eq-cards | [#353](https://github.com/eq-solutions/eq-cards/pull/353) fix(ci): stop check-function-grants.mjs truncating its own report |
 | 2026-09-10 | eq-shell | [#1892](https://github.com/eq-solutions/eq-shell/pull/1892) fix(ci): apply the exit-truncation fix to check-shell-staff-activ |
 | 2026-09-10 | eq-shell | [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scripts |
 | 2026-09-10 | eq-shell | [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-reque |
@@ -98,8 +98,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-09 | eq-shell | [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug |
 | 2026-09-09 | eq-shell | [#1870](https://github.com/eq-solutions/eq-shell/pull/1870) Fix crash on outgoing connect requests with a revoked status |
 | 2026-09-09 | eq-shell | [#1871](https://github.com/eq-solutions/eq-shell/pull/1871) fix(control-plane): mirror liveness off the data plane, not DNS |
-| 2026-09-09 | eq-shell | [#1875](https://github.com/eq-solutions/eq-shell/pull/1875) fix(cards): let a worker cancel their own pending access request |
-_Showing 15 of 80 · full record in [sessions/](sessions/)_
+_Showing 15 of 75 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -135,16 +134,16 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1670 | 230 / 63 | 3 | 93 |
-| [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 10 |
-| [eq-field](eq/pending/eq-field.md) | 1292 | 195 / 40 | 0 | 59 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 401 | 51 / 20 | 0 | 22 |
+| [eq-shell](eq/pending/eq-shell.md) | 1670 | 230 / 63 | 3 | 94 |
+| [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 11 |
+| [eq-field](eq/pending/eq-field.md) | 1292 | 195 / 40 | 0 | 60 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 401 | 51 / 20 | 0 | 26 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 180 | 14 / 6 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 46 | 3 / 1 | 0 | 4 |
 | [eq-context](eq/pending/eq-context.md) | 241 | 31 / 12 | 0 | 12 |
-| [cross-repo](eq/pending/cross-repo.md) | 949 | 136 / 47 | 0 | 85 |
+| [cross-repo](eq/pending/cross-repo.md) | 949 | 136 / 47 | 0 | 88 |
 | [sks](eq/pending/sks.md) | 55 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 515 | 95 / 15 | 0 | 66 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
@@ -154,6 +153,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 _Open items sitting under a section header this old or older — not necessarily wrong, just gone quiet under its own dated write-up. Worth a look before it reads as done-and-forgotten._
 
+- **eq-shell** (2026-07-29) · **Royce to re-review Bruno Vita Pedrosa, Luke Wheeler, and Mohamed Ahmed** — their current flags trace to the confirmed false-positive batch touches; reviewing them now (post-#1101) records a real fingerprint so they won't be falsely re-flagged again. _(added 2026-07-29)_
 - **eq-shell** (2026-07-28) · **Separate, lower-priority finding: 53 of 88 active SKS staff have a Cards worker link but zero credentials captured in Cards at all** (checked the pre-promotion `worker_credentials` table too — genuinely empty, not stuck mid-migration). Only 34 of 88 active staff have any licence data flowing through Shell. This is a Cards onboarding-completion gap, not a sync bug — no action taken, logging only per Royce's call. _(added 2026-07-28)_
 - **eq-shell** (2026-07-28) · **Royce to export a real org's compliance pack and eyeball the new layout in Excel** — verified in code and with a test run, not yet checked against a real export. _(added 2026-07-28)_
 - **eq-shell** (2026-07-28) · **Royce to re-download a compliance pack once the deploy lands** and confirm the filename reads correctly, Rhys Scott's email now shows current, and the spinner shows while it builds. _(added 2026-07-28, updated 2026-07-29)_
@@ -168,8 +168,7 @@ _Open items sitting under a section header this old or older — not necessarily
 - **eq-shell** (2026-07-26) · **Real end-to-end confirmation still open**: re-archived the 4 originally-affected people (Aaron Clohessy, Emma Curth, Jack Fitzpatrick, Ross Davidson) as a live test. Need to check after tomorrow's nightly run (and ideally after their Cards profile syncs in real time) that they're still archived — that's the actual proof the fix holds, not just a clean deploy. _(added 2026-07-26)_
 - **eq-shell** (2026-07-26) · **Bob Smith** (one of the 5 originally reported) still doesn't match any current staff record in the SKS tenant by name — never resolved, possibly a name-spelling mismatch or a different tenant. Worth a quick manual look. _(added 2026-07-26)_
 - **eq-shell** (2026-07-26) · **The old, now-unused sync function is still sitting in Supabase** (edge function `credentials-canonical-sync`) — harmless since nothing calls it anymore, but there's no way to delete an edge function via a migration; would need a manual removal via the Supabase dashboard if Royce wants it gone entirely. _(added 2026-07-26)_
-- **eq-shell** (2026-07-26) · **Real-world confirmation still open** — have a manager ask Zemi Asri (or another affected worker) to retry logging into core.eq.solutions now that #992 is live, and confirm it worked. _(added 2026-07-26)_
-_…and 377 more — see each file's Queue health row above._
+_…and 387 more — see each file's Queue health row above._
 
 ## Possible recurring failures (unconfirmed)
 
@@ -193,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-12 14:52 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-13 06:58 UTC._
