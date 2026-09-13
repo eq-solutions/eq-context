@@ -72,9 +72,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1898 Add meta/OG tags to Core; fix 2 missing aria-labels in Access Control
 - #1897 feat(staff): let a manager mark a worker compliant without a licence record
-- #1896 fix(field-iframe): stop a slow mint eating the iframe's own stall-notice budget
 - #1895 fix(auth): resolve tenant JWT secret per-tenant instead of hardcoding sks
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
@@ -86,7 +84,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ✗ failure |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -97,7 +95,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-13 |
-| eq-shell | ready | 2026-09-13 |
+| eq-shell | new | 2026-09-13 |
 | eq-field | ready | 2026-09-13 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
