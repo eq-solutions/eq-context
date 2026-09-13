@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-12
+last_updated: 2026-09-13
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -13,6 +13,24 @@ Done items and fully-closed session write-ups rotated out of `eq/pending.md`.
 If you''re looking for something to action, it''s not here — check `eq/pending.md`.
 A "(rotated YYYY-MM-DD ...)" note on a section header means only that
 section's done items live here; its open items stayed in `eq/pending.md`.
+
+---
+
+## eq-solves-intake: contact.schema.json drift reconciled against live ehow, FK-match hint bug fixed in 3 files (rotated 2026-09-10 — deferred item closed 2026-09-09, see pending.md's current top section for the follow-up work)
+*Two copies of `contact.schema.json` had diverged: root modeled a shape (nullable `site_id`, single `name`/`phone`) that was never built. Verified live `app_data.contacts` against ehow (eq-shell `tenant-migrations` 0001–0294, generated DDL, and a live Supabase query) before touching anything — `customer_id` is required, `first_name`/`last_name` split, `work_phone`/`mobile_phone`/`fax` split, no `site_id` column ever existed. Site-level contact association is real but lives in a separate `contact_site_links` many-to-many table (7 live rows), not a nullable `site_id`.*
+
+**Completed:**
+- `schemas/contact.schema.json` reconciled to match the live-accurate shape — now byte-identical to `eq-platform/packages/eq-schemas/src/schemas/contact.schema.json`, same pattern already used for `customer.schema.json`.
+- Fixed the `customer.name` FK-fuzzy-match-on hint (`customer.schema.json` has no `name` field, only `company_name`) — found in `site.schema.json` (as asked) plus the identical copy-pasted bug in `rcd_test.schema.json` and `maintenance_plan.schema.json`.
+- Regenerated `types/contact.d.ts` + `types/site.d.ts` via `scripts/gen-types.mjs` so the generated types match.
+- eq-solves-intake `main` @ `fdf0055`, pushed.
+
+**Deferred (closed):**
+- [x] **eq-platform's `site.schema.json` own separate drift** (`country` coerce hint, `client_name` deprecation flag) — picked up as `task_672eb4fa`, both verified against live systems and reconciled. `main` @ `8dccda0`. Same pass also caught `asset.schema.json` drift and retired a stale, superseded branch — see `eq/pending/eq-solves-intake.md`'s current top section. _(closed 2026-09-09)_
+
+**Notes (load-bearing):**
+- **The `x-eq-fk-fuzzy-match-on` array's entity-name prefix (before the first `.`) is discarded by the reader** (`eq-validation/src/validate.ts:276`, `.split('.').pop()`) — only the field name after the last dot matters. So `"customer.name"` vs `"customers.name"` behave identically (both wrong); the fix is the field name, not the prefix.
+- **CONDUIT-AUDIT-2026-05-22.md's L3 finding (`customer.schema.json` drift, root vs eq-platform) was already resolved** by the time this session checked — both copies are byte-identical now, confirming the "whichever copy matches live wins" reconciliation pattern was already applied once before, just never followed through for `contact.schema.json`.
 
 ---
 

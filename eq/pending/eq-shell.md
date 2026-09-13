@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-12
+last_updated: 2026-09-13
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,28 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,394 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-shell: "No suitable key or wrong key type" on madagins traced to root cause — a fix was drafted but is NOT currently on disk; needs re-verification before continuing (2026-09-10)
+*Started from a screenshot of EQ Shell's Review Queue tab on the `madagins` tenant. Traced fully: `connectTenantClient()`'s fallback chain (proxy → routed → sks-legacy) all ultimately sign a tenant JWT with either `SKS_SUPABASE_JWT_SECRET` or the shared `SUPABASE_JWT_SECRET` — but madagins' own Supabase project (`ornndtbdkxfsewspbrwk`) was never configured to accept either, so every direct-browser call fails identically. `scripts/provision-tenant.mjs` itself documents skipping this step ("Sync SUPABASE_JWT_SECRET into the new project — deferred").*
+
+**Confirmed, not affected:** the actual customer-data import/commit pipeline (`intake-stage.ts` → `intake-commit.ts`, via `getTenantDataClientById`, pure service-role, no JWT-secret dependency at all) is completely isolated from this bug. Royce's near-term goal — get madagins' customer/site/contact lists through Intake to trial it — is unaffected either way. Only read-heavy direct-browser surfaces (Review Queue, likely Overview's health-score widgets) are broken for this tenant.
+
+**Investigated and ruled out:** `docs/ARCHITECTURE-V2.md` claims "the same SUPABASE_JWT_SECRET is configured on every tenant data-plane project" is the intended design — confirmed against Supabase's actual Management API docs that this is **not achievable**: no endpoint exposes a settable `jwt_secret` field, and the one legacy-signing-key endpoint only activates a project's own existing secret, never a custom value. No cross-project secret-sharing mechanism exists anywhere in the current API. The only pattern that actually works is per-tenant (what SKS already does with `SKS_SUPABASE_JWT_SECRET`) — that's not a legacy exception to retire, as the doc frames it; it may be the only viable pattern, full stop.
+
+**Drafted (typechecked clean, all 27 existing tests passed):** generalized `mint-tenant-jwt.ts` + `tenant-data-proxy.ts` to resolve a per-tenant secret via a new `resolveTenantJwtSecret()` helper in `_shared/supabase-jwt.ts` (looks up `<SLUG>_SUPABASE_JWT_SECRET`, falls back to the shared secret), replacing both files' hardcoded sks-only branch with one call.
+
+- [ ] **This draft is NOT currently in the working tree** — confirmed at session close: `tenant-data-proxy.ts` and `mint-tenant-jwt.ts` are back to importing `signSupabaseJwt`/`hasSupabaseJwtSecret` and branching on `tenant_slug === 'sks'`. Never committed, and this is a shared (non-worktree-isolated) checkout with many other concurrent sessions — most likely overwritten by unrelated activity in the intervening days, not a deliberate revert by anyone who reviewed it. Whoever picks this up: re-verify current file state first, don't assume the draft above is still accurate, and build it in an isolated worktree this time. _(added 2026-09-10)_
+- [ ] **Whether a tenant project's own JWT secret can be fetched via the Management API at provisioning time is still unconfirmed** — needs a live test with real `SUPABASE_ACCESS_TOKEN` credentials, which this session didn't have. If not fetchable, the per-tenant secret is dashboard-only (copy from Settings → API → JWT Secret), same as how SKS's almost certainly was originally obtained. _(added 2026-09-10)_
+- [ ] **Whether zaap has the same gap was never confirmed either way** — Sentry has zero signal (`captureClientFallback` fires on `connectTenantClient()`'s fallback transitions, not on downstream RPC failures after a client resolves, so its silence doesn't confirm zaap is fine). _(added 2026-09-10)_
+- [ ] **madagins itself still needs its own JWT secret set** (via whichever mechanism the API check above resolves) to actually unblock Review Queue/Overview for that tenant. _(added 2026-09-10)_
+
+Tracked as background task `task_b3a9c0f1` ("Wire per-tenant JWT secrets into tenant provisioning") — supersedes an earlier, wrongly-scoped `task_2ab69cca` (dismissed; assumed the shared-secret plan was viable before the Management API check disproved it).
+
+**Notes (load-bearing):**
+- Auth-adjacent change — needs Royce's explicit review before anything touches live tenant config or ships, per this repo's own CLAUDE.md.
+- This session ran three successive `/decide` passes on this thread and reversed its own technical recommendation twice as deeper facts emerged (per-tenant vs. shared secret, then whether shared is even achievable) — each reversal was caught by checking the next layer down (a runbook, then official API docs) rather than building on the previous layer's assumption. Worth reading before trusting any single claim above in isolation; the Management API doc check is the most solid of the three.
 
 ---
 
