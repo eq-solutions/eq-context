@@ -2,8 +2,8 @@
 title: Provisioning-completeness follow-up — land the pg_cron fix, triage live-only findings
 owner: Royce Milmlow
 created: 2026-09-09
-last_updated: 2026-09-09
-scope: The 2 items deferred out of PR #1832 (scripts/check-provisioning-completeness.mjs, merged 2026-09-09) — landing the in-progress pg_cron provisioning fix and triaging the live-only inventory the new check's first run surfaced. Supersedes the equivalent bullets originally logged in eq/pending/eq-shell.md the same day (see Notes on provenance below) — this doc is now the sole record for both.
+last_updated: 2026-09-13
+scope: The 2 items deferred out of PR #1832 (scripts/check-provisioning-completeness.mjs, merged 2026-09-09) — landing the in-progress pg_cron provisioning fix and triaging the live-only inventory the new check's first run surfaced. Supersedes the equivalent bullets originally logged in eq/pending/eq-shell.md the same day (see Notes on provenance below) — this doc is now the sole record for both. Grew a 4th section 2026-09-10→13: the SEC-77 hardcoded-tenant-literal RLS sweep this same Madagins-onboarding investigation surfaced, tracked here since it's the same root cause and the same tenant.
 read_priority: high
 status: live
 ---
@@ -160,6 +160,52 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 
 ---
 
+## 4. SEC-77 — hardcoded-tenant-literal RLS sweep (2026-09-10 → 2026-09-13)
+
+Grew out of a direct question — "check the eq-shell tender_enrichment RLS coverage in
+tenant-migrate.yml" — which surfaced the same root cause as items 1a/1c above (RLS built for
+SKS alone, madagins the second real test of it) on a different table family. Turned into a
+full live sweep of `ops/security-register.md` SEC-77's ~31-table hardcoded-literal footprint
+across both eq-shell (~10 tables) and eq-field (~15+6 shared) — full detail lives in SEC-77
+and `system/tenant-identity-drift-scoping-2026-09-09.md`, not duplicated here. Two real bugs
+found and fixed; everything else checked clean.
+
+- **`public.nominations` on zaap — RLS enabled, zero policies, live silent lockout, not
+  hypothetical.** Any authenticated EQ-tenant user hitting the tender-nominations feature got
+  nothing back. 0 rows at the time, so no data had actually been hidden yet. Fixed:
+  [eq-shell#1878](https://github.com/eq-solutions/eq-shell/pull/1878) (migrations `0316`/`0317`
+  — the second file also revoked a superfluous, non-exploitable `anon` grant on madagins's
+  `nomination_clashes` view found in the same pass). Merged via admin override past an
+  unrelated, confirmed-pre-existing control-plane drift-check regression. Dispatched
+  fleet-wide, live-verified post-dispatch on all 3 planes.
+- **`public.field_job_number_overrides` on madagins — full CRUD `anon` grant**, found while
+  directly re-checking this table's literal substitution (which was itself correct). Not
+  currently exploitable (the table's only policy targets `authenticated` only, so RLS denied
+  anon regardless), but broader than the `nomination_clashes` view cleanup — a real write
+  grant on a populated tenant table, and ehow's own copy has no such grant. Fixed:
+  [eq-shell#1893](https://github.com/eq-solutions/eq-shell/pull/1893) (migration `0318`),
+  merged and dispatched 2026-09-13, live-verified — madagins's grant list now matches ehow's.
+- **Everything else checked clean, no fix needed**: `tender_enrichment`, `tenders`,
+  `apprentice_profiles`, `tender_import_runs`, `tender_review_decisions` (correct on every
+  plane they exist on); `tender_nominations` (doesn't exist live anywhere — superseded by
+  `nominations`); eq-field's full ~16-table share (no lockouts; zaap's apparent gaps are
+  deliberate — features never enabled for the demo tenant, not misses).
+- **Methodology note worth keeping**: the original SEC-77 ownership attribution for
+  eq-shell's tables was built by grepping `CREATE TABLE` across migration files — this matched
+  a family of dead, 0-row `app_data.*` stub tables (from `0002_remaining_tables.sql`, later
+  orphaned by a 2026-06-28 out-of-band cleanup) instead of the real, live `public.*` tables.
+  Held on all 6 originally-named eq-shell tables without exception. Worth remembering before
+  trusting any future grep-based ownership claim in this repo.
+- **Separate, unrelated discovery while working this** — a real, well-written but incomplete
+  and unauthorized-this-session change sitting uncommitted in the shared eq-shell checkout: a
+  `resolveTenantJwtSecret(slug)` helper generalizing the `if (tenant_slug === 'sks')`
+  special-case in `mint-tenant-jwt.ts`/`tenant-data-proxy.ts`, matching almost exactly the
+  scoping doc's own recommendation for finding #3. Parked on its own branch,
+  `wip/tenant-jwt-secret-resolver-recovered-dd4b9417`, per your explicit call — not built on,
+  not tested, no PR opened. Needs your decision on whether to pick it up.
+
+---
+
 ## Explicitly excluded
 
 - **`wipe_backup.*` RLS-disabled finding** (4 tables, Supabase advisor flags it critical —
@@ -178,3 +224,4 @@ this list triages to a clean baseline does `--strict` become safe to turn on in
 | 1c | madagins's migration backlog | **Resolved — was never real.** eq-field session's fix landed the genuine gap; the remaining "11 missing" are all Plane-scoped away from madagins (ehow/zaap only) and correctly absent | — |
 | 2 | Re-run `check-provisioning-completeness.mjs` | Blocked | 1a merged + dispatched |
 | 3 | Triage ~71 tables / ~65 functions / 2 extensions / 2 schemas | Not started | Independent — can run anytime |
+| 4 | SEC-77 hardcoded-literal RLS sweep | **Done** — 2 real bugs found+fixed+dispatched+verified ([#1878](https://github.com/eq-solutions/eq-shell/pull/1878), [#1893](https://github.com/eq-solutions/eq-shell/pull/1893)), rest confirmed clean. 1 unrelated WIP discovery parked, needs your call | — |
