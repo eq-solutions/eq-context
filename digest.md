@@ -8,26 +8,25 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-13 08:25 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-13 15:29 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-13 08:18 UTC → 2026-09-13 08:25 UTC)
+## Since last refresh (2026-09-13 08:25 UTC → 2026-09-13 15:29 UTC)
 
-- Merged: eq-shell [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped r
-- Merged: eq-shell [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the p
-- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
-- Merged: eq-shell [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug
-- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
-- Merged: eq-shell [#1876](https://github.com/eq-solutions/eq-shell/pull/1876) fix(documents): warm push-document-audience's tenant-client 
-- Merged: eq-shell [#1871](https://github.com/eq-solutions/eq-shell/pull/1871) fix(control-plane): mirror liveness off the data plane, not 
-- Merged: eq-shell [#1867](https://github.com/eq-solutions/eq-shell/pull/1867) feat(mobile): add workspace switcher to the mobile account s
-- ✅ Needs you: 8 → 7
+- Merged: eq-shell [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or sig
+- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
+- Merged: eq-shell [#1877](https://github.com/eq-solutions/eq-shell/pull/1877) chore(deps): bump @eq-solutions/ui to v1.16.5
+- Merged: eq-shell [#1875](https://github.com/eq-solutions/eq-shell/pull/1875) fix(cards): let a worker cancel their own pending access req
+- Merged: eq-shell [#1873](https://github.com/eq-solutions/eq-shell/pull/1873) Make Multi the Add-workers homepage, fold agency links into 
+- Merged: eq-shell [#1870](https://github.com/eq-solutions/eq-shell/pull/1870) Fix crash on outgoing connect requests with a revoked status
+- Merged: eq-shell [#1869](https://github.com/eq-solutions/eq-shell/pull/1869) docs(onboard): catch the runbook up to step 6 + --field-host
+- Merged: eq-shell [#1866](https://github.com/eq-solutions/eq-shell/pull/1866) fix(security): add authenticated read policy for zaap's orga
 
 ## ⚠ Needs you (7)
 
 - 🔴 **CI failure** — eq-solves-intake `main`
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
-- 🔴 **Cron failing** — `index-drift.yml` 4 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
-- 🔴 **Cron failing** — `shared-object-drift.yml` 3 consecutive scheduled run(s) failed, last success 2026-09-09 · [failures.md](system/failures.md) F11
+- 🔴 **Cron failing** — `index-drift.yml` 5 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
+- 🔴 **Cron failing** — `shared-object-drift.yml` 4 consecutive scheduled run(s) failed, last success 2026-09-09 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-09.md](sessions/2026-09-09.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **PR aging 8d** — eq-solves-service [#829](https://github.com/eq-solutions/eq-service/pull/829) "fix(defects): consolidate raise-defect duplication, close ACB/NSX vali"
@@ -58,7 +57,7 @@ _…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-solves-service | ✓ success | 0d ago | 6 | 8d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
-| eq-solves-intake | ✗ failure | 3d ago | 0 | — |
+| eq-solves-intake | ✗ failure | 4d ago | 0 | — |
 
 ## Deploys
 
@@ -71,7 +70,7 @@ _…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Project | Error | Events | Last seen |
 |---------|-------|--------|-----------|
 | eq-field | [Error: canon-read: body.tenant_slug fallback used](https://eq-solutions.sentry.io/issues/146010412/) | 15 | 2026-09-09 |
-| eq-shell | [EQ Field handoff stalled at "booted" (162s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145052767/) | 13 | 2026-09-11 |
+| eq-shell | [EQ Field handoff stalled at "booted" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145052767/) | 14 | 2026-09-13 |
 | eq-shell | [Error: Active org_memberships held by non-members: 1](https://eq-solutions.sentry.io/issues/142429897/) | 9 | 2026-09-12 |
 | eq-shell | [EQ Field accepted the handoff but never reported 'rendered' (101s)](https://eq-solutions.sentry.io/issues/145332293/) | 6 | 2026-09-11 |
 | eq-field | [AbortError: Fetch is aborted](https://eq-solutions.sentry.io/issues/143320850/) | 6 | 2026-09-09 |
@@ -112,7 +111,7 @@ _Showing 15 of 77 · full record in [sessions/](sessions/)_
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
 - **eq-context** (43 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
-- **cross-repo** (180 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **cross-repo** (181 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
@@ -135,7 +134,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1692 | 233 / 64 | 3 | 94 |
+| [eq-shell](eq/pending/eq-shell.md) | 1683 | 233 / 64 | 0 | 94 |
 | [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 11 |
 | [eq-field](eq/pending/eq-field.md) | 1292 | 195 / 40 | 0 | 60 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 401 | 51 / 20 | 0 | 26 |
@@ -144,7 +143,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 46 | 3 / 1 | 0 | 4 |
 | [eq-context](eq/pending/eq-context.md) | 241 | 31 / 12 | 0 | 12 |
-| [cross-repo](eq/pending/cross-repo.md) | 949 | 136 / 47 | 0 | 88 |
+| [cross-repo](eq/pending/cross-repo.md) | 949 | 138 / 46 | 0 | 88 |
 | [sks](eq/pending/sks.md) | 55 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 515 | 95 / 15 | 0 | 66 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
@@ -193,4 +192,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-13 08:25 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-13 15:29 UTC._
