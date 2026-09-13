@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-13)
 
-**eq-field:**
-- #978 fix(canon-read): reject the body.tenant_slug fallback instead of trusting it
-
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -95,7 +92,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-13 |
-| eq-shell | new | 2026-09-13 |
+| eq-shell | uploading | 2026-09-13 |
 | eq-field | ready | 2026-09-13 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
