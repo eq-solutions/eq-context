@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-13
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-13 (PR #1896 MERGED + LIVE — a slow token mint no longer eats the Field iframe's own loading budget)
+- The in-flight stall-notice timer (`STALL_NOTICE_MS`, 10s) counted purely from attempt-start (mint-start), so a slow-but-normal mint (token-exchange's own stated p95 is 5.25s) could consume most of that budget before the iframe even started loading — false-alarming a handoff that was actually progressing fine. Confirmed live: Sentry EQ-SHELL-29 shows an 8.2s mint leaving under 2s before the notice fired.
+- Adds `inFlightStallDelayMs` (`fieldHandoffTelemetry.ts`, unit-tested) — the greater of the existing attempt-start delay or a floor reserved for the iframe-load phase since mint-completion. Preserves "a frame pre-warmed a long time ago fires its notice at once on activation"; only extends the wait when mint itself was the slow part of a comparatively fresh attempt.
+- Found via a full Sentry review of the "EQ Field handoff" issue cluster (EQ-SHELL-20/21/26/29/2A, EQ-FIELD-1R) — most of it turned out to already be fixed by other sessions' work (#1785/#1851/#1853, landed 2026-09-07→09); this was the one remaining gap pinned down with hard evidence. A related, distinct edge case (a memory-saver iframe restore's second boot cycle sometimes doesn't finish inside its own notice window even after a first cycle rendered fine — EQ-SHELL-21's own event timeline) was traced but not fixed here. [PR #1896](https://github.com/eq-solutions/eq-shell/pull/1896).
 
 ## 2026-09-10 (PR #1885 MERGED + LIVE — control-plane ledger gap closed for #1875's cancel-my-access-request migration)
 - The required "Schema drift + anon-grant + policy-lint" check's control-plane-function-drift step had already been fixed by [PR #1875](https://github.com/eq-solutions/eq-shell/pull/1875) (`eq_cards_cancel_my_access_request`, merged 2026-09-09) before this task started — confirmed via GitHub Actions logs, not assumed. The remaining gap: `supabase/CONTROL-PLANE-LEDGER.md` never got a row for that migration, unlike its two same-day siblings.
