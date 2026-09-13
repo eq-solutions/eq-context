@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-13)
 
 **eq-field:**
+- #979 fix(ci): stop 8 scripts truncating their own report
 - #978 fix(canon-read): reject the body.tenant_slug fallback instead of trusting it
 - #977 fix(ehow): field_people_iud() no longer guesses a tenant on a null JWT claim
 
@@ -74,7 +75,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1893 fix(security): revoke superfluous anon grant on madagins's field_job_number_overrides
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
 ---
@@ -96,8 +96,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-10 |
-| eq-shell | ready | 2026-09-10 |
-| eq-field | ready | 2026-09-10 |
+| eq-shell | building | 2026-09-13 |
+| eq-field | ready | 2026-09-13 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
 
