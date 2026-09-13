@@ -10467,3 +10467,72 @@ list.
 
 
 ---
+
+## eq-shell: control-plane drift check's #1875 gap closed — missing CONTROL-PLANE-LEDGER.md row for `eq_cards_cancel_my_access_request` (2026-09-10) (rotated 2026-09-13)
+*Assigned as a live CI-failure fix — "Schema drift + anon-grant + policy-lint" failing on `main` and every open PR since the 2026-09-09T16:30:03Z scheduled run. Investigation found the underlying cause was already resolved before work started.*
+
+- [x] **Root cause was already fixed** — PR #1875 (merged 2026-09-09T18:04:32Z, from the locked worktree `cards-worker-cancel-access-request`) had already added the missing migration for `public.eq_cards_cancel_my_access_request`. Confirmed via GitHub Actions logs: run 34386477967 named the function as unsourced pre-merge, run 34388170080 passed the same step post-merge. No new migration or `KNOWN_UNSOURCED` entry was needed. _(added 2026-09-10, closed 2026-09-10)_
+- [x] **Real gap found and fixed: `CONTROL-PLANE-LEDGER.md` was missing a row for #1875's own migration** — its two same-day sibling migrations got ledger rows, this one didn't. Independently re-verified live against jvkn via Supabase MCP (not just trusting #1875's own recorded check): `pg_get_functiondef` matches the migration file byte-for-byte; grants exactly `authenticated`+`service_role`, no `anon`. Fixed and merged: [eq-shell#1885](https://github.com/eq-solutions/eq-shell/pull/1885), Royce's explicit go-ahead to merge. _(added 2026-09-10, closed 2026-09-10)_
+- [x] **eq-shell's local clone was 3 commits behind `origin/main`** at the start of this investigation (missing #1870/#1871/#1875) — fast-forwarded clean, nothing lost. Worth noting the local-clone-staleness pattern already tracked for `eq-context` isn't `eq-context`-specific — it hit eq-shell's own clone this session too. _(added 2026-09-10, closed 2026-09-10)_
+
+---
+
+## eq-shell: sidebar/nav had no tablet tier — the same cross-suite iPad audit that fixed eq-service's embedded nav, extended to all 4 MobileTabBar consumers, merged, live (2026-09-08) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-13 — open items remain in eq-shell.md)
+
+
+---
