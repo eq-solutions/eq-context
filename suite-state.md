@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-13)
 
 **eq-field:**
-- #980 docs(field-people): record field_people_iud() v_actor_id provenance gap
 - #978 fix(canon-read): reject the body.tenant_slug fallback instead of trusting it
 
 **eq-service:**
@@ -73,6 +72,10 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1898 Add meta/OG tags to Core; fix 2 missing aria-labels in Access Control
+- #1897 feat(staff): let a manager mark a worker compliant without a licence record
+- #1896 fix(field-iframe): stop a slow mint eating the iframe's own stall-notice budget
+- #1895 fix(auth): resolve tenant JWT secret per-tenant instead of hardcoding sks
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
 ---
@@ -128,7 +131,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 54 |  |
+| Active users (Shell sign-ins, jvkn) | 55 |  |
 
 _No flips this run._
 ---
