@@ -63,7 +63,6 @@ _If this file is >48h old, the cron is broken._
 **eq-field:**
 - #980 docs(field-people): record field_people_iud() v_actor_id provenance gap
 - #978 fix(canon-read): reject the body.tenant_slug fallback instead of trusting it
-- #977 fix(ehow): field_people_iud() no longer guesses a tenant on a null JWT claim
 
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
@@ -94,9 +93,9 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-13 |
+    | eq-service | ready | 2026-09-13 |
 | eq-shell | ready | 2026-09-13 |
-| eq-field | building | 2026-09-13 |
+| eq-field | ready | 2026-09-13 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
 
