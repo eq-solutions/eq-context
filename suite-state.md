@@ -92,7 +92,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-13 |
-| eq-shell | uploading | 2026-09-13 |
+| eq-shell | ready | 2026-09-13 |
 | eq-field | ready | 2026-09-13 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
@@ -106,7 +106,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,273 | ✓ 2,273 |
-| Operational | app_data.field_timesheets | 604 | ✓ 604 |
+| Operational | app_data.field_timesheets | 618 | ✓ 618 |
 | Safety | public.prestarts | 249 | ✓ 249 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
