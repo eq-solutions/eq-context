@@ -8,20 +8,21 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-13 07:54 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-13 08:18 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-13 07:14 UTC → 2026-09-13 07:54 UTC)
+## Since last refresh (2026-09-13 07:54 UTC → 2026-09-13 08:18 UTC)
 
-- Merged: eq-shell [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the p
-- Merged: eq-shell [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug
-- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
-- Merged: eq-shell [#1876](https://github.com/eq-solutions/eq-shell/pull/1876) fix(documents): warm push-document-audience's tenant-client 
-- Merged: eq-shell [#1871](https://github.com/eq-solutions/eq-shell/pull/1871) fix(control-plane): mirror liveness off the data plane, not 
-- Merged: eq-shell [#1867](https://github.com/eq-solutions/eq-shell/pull/1867) feat(mobile): add workspace switcher to the mobile account s
-- Merged: eq-shell [#1865](https://github.com/eq-solutions/eq-shell/pull/1865) Rebuild Add worker to the Claude Design spec
-- Merged: eq-shell [#1864](https://github.com/eq-solutions/eq-shell/pull/1864) fix(documents): actually stop clipping the "..." menu (#1828
+- Merged: eq-shell [#1898](https://github.com/eq-solutions/eq-shell/pull/1898) Add meta/OG tags to Core; fix 2 missing aria-labels in Acces
+- Merged: eq-shell [#1896](https://github.com/eq-solutions/eq-shell/pull/1896) fix(field-iframe): stop a slow mint eating the iframe's own 
+- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
+- Merged: eq-shell [#1877](https://github.com/eq-solutions/eq-shell/pull/1877) chore(deps): bump @eq-solutions/ui to v1.16.5
+- Merged: eq-shell [#1875](https://github.com/eq-solutions/eq-shell/pull/1875) fix(cards): let a worker cancel their own pending access req
+- Merged: eq-shell [#1873](https://github.com/eq-solutions/eq-shell/pull/1873) Make Multi the Add-workers homepage, fold agency links into 
+- Merged: eq-shell [#1870](https://github.com/eq-solutions/eq-shell/pull/1870) Fix crash on outgoing connect requests with a revoked status
+- Merged: eq-shell [#1869](https://github.com/eq-solutions/eq-shell/pull/1869) docs(onboard): catch the runbook up to step 6 + --field-host
+- ⚠ Needs you: 7 → 8 (new items)
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (8)
 
 - 🔴 **CI failure** — eq-solves-intake `main`
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
@@ -30,6 +31,7 @@ _2026-09-13 07:54 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-09.md](sessions/2026-09-09.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **PR aging 8d** — eq-solves-service [#829](https://github.com/eq-solutions/eq-service/pull/829) "fix(defects): consolidate raise-defect duplication, close ACB/NSX vali"
+- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (227)
 
@@ -53,7 +55,7 @@ _…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 5 | 3d |
+| eq-shell | ✓ success | 0d ago | 3 | 3d |
 | eq-solves-service | ✓ success | 0d ago | 6 | 8d |
 | eq-field | ✓ success | 0d ago | 1 | 3d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
@@ -63,7 +65,7 @@ _…and 215 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | ready | 2026-09-13 |
+| eq-shell | new | 2026-09-13 |
 
 ## Live errors (Sentry)
 
@@ -83,6 +85,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-13 | eq-shell | [#1896](https://github.com/eq-solutions/eq-shell/pull/1896) fix(field-iframe): stop a slow mint eating the iframe's own stall |
+| 2026-09-13 | eq-shell | [#1898](https://github.com/eq-solutions/eq-shell/pull/1898) Add meta/OG tags to Core; fix 2 missing aria-labels in Access Con |
 | 2026-09-13 | eq-shell | [#1893](https://github.com/eq-solutions/eq-shell/pull/1893) fix(security): revoke superfluous anon grant on madagins's field_ |
 | 2026-09-13 | eq-solves-service | [#841](https://github.com/eq-solutions/eq-service/pull/841) fix(ci): stop 4 check/audit scripts truncating their own report |
 | 2026-09-13 | eq-field | [#980](https://github.com/eq-solutions/eq-field/pull/980) docs(field-people): record field_people_iud() v_actor_id provenan |
@@ -96,9 +100,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-10 | eq-field | [#976](https://github.com/eq-solutions/eq-field/pull/976) fix(csp): allowlist madagins's Supabase project in connect-src/ws |
 | 2026-09-09 | eq-shell | [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with team/ |
 | 2026-09-09 | eq-shell | [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or signers |
-| 2026-09-09 | eq-shell | [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped reques |
-| 2026-09-09 | eq-shell | [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants live |
-_Showing 15 of 76 · full record in [sessions/](sessions/)_
+_Showing 15 of 77 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -192,4 +194,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-13 07:54 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-13 08:18 UTC._
