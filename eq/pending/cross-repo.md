@@ -1,7 +1,7 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-13
+last_updated: 2026-09-14
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
@@ -13,12 +13,11 @@ status: live
 
 ---
 
-## Madagins onboarding + EQ Field handoff — cross-repo findings still open (2026-09-10, updated 2026-09-13)
+## Madagins onboarding + EQ Field handoff — cross-repo findings still open (2026-09-10, updated 2026-09-14)
 
 - [ ] **`eq-field/scripts/{roster,timesheets,leave}-adapter.js`** each hardcode a `CANONICAL_*_DB_REFS = ['ehowgjardagevnrluult']` ground-truth fallback for a known Shell-embed restore bug — madagins has no equivalent protection. Same shape of fix as `check-tenant-drift.mjs`'s already-tracked gap; bundle them. _(added 2026-09-10)_
 - [ ] **Is Comms (`comms-jobs.ts`/`comms-weekly-digest.ts`, hardcoded `SKS_TENANT_ID`) meant to ever be tenant-generic, or intentionally SKS-only like SKS NSW Labour?** Product call, not a bug fix. _(added 2026-09-10)_
-- [ ] **eq-shell: a stale JS chunk after a deploy crashes with a MIME-type error** (`'text/html' is not a valid JavaScript MIME type`) instead of recovering — Sentry EQ-SHELL-1P/22, confirmed still genuinely unaddressed (the plausible-looking `chunk-prefetch-catch` branch is 3 weeks stale and unrelated, checked directly rather than assumed from the name). Needs a reload-on-chunk-load-failure mechanism, not a small patch. _(added 2026-09-13)_
-- [ ] **eq-shell: a memory-saver iframe restore's second Field boot cycle doesn't always finish inside its own notice window**, even when the first cycle rendered fine (Sentry EQ-SHELL-21's own event timeline traced end-to-end) — related to but distinct from the mint-timing fix in eq-shell#1896; needs its own diagnosis. _(added 2026-09-13)_
+- [ ] **eq-shell reliability sprint scoped**: EQ-SHELL-21 (accepted-but-never-rendered — re-checked 2026-09-14, grew 6→9 occurrences in under 3 days, actively live, prior diagnosis confirmed incomplete not wrong) and EQ-SHELL-1P/22 (stale-chunk-after-deploy crash, dormant but real, fix shape already understood). Full detail + current data: `eq/sprints/2026-09-14-eq-shell-reliability-followups.md`. _(added 2026-09-13, re-verified + scoped 2026-09-14)_
 
 ---
 
