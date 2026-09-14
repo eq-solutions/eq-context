@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-14 (PR #1900 MERGED + LIVE — EQ-SHELL-20 boot→accepted stall-notice floor)
+- The Shell→Field iframe handoff's stall-notice timer floored the mint→boot leg (#1896) but not the next leg down: a slow mint could still eat most of the boot→accepted window, false-alarming a handoff that hadn't actually stalled. Added a third anchor (`bootedAtRef`/`MIN_BOOT_TO_ACCEPT_WINDOW_MS`) to `inFlightStallDelayMs`, same pattern as the existing mint-completion floor.
+- Landed as part of a suite-wide Sentry sprint; merged after resolving a real conflict with #1899 (a concurrent session's EQ-SHELL-21 fix, same file, same hour) by hand — both fixes kept, full suite reran clean (643/645, 2 pre-existing skips) post-merge. [PR #1900](https://github.com/eq-solutions/eq-shell/pull/1900).
+
 ## 2026-09-14 (PR #1901 MERGED + LIVE — EQ Core privacy policy published)
 - New `/privacy` page (mirrored at `admin/privacy`) covering what Core actually collects and processes — adapted from, not copied from, EQ Cards' published policy. Core also runs its own direct Twilio SMS integration and Claude-based licence-photo OCR (via the Staff module), neither of which Cards' policy framing would have covered accurately.
 - Linked from all 5 pre-login pages (Login, Reset PIN, TOTP challenge, Auth callback, Accept invite) and from a new Admin Hub tile next to Audit log.

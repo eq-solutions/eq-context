@@ -1,13 +1,18 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-14
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-09-14 (PR #842 MERGED + LIVE — /defects fixed, a live production break since 2026-09-10)
+- Migration 0241 (2026-09-10) added a JWT-tenant check to `get_defect_counts` reacting to a generic security-advisor flag — but that function is only ever called via the service-role admin client (no user JWT), so the check rejected 100% of calls with "caller (&lt;NULL&gt;) does not own tenant", not just cross-tenant ones. Three earlier migrations (0233/0237/0238) had already documented this function as JWT-exempt by design; 0241 didn't cross-check.
+- Migration `0242` reverts just the incompatible check (0241's other two role-gate fixes, on `decrypt_site_credential`/`upsert_site_credential`, are untouched — those legitimately get real user JWTs). The `/defects` page also no longer bundles this RPC's failure into a fatal throw shared with other queries — degrades to zeroed KPI tiles + a handled Sentry capture instead.
+- Applied live via the governed pipeline's manual `workflow_dispatch` (merging the PR alone only posts a reminder — confirmed the hard way when the first "success" turned out to mean nothing had run). Verified end-to-end against live ehow: ledger row, function definition, and an actual `get_defect_counts()` call returning real data. Part of a suite-wide Sentry sprint (EQ-SOLVES-SERVICE-E/F). [PR #842](https://github.com/eq-solutions/eq-service/pull/842).
 
 ## 2026-09-09 (PR #838 MERGED + LIVE — canonical roster lookups no longer default to SKS for every tenant, SEC-76)
 - `lib/canonical-members.ts` defaulted an unset tenant slug to `'sks'`; 19 call sites across 15 files called `getCanonicalMembers()`/`getCanonicalMemberMap()` bare, so every one of them silently rendered SKS's staff roster regardless of which tenant was actually viewing (assignee dropdowns, notification recipients incl. the pre-visit-brief cron, report names, audit log, admin roster).

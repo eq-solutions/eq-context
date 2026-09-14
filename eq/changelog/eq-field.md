@@ -9,6 +9,11 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-14 (PR #982 MERGED + LIVE — madagins JWT-mint 500s + dashboard stats retry, v3.5.715)
+- `TENANT_JWT_SECRETS` (`verify-pin.js`) never had a madagins entry (only eq/sks) — mint-data-jwt 500'd for every madagins request needing the people-data fallback (EQ-FIELD-1T). Same "new tenant, one hardcoded map missed" pattern as PR #978's `DATA_TENANT_IDS` fix. Needed `MADAGINS_JWT_SECRET` set in Netlify too — initially set on the wrong site (eq-shell) by mistake, corrected same session.
+- `sbRpcPublicData()` (`scripts/supabase.js`) had no timeout/retry, unlike every sibling boot/mint fetch in the file — broke the dashboard's top-stats-today widget with no recovery (EQ-FIELD-1N). Routed through the existing `_fetchWithRetry` helper; also benefits `site-map.js`/`roster-overview-map.js`, which share the function.
+- Part of a suite-wide Sentry sprint. [PR #982](https://github.com/eq-solutions/eq-field/pull/982).
+
 ## 2026-09-14 (PR #983 MERGED + LIVE, v3.5.716 — legacy licence-expiry field + broken Edit button retired)
 - Surfaced while confirming eq-shell's Staff licence-OCR feature doesn't duplicate Field's licence domain (see eq-shell.md changelog) — a genuinely separate, unrelated finding: `people.licence_expiry` had no live write path (confirmed absent from both ehow and zaap schemas post-cutover) and its dashboard "Edit" button opened a person-editor modal with no expiry-date field, so it had fixed nothing since before the canonical licence merge (v3.5.459).
 - Removed `_licenceExpiryStatus`/`_licenceExpiryBadge` and the legacy source branch in `getLicenceExpiryAlerts()` (`people.js`); simplified the dashboard alert card's per-row rendering, dropping the dead Edit button + date column (`dashboard.js`). Canonical EQ Cards licences and missing-required-credential alerts are unaffected — both keep working exactly as before.

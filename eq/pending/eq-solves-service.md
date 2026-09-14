@@ -29,6 +29,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-service: `/defects` page broken for every user since 2026-09-10 — root-caused, fixed, migration applied live (2026-09-14)
+*Part of a suite-wide Sentry sprint (12 issues across eq-cards/eq-shell/eq-field/eq-service). Migration 0241 (2026-09-10) added a JWT-tenant check to `get_defect_counts` reacting to a generic security-advisor flag — but that function is only ever called via the service-role admin client (no user JWT), so the check rejected 100% of calls, not just cross-tenant ones. Three earlier migrations (0233/0237/0238) had already documented this function as JWT-exempt by design; 0241 didn't cross-check against that established pattern.*
+
+- Fixed: migration `0242` reverts just the incompatible check (0241's other two role-gate fixes, on `decrypt_site_credential`/`upsert_site_credential`, are untouched — those legitimately get real user JWTs). The page also no longer bundles this RPC's failure into a fatal throw shared with other queries — degrades to zeroed KPI tiles + a handled Sentry capture instead.
+- [eq-service#842](https://github.com/eq-solutions/eq-service/pull/842), merged. Migration applied live to ehow via manual `workflow_dispatch` — merging alone only posts a reminder comment; the actual apply step is gated to manual dispatch, not automatic on merge (confirmed from the workflow file itself after the first "success" turned out to mean nothing had actually run — the ledger and the live function definition told the real story). Verified three ways against live ehow, not just the ledger: the function definition no longer has the guard, `authenticated`/`service_role` privileges are correct, and an actual `get_defect_counts()` call now returns real data instead of erroring.
+- **Naming note**: the repo on disk is `eq-service`, not `eq-solves-service` — this pending file's own name is stale (left as-is this close to avoid breaking inbound links; worth a deliberate rename pass sometime).
+
+No open items — fully verified live end-to-end.
+
+---
+
 ## eq-solves-service: cross-tenant roster leak found and fixed — MERGED, LIVE (SEC-76, 2026-09-09)
 *Surfaced during a research pass scoping a suite-wide tenant-identity-drift doc in eq-context. `lib/canonical-members.ts` defaulted an unset tenant slug to `'sks'`, and 19 call sites across 15 files called the roster functions bare (no tenant argument) — assignee dropdowns, notification recipients (incl. the pre-visit-brief cron), report "tested by"/"assigned to" names, the audit log, and the admin user roster all silently rendered SKS's staff regardless of the actual signed-in tenant. Independently re-verified against live code before touching anything — grep found the same 19 sites, same lines, the handed-in report named. Logged as [SEC-76](../../ops/security-register.md).*
 

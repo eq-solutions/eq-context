@@ -13,6 +13,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: madagins JWT-mint 500s + dashboard stats retry — fixed, live; found and corrected an env var set on the wrong site (2026-09-14)
+*Part of a suite-wide Sentry sprint. Two independent gaps: `TENANT_JWT_SECRETS` (`verify-pin.js`) never had a madagins entry — same "new tenant, one hardcoded map missed" pattern as PR #978's `DATA_TENANT_IDS` fix; `sbRpcPublicData()`'s fetch had zero timeout/retry, unlike every sibling call in the file.*
+
+- Fixed: [eq-field#982](https://github.com/eq-solutions/eq-field/pull/982), merged, live (v3.5.715).
+- **Real gotcha, worth remembering**: this fix needs `MADAGINS_JWT_SECRET` set in Netlify — Royce set it, but first on **eq-shell's** site rather than eq-field's. Easy mix-up: eq-shell separately needed `MADAGINS_SUPABASE_JWT_SECRET` (different name, different purpose — PR #1895's `resolveTenantJwtSecret()`, its own unrelated per-tenant-secret feature) the same session. Confirmed via the Netlify API directly, not assumed: `MADAGINS_JWT_SECRET` is now correctly on eq-field only (deleted from eq-shell after confirming nothing there references it); `MADAGINS_SUPABASE_JWT_SECRET` stays on eq-shell, correctly.
+- [ ] **EQ-FIELD-1T recurrence check** — 3 occurrences fired after the code deployed but before the env var was on the right site (expected, not a code gap); zero since the var landed correctly (09:32Z), but that's a short, low-traffic window so not yet confirmed by silence. Check again later. _(added 2026-09-14)_
+
+---
+
 ## eq-field: legacy `people.licence_expiry` field + its broken Edit button retired — merged, live (v3.5.716, PR #983, 2026-09-14)
 *Surfaced investigating whether eq-shell's Staff licence-OCR feature duplicates Field's licence domain (see eq-shell.md) — it doesn't, but the investigation found this genuinely dead field along the way: no live write path (confirmed absent from both ehow and zaap schemas post-cutover), and its dashboard "Edit" button opened a modal with no expiry field, so it had fixed nothing since before the canonical merge. Ran the full brief-gate before touching code; verified locally (20/20 test files, 0 lint errors, bundle/cache-buster drift clean) and again live on the deploy preview before merge.*
 
