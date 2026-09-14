@@ -69,8 +69,8 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1901 Add EQ Core privacy policy (adapted, not copied, from EQ Cards)
 - #1900 fix(field-iframe): extend stall-notice floor to boot→accepted leg (EQ-SHELL-20)
-- #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
 ---
 
@@ -90,8 +90,8 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-14 |
-| eq-shell | new | 2026-09-14 |
+    | eq-service | ready | 2026-09-14 |
+| eq-shell | building | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 246 (latest: 0242) applied
