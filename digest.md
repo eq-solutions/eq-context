@@ -8,27 +8,26 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-14 09:28 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-14 09:43 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-14 09:26 UTC → 2026-09-14 09:28 UTC)
+## Since last refresh (2026-09-14 09:28 UTC → 2026-09-14 09:43 UTC)
 
-- Merged: eq-shell [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going m
-- Merged: eq-shell [#1893](https://github.com/eq-solutions/eq-shell/pull/1893) fix(security): revoke superfluous anon grant on madagins's f
-- Merged: eq-shell [#1892](https://github.com/eq-solutions/eq-shell/pull/1892) fix(ci): apply the exit-truncation fix to check-shell-staff-
-- Merged: eq-shell [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped r
-- Merged: eq-shell [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-
-- Merged: eq-shell [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the p
-- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
-- Merged: eq-shell [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug
+- Merged: eq-shell [#1905](https://github.com/eq-solutions/eq-shell/pull/1905) fix(privacy): replace vague §8 retention language with real 
+- Merged: eq-shell [#1898](https://github.com/eq-solutions/eq-shell/pull/1898) Add meta/OG tags to Core; fix 2 missing aria-labels in Acces
+- Merged: eq-shell [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scri
+- Merged: eq-shell [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filt
+- Merged: eq-shell [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with 
+- Merged: eq-shell [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or sig
+- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
+- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
+- ✅ Needs you: 12 → 10
 
-## ⚠ Needs you (12)
+## ⚠ Needs you (10)
 
 - 🔴 **CI failure** — eq-solves-intake `main`
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 5 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 - 🔴 **Cron failing** — `shared-object-drift.yml` 4 consecutive scheduled run(s) failed, last success 2026-09-09 · [failures.md](system/failures.md) F11
-- 🔴 **Guard bypass? rung 4** — F9: Concurrent-session git races corrupt the shared eq-context checkout · possibly recurred in [2026-09-09.md](sessions/2026-09-09.md) · [failures.md](system/failures.md)
-- 🔴 **Guard bypass? rung 4** — F14: A hand-written claim about current state ages into a lie, and nothing anywhere notices · possibly recurred in [2026-09-07.md](sessions/2026-09-07.md) · [failures.md](system/failures.md)
 - 🟠 **PR aging 7d** — eq-solves-service [#836](https://github.com/eq-solutions/eq-service/pull/836) "chore(deps): bump zod from 4.4.3 to 4.5.4"
 - 🟠 **PR aging 7d** — eq-solves-service [#835](https://github.com/eq-solutions/eq-service/pull/835) "chore(deps-dev): bump tsx from 4.23.1 to 4.23.13"
 - 🟠 **PR aging 7d** — eq-solves-service [#834](https://github.com/eq-solutions/eq-service/pull/834) "chore(deps): bump lucide-react from 1.31.0 to 1.44.0"
@@ -36,12 +35,10 @@ _2026-09-14 09:28 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
 - 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
-## 🙋 Waiting on you (228)
+## 🙋 Waiting on you (226)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **eq-shell** · **Privacy-policy decision still open** — your call on disclosure now that a real external (non-SKS) tenant has live access; explicitly held this session, not built. _(added 2026-09-13)_
-- **eq-shell** · **Not click-tested live by a person — partially confirmed since.** Royce viewed the live Document sign-off list (`core.eq.solutions/sks/admin/documents`) and the row UI matches exactly what shipped: the per-site dropdown is gone, "Choose who's included…" and the plain "Download certificate"/"Download with document" links are always visible. SWMS-008 shows "Required at 1 site" (`countRequiredSites`, the same tagged-signer count `CertificateActions` uses) — confirms it's the one live document that would surface the new "By site" tab. Still open: nobody has actually clicked into the modal and exercised that tab. _(added 2026-09-14)_
 - **eq-shell** · **Not merged or deployed** — waiting on Royce's explicit sign-off (auth-adjacent JWT-minting code; the edit itself was flagged by the Claude Code auto-mode classifier and only applied after explicit confirmation). _(added 2026-09-09)_
 - **eq-shell** · **Three §0 items from the same doc explicitly need Royce's call, not spawned:** eq-field's Apprentice-module unrecognized-tenant fallback (item 4), `sites.js`/`managers.js` gating Shell-ownership on the literal string `'sks'` (item 5), and `check-tenant-drift.mjs`'s own fixed 3-project `CANONICAL_PROJECTS` list (item 6) — all deferred pending his input, all in eq-field where 3 other worktrees are already active on adjacent code. _(added 2026-09-09)_
 - **eq-shell** · **`madagins`'s ledger needs correcting before any real apply can succeed on it** — the 314 falsely-stamped rows have to be cleared/reset first, or every future apply attempt will keep trusting them and skipping real work. Not done here — Royce's call on timing/ownership, and who ran the original bootstrap (and why) is still unknown. **Spawned as a background task 2026-09-09** (via pending-items triage) — briefed to re-verify current state first, since the ledger count and eq-field's own schema layer have both moved since this finding. _(added 2026-09-09, spawned 2026-09-09)_
@@ -52,15 +49,17 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **#711/SEC-71 — mandatory TOTP enforcement is genuinely client-side only**, reconfirmed live (`shell-login.ts:476-495` issues a full session regardless of the flag). The issue itself says it needs Royce's call on intended grace-period semantics before anyone implements a fix — not built.
 - **eq-shell** · **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05; deferred again 2026-09-07 via `/triage` — still nobody pointed at a disposable test account)_
 - **eq-shell** · **3 of the 4 fixes verified only via `tsc -b --force` + eslint + `pnpm test` (including a negative-proof test per fix: fails on the pre-fix code, passes on the fix) — not a real click-through.** Only PR #1760's rate-limit reordering got an end-to-end live check (real HTTP requests against its deploy preview, cross-checked against the live `rate_limit_buckets`/`audit_log` tables). Worth a real pass on the other three: trigger `update_site`/`add_site` with an inactive contact and confirm it's rejected before any write lands; delete a user with linked staff/worker records and confirm the purge stays inside one tenant; open a PR with a deliberately colliding migration prefix and confirm CI fails it. _(added 2026-09-04)_
-_…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+- **eq-shell** · **3 directories left on disk, OS-locked, not deletable from this session** — `git worktree remove` unregistered them from git (2 errored "Result too large" but still unregistered; 1 confirmed via `git worktree prune`), but the physical folders survived both `Remove-Item -Force` and `rm -rf` ~10 minutes apart, both failing with "device or resource busy" / "being used by another process." Locking process not identified (`Get-CimInstance Win32_Process` showed nothing obviously relevant). Needs Royce to close whatever has them open (or a reboot) before they're actually reclaimable: `.claude\worktrees\contact-auto-site-ops-download-325f25`, `.claude\worktrees\list-user-invites-existing-user-filter`, `.claude\worktrees\simplified-interface-users-764a0d`. _(added 2026-09-01)_
+- **eq-shell** · **SEC-67's env-var half still needs Royce** — 4 confirmed-dead Netlify env vars (`FIELD_SUPABASE_URL`/`_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL`/`_ANON_KEY`), zero code references, ready to delete — blocked by Claude Code's own classifier on unattended env-var writes. Commands in `sessions/2026-08-30.md`. _(added 2026-08-30)_
+_…and 214 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 5 | 7d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | -1d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 7 | 7d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✗ failure | 4d ago | 0 | — |
 
@@ -79,13 +78,13 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/146068110/) | 2 | 2026-09-11 |
 | eq-solves-service | [Error: Failed to load defects (get_defect_counts query failed)](https://eq-solutions.sentry.io/issues/146824995/) | 1 | 2026-09-14 |
 | eq-solves-service | [o](https://eq-solutions.sentry.io/issues/146824993/) | 1 | 2026-09-14 |
-| eq-shell | [EQ Field handoff network error: Fetch is aborted](https://eq-solutions.sentry.io/issues/145900926/) | 1 | 2026-09-09 |
 _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunresolved)_
 
 ## Recently built (last 7 days)
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-14 | eq-shell | [#1905](https://github.com/eq-solutions/eq-shell/pull/1905) fix(privacy): replace vague §8 retention language with real commi |
 | 2026-09-14 | eq-shell | [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going missin |
 | 2026-09-14 | eq-shell | [#1881](https://github.com/eq-solutions/eq-shell/pull/1881) fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES |
 | 2026-09-14 | eq-shell | [#1902](https://github.com/eq-solutions/eq-shell/pull/1902) docs: document the manual per-tenant JWT-secret step in onboardin |
@@ -100,12 +99,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-14 | eq-field | [#982](https://github.com/eq-solutions/eq-field/pull/982) v3.5.715 — madagins JWT secret map entry + dashboard stats retry  |
 | 2026-09-14 | eq-field | [#981](https://github.com/eq-solutions/eq-field/pull/981) fix(csp): allowlist madagins's Supabase project in netlify.toml t |
 | 2026-09-14 | eq-cards | [#354](https://github.com/eq-solutions/eq-cards/pull/354) fix(sentry): filter AuthRetryableFetchException from GoTrue's own |
-| 2026-09-13 | eq-shell | [#1896](https://github.com/eq-solutions/eq-shell/pull/1896) fix(field-iframe): stop a slow mint eating the iframe's own stall |
-_Showing 15 of 78 · full record in [sessions/](sessions/)_
+_Showing 15 of 79 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (298 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (295 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (235 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (71 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -137,7 +135,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1708 | 235 / 65 | 1 | 95 |
+| [eq-shell](eq/pending/eq-shell.md) | 1700 | 234 / 63 | 1 | 95 |
 | [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 11 |
 | [eq-field](eq/pending/eq-field.md) | 1292 | 195 / 40 | 0 | 61 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 401 | 51 / 20 | 0 | 26 |
@@ -195,4 +193,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 09:28 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 09:43 UTC._
