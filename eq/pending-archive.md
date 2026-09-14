@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: Done items rotated out of the 11 eq/pending/<repo>.md files nightly by scripts/rotate_pending.py (per-item since 2026-07-27; before that, occasional manual whole-section moves; per-repo since the 2026-08-17 split). Nothing here is actionable — pure historical record (also covered in eq/changelog/*.md and sessions/*.md). Append-only, in rotation order. Deduplicated 2026-08-30 (scripts/dedupe_pending_archive.py) after a 13-day workflow bug caused up to 25 repeat copies of the same section — see eq/changelog/eq-context.md.
 read_priority: reference
 status: archived
@@ -10610,5 +10610,13 @@ list.
 **Completed:**
 - [x] `EQ-SHELL-23` — granted 2026-09-14 on explicit instruction, verified live. _(closed 2026-09-14)_
 - [x] `EQ-SHELL-1V` — investigated 2026-09-14 before acting; found to be a live, legitimate team member's access, not a stale grant. Nothing revoked. Resolved in Sentry as a false alarm. _(closed 2026-09-14)_
+
+---
+
+## eq-field: CSP CI guard proposed — netlify.toml vs _headers drift (2026-09-14) (rotated 2026-09-15 — closed in full, see below)
+*Same-day recurrence of a trap eq-field's own CLAUDE.md already documented — #976 updated `_headers`' CSP but missed `netlify.toml`, which Netlify actually serves; production silently blocked madagins's own Supabase project for 4 days. Fixed in #981 (above). A written warning alone didn't stop the exact mistake it named.*
+
+**Completed:**
+- [x] **Build a CI check that fails when the two files' CSP directives disagree** — [eq-field PR #984](https://github.com/eq-solutions/eq-field/pull/984): added `scripts/check-csp-drift.mjs` + `.github/workflows/csp-drift.yml`, modeled on `cache-buster-drift.yml` (not a new shape). Verified against the current matching files (8/8 directives OK) and against a simulated replay of the exact #976 drift (stripped madagins's host + `wss:` entry from `_headers` only) — correctly failed, naming both the missing host and the missing `wss:` entry. Merged (`e4d2ef3`) and confirmed live on field.eq.solutions via Netlify's own deploy record (`commit_ref` exact match, `state: ready`, published within 13s). _(closed 2026-09-15)_
 
 ---
