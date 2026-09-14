@@ -1,14 +1,14 @@
 ---
 title: EQ Suite — Current State
 owner: Royce Milmlow
-last_updated: 2026-09-13
+last_updated: 2026-09-14
 scope: Live suite state — app lineup, DB counts, open PRs, architectural decisions. Auto-refreshed on merge (repository_dispatch from EQ repos) + nightly backstop by GitHub Action.
 read_priority: critical
 status: live
 ---
 
 # EQ Suite — Current State
-_Last verified: 2026-09-13 (auto-refreshed on merge + nightly backstop)_
+_Last verified: 2026-09-14 (auto-refreshed on merge + nightly backstop)_
 _If this file is >48h old, the cron is broken._
 
 ---
@@ -40,7 +40,7 @@ _If this file is >48h old, the cron is broken._
     | Assets | 2,842 | app_data.assets |
     | Tenants | 1 (SKS Technologies) | service.tenants |
     | Users | 5 | service.tenant_members |
-    | Maintenance checks | 39 | service.maintenance_checks |
+    | Maintenance checks | 40 | service.maintenance_checks |
     | Defects | 3 | service.defects |
 
 **SKS tenant ID on ehow:** `7dee117c-98bd-4d39-af8c-2c81d02a1e85`
@@ -58,7 +58,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Open PRs (as of 2026-09-13)
+## Open PRs (as of 2026-09-14)
 
 **eq-service:**
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
@@ -75,7 +75,7 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## System Health (as of 2026-09-13)
+## System Health (as of 2026-09-14)
 
     **CI on main:**
 
@@ -99,34 +99,34 @@ _If this file is >48h old, the cron is broken._
 
 ---
 
-## Field Data Plane — SKS tenant (as of 2026-09-13)
+## Field Data Plane — SKS tenant (as of 2026-09-14)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 70 | ✓ 70 |
+| Directory | app_data.field_people | 71 | ✓ 71 |
 | Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,273 | ✓ 2,273 |
-| Operational | app_data.field_timesheets | 618 | ✓ 618 |
-| Safety | public.prestarts | 249 | ✓ 249 |
+| Operational | app_data.field_schedule | 2,284 | ✓ 2,284 |
+| Operational | app_data.field_timesheets | 693 | ✓ 693 |
+| Safety | public.prestarts | 251 | ✓ 251 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
 ---
 
-## Product Pulse (as of 2026-09-13)
+## Product Pulse (as of 2026-09-14)
 _7-day window. Transition-detection, not thresholds — flags a zero↔nonzero
 crossing since the last run, not a raw count. Machine-generated only; see
 `system/failures.md` F4._
 
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
-| Maintenance checks created | 2 |  |
+| Maintenance checks created | 3 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 16 |  |
+| Prestarts created | 15 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 55 |  |
+| Active users (Shell sign-ins, jvkn) | 57 |  |
 
 _No flips this run._
 ---
