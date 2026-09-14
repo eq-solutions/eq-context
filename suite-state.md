@@ -61,15 +61,16 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-14)
 
 **eq-service:**
+- #844 fix(ci): close npm audit findings + fix integration-test seed cascade
+- #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
-- #832 chore(deps): bump @eq-solutions/roles from v2.7.5 to v2.7.7 in the eq-design-system group
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1901 Add EQ Core privacy policy (adapted, not copied, from EQ Cards)
+- #1902 docs: document the manual per-tenant JWT-secret step in onboarding
 - #1900 fix(field-iframe): extend stall-notice floor to boot→accepted leg (EQ-SHELL-20)
 
 ---
@@ -90,8 +91,8 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-14 |
-| eq-shell | building | 2026-09-14 |
+    | eq-service | building | 2026-09-14 |
+| eq-shell | new | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 246 (latest: 0242) applied
