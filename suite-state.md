@@ -63,6 +63,9 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #357 fix(cards): stop eq_sweep_orphaned_licence_photos deleting unclaimed labour-hire evidence
 
+**eq-field:**
+- #985 v3.5.717 — fix "By unknown" attribution on Prestart/Toolbox/Diary/Incident
+
 **eq-service:**
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
