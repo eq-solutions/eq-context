@@ -1,13 +1,27 @@
 ---
 title: EQ Cards — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-15
 scope: EQ Cards append-only history. NOTE — duplicates eq/changelog/cards.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # EQ Cards — Changelog
+
+## 2026-09-14 (PR #357 MERGED + LIVE — sweep function no longer flags real unclaimed labour-hire documents as orphans)
+- `eq_sweep_orphaned_licence_photos()`'s protection for pending labour-hire candidate documents checked `worker_credentials.photo_front_path`/`photo_back_path` — confirmed live those columns have never been populated by any writer. The real path is `metadata->>'source_document_url'`. Effect: 16 of 34 objects the function reported as orphans were real, unclaimed candidate documents under `pending-credentials/`, not orphans.
+- Urgent because eq-shell PR #1913's repair script calls this exact RPC with `p_dry_run: false` when `--delete-orphans` is passed — would have permanently deleted real, un-reviewed submissions.
+- Already applied live to jvkn via Supabase MCP on Royce's explicit go before this PR merged (control-plane convention — this file/PR is the source-of-record, applied separately). [PR #357](https://github.com/eq-solutions/eq-cards/pull/357), squash-merged.
+- **Not a complete fix**: a follow-up session (2026-09-15) sampled the remaining flagged objects and found 2 more candidate folders that look like the same false-positive shape but aren't caught by this fix (never progressed far enough to get a `worker_credentials` row at all, so `source_document_url` never populates regardless of age). Tracked in `task_b56ada7f`, not yet resolved.
+
+## 2026-09-14 (PR #356 MERGED + LIVE — doc-only)
+- RUNBOOK.md's 403-troubleshooting line implied RLS enforces the licence-photos path's segment 1 — it never has (true since migration `0050`). Corrected to point at what RLS actually checks. [PR #356](https://github.com/eq-solutions/eq-cards/pull/356), squash-merged.
+
+## 2026-09-14 (PR #355 MERGED + LIVE — licence-photos path convention fixed, stops new drift)
+- `photo_upload.dart` was writing the worker's current-session `tenant_id` as the storage path's segment 1 — eq-shell's admin upload endpoints wrote `organisations.id` instead, a different ID space for the same tenant. Standardized on `tenant_id` (checked live: `organisations.tenant_id` is 1:1, so org.id was never actually more stable). `photo_upload.dart` gained a `remove()` helper; `licence_edit_screen.dart` now deletes a slot's superseded old path once its row update commits the new one.
+- Full mechanism: eq-context `eq/sprints/2026-09-14-licence-photos-org-drift.md`.
+- Composed through a real merge conflict with eq-shell PR #1912 (both touched the equivalent admin-upload lines in their own repos) rather than either side being re-litigated.
 
 ## 2026-09-09 (PR #349 MERGED + LIVE — router-rebuild blank frame replaced with a spinner)
 - `MaterialApp.router`'s `builder` can legitimately receive a null `child` briefly during a router rebuild (Flutter's own contract) — was falling back to `SizedBox.shrink()`, painting a genuinely blank white screen for however long the gap lasted. Now falls back to a small spinner instead. Presentational only, no auth/redirect/routing logic touched.

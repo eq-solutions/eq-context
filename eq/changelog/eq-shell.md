@@ -1,13 +1,23 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-15 (PR #1913 MERGED — repair script for the Personal-Wallet licence-photo path drift)
+- `scripts/repair-licence-photo-segment-drift.mjs`: repairs a licence row whose evidence still points at Cards' "Personal Wallet" placeholder tenant path, via copy → verify (size match) → repoint → delete. Dry-run by default; a true storage orphan only deletes with both `--apply` and `--delete-orphans`.
+- Dry-run replicated live via direct SQL post-merge: 169 references across 115 licences would repoint correctly, 1 skips (no real tenant yet). The one flagged risk (a worker holding more than one real tenant, which could make "pick the current one" ambiguous) checked and doesn't occur in live data.
+- **Not run with `--apply` anywhere as of this entry** — and can't be run from a Claude session at all: its repair step is a genuine Supabase Storage API call (`storage.copy`), which the Supabase MCP tooling available in these sessions doesn't expose (Postgres/project-management calls only). Needs a human running real Node against the real control-plane credentials. See eq-context `eq/sprints/2026-09-14-licence-photos-org-drift.md` for the exact command and current status.
+
+## 2026-09-14 (PR #1912 MERGED + LIVE — licence-photo storage path convention switched to tenant_id)
+- `staff-licence-backfill.ts` / `staff-licence-replace-photo.ts` were writing `organisations.id` as the licence-photos storage path's segment 1; switched to `tenant_id` to match eq-cards' own writer and close the two-writer convention split documented in the sprint doc below. Deliberately no cleanup logic added here — composes with PR #1908's existing delete-after-write mechanism on the same lines rather than duplicating it.
+- Landed through a real merge conflict with #1908 (both touched the same lines) — resolved by composing both changes, re-verified (`tsc`/`eslint`), not by picking one side.
+- Confirmed live on core.eq.solutions via Netlify's `published_deploy` object + `git merge-base --is-ancestor`, not elapsed time.
 
 ## 2026-09-14 (PR #1908 MERGED + LIVE — licence-photo replace/backfill no longer orphans old storage objects)
 - `staff-licence-replace-photo.ts` and `staff-licence-backfill.ts`'s update path uploaded to a deterministic path with `upsert:true`, which only overwrites an exact path match — a side/type/extension switch on a licence's evidence photo/PDF left the old object behind in `licence-photos`, invisible to `eq_sweep_orphaned_licence_photos()` forever (it only flags an object when no `licences` row matches its id, and the row still exists here).

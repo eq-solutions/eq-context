@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -15,19 +15,15 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: Licence-photo replace/backfill no longer orphans old evidence in storage — fixed, merged, live; 6 pre-existing orphans found and a live instance of the bug confirmed (2026-09-14)
+## eq-shell: Licence-photo path drift — root cause found and fixed live; repair tool built and dry-run clean; deletion still gated on one open safety question (2026-09-14 → 09-15)
 
-`staff-licence-replace-photo.ts` and `staff-licence-backfill.ts`'s update path uploaded to a deterministic storage path with `upsert:true`, which only overwrites an *exact* path match — switching side/type (photo ↔ PDF), or even just the file extension on the same side, left the old object behind in the `licence-photos` bucket. `eq_sweep_orphaned_licence_photos()` can never catch these: it only flags an object when no `licences` row matches its id, and the row here still exists — only one evidence column on it changed.
-
-[eq-shell#1908](https://github.com/eq-solutions/eq-shell/pull/1908) fixed both endpoints to delete the superseded object once the row write that replaces it succeeds (best-effort — a cleanup failure is logged, never fails the request). CI green, `tsc -b` clean, merged (`d7515ad4`) and confirmed live on core.eq.solutions by commit ancestry against what was actually serving, not elapsed time — the deploy that went "current" right after the merge was actually for a different, already-queued PR (#1910), the exact concurrent-merge trap the global deploy rules warn about. Actually live ~10 minutes after merge, matching the documented pattern.
-
-Live-verified directly on jvkn (Supabase MCP, read-only): 6 objects already fit the orphaned description today. 5 share the same user/licence but a *different org_id* segment than the row's current value — cause unknown, since neither endpoint can produce this on its own (org_id is resolved fresh from `organisations` every call); something else must have reassigned these licences' org afterward. The 6th is a `document.pdf` for a licence that's since switched back to photo-type — a real, in-the-wild instance of the exact bug this PR fixes, not just a theoretical one.
-
-`admin-attach-licence-photo`, cited in a stale code comment as sharing this same tradeoff, does not exist anywhere in eq-shell — grep and full git history both empty. Dropped from the comment rather than repeated.
+Full write-up: eq-context `eq/sprints/2026-09-14-licence-photos-org-drift.md` (the running record — read that before re-deriving any of this) and eq-shell memory `project_licence_photos_path_segment1_dual_convention.md`. Root cause (two writers disagreeing on a storage-path segment), the convention fix, and migration `0169`'s detection extension are all merged/applied/live — not restated here.
 
 **Deferred:**
-- [ ] **Clean up the 6 already-orphaned objects** — `scripts/cleanup-licence-photo-orphans.mjs` is written and committed on the same PR (dry-run by default, `--apply` to delete; re-verifies each of the 6 hardcoded paths live immediately before deleting, so anything referenced again since gets skipped, not deleted). Not run this session: the local `.env`'s `SUPABASE_SERVICE_ROLE_KEY` is a placeholder, and pulling the real key from Netlify into the session was — correctly — blocked by the auto-mode classifier. Royce to run it from his own machine with the real key in his own `.env`. _(added 2026-09-14)_
-- [ ] **Why do 5 of those 6 have a drifted org_id?** — same user_id/licence_id, different org_id than the row's current value, across licences created 2026-06-29 through 2026-07-28. Spawned as a background task (`task_c3d5b603`); Royce started it in a separate session, running independently as of this close, not yet reported back. _(added 2026-09-14)_
+- [ ] **Run PR #1913's `--apply` (repairs 169 mispathed references across 115 licences)** — dry-run replicated and clean, the one flagged risk (a worker with multiple current companies) checked and doesn't occur in the live data. **Must be run by a human with real Node access** — a Claude session cannot perform the script's storage-copy step itself (no Storage API tool available, only SQL/project-management), confirmed live 2026-09-15 after almost offering to run it anyway. Command in the sprint doc.
+- [ ] **`--delete-orphans` (the 32 flagged, not just the well-vetted 6) is unsafe until `task_b56ada7f` reports back** — 2 of the other 26 look like the same real-unclaimed-document false positive PR #357 just fixed, just not caught by that fix. Royce started the task in a separate session 2026-09-15, running independently, not yet reported.
+- [ ] **`task_7d7d8b41`** — likely superseded by merged work, two independent sessions now think so, still needs Royce's explicit yes/no before dismissing (not assumed).
+- [ ] **Royce asked to dismiss a task chip for the superseded `scripts/cleanup-licence-photo-orphans.mjs`** — this session has no task_id for it (never spawned via `spawn_task` here); needs the ID off the chip itself before it can be dismissed. _(added 2026-09-15)_
 
 ---
 
