@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-14 18:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-14 19:04 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-14 18:46 UTC → 2026-09-14 18:55 UTC)
+## Since last refresh (2026-09-14 18:55 UTC → 2026-09-14 19:04 UTC)
 
-- Merged: eq-shell [#1898](https://github.com/eq-solutions/eq-shell/pull/1898) Add meta/OG tags to Core; fix 2 missing aria-labels in Acces
-- Merged: eq-shell [#1897](https://github.com/eq-solutions/eq-shell/pull/1897) feat(staff): let a manager mark a worker compliant without a
-- Merged: eq-shell [#1895](https://github.com/eq-solutions/eq-shell/pull/1895) fix(auth): resolve tenant JWT secret per-tenant instead of h
-- Merged: eq-shell [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scri
-- Merged: eq-shell [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filt
-- Merged: eq-shell [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with 
-- Merged: eq-shell [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or sig
-- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
+- Merged: eq-shell [#1896](https://github.com/eq-solutions/eq-shell/pull/1896) fix(field-iframe): stop a slow mint eating the iframe's own 
+- Merged: eq-shell [#1893](https://github.com/eq-solutions/eq-shell/pull/1893) fix(security): revoke superfluous anon grant on madagins's f
+- Merged: eq-shell [#1892](https://github.com/eq-solutions/eq-shell/pull/1892) fix(ci): apply the exit-truncation fix to check-shell-staff-
+- Merged: eq-shell [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped r
+- Merged: eq-shell [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-
+- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
+- Merged: eq-field [#985](https://github.com/eq-solutions/eq-field/pull/985) v3.5.717 — fix "By unknown" attribution on Prestart/Toolbox/
+- Merged: eq-field [#984](https://github.com/eq-solutions/eq-field/pull/984) ci(csp): add drift guard between netlify.toml and _headers
 
 ## ⚠ Needs you (5)
 
@@ -33,7 +33,7 @@ _2026-09-14 18:55 UTC · what needs your attention. Full snapshot: [suite-state.
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
-- **eq-shell** · **Clean up the 6 already-orphaned objects** — `scripts/cleanup-licence-photo-orphans.mjs` is written and committed on the same PR (dry-run by default, `--apply` to delete; re-verifies each of the 6 hardcoded paths live immediately before deleting, so anything referenced again since gets skipped, not deleted). Not run this session: the local `.env`'s `SUPABASE_SERVICE_ROLE_KEY` is a placeholder, and pulling the real key from Netlify into the session was — correctly — blocked by the auto-mode classifier. Royce to run it from his own machine with the real key in his own `.env`. _(added 2026-09-14)_
+- **eq-shell** · **`task_7d7d8b41`** — likely superseded by merged work, two independent sessions now think so, still needs Royce's explicit yes/no before dismissing (not assumed).
 - **eq-shell** · **madagins' `app_data._eq_migrations` ledger corruption, independently re-confirmed live twice tonight** — 329 of 331 rows share the exact `applied_at` date as project creation (2026-09-09), consistent with an unverified `--bootstrap` run that stamped migrations as applied without running their SQL. Not new — already tracked and already owned by a background task spawned 2026-09-09 ("Royce's call on timing/ownership, and who ran the original bootstrap is still unknown"). Re-confirming here only because this session independently hit and re-verified the same fact twice; this migration (0320) was itself unaffected (brand-new filename). _(re-confirmed 2026-09-14)_
 - **eq-shell** · **Not merged or deployed** — waiting on Royce's explicit sign-off (auth-adjacent JWT-minting code; the edit itself was flagged by the Claude Code auto-mode classifier and only applied after explicit confirmation). _(added 2026-09-09)_
 - **eq-shell** · **Three §0 items from the same doc explicitly need Royce's call, not spawned:** eq-field's Apprentice-module unrecognized-tenant fallback (item 4), `sites.js`/`managers.js` gating Shell-ownership on the literal string `'sks'` (item 5), and `check-tenant-drift.mjs`'s own fixed 3-project `CANONICAL_PROJECTS` list (item 6) — all deferred pending his input, all in eq-field where 3 other worktrees are already active on adjacent code. _(added 2026-09-09)_
@@ -51,10 +51,10 @@ _…and 217 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 3 | 0d |
-| eq-field | ✓ success | -1d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 0 | — |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Deploys
@@ -93,13 +93,13 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-14 | eq-shell | [#1900](https://github.com/eq-solutions/eq-shell/pull/1900) fix(field-iframe): extend stall-notice floor to boot→accepted leg |
 | 2026-09-14 | eq-shell | [#1901](https://github.com/eq-solutions/eq-shell/pull/1901) Add EQ Core privacy policy (adapted, not copied, from EQ Cards) |
 | 2026-09-14 | eq-shell | [#1899](https://github.com/eq-solutions/eq-shell/pull/1899) fix(field-iframe): calibrate the draw notice against real render  |
-_Showing 15 of 84 · full record in [sessions/](sessions/)_
+_Showing 15 of 85 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (297 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (240 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-field** (242 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (79 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
@@ -129,9 +129,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1726 | 235 / 65 | 3 | 95 |
+| [eq-shell](eq/pending/eq-shell.md) | 1722 | 237 / 65 | 3 | 95 |
 | [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 11 |
-| [eq-field](eq/pending/eq-field.md) | 1329 | 201 / 40 | 0 | 61 |
+| [eq-field](eq/pending/eq-field.md) | 1340 | 203 / 40 | 0 | 61 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 453 | 58 / 22 | 0 | 26 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 197 | 13 / 6 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
@@ -187,4 +187,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 18:55 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 19:04 UTC._
