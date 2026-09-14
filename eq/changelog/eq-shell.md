@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-14 (PR #1908 MERGED + LIVE — licence-photo replace/backfill no longer orphans old storage objects)
+- `staff-licence-replace-photo.ts` and `staff-licence-backfill.ts`'s update path uploaded to a deterministic path with `upsert:true`, which only overwrites an exact path match — a side/type/extension switch on a licence's evidence photo/PDF left the old object behind in `licence-photos`, invisible to `eq_sweep_orphaned_licence_photos()` forever (it only flags an object when no `licences` row matches its id, and the row still exists here).
+- Both endpoints now diff the row's old evidence columns against the path just written and delete whatever they superseded, once the row write that replaces it succeeds. Best-effort — a cleanup failure is logged/Sentry-captured but never fails the request.
+- Live-verified on jvkn: 6 objects already fit this description today, none referenced by any `licences` or `worker_credentials` row. `scripts/cleanup-licence-photo-orphans.mjs` (dry-run/`--apply`, re-verifies live before each delete) added on the same PR for that cleanup — not yet run.
+- [PR #1908](https://github.com/eq-solutions/eq-shell/pull/1908), CI green, merged (`d7515ad4`), confirmed live on core.eq.solutions by commit-ancestry check (not elapsed time) ~10 minutes post-merge.
+
 ## 2026-09-14 (PR #1907 MERGED + LIVE — orphaned credentials-canonical-sync edge function confirmed deleted, control-plane ledger corrected)
 - The `credentials-canonical-sync` Supabase edge function on jvkn — orphaned since migration `2026_07_26_retire_credentials_canonical_sync.sql` dropped its only caller (a trigger) but left the function itself deployed — confirmed deleted live: absent from `list_edge_functions`, `get_edge_function` returns 404, zero invocations in the prior 24h. No code anywhere in eq-shell/eq-field/eq-cards referenced it.
 - [PR #1906](https://github.com/eq-solutions/eq-shell/pull/1906) attempted to fix the now-stale "left deployed" comment directly inside that already-applied migration file — correctly rejected by the schema-drift check (applied migrations are checksum-immutable, comments included) and closed without merging.

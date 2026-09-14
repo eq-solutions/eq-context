@@ -15,6 +15,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Licence-photo replace/backfill no longer orphans old evidence in storage — fixed, merged, live; 6 pre-existing orphans found and a live instance of the bug confirmed (2026-09-14)
+
+`staff-licence-replace-photo.ts` and `staff-licence-backfill.ts`'s update path uploaded to a deterministic storage path with `upsert:true`, which only overwrites an *exact* path match — switching side/type (photo ↔ PDF), or even just the file extension on the same side, left the old object behind in the `licence-photos` bucket. `eq_sweep_orphaned_licence_photos()` can never catch these: it only flags an object when no `licences` row matches its id, and the row here still exists — only one evidence column on it changed.
+
+[eq-shell#1908](https://github.com/eq-solutions/eq-shell/pull/1908) fixed both endpoints to delete the superseded object once the row write that replaces it succeeds (best-effort — a cleanup failure is logged, never fails the request). CI green, `tsc -b` clean, merged (`d7515ad4`) and confirmed live on core.eq.solutions by commit ancestry against what was actually serving, not elapsed time — the deploy that went "current" right after the merge was actually for a different, already-queued PR (#1910), the exact concurrent-merge trap the global deploy rules warn about. Actually live ~10 minutes after merge, matching the documented pattern.
+
+Live-verified directly on jvkn (Supabase MCP, read-only): 6 objects already fit the orphaned description today. 5 share the same user/licence but a *different org_id* segment than the row's current value — cause unknown, since neither endpoint can produce this on its own (org_id is resolved fresh from `organisations` every call); something else must have reassigned these licences' org afterward. The 6th is a `document.pdf` for a licence that's since switched back to photo-type — a real, in-the-wild instance of the exact bug this PR fixes, not just a theoretical one.
+
+`admin-attach-licence-photo`, cited in a stale code comment as sharing this same tradeoff, does not exist anywhere in eq-shell — grep and full git history both empty. Dropped from the comment rather than repeated.
+
+**Deferred:**
+- [ ] **Clean up the 6 already-orphaned objects** — `scripts/cleanup-licence-photo-orphans.mjs` is written and committed on the same PR (dry-run by default, `--apply` to delete; re-verifies each of the 6 hardcoded paths live immediately before deleting, so anything referenced again since gets skipped, not deleted). Not run this session: the local `.env`'s `SUPABASE_SERVICE_ROLE_KEY` is a placeholder, and pulling the real key from Netlify into the session was — correctly — blocked by the auto-mode classifier. Royce to run it from his own machine with the real key in his own `.env`. _(added 2026-09-14)_
+- [ ] **Why do 5 of those 6 have a drifted org_id?** — same user_id/licence_id, different org_id than the row's current value, across licences created 2026-06-29 through 2026-07-28. Spawned as a background task (`task_c3d5b603`); Royce started it in a separate session, running independently as of this close, not yet reported back. _(added 2026-09-14)_
+
+---
+
 ## eq-shell: `eq_queue_list()` PGRST202 on madagins traced to a repo-wide gap — the review-queue RPC family was never in the governed migration lineage for any tenant; fixed, merged, dispatched, verified live on all 3 active tenants (2026-09-14)
 *Started from a live `404 PGRST202` calling `eq_queue_list` against madagins with a correctly-authenticated JWT (the JWT-secret bug — see the PR #1895 entry below — was a separate, already-fixed problem). Investigated live rather than assuming a scoping bug or a provisioning-script defect.*
 
