@@ -167,14 +167,12 @@ anything else in this sprint.
    must be run by a human (or a non-Claude process) with real shell/Node access and the real
    `CONTROL_SUPABASE_URL`/`CONTROL_SUPABASE_SERVICE_KEY`** — this was offered as a Claude-doable
    action once already this update before being caught; don't repeat the offer.
-5. `task_7d7d8b41` (spawned by this sprint's own originating session, cwd eq-cards, per
-   the eq-shell memory file's earlier text) is very likely superseded by PR #355 (now merged) —
-   circumstantial evidence only (same originating session, "cwd eq-cards" matches exactly what
-   #355 delivered), not confirmed. Needs a yes/no from you before dismissing it, not an assumption.
-   **Update:** a second, independent session (the eq-shell one that landed #1912 and migration
-   `0169`) reached the same conclusion separately, unprompted — its own theory was that Royce's
-   direct merges of #1908/#1912/#355 happened "very likely via the `task_7d7d8b41` session"
-   itself. Two independent readings now converge. Still not proof. Still needs your yes/no.
+5. ~~`task_7d7d8b41`~~ **Royce said dismiss it (2026-09-15)** — confirmed superseded by PR #355.
+   Could not be actioned programmatically from the eq-cards reconciliation session: `dismiss_task`
+   only reaches chips the calling session itself spawned, and this one was spawned by a different
+   session (`local_9fa076a4`, "Fix licence-photos path segment-1 dual convention"). Still needs
+   Royce (or that originating session, if still open) to clear the chip directly in his own UI —
+   the decision is made, the mechanical dismissal isn't done yet.
 6. **New**: a 4th concurrent effort exists, not previously tracked in this doc — a session
    titled "Fix admin-attach-licence-photo's broken 3-segment path" (eq-cards) is actively working
    what item 7 below calls `task_83d5f0f7`'s territory, mid-investigation into resolving
@@ -185,17 +183,35 @@ anything else in this sprint.
    "3-segment" — unreconciled, worth a look once it concludes.
 7. `task_83d5f0f7` (admin-attach-licence-photo's separate path bug, unrelated to the segment-1
    convention fix) — see item 6: in progress, not idle. Don't start a separate fix for this.
-8. **New open question**, not raised anywhere in this saga so far: eq-cards' `photo_upload.dart`
-   reads `tenant_id` from the Supabase JWT's `app_metadata` claim; eq-shell's
-   `staff-licence-replace-photo.ts` / `staff-licence-backfill.ts` read `session.tenant_id` from
-   its own `eq_shell_session` cookie via `verifySessionToken` — two independently-minted tokens,
-   not the same code path. Nobody in this saga has explicitly confirmed both always resolve to
-   the identical `shell_control.tenants.id` for a given user. Directly adjacent to
-   `system/failures.md` **F18** (two different UUIDs for the same tenant, live/ungoverned,
-   first caught 2026-09-10) — not shown to be broken, just never checked, and the convention
-   this sprint just standardized on depends on it being true. Flagging for your judgment on
-   whether it's worth a direct check; resolving the underlying auth architecture is out of this
-   sprint's scope either way.
+8. **RESOLVED (2026-09-15)**: eq-cards' `photo_upload.dart` reads `tenant_id` from the Supabase
+   JWT's `app_metadata` claim; eq-shell's `staff-licence-replace-photo.ts` /
+   `staff-licence-backfill.ts` read `session.tenant_id` from its own `eq_shell_session` cookie.
+   Traced both to source and live-cross-checked against jvkn: **both bottom out in the same
+   `shell_control.tenants.id`.** eq-shell side: `shell-login.ts`/`select-tenant.ts` →
+   `shell_control.user_tenant_memberships`/`users` → `shell_control.tenants(id)` FK, no hop
+   through `organisations`. eq-cards side: `public.custom_access_token_hook` (live definition
+   pulled via `pg_get_functiondef`, byte-identical to
+   `eq-cards/supabase/manual/custom_access_token_hook.sql`) reads
+   `coalesce(shell_control.users.last_active_tenant_id, .tenant_id)` — same FK chain. No code
+   path substitutes `organisations.id`. Correction found along the way: Cards' iframe handoff
+   does **not** go through `token-exchange.ts` (that's Field/Service-only, its `aud` param
+   rejects anything else) — the live Cards mechanism since 2026-06-24 is `mint-cards-otp.ts`,
+   which mints nothing itself for either the iframe or standalone path; both go through
+   Supabase's native `generateLink`/`verifyOTP` and land on the same hook above. Two narrow,
+   non-ID-space caveats, not bugs: (1) the Shell cookie is a snapshot (≤7-day TTL) vs. the
+   hook's live read of `last_active_tenant_id` — a tenant switch in a concurrent session could
+   leave them briefly disagreeing, but always between two valid `shell_control.tenants.id`
+   values, never an `organisations.id` substitution; (2) a brand-new signup with no
+   `shell_control.users` row yet gets no claim at all (hook fails open) — `cards-api` 401s
+   rather than misfiling. **F18 does not apply to this convention.** It does still apply
+   elsewhere: Royce explicitly declined (`CONTROL-PLANE-LEDGER.md` entry `2026_09_10b`,
+   2026-09-10) to unify `organisations.id`/`shell_control.tenants.id` because two Cards RPCs
+   deliberately key `worker_invites.org_id` off `organisations.id` — a different column,
+   untouched by this saga, but confirmation that F18's failure class is a live standing hazard
+   elsewhere, not a one-off. Separately: the investigation found
+   `eq-context/eq/identity/IDENTITY-MODEL.md` §6.2/§7.2 stale (still describes the pre-2026-06-24
+   `mint-supabase-jwt`/postMessage mechanism) — spawned as `task_59002a2e`, not fixed here
+   (different doc, out of this sprint's scope).
 
 ## Status log
 
@@ -264,3 +280,22 @@ anything else in this sprint.
     multi-tenant-membership caveat (item 4) — both were open questions in this doc as read.
   Did not run `--apply` or `--delete-orphans` (not asked to — Royce's answer was dry-run only).
   Did not touch `task_7d7d8b41` or admin-attach-licence-photo/`task_83d5f0f7`.
+- 2026-09-15 (eq-cards reconciliation session, cont.) — Royce said dismiss `task_7d7d8b41`
+  (item 5, above) and asked for a prompt on "the real fix" — read as admin-attach-licence-photo
+  given that was the open thread left hanging, but that session (`task_83d5f0f7`'s territory)
+  was still actively running (670+ messages) at the time; Royce chose to let it finish rather
+  than start a competing attempt. Also dispatched and landed the F18 investigation (item 8,
+  above) — resolved clean, plus one doc-staleness finding spawned separately as `task_59002a2e`.
+  Landing this specific entry took several attempts: `safe_commit.py`'s own upstream-divergence
+  check correctly caught two live races against this same file in a row — first the #356/#357/
+  #1913 update logged just above, then Royce's own direct correction to item 4 (Claude sessions
+  can't actually run #1913's `--apply`: the repair script's copy step is a Storage API call, and
+  the Supabase MCP tooling here only exposes Postgres/project-management operations, no
+  storage-object copy — noting this plainly since it's a hard capability limit, not a policy
+  one). Re-read fresh and reapplied on top both times rather than force-overwriting either.
+  Separately hit the brief-gate flag bug this file's own `/brief` skill got fixed for
+  (dateless flag naming, fixed 2026-09-15) mid-session, on the wrong side of the fix — a stale
+  cached copy of `/brief`'s instructions had this session still writing the old dated flag
+  format after the fix landed; re-ran `/brief eq-context` fresh to pick up the corrected
+  format rather than fight it further. Not touched: `--apply`/`--delete-orphans`,
+  `task_b56ada7f`, admin-attach-licence-photo.
