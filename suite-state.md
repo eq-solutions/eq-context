@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1904 feat(tenant-health): surface a missing per-tenant JWT secret on the health check
-- #1903 fix(provisioning): stop org_membership from silently going missing
 
 ---
 
@@ -79,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? in_progress |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
