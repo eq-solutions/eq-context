@@ -60,11 +60,7 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-14)
 
-**eq-field:**
-- #986 v3.5.718 — fix modal + Hours drawer clipping on iPad-in-Shell
-
 **eq-service:**
-- #848 Fix Shell nav bar / main content padding mismatch on iPad
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
@@ -80,7 +76,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -90,11 +86,11 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-14 |
-| eq-shell | building | 2026-09-14 |
+    | eq-service | new | 2026-09-14 |
+| eq-shell | ready | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
-    **Migrations:** eq-service has 248 (latest: 0245) applied
+    **Migrations:** eq-service has 249 (latest: 0246) applied
 
 ---
 
@@ -106,7 +102,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,284 | ✓ 2,284 |
 | Operational | app_data.field_timesheets | 693 | ✓ 693 |
-| Safety | public.prestarts | 251 | ✓ 251 |
+| Safety | public.prestarts | 253 | ✓ 253 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -121,7 +117,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 3 |  |
 | Maintenance checks completed | 0 |  |
-| Prestarts created | 15 |  |
+| Prestarts created | 16 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
