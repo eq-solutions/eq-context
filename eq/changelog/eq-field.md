@@ -1,13 +1,19 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-13
+last_updated: 2026-09-14
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
 ---
 
 # eq-field changelog
+
+## 2026-09-14 (PR #977 MERGED + LIVE — field_people_iud() stops guessing a tenant on a missing JWT claim)
+- `app_data.field_people_iud()` on ehow silently defaulted any tenant-less JWT insert to SKS's own real tenant UUID instead of failing — root cause of the 2026-09-09/10 incident where 6 Madagins onboarding test profiles landed in SKS's live roster (see Claude memory `incident_madagins_demo_candidates_in_sks_roster.md`). Now raises instead of guessing.
+- Migration installs the fix by pulling the function's live body via `pg_get_functiondef` at apply time and splicing a guard around a verified-stable anchor line, rather than a hand-typed full replace — this exact function has now caused three silent-revert-class incidents from reconstructing it by hand (two prior, one more found mid-investigation: two eq-shell migrations both numbered `0274` had silently overwritten each other live 21 minutes apart, fully explained by the follow-up in [PR #980](https://github.com/eq-solutions/eq-field/pull/980)).
+- Applied live and verified via the Supabase MCP: ehow and madagins both confirmed patched (guard present, rest of the function untouched, no new security-advisor findings). Madagins's own copy already defaulted to its own tenant (not SKS's) — same defect class, no cross-tenant blast radius, fixed the same way. zaap has no `field_people_iud()` at all.
+- Companion cleanup (not part of this PR): the 6 "Demo Candidate" rows themselves were hard-deleted from eq-canonical (jvkn) `public.workers`, reversing the original incident session's re-tag-not-purge call.
 
 ## 2026-09-13 (PR #978 MERGED + LIVE — canon-read.js stops trusting an unverified tenant_slug)
 - `canon-read.js` fell back to a client-supplied `body.tenant_slug` whenever a session had no `tenant_slug` claim, reasoning that the downstream org-lookup was validity check enough — true for validity, not for ownership. Fired live 2026-09-09 (Sentry EQ-FIELD-1R, requested_slug: madagins); traced to a `DATA_TENANT_IDS` gap in `verify-pin.js` (madagins had no slug mapping yet), not an attack, but the trust gap itself was real: any such session could have named any tenant's org data. Fixed at the root cause (`DATA_TENANT_IDS` now includes madagins) and on principle (the fallback now rejects instead of trusting, same shape as `verify-pin.js`'s own earlier removal of `body.tenant` as a trust source). Known behaviour change: a session already minted with an unresolved `tenant_slug`, for any reason, now gets bounced to re-login instead of silently passing through. [PR #978](https://github.com/eq-solutions/eq-field/pull/978).
