@@ -68,9 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
-**eq-shell:**
-- #1902 docs: document the manual per-tenant JWT-secret step in onboarding
-
 ---
 
 ## System Health (as of 2026-09-14)
@@ -90,7 +87,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | building | 2026-09-14 |
-| eq-shell | ready | 2026-09-14 |
+| eq-shell | building | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 247 (latest: 0243) applied
