@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-09-09
+last_updated: 2026-09-14
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -88,6 +88,7 @@ different naming schemes, illustrating exactly the problem F16 fixes:
 
 `C:\Projects\eq-shell-join-tenant-ratelimit (eq-shell)` | `claude/join-tenant-rate-limit` | session b2e0fcec-2328-4eed-88f1-4900baf6ea21 — adding rate-limiting to shell-join-tenant.ts (no throttle on this self-serve registration endpoint, unlike its shell-login-phone-otp.ts sibling); same root-checkout collision as the row above (root was mid-use by a concurrent session on `claude/entity-view-gate-crm-read-rpcs`), hence a sibling worktree instead of working in root | 2026-09-01 | active — will move to Stale (or delete the row + worktree) once the PR is open and reviewed.
 
+`C:\Projects\eq-field-madagins-jwt-wt (eq-field)` | `fix/madagins-jwt-secret-and-dashboard-retry` | session eq-context-b5 — committed directly in eq-field's shared root first (mistake — this repo's own CLAUDE.md §0 requires a worktree, root collisions already documented 2026-08-08), caught before pushing, relocated here. [PR #982](https://github.com/eq-solutions/eq-field/pull/982) OPEN — v3.5.715, EQ-FIELD-1T (madagins JWT secret map entry, still needs `MADAGINS_JWT_SECRET` set in Netlify) + EQ-FIELD-1N (dashboard stats fetch retry) | 2026-09-14 | active — remove worktree once PR #982 merges.
 
 ---
 
