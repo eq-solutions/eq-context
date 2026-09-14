@@ -61,7 +61,6 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-14)
 
 **eq-service:**
-- #844 fix(ci): close npm audit findings + fix integration-test seed cascade
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
@@ -90,11 +89,11 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-14 |
-| eq-shell | building | 2026-09-14 |
+    | eq-service | building | 2026-09-14 |
+| eq-shell | ready | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
-    **Migrations:** eq-service has 246 (latest: 0242) applied
+    **Migrations:** eq-service has 247 (latest: 0243) applied
 
 ---
 
