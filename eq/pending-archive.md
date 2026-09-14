@@ -10549,3 +10549,15 @@ list.
 - [x] Full technical trail (ledger queries, exact SQL, PR-by-PR reasoning) kept in eq-field's own Claude memory (`incident_field_people_iud_provenance_gap.md`) rather than duplicated here — this entry is the plain-outcome record. **Note for whoever finds it**: PR #977's own migration header references "the spawned follow-up task" for this exact provenance question — if a `spawn_task` chip for that still exists in Royce's queue, it can be dismissed as resolved by this session.
 
 ---
+
+## eq-shell: `0311` (the rescued CMMS-baseline migration) reviewed and PR'd; found a real cross-tenant data leak in it, and a separate, unrelated CI failure now blocking every PR on this repo (2026-09-09) (rotated 2026-09-14 — closed in full, see below)
+
+- **[PR #1842](https://github.com/eq-solutions/eq-shell/pull/1842)** — `supabase/tenant-migrations/0311_app_data_legacy_baseline_and_tenant_members.sql`. Full read-through of all 2901 lines before committing, not a rubber-stamp renumber.
+- **Real finding, fixed before committing: `app_data.field_job_numbers_src()` was a cross-tenant data leak.** `SECURITY DEFINER`, hardcoded SKS's own `tenant_id` with no caller-tenant check anywhere — since `SECURITY DEFINER` bypasses RLS on everything it touches, shipping this as-is to any other tenant would show every authenticated user SKS's own live Ops job numbers, customer names, and project names. Excluded the function and the `field_job_numbers` view built on it from the PR entirely.
+- **Live-verified the file's own flagged open questions against madagins**: `service.set_updated_at()` and `service.tenants` both exist (not blockers); `service.fn_severity_from_reading_label()` confirmed missing — a runtime-only gap on 4 defect-detection triggers, not a CREATE-time blocker.
+- **Separate, unrelated finding, not chased further here**: this PR's CI went red on control-plane (jvkn) drift unrelated to it (`public.eq_cards_worker_claimed_by_phone` live with no matching migration file) — tracking for that stayed in `eq-shell.md`'s own open items (the PR #1842-section lead), not part of this closure.
+
+**Completed:**
+- [x] **Dispatch `0311` to madagins via `tenant-migrate.yml`** — turned out to be a non-action, not a deferred one. 2026-09-13/14 investigation found the file is deliberately `-- Plane: ehow ONLY` scoped (added after a real fleet-wide dispatch attempt crashed on madagins with `42P16` — madagins' `app_data.field_*` views already exist there, in a different, eq-field-owned shape) and already checksum-applied on ehow (`applied_at` 2026-09-09T10:11 UTC, all 61 objects live-verified present). Nothing was ever pending for either tenant by the time this was actually actioned. See `eq-shell.md`'s 2026-09-10→13 top section for the full closure write-up. _(closed 2026-09-14)_
+
+---

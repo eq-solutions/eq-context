@@ -9,6 +9,10 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-10 (PR #1884 MERGED + LIVE — platform-admin Field picker no longer scopes the sign-in token to the wrong tenant)
+- `token-exchange.ts`'s platform-admin branch minted the Field JWT's `tenant_id` claim from the admin's own Core session tenant instead of the tenant actually picked in Field's cross-tenant workspace dropdown — RLS then silently returned zero rows for the picked tenant everywhere, no error anywhere in the chain. Confirmed live on Madagins: a platform-admin account with no membership there picked it in the picker and saw an empty Contacts list despite the tenant's own data being intact.
+- Now resolves the picked tenant's own shell row and requires a real membership in it (Field has no platform-admin RLS escalation, same bar as everyone else) — JWT and its enrichment reads scope to that tenant/role. No real membership → clear `403 not-a-member-of-tenant` instead of a silently-empty session; `FieldIframe.tsx` shows its own message for it. [PR #1884](https://github.com/eq-solutions/eq-shell/pull/1884), 2 new regression tests, full suite clean.
+
 ## 2026-09-13 (PR #1898 MERGED + LIVE — meta/OG tags + 2 aria-label fixes on Core)
 - Added `<meta name="description">` + Open Graph tags (`og:title`, `og:description`, `og:image`) to `index.html` — shared links to core.eq.solutions previously rendered blank.
 - Added `aria-label` to 2 icon-only buttons in `AccessControlPage.tsx` (group-modal close, remove-member) that had no accessible name, matching the pattern already used elsewhere in the same file.
