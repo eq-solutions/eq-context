@@ -69,10 +69,8 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1917 docs(control-plane-ledger): live-verify 2026_08_30b/c phone-dedup + revoke-session gap fixes
-- #1916 fix(auth): recycle-review approve stops grafting duplicate identities
+- #1918 docs(control-plane-ledger): mark recycle-review-phone-dup-no-graft applied
 - #1915 fix(control-plane-drift): detect + backfill the auth.users dedup triggers
-- #1914 fix(entity-browser): resolve staff_id/site_id to names instead of raw UUIDs
 
 ---
 
@@ -93,7 +91,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-14 |
-| eq-shell | building | 2026-09-14 |
+| eq-shell | new | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 248 (latest: 0245) applied
