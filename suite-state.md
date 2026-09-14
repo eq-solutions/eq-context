@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-14)
 
-**eq-cards:**
-- #357 fix(cards): stop eq_sweep_orphaned_licence_photos deleting unclaimed labour-hire evidence
-
 **eq-service:**
 - #847 fix(rls): close the app_data + service-schema grant gaps blocking Integration tests
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
