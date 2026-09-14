@@ -26,6 +26,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Certificate "who's included" picker folded into one mechanism — MERGED + LIVE via direct push, no PR (2026-09-10)
+*Royce flagged that the document sign-off certificate flow had "wiring from previous attempts" — `CertificateActions.tsx` had two separate ways to pick who's included in an exported certificate: a per-site dropdown (only appeared once a signer had actually been tagged with a site) and a newer team/hand-pick modal built the same week. Asked to fold the dropdown into the modal so there's one mechanism, not two.*
+
+- **`CertificateAudienceModal.tsx` gained a third "By site" tab**, shown only when the document has at least one site-tagged signer — reuses the exact `site_id`-only filter branch `push-document-audience.ts`'s `buildCertificate` already had, confirmed by reading that function directly (no backend change needed). Site stays a label-only field on the other two tabs (team / hand-pick), unchanged.
+- **`CertificateActions.tsx` dropped both `DropdownMenu`s** — the plain whole-document download links are now always visible instead of being hidden behind a dropdown whenever the doc had a tagged site.
+- Verified via `pnpm run build` (packages + tokens + `tsc -b` + vite build, clean) and `eslint`, both clean. Committed (`404580f4`, two files only — three unrelated pending JWT-auth files already sitting modified in the shared checkout were left untouched) and pushed directly to `main` on Royce's explicit instruction, aware this triggers eq-shell's auto-deploy.
+
+- [ ] **Not click-tested live by a person** — no authenticated Shell session was available in this environment to open a real tagged-site document and confirm the "By site" tab renders/filters correctly. Static verification only (build + lint). _(added 2026-09-14)_
+- [ ] **Direct push bypassed branch protection's 5 required status checks** — GitHub's own push output said so explicitly. Local build+lint covered the same ground, but this exact commit never ran the repo's actual CI on GitHub. Worth confirming `main`'s CI is still green next time someone's in this repo. _(added 2026-09-14)_
+
+---
+
 ## eq-shell: "No suitable key or wrong key type" on madagins traced to root cause — fix rebuilt in an isolated worktree and opened as PR #1895 after the first draft was lost to shared-checkout drift (2026-09-13)
 *Started from a screenshot of EQ Shell's Review Queue tab on the `madagins` tenant. Traced fully: `connectTenantClient()`'s fallback chain (proxy → routed → sks-legacy) all ultimately sign a tenant JWT with either `SKS_SUPABASE_JWT_SECRET` or the shared `SUPABASE_JWT_SECRET` — but madagins' own Supabase project (`ornndtbdkxfsewspbrwk`) was never configured to accept either, so every direct-browser call fails identically. `scripts/provision-tenant.mjs` itself documents skipping this step ("Sync SUPABASE_JWT_SECRET into the new project — deferred").*
 
