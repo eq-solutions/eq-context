@@ -70,11 +70,8 @@ _If this file is >48h old, the cron is broken._
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
 
 **eq-shell:**
-- #1906 docs(migrations): correct credentials-canonical-sync retirement comment
+- #1908 fix(licences): delete superseded storage objects on photo/PDF replace
 - #1904 feat(tenant-health): surface a missing per-tenant JWT secret on the health check
-
-**eq-solves-intake:**
-- #124 fix(samples): reconcile contact-clean.csv with the contact.schema.json rewrite
 
 ---
 
@@ -88,7 +85,7 @@ _If this file is >48h old, the cron is broken._
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
-| eq-solves-intake | ✗ failure |
+| eq-solves-intake | ✓ success |
 
     **Deploys:**
     
