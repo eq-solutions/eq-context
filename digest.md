@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-14 10:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-14 11:00 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-14 10:26 UTC → 2026-09-14 10:32 UTC)
+## Since last refresh (2026-09-14 10:32 UTC → 2026-09-14 11:00 UTC)
 
-- Merged: eq-shell [#1904](https://github.com/eq-solutions/eq-shell/pull/1904) feat(tenant-health): surface a missing per-tenant JWT secret
-- Merged: eq-shell [#1898](https://github.com/eq-solutions/eq-shell/pull/1898) Add meta/OG tags to Core; fix 2 missing aria-labels in Acces
-- Merged: eq-shell [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scri
-- Merged: eq-shell [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filt
-- Merged: eq-shell [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with 
-- Merged: eq-shell [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or sig
-- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
-- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
-- ⚠ Needs you: 5 → 6 (new items)
+- Merged: eq-shell [#1909](https://github.com/eq-solutions/eq-shell/pull/1909) fix(cards): carry emergency contact fields into staff on Car
+- Merged: eq-shell [#1896](https://github.com/eq-solutions/eq-shell/pull/1896) fix(field-iframe): stop a slow mint eating the iframe's own 
+- Merged: eq-shell [#1893](https://github.com/eq-solutions/eq-shell/pull/1893) fix(security): revoke superfluous anon grant on madagins's f
+- Merged: eq-shell [#1892](https://github.com/eq-solutions/eq-shell/pull/1892) fix(ci): apply the exit-truncation fix to check-shell-staff-
+- Merged: eq-shell [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped r
+- Merged: eq-shell [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-
+- Merged: eq-shell [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the p
+- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
 
 ## ⚠ Needs you (6)
 
@@ -80,6 +79,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-14 | eq-shell | [#1909](https://github.com/eq-solutions/eq-shell/pull/1909) fix(cards): carry emergency contact fields into staff on Cards ap |
 | 2026-09-14 | eq-shell | [#1904](https://github.com/eq-solutions/eq-shell/pull/1904) feat(tenant-health): surface a missing per-tenant JWT secret on t |
 | 2026-09-14 | eq-shell | [#1907](https://github.com/eq-solutions/eq-shell/pull/1907) docs(control-plane-ledger): note credentials-canonical-sync edge  |
 | 2026-09-14 | eq-shell | [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going missin |
@@ -94,15 +94,14 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-14 | eq-solves-service | [#846](https://github.com/eq-solutions/eq-service/pull/846) fix(tests): drop nonexistent raised_date field from defects bait  |
 | 2026-09-14 | eq-solves-service | [#835](https://github.com/eq-solutions/eq-service/pull/835) chore(deps-dev): bump tsx from 4.23.1 to 4.23.13 |
 | 2026-09-14 | eq-solves-service | [#834](https://github.com/eq-solutions/eq-service/pull/834) chore(deps): bump lucide-react from 1.31.0 to 1.44.0 |
-| 2026-09-14 | eq-solves-service | [#833](https://github.com/eq-solutions/eq-service/pull/833) chore(deps): bump resend from 6.21.0 to 6.27.0 |
 _Showing 15 of 83 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (294 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (236 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (73 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-field** (240 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-solves-service** (72 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (19 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -133,8 +132,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1691 | 234 / 62 | 3 | 95 |
 | [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 11 |
-| [eq-field](eq/pending/eq-field.md) | 1308 | 197 / 40 | 0 | 61 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 426 | 54 / 20 | 0 | 26 |
+| [eq-field](eq/pending/eq-field.md) | 1329 | 201 / 40 | 0 | 61 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 426 | 53 / 20 | 0 | 26 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 179 | 13 / 6 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
@@ -189,4 +188,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 10:32 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 11:00 UTC._
