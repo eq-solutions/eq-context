@@ -15,16 +15,8 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: Core privacy policy shipped and confirmed live (2026-09-14)
-*Follow-up to the prior session's "hold off" on the privacy-policy item (see archive) — Royce came back and asked to decide the approach directly: can it mirror EQ Cards' policy?*
-
-- Answer: not verbatim. Read Cards' real policy (`assets/legal/privacy-policy.md`) and found it's written for Cards' specific practices (SMS-only sign-in via Twilio, Claude Vision OCR on licence photos, Medicare/health data) and doesn't even list Microsoft Clarity, which Core runs. Verified Core's actual practices via a deep code audit before drafting instead of assuming: Core also does phone/SMS sign-in with its own direct Twilio integration, and — a genuinely new finding — Core's own Staff module (`AddLicenceModal.tsx`) already collects and Claude-OCRs government ID photos (driver licence, passport, Medicare, police check, WWCC), stored on the control-plane Supabase project. Confirmed all three Supabase planes (jvkn/zaap/ehow) are `ap-southeast-2` (Sydney) directly via the Supabase API before writing that into the policy.
-- Built: new `/privacy` page (adapted content, not copied), linked from all 5 pre-login pages (the actual universal disclosure surface) and from a new Admin Hub tile next to Audit log (Royce's explicit placement call — "link it behind the audit log").
-- Deliberately left two things unresolved rather than invent them: a specific data-retention period and an automated deletion SLA, since neither could be verified in code (unlike Cards' policy, which cites real numbers). Spun off as a background task; Royce already started it in a separate session.
-- Also spun off a separate background task on whether the Staff module's licence-OCR duplicates EQ Field's licence domain (contradicts the standing "licences are Field-only" rule, or is legitimate shared canonical infrastructure — not determined here). Royce already started this one too, in a separate session.
-- Merged **[eq-shell#1901](https://github.com/eq-solutions/eq-shell/pull/1901)** (squash `c864949c`) once CI passed. Confirmed live properly, not by elapsed time: current production deploy (`5652cd90`, two unrelated PRs merged on top since) confirmed via `git merge-base --is-ancestor` to include `c864949c`, plus a direct fetch of core.eq.solutions/privacy showing the real content.
-
-No open items from this thread — both follow-ups are already running as separate sessions.
+## eq-shell: licence-OCR duplication question resolved — not a violation; orphaned edge function found in the process (2026-09-14)
+- [ ] **Orphaned `credentials-canonical-sync` edge function on jvkn — confirm truly uncalled and delete.** Migration `2026_07_26_retire_credentials_canonical_sync.sql` dropped the trigger/function that called it; the edge function itself was left deployed with no caller (the migration's own comment flags this). Spawned as background task `task_a502c462`, Royce started it in a separate session — not yet reported back as of this close. _(added 2026-09-14)_
 
 ---
 

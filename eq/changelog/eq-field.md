@@ -9,6 +9,12 @@ status: live
 
 # eq-field changelog
 
+## 2026-09-14 (PR #983 MERGED + LIVE, v3.5.716 — legacy licence-expiry field + broken Edit button retired)
+- Surfaced while confirming eq-shell's Staff licence-OCR feature doesn't duplicate Field's licence domain (see eq-shell.md changelog) — a genuinely separate, unrelated finding: `people.licence_expiry` had no live write path (confirmed absent from both ehow and zaap schemas post-cutover) and its dashboard "Edit" button opened a person-editor modal with no expiry-date field, so it had fixed nothing since before the canonical licence merge (v3.5.459).
+- Removed `_licenceExpiryStatus`/`_licenceExpiryBadge` and the legacy source branch in `getLicenceExpiryAlerts()` (`people.js`); simplified the dashboard alert card's per-row rendering, dropping the dead Edit button + date column (`dashboard.js`). Canonical EQ Cards licences and missing-required-credential alerts are unaffected — both keep working exactly as before.
+- Regenerated `core-bundle-b1.js` from source; version-bumped `app-state.js`/`sw.js`/`index.html` (banner + both per-file cache-buster tags).
+- Verified locally against every CI gate before pushing (20/20 test files incl. the 407-check cross-file-reference guard, ESLint 0 errors, bundle-drift + cache-buster-drift clean), then live on the deploy preview (dashboard + Contacts render cleanly, no legacy row, no console errors from app code), then in production via `field.eq.solutions/sw.js` content after merge.
+
 ## 2026-09-14 (PR #977 MERGED + LIVE — field_people_iud() stops guessing a tenant on a missing JWT claim)
 - `app_data.field_people_iud()` on ehow silently defaulted any tenant-less JWT insert to SKS's own real tenant UUID instead of failing — root cause of the 2026-09-09/10 incident where 6 Madagins onboarding test profiles landed in SKS's live roster (see Claude memory `incident_madagins_demo_candidates_in_sks_roster.md`). Now raises instead of guessing.
 - Migration installs the fix by pulling the function's live body via `pg_get_functiondef` at apply time and splicing a guard around a verified-stable anchor line, rather than a hand-typed full replace — this exact function has now caused three silent-revert-class incidents from reconstructing it by hand (two prior, one more found mid-investigation: two eq-shell migrations both numbered `0274` had silently overwritten each other live 21 minutes apart, fully explained by the follow-up in [PR #980](https://github.com/eq-solutions/eq-field/pull/980)).

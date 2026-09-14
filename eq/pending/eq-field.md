@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-12
+last_updated: 2026-09-14
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,13 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: legacy `people.licence_expiry` field + its broken Edit button retired — merged, live (v3.5.716, PR #983, 2026-09-14)
+*Surfaced investigating whether eq-shell's Staff licence-OCR feature duplicates Field's licence domain (see eq-shell.md) — it doesn't, but the investigation found this genuinely dead field along the way: no live write path (confirmed absent from both ehow and zaap schemas post-cutover), and its dashboard "Edit" button opened a modal with no expiry field, so it had fixed nothing since before the canonical merge. Ran the full brief-gate before touching code; verified locally (20/20 test files, 0 lint errors, bundle/cache-buster drift clean) and again live on the deploy preview before merge.*
+
+- [ ] Nothing outstanding on this specific thread.
 
 ---
 

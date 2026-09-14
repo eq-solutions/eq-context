@@ -16,6 +16,21 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: Core privacy policy shipped and confirmed live; licence-OCR duplication follow-up resolved same day (rotated 2026-09-14 — both follow-ups from this thread closed, see pending.md for the orphaned-edge-function item this surfaced)
+*Follow-up to the prior session's "hold off" on the privacy-policy item (see below) — Royce came back and asked to decide the approach directly: can it mirror EQ Cards' policy?*
+
+- Answer: not verbatim. Read Cards' real policy (`assets/legal/privacy-policy.md`) and found it's written for Cards' specific practices (SMS-only sign-in via Twilio, Claude Vision OCR on licence photos, Medicare/health data) and doesn't even list Microsoft Clarity, which Core runs. Verified Core's actual practices via a deep code audit before drafting instead of assuming: Core also does phone/SMS sign-in with its own direct Twilio integration, and — a genuinely new finding — Core's own Staff module (`AddLicenceModal.tsx`) already collects and Claude-OCRs government ID photos (driver licence, passport, Medicare, police check, WWCC), stored on the control-plane Supabase project. Confirmed all three Supabase planes (jvkn/zaap/ehow) are `ap-southeast-2` (Sydney) directly via the Supabase API before writing that into the policy.
+- Built: new `/privacy` page (adapted content, not copied), linked from all 5 pre-login pages (the actual universal disclosure surface) and from a new Admin Hub tile next to Audit log (Royce's explicit placement call — "link it behind the audit log").
+- Deliberately left two things unresolved rather than invent them: a specific data-retention period and an automated deletion SLA, since neither could be verified in code (unlike Cards' policy, which cites real numbers). Spun off as a background task; Royce already started it in a separate session.
+- Also spun off a separate background task on whether the Staff module's licence-OCR duplicates EQ Field's licence domain (contradicts the standing "licences are Field-only" rule, or is legitimate shared canonical infrastructure — not determined here). Royce already started this one too, in a separate session.
+- Merged **[eq-shell#1901](https://github.com/eq-solutions/eq-shell/pull/1901)** (squash `c864949c`) once CI passed. Confirmed live properly, not by elapsed time: current production deploy (`5652cd90`, two unrelated PRs merged on top since) confirmed via `git merge-base --is-ancestor` to include `c864949c`, plus a direct fetch of core.eq.solutions/privacy showing the real content.
+
+**Follow-up resolved same day:** the licence-OCR question above is now determined. **Not a violation.** Shell's `public.licences` (not `worker_credentials` — dead, 0 rows, confirmed retired) is the correct canonical owner; Field only ever reads it (a live read-only proxy for compliance-gap display, plus a one-directional Shell/Cards→Field sync for its own tenant-plane copy) and has no write path into it at all — same governed pattern already used for sites/customers/assets. The "licences → Field only" rule is about Field's own *operational* licence tracking, not worker identity/credential documents. Investigation surfaced two genuine, separate loose ends: eq-field's own pre-canonical `people.licence_expiry` column (no live write path, confirmed absent from both ehow and zaap) retired same day — see `eq-field.md` / eq-field PR #983; an orphaned `credentials-canonical-sync` edge function on jvkn spun off as a background task, not yet run — see `eq-shell.md`'s current top section.
+
+No open items from this thread — both follow-ups are already running as separate sessions.
+
+---
+
 ## eq-shell: Core polish-pass audit — 2 quick fixes shipped, privacy-policy item surfaced a real compliance gap (rotated 2026-09-14 — privacy-policy item closed 2026-09-14, see pending.md's current top section for the follow-up work)
 *Royce forwarded an external "polish pass" prompt for core.eq.solutions (meta tags, OG tags, privacy policy, form validation, loading states, alt text, image compression). Audited against live state before building anything — 4 of 7 items were already done or didn't apply; the privacy-policy item's own premise turned out to be wrong.*
 
