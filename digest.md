@@ -8,20 +8,21 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-14 08:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-14 09:10 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-14 08:48 UTC → 2026-09-14 08:58 UTC)
+## Since last refresh (2026-09-14 08:58 UTC → 2026-09-14 09:10 UTC)
 
-- Merged: eq-shell [#1900](https://github.com/eq-solutions/eq-shell/pull/1900) fix(field-iframe): extend stall-notice floor to boot→accepte
-- Merged: eq-shell [#1892](https://github.com/eq-solutions/eq-shell/pull/1892) fix(ci): apply the exit-truncation fix to check-shell-staff-
-- Merged: eq-shell [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped r
-- Merged: eq-shell [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-
-- Merged: eq-shell [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the p
-- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
-- Merged: eq-shell [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug
-- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
+- Merged: eq-shell [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scri
+- Merged: eq-shell [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filt
+- Merged: eq-shell [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with 
+- Merged: eq-shell [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or sig
+- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
+- Merged: eq-shell [#1877](https://github.com/eq-solutions/eq-shell/pull/1877) chore(deps): bump @eq-solutions/ui to v1.16.5
+- Merged: eq-shell [#1876](https://github.com/eq-solutions/eq-shell/pull/1876) fix(documents): warm push-document-audience's tenant-client 
+- Merged: eq-shell [#1875](https://github.com/eq-solutions/eq-shell/pull/1875) fix(cards): let a worker cancel their own pending access req
+- ✅ Needs you: 13 → 12
 
-## ⚠ Needs you (13)
+## ⚠ Needs you (12)
 
 - 🔴 **CI failure** — eq-solves-intake `main`
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
@@ -35,7 +36,6 @@ _2026-09-14 08:58 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 7d** — eq-solves-service [#833](https://github.com/eq-solutions/eq-service/pull/833) "chore(deps): bump resend from 6.21.0 to 6.26.0"
 - 🟠 **PR aging 9d** — eq-solves-service [#829](https://github.com/eq-solutions/eq-service/pull/829) "fix(defects): consolidate raise-defect duplication, close ACB/NSX vali"
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
-- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (228)
 
@@ -60,7 +60,7 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 1 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 7 | 9d |
+| eq-solves-service | ✓ success | 0d ago | 6 | 9d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✗ failure | 4d ago | 0 | — |
@@ -69,7 +69,7 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | building | 2026-09-14 |
+| eq-shell | ready | 2026-09-14 |
 
 ## Live errors (Sentry)
 
@@ -95,6 +95,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-14 | eq-shell | [#1899](https://github.com/eq-solutions/eq-shell/pull/1899) fix(field-iframe): calibrate the draw notice against real render  |
 | 2026-09-14 | eq-shell | [#1895](https://github.com/eq-solutions/eq-shell/pull/1895) fix(auth): resolve tenant JWT secret per-tenant instead of hardco |
 | 2026-09-14 | eq-shell | [#1897](https://github.com/eq-solutions/eq-shell/pull/1897) feat(staff): let a manager mark a worker compliant without a lice |
+| 2026-09-14 | eq-solves-service | [#844](https://github.com/eq-solutions/eq-service/pull/844) fix(ci): close npm audit findings + fix integration-test seed cas |
 | 2026-09-14 | eq-solves-service | [#842](https://github.com/eq-solutions/eq-service/pull/842) fix(defects): revert incompatible JWT-tenant check breaking /defe |
 | 2026-09-14 | eq-field | [#982](https://github.com/eq-solutions/eq-field/pull/982) v3.5.715 — madagins JWT secret map entry + dashboard stats retry  |
 | 2026-09-14 | eq-field | [#981](https://github.com/eq-solutions/eq-field/pull/981) fix(csp): allowlist madagins's Supabase project in netlify.toml t |
@@ -103,8 +104,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-13 | eq-shell | [#1898](https://github.com/eq-solutions/eq-shell/pull/1898) Add meta/OG tags to Core; fix 2 missing aria-labels in Access Con |
 | 2026-09-13 | eq-shell | [#1893](https://github.com/eq-solutions/eq-shell/pull/1893) fix(security): revoke superfluous anon grant on madagins's field_ |
 | 2026-09-13 | eq-solves-service | [#841](https://github.com/eq-solutions/eq-service/pull/841) fix(ci): stop 4 check/audit scripts truncating their own report |
-| 2026-09-13 | eq-field | [#978](https://github.com/eq-solutions/eq-field/pull/978) fix(canon-read): reject the body.tenant_slug fallback instead of  |
-_Showing 15 of 76 · full record in [sessions/](sessions/)_
+_Showing 15 of 77 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -198,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 08:58 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 09:10 UTC._
