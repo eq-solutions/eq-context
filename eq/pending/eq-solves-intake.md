@@ -1,7 +1,7 @@
 ---
 title: EQ Intake — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-13
+last_updated: 2026-09-14
 scope: EQ Intake engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,24 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-solves-intake: contact.schema.json's customer_id reverted to nullable — corrected a same-day-scoped regression from fdf0055 (2026-09-14)
+*Spotted in passing while fixing an unrelated fixture-drift bug (PR #124). `contact.schema.json` required `customer_id` as a non-null string — contradicted eq-shell tenant-migration 0035 (2026-06-03, governed One Pipe), which deliberately dropped NOT NULL on `app_data.contacts.customer_id` fleet-wide because SKS legitimately has contacts with no customer link. Investigated fully rather than assumed either side was right.*
+
+**Completed:**
+- Read the intake commit path (`commit-canonical.ts`'s `resolveCustomerFk`) — confirmed it already gates unresolvable rows into explicit `fk_no_match` rejections before they reach schema validation, independent of the schema's `required` array. This fix doesn't touch that gate.
+- Found two independently-shipped, currently-live write paths that assume nullable: `eq_upsert_contact` (migration 0245, the RPC behind Shell's own "add contact" UI) defaults `p_customer_id` to `NULL` with no guard; `eq_tidy_orphan_check` (adopted via migration 0304) treats `customer_id IS NULL` as a normal, correctable state, not a broken one.
+- Discovered, via the mandatory `/brief` gate, that a same-day commit (`fdf0055`, 2026-09-09) had already flipped this exact field to required/non-null, citing a live check against ehow — a direct contradiction with migration 0035. Traced why: 0035 is filed under a generic "spine reconciliation" filename with no "contact" in it, easy to miss on a targeted search.
+- Re-verified live via Supabase MCP `execute_sql` against both ehow and zaap: `customer_id` is nullable on both planes right now, and ehow currently holds 1 live contact with a null `customer_id` (down from the 53 migration 0035 was written against — Tidy/orphan-check has been resolving them over the last 3 months). A NOT NULL constraint cannot coexist with an existing null row, so this is a real row proving the column, not just schema metadata.
+- Fixed both copies (root `schemas/contact.schema.json` and the vendored `eq-platform/packages/eq-schemas/src/schemas/contact.schema.json`, kept byte-identical per this repo's existing convention) — `customer_id` back to `type: ["string", "null"]`, out of `required`. Regenerated `types/contact.d.ts`.
+- Full verification: eq-schemas (3/3), eq-validation (318/318, incl. `samples-validation.test.ts`), eq-intake-demo (50/50, incl. `commit-canonical.test.ts`), eq-intake (164/166, 2 pre-existing skips) — all green, typecheck clean. Committed + pushed directly to `main` (`5a75a16`); CI green (run `34832601563`, 2m11s).
+
+**Notes (load-bearing):**
+- **A targeted/filename-based search for DB-constraint history on a specific column is not enough — grep migration file *content*, not just filenames.** `fdf0055`'s live check missed migration 0035 for exactly this reason. Applies to any future "does the live DB match this schema/type" question in this repo.
+- **This repo keeps two hand-maintained copies of every canonical schema** (root `schemas/` + vendored `eq-platform/packages/eq-schemas/src/schemas/`) with no automated check that they stay in sync — this is now the 3rd file (after `site.schema.json`, `asset.schema.json`) to need a manual "reconcile drift" fix this month, and `contact.schema.json` specifically has now drifted and been re-fixed twice in 5 days. Flagged as a follow-up task (`task_cd08e566`) — not built this session.
+- Full commit-message trail (exact migration numbers, RPC names, test counts) lives in eq-solves-intake commit `5a75a16` itself — not duplicated here.
 
 ---
 
