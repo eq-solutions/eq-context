@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: EQ Field append-only history. Canonical name (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-intake.md/eq-context.md/eq-receipts.md/eq-ui.md) — absorbed field.md's full history 2026-08-17. field.md's own header had claimed the opposite direction ("eq-field.md was merged into this file 2026-07-19, don't split again"), but a fresh eq-field.md was recreated after that and diverged with 5 real, unique entries (PR #703/#705/#709/#710/#711) never merged back — exactly the drift that note warned about. Content of both preserved with no loss. UPDATE 2026-08-21: the "field.md is now a stub" claim did not hold — a session recreated eq/changelog/field.md from scratch 2026-08-19, two days after archival, without checking it had been retired, and it has since collected 5 more real entries (PR #729/#730/#735/#736/#738) not present here. UNRECONCILED PAIR with eq/changelog/field.md again — third occurrence of this exact drift (see archive/changelog-eq-field-dead-twin.md and archive/changelog-field-dead-twin.md for the first two). RECONCILED 2026-08-26 (Royce's explicit call): the 5 entries were folded in above, under 2026-08-19/2026-08-20; field.md retired in place again, superseded_by set there.
 read_priority: reference
 status: live
@@ -3477,3 +3477,9 @@ Reviewed all 8 open eq-field Sentry issues. 3 real bugs found and fixed: `eqhExt
 ## 2026-09-09 (PR #930 MERGED + LIVE, v3.5.711 — Dashboard Headcount tiles show "N today")
 - Direct/Apprentices/Labour Hire Headcount tiles gain a live "N today" (or "N Fri" on a weekend) subline, sourced from the same `get_site_headcount_for_map` RPC the Map tab already calls — closes the confusion between the Map's per-site numbers and the Dashboard's org-wide roster count (previously only explained via a v3.5.655 tooltip).
 - One documented edge case, not fixed: an orphaned schedule row (points at a person record that no longer resolves) counts toward the Map's numeric headcount but has no name to list, so this tile's name-derived count could be a person or two short in that case. Also inherits the Map's existing gap that a site with no saved location drops its people from both totals.
+
+## 2026-09-15 (PR #985 MERGED + LIVE, v3.5.717 — "By unknown" attribution fix, Prestart/Toolbox/Diary/Incident)
+- `created_by` (`_persistPrestart`/`_persistToolbox`/`_persistDiary`/`_persistIncident`) fell back to `currentManagerName` only — a variable set exclusively by the supervisor-unlock flow (`auth.js`). Since the 2026-08-24 permission change (v2.6) opened prestart/toolbox create+submit to every Field role, any non-supervisor submission got the literal string `'unknown'` written to the DB and shown as "By unknown" in the list.
+- Fixed identically across all four report types: check `sessionStorage.eq_logged_in_name` (the actual logged-in person, any role) before falling back to `currentManagerName`, matching the pattern `safety.js`'s `_currentUser()` already used correctly.
+- Historical "unknown" rows are not backfilled — confirmed unrecoverable: `auditLog()` has the same `currentManagerName` gate, so no audit trail exists for those submissions either.
+- Not fixed here, logged separately: the list shows `created_by` (who drafted) even on SUBMITTED rows, never `submitted_by` (who actually signed off) — pre-existing, different bug.

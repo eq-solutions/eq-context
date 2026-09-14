@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,17 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: "By unknown" prestart/toolbox/diary/incident attribution fix — PR #985 merged, live v3.5.717 (2026-09-15)
+*Royce forwarded a screenshot (Core → SKS → Field → Safety → Prestarts): several rows showed "By unknown" instead of a name. Root-caused before writing any fix: `_persistPrestart`/`_persistToolbox`/`_persistDiary`/`_persistIncident` (site-reports.js/toolbox.js/diary.js/incidents.js) stamped `created_by` from `currentManagerName` only — a variable set exclusively by the supervisor-unlock flow (`auth.js`). The 2026-08-24 permission change (v2.6, `permission-matrix.js`) that opened prestart/toolbox create+submit to every Field role — the same drift the still-open "suite-state.md's 'supervisor-only' framing is stale" item below (2026-08-30) already flags as the likely cause of a *different* bug — was never matched by this attribution code, so any non-supervisor submission got the literal string `'unknown'` written to the DB. A second, independent symptom of the same unpropagated permission change; strengthens the case for that substrate-correction pass. Fixed by checking `sessionStorage.eq_logged_in_name` first, matching the already-correct pattern in `safety.js`'s `_currentUser()`. Applied identically across all four report types.*
+
+- Fixed: [eq-field#985](https://github.com/eq-solutions/eq-field/pull/985), squash-merged, live (v3.5.717) — confirmed directly against `field.eq.solutions/sw.js`, not assumed from the merge alone.
+- [ ] **`created_by` display shows who drafted, not who submitted** — pre-existing, separate from this bug, not fixed here. The list shows `created_by` even on SUBMITTED rows, never `submitted_by`, and those can be different people (a supervisor drafts, a crew lead submits). Worth a follow-up if Royce wants "By X" to mean "submitted by" once a report is submitted. _(added 2026-09-15)_
+- [ ] **`sessionStorage.eq_logged_in_name` can be an email-derived guess**, not a real name, for a Shell login with no matching Field-roster person record (e.g. a shared team-inbox address) — "By X" is now *better*, not guaranteed-correct in every case. _(added 2026-09-15)_
+- **Confirmed unrecoverable, not left ambiguous**: historical "unknown" rows can't be backfilled — `auditLog()` has the same `currentManagerName` gate, so no audit trail exists for those submissions either.
+- **Mid-fix, hit and fixed two unrelated live hazards worth remembering**: (1) `index.html` carries a hidden per-file cache-buster on `app-state.js`'s own `<script src=...?v=>` tag, separate from `APP_VERSION`/`sw.js CACHE` — missed it first, caught by the pre-push guard, not by CI; (2) `gh pr merge --squash` failed ("merge commit cannot be cleanly created") because `main` had moved (PR #984 landed mid-session) — rebased, conflict was `docs/reflection-log.md`'s tail (two sessions appending at the same point), resolved by keeping both entries. Full detail in eq-field's own memory: [[feedback_eq_field_commit_gates_and_cache_buster]].
 
 ---
 
