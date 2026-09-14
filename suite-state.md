@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #846 fix(tests): drop nonexistent raised_date field from defects bait seed
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
-- #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.44.0
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
@@ -81,7 +80,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -91,8 +90,8 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-14 |
-| eq-shell | building | 2026-09-14 |
+    | eq-service | uploading | 2026-09-14 |
+| eq-shell | ready | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 247 (latest: 0243) applied
