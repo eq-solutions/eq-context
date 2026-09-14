@@ -116,24 +116,47 @@ anything else in this sprint.
    intact on main, not just assumed). Deploy confirmed **live** on core.eq.solutions (commit
    `7ce5e009`) via Netlify's `published_deploy` object + `git merge-base --is-ancestor` — not
    inferred from elapsed time or from `deploy_source`/`cdp_enabled_contexts`.
-2. ~~Apply migration `0169` to jvkn?~~ **Done**, after Royce's explicit go. Dry-run re-run
-   confirms the new split: `superseded_by_different_path_count: 6`, `no_licence_row_count: 26`
-   (pre-existing debris, aging down from 34). Reported by the eq-shell session that ran it; not
-   independently re-queried against jvkn by this update — no Supabase MCP access here, so this
-   is one-source-confirmed, not two.
+2. ~~Apply migration `0169` to jvkn?~~ **Done**, after Royce's explicit go. **Independently
+   re-confirmed 2026-09-15** (second source, direct `execute_sql` against jvkn): `SELECT
+   eq_sweep_orphaned_licence_photos(true, 0)` returns exactly `superseded_by_different_path_count:
+   6`, `no_licence_row_count: 26` — matches the first report precisely.
 3. ~~Merge PR #1908 to `main`?~~ **Done — #1908 merged.** This put PR #1912 into a git conflict
    (both touch the same lines in `staff-licence-backfill.ts` / `staff-licence-replace-photo.ts`);
    resolved by composing the two changes (tenant_id convention + #1908's delete-after-write
    cleanup) rather than picking one, re-verified clean (`tsc`/`eslint`), pushed.
-4. Run PR #1913's `--apply` (and separately, `--delete-orphans`) after reviewing its dry-run
-   output — still open (CI green, mergeable), never executed even once in any environment yet,
-   still needs your review first. A merge-readiness audit this update found one concrete
-   correctness gap worth reading before `--apply`: `resolveCurrentTenantPath` picks a worker's
-   most-recently-created `shell_control.user_tenant_memberships` row as "the" current tenant —
-   the same "most recent wins" failure class eq-cards just fixed in #350 for multi-org admins.
-   Worth checking how many of the 113 candidates have >1 real-tenant membership before `--apply`
-   at scale. Merging the PR itself is safe and inert (lands an unreferenced script, executes
-   nothing) — this caveat is about running it, not merging it.
+4. ~~Merge PR #1913?~~ **Done — merged 2026-09-15** (Royce: "merge, dry-run, show output").
+   **The multi-tenant-membership risk flagged above is checked and doesn't materialize in
+   current data**: of the 36 distinct affected users, 35 have exactly 1 real (non-Personal-
+   Wallet) tenant membership and 1 has zero (correctly skipped, no real tenant yet) — zero have
+   more than one, so `resolveCurrentTenantPath`'s "most recent wins" pick is unambiguous for
+   every candidate today. Still worth hardening defensively for a future multi-tenant worker,
+   just not a blocker.
+   **`--apply` (repair) and `--delete-orphans` (the 6) are still NOT run anywhere.** Dry-run
+   replicated 2026-09-15 via direct read-only SQL against jvkn (the script's own
+   `CONTROL_SUPABASE_URL`/`CONTROL_SUPABASE_SERVICE_KEY` aren't set in this machine's `.env` —
+   same gap as yesterday's script, not sourced from Netlify per Royce's standing preference not
+   to put that credential in a session): **169 candidate columns across 115 licences** would
+   repoint to SKS's real tenant_id `7dee117c-...`; **1 column (1 licence)** skips (no real
+   tenant yet). Matches the live count of 116 distinct mis-pathed licences (115 + 1), up from
+   113 on 2026-09-14.
+   **New finding, changes the `--delete-orphans` picture**: the repair script's own orphan
+   report uses the RPC's combined `orphan_count` (32 = 26 `no_licence_row` + 6
+   `superseded_by_different_path`) as its single gate for `--delete-orphans` — it does not
+   distinguish the two classes. The 6 `superseded_by_different_path` ones are the
+   well-vetted class this whole sprint is about (safe). Of the 26 `no_licence_row` ones,
+   sampling turned up 4 objects under `pending-credentials/811eec1a-.../` and
+   `pending-credentials/93dc7b3f-.../` (created 2026-08-20 10:11-10:12 UTC) that look
+   structurally identical to the exact false-positive class PR #357 just fixed — a different
+   candidate under the same prefix, uploaded the same day at 22:55, IS correctly excluded
+   (has a `worker_credentials.metadata->>'source_document_url'` match); these two aren't.
+   Plausible read: a candidate who never progressed far enough in labour-hire intake to get a
+   `worker_credentials` row at all would never get a `source_document_url` to match against,
+   regardless of age — meaning #357's fix protects candidates who progressed partway, not ones
+   who didn't progress at all. Not confirmed either way from eq-shell. **Spawned `task_b56ada7f`
+   (eq-cards) to trace these two candidate ids and confirm safe-to-delete or not, before
+   `--delete-orphans` is ever run.** Until that resolves, treat `--delete-orphans` as unsafe at
+   its current scope (it would touch all 26, not just the 6). `--apply` alone (the 169-column
+   repair, no orphan deletion) has no such caveat.
 5. `task_7d7d8b41` (spawned by this sprint's own originating session, cwd eq-cards, per
    the eq-shell memory file's earlier text) is very likely superseded by PR #355 (now merged) —
    circumstantial evidence only (same originating session, "cwd eq-cards" matches exactly what
@@ -216,3 +239,18 @@ anything else in this sprint.
   Did not merge #1913, did not run any `--apply`/`--delete-orphans`, did not dismiss
   `task_7d7d8b41`, did not touch admin-attach-licence-photo (already being worked live
   elsewhere — see item 6). All still need Royce's word.
+- 2026-09-15 — Royce asked "show me what to do with these licenses and which ones they are" in
+  the same session that originally opened #1908, resumed a day later. Re-synced against this
+  doc + the eq-shell memory file (both had moved since that session closed) before answering.
+  Actions taken, each with Royce's explicit go:
+  - Merged eq-cards #356 (doc-only) and #357 (the pending-credentials/worker_credentials
+    false-positive fix — its underlying DB fix was already live via MCP per its own PR body;
+    this just landed the paper trail). #357 needed a branch-update-and-recheck first (`mergeable`
+    was `BEHIND` after other same-day merges; GitHub's required-checks gate wants them re-run
+    against current main, not just present).
+  - Merged eq-shell #1913, then dry-ran its logic (see item 4 above for the numbers and the new
+    pending-credentials finding — `task_b56ada7f` spawned for it).
+  - Independently re-confirmed migration `0169`'s live application (item 2) and resolved the
+    multi-tenant-membership caveat (item 4) — both were open questions in this doc as read.
+  Did not run `--apply` or `--delete-orphans` (not asked to — Royce's answer was dry-run only).
+  Did not touch `task_7d7d8b41` or admin-attach-licence-photo/`task_83d5f0f7`.
