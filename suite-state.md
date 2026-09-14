@@ -69,7 +69,6 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
-- #1897 feat(staff): let a manager mark a worker compliant without a licence record
 - #1895 fix(auth): resolve tenant JWT secret per-tenant instead of hardcoding sks
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
@@ -92,7 +91,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-13 |
-| eq-shell | ready | 2026-09-13 |
+| eq-shell | building | 2026-09-14 |
 | eq-field | ready | 2026-09-13 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
