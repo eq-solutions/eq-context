@@ -16,6 +16,14 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: orphaned credentials-canonical-sync edge function on jvkn — confirmed deleted, control-plane ledger corrected (rotated 2026-09-14)
+- **Deleted, verified live.** Confirmed via Supabase MCP against jvkn (eq-canonical): function absent from `list_edge_functions`, `get_edge_function` returns 404, zero invocations in the prior 24h. Grepped eq-shell/eq-field/eq-cards: no live code references it.
+- **First attempt correctly rejected, redirected:** [eq-shell#1906](https://github.com/eq-solutions/eq-shell/pull/1906) tried to fix the now-stale "left deployed" comment directly inside the already-applied migration file — closed without merging after the schema-drift check caught it (applied migration files are checksum-immutable, comments included).
+- **Landed instead:** [eq-shell#1907](https://github.com/eq-solutions/eq-shell/pull/1907) adds a note to `supabase/CONTROL-PLANE-LEDGER.md` (the actual maintained live record) recording the removal — doc-only, all checks green, merged (`7468a67`).
+- Background task `task_a502c462`, spawned while investigating whether eq-shell's Staff licence-OCR feature duplicates EQ Field's licence domain (see `eq-shell.md`'s archive entry earlier the same day) — it didn't; this orphaned function was a separate, minor finding along the way.
+
+---
+
 ## eq-shell: Core privacy policy shipped and confirmed live; licence-OCR duplication follow-up resolved same day (rotated 2026-09-14 — both follow-ups from this thread closed, see pending.md for the orphaned-edge-function item this surfaced)
 *Follow-up to the prior session's "hold off" on the privacy-policy item (see below) — Royce came back and asked to decide the approach directly: can it mirror EQ Cards' policy?*
 

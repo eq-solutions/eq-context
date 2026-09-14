@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-14 (PR #1907 MERGED + LIVE — orphaned credentials-canonical-sync edge function confirmed deleted, control-plane ledger corrected)
+- The `credentials-canonical-sync` Supabase edge function on jvkn — orphaned since migration `2026_07_26_retire_credentials_canonical_sync.sql` dropped its only caller (a trigger) but left the function itself deployed — confirmed deleted live: absent from `list_edge_functions`, `get_edge_function` returns 404, zero invocations in the prior 24h. No code anywhere in eq-shell/eq-field/eq-cards referenced it.
+- [PR #1906](https://github.com/eq-solutions/eq-shell/pull/1906) attempted to fix the now-stale "left deployed" comment directly inside that already-applied migration file — correctly rejected by the schema-drift check (applied migrations are checksum-immutable, comments included) and closed without merging.
+- [PR #1907](https://github.com/eq-solutions/eq-shell/pull/1907) landed the correction in the right place instead: a note in `supabase/CONTROL-PLANE-LEDGER.md` (the maintained live record) documenting the removal. Doc-only, no schema/code change, all checks green, merged (`7468a67`).
+
 ## 2026-09-14 (PR #1900 MERGED + LIVE — EQ-SHELL-20 boot→accepted stall-notice floor)
 - The Shell→Field iframe handoff's stall-notice timer floored the mint→boot leg (#1896) but not the next leg down: a slow mint could still eat most of the boot→accepted window, false-alarming a handoff that hadn't actually stalled. Added a third anchor (`bootedAtRef`/`MIN_BOOT_TO_ACCEPT_WINDOW_MS`) to `inFlightStallDelayMs`, same pattern as the existing mint-completion floor.
 - Landed as part of a suite-wide Sentry sprint; merged after resolving a real conflict with #1899 (a concurrent session's EQ-SHELL-21 fix, same file, same hour) by hand — both fixes kept, full suite reran clean (643/645, 2 pre-existing skips) post-merge. [PR #1900](https://github.com/eq-solutions/eq-shell/pull/1900).

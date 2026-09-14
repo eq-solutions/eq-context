@@ -15,11 +15,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: licence-OCR duplication question resolved — not a violation; orphaned edge function found in the process (2026-09-14)
-- [ ] **Orphaned `credentials-canonical-sync` edge function on jvkn — confirm truly uncalled and delete.** Migration `2026_07_26_retire_credentials_canonical_sync.sql` dropped the trigger/function that called it; the edge function itself was left deployed with no caller (the migration's own comment flags this). Spawned as background task `task_a502c462`, Royce started it in a separate session — not yet reported back as of this close. _(added 2026-09-14)_
-
----
-
 ## eq-shell: Field-handoff stall cluster — EQ-SHELL-29/21 (threshold bugs) fixed, EQ-SHELL-1P/22/20/2A/26 all already closed by earlier work or genuine non-issues (2026-09-13 → 09-14)
 *Follow-up to the 2026-09-13 Sentry review's 3 deferred items (`sessions/2026-09-13.md`) — re-verified live before sprinting rather than assumed still current; one (EQ-FIELD-1N) turned out already resolved and was dropped. Full write-up: `eq/sprints/2026-09-14-eq-shell-reliability-followups.md`.*
 
