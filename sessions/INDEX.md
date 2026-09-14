@@ -1,8 +1,9 @@
 # Session Index
-_154 logs · reverse-chronological · auto-generated_
+_155 logs · reverse-chronological · auto-generated_
 
 | Date | Session |
 |------|---------|
+| 2026-09-15 | [identity_recycle_review miss for Aditi Rajbhandari: root-caused, not a bug](2026-09-15.md) |
 | 2026-09-14 | [field_people_iud() null-tenant guard: fixed, applied live, merged](2026-09-14.md) |
 | 2026-09-13 | [eq-solves-intake schema drift closed out; eq-shell JWT-secret root cause traced, fix drafted then lost to shared-checkout drift](2026-09-13.md) |
 | 2026-09-10 | [F14's signal regex restructured (directional bug fix, pending.md/substrate anchors dropped); completes the F1/F9-adjacent precision pass started 2026-09-09](2026-09-10.md) |
