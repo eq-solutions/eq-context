@@ -65,6 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1911 fix(provisioning): land eq_queue_* RPCs through the One Pipe
 - #1908 fix(licences): delete superseded storage objects on photo/PDF replace
 
 ---
