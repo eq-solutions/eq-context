@@ -173,16 +173,29 @@ anything else in this sprint.
    session (`local_9fa076a4`, "Fix licence-photos path segment-1 dual convention"). Still needs
    Royce (or that originating session, if still open) to clear the chip directly in his own UI —
    the decision is made, the mechanical dismissal isn't done yet.
-6. **New**: a 4th concurrent effort exists, not previously tracked in this doc — a session
-   titled "Fix admin-attach-licence-photo's broken 3-segment path" (eq-cards) is actively working
-   what item 7 below calls `task_83d5f0f7`'s territory, mid-investigation into resolving
-   tenant_id server-side (last seen checking whether `shell_control` is reachable via the
-   service-role REST client or only from SECURITY DEFINER SQL). Not done, not idle — genuinely
-   in progress as of this update. Logged here so a future session doesn't start a 5th. Note the
-   discrepancy: this doc's item 7 frames it as a "2-segment" bug; that session's own title says
-   "3-segment" — unreconciled, worth a look once it concludes.
-7. `task_83d5f0f7` (admin-attach-licence-photo's separate path bug, unrelated to the segment-1
-   convention fix) — see item 6: in progress, not idle. Don't start a separate fix for this.
+6. **DONE (2026-09-15)**: the 4th concurrent effort flagged in the previous update ("Fix
+   admin-attach-licence-photo's broken 3-segment path", eq-cards) concluded — code committed to
+   worktree `admin-attach-licence-photo-path-fix`, 2 commits (including a migration renumbered
+   0170→0171 after colliding with #357's own 0170, already live). The discrepancy noted last
+   time is resolved: it's genuinely 3-segment, not 2 — `admin-attach-licence-photo` (0083) wrote
+   `{user_id}/{licence_id}/{slot}`, missing tenant_id as segment 1 entirely, so migration 0137's
+   RLS (which keys off segment 3 = licence id) could never resolve — nothing this function ever
+   wrote was readable by its own owner or an org admin. Zero live callers found (grepped
+   eq-cards + eq-shell for the function name and its shared secret), so this was a structural
+   fix ahead of the bug ever having a real victim, not an active incident. The session ended
+   without pushing or opening a PR; picked up from here (eq-cards reconciliation session):
+   found [PR #358](https://github.com/eq-solutions/eq-cards/pull/358) already existed (opened
+   independently, right around that session's end — not by this session), found its required
+   CI check genuinely hung (~10 hours stuck `in_progress`, everything else on the run green),
+   cancelled + re-ran just that job (left the 4 already-passing checks alone), came back clean,
+   and merged on Royce's explicit go. **Migration `0171` (new RPC, `shell_control`-touching,
+   read-only) is NOT applied to jvkn** — same standing rule as every other schema change in this
+   saga, needs its own separate explicit go. The RPC is dead code until then (nothing calls it
+   yet either way).
+7. ~~`task_83d5f0f7`~~ (admin-attach-licence-photo's separate path bug) — underlying fix is
+   **merged** (item 6, above). `dismiss_task` still can't reach it from this session (spawned by
+   a different one, same limitation as `task_7d7d8b41` in item 5) — Royce still needs to clear
+   the chip himself.
 8. **RESOLVED (2026-09-15)**: eq-cards' `photo_upload.dart` reads `tenant_id` from the Supabase
    JWT's `app_metadata` claim; eq-shell's `staff-licence-replace-photo.ts` /
    `staff-licence-backfill.ts` read `session.tenant_id` from its own `eq_shell_session` cookie.
@@ -299,3 +312,15 @@ anything else in this sprint.
   format after the fix landed; re-ran `/brief eq-context` fresh to pick up the corrected
   format rather than fight it further. Not touched: `--apply`/`--delete-orphans`,
   `task_b56ada7f`, admin-attach-licence-photo.
+- 2026-09-15 (eq-cards reconciliation session, cont.) — admin-attach-licence-photo's session
+  went idle; found its fix committed to a worktree but never pushed or PR'd. Royce's call:
+  push it and open a PR rather than dismiss `task_83d5f0f7` on an unshipped fix. Found
+  [PR #358](https://github.com/eq-solutions/eq-cards/pull/358) already existed (opened
+  independently around that session's end), blocked on a genuinely hung required CI check
+  (~10 hours stuck, everything else on the run green) — cancelled and re-ran just that job,
+  came back clean, merged on Royce's go. Details in item 6/7 above. Migration `0171` still not
+  applied to jvkn. `task_83d5f0f7`'s chip still needs Royce's own click (same cross-session
+  `dismiss_task` limit as `task_7d7d8b41`). This closes out every thread this session picked
+  up except the two mechanical chip-clears and whatever `task_59002a2e` (IDENTITY-MODEL.md,
+  running independently as of this entry) and `task_b56ada7f` (pending-credentials trace, per
+  item 4) come back with.
