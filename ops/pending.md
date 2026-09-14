@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-14
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -11,6 +11,61 @@ status: live
 
 EQ items in `eq/pending.md`. SKS items in `sks/pending.md`. This file is
 for operational support: tax, entities, infrastructure, substrate.
+
+---
+
+## GitHub MCP connector fixed — was authorized but never installed (2026-09-14)
+
+*Royce: "this never works... I have no idea why its so hard" — the GitHub MCP connector
+(tools prefixed `mcp__d2708d72-763f-42d2-8fac-f373a9a33332__`, "Github - MCP" in claude.ai's
+Customize → Connectors) had 404'd on every private EQ repo — eq-cards, eq-shell, eq-field,
+eq-service — for an unknown but apparently long stretch, worked around via `gh pr create`.
+Root cause found and fixed live this session, verified against all 4 repos.*
+
+The connector is backed by a real GitHub App — **"Claude Github MCP Connector" by
+`anthropics`** (`github.com/apps/claude-github-mcp-connector`), endpoint
+`https://api.githubcopilot.com/mcp`. GitHub Apps split into two separate steps that look like
+one: **Authorize** (identity only — generic "know which resources you can access / act on
+your behalf" consent screen, no scope checkboxes) and **Install** (a separate flow with an
+account/org picker that actually grants repo access). The app had only ever been through
+Authorize — every earlier "disconnect/reconnect" in claude.ai only ever re-ran that same
+step, which is why nothing changed no matter how many times it was retried. A GitHub App
+with zero installations can still read/write *public* repos (no grant needed for public
+data), which is exactly why 8 public eq-solutions repos always worked while the 4 private
+flagship ones never did — org membership was a red herring throughout.
+
+Fixed by going straight to the app's own page and clicking **Install**, targeting
+eq-solutions — produced a real `installation_id` (161573063) on GitHub's side. claude.ai's
+own callback 400'd (`"state: Field required"`) — cosmetic, caused by triggering install from
+GitHub's marketplace page directly instead of a "Connect" click originating inside claude.ai
+(no CSRF `state` token to thread through) — but the installation itself was already live
+regardless. Confirmed via `list_pull_requests` against all 4 repos immediately after:
+eq-cards/eq-field returned `[]` (real success, no open PRs), eq-shell/eq-service returned
+real PR data (eq-service's response was large enough to overflow the tool's size limit —
+the clearest possible confirmation).
+
+Also ruled out along the way, worth recording so a future session doesn't re-chase them:
+org's third-party OAuth policy is "No restrictions"; eq-solutions has no GitHub Copilot
+Business/Enterprise (no admin policy surface exists — no subscription); no SAML SSO
+available (Team/Free plan, Enterprise-only feature). None of these was ever the blocker,
+despite "it's because we're an org" being a very reasonable first guess.
+
+**Needs Royce (low priority, hygiene only — nothing blocking):**
+- [ ] **`system/git-automation.md`'s "Credential Helpers (Per-URL)" section is fully
+  stale** — documents git authenticating via local `.git-credentials`/
+  `.git-credentials.eq-solutions` files; confirmed neither exists anywhere on this machine.
+  Git now authenticates via `gh auth git-credential` instead. Needs a rewrite to match
+  current reality — see the related, still-open workstation-PAT item above, same doc.
+  _(added 2026-09-14)_
+- [ ] **eq-service `ci.yml` has 2 consecutive failures** (2026-09-13T07:13:42Z,
+  2026-09-10T05:49:07Z) — noticed in passing while checking for collateral damage from
+  today's PAT cleanup, confirmed pre-existing (not caused by the cleanup) and never
+  separately investigated or flagged to Royce until now. _(added 2026-09-14)_
+- [ ] **3 fine-grained PATs still look redundant** (`eq-context-code`,
+  `eq-context-suite-bot`, `eq-context-token` — all sound like the same "eq-context
+  automation" purpose, one probably backs the others' work unnecessarily duplicated) — pure
+  hygiene, no urgency. Down from 5 after today's cleanup deleted the expired, the unused,
+  and both `eq-solutions-latest`/`eq-solutions` variants. _(added 2026-09-14)_
 
 ---
 
@@ -84,6 +139,7 @@ Royce flagged `github.com/settings/personal-access-tokens/17800873` as expired a
 
 **Needs Royce:**
 - [ ] **Separately, still unresolved**: `system/infrastructure.md` → "GitHub PATs" section has 3 *workstation* PATs (different from `EQ_CONTEXT_PAT` — these back local `.git-credentials` push, not Actions) flagged **compromised** since 2026-05-15 (leaked into a substrate commit, caught by push-protection), with a 5-step rotation checklist never marked done — file untouched since, now ~4 months stale. Worth doing both rotations in the same pass. _(added 2026-09-03)_
+  - [ ] **Update 2026-09-14**: chased this independently (found via `system/git-automation.md`, not realising it was already tracked here) while diagnosing an unrelated GitHub MCP connector bug — see the new section below. Confirmed the local `.git-credentials`/`.git-credentials.eq-solutions` files this whole mechanism depends on **no longer exist anywhere on this machine** (`C:\Projects\` or `%USERPROFILE%\`, both checked) — git now authenticates via `gh auth git-credential` instead, so `git-automation.md`'s documented mechanism is fully dead, not just the 3 flagged tokens. Of the 3 originally-flagged tokens ("EQ Solutions", "Milmlow", "Milmlow alt"): a fine-grained PAT literally named `eq-solutions` (+ its apparent successor `eq-solutions-latest`, both fine-grained and classic variants) existed and was deleted by Royce today as unrelated housekeeping — **likely** closes that one, but the name match was never confirmed against the exposure window before deletion. "Milmlow" and "Milmlow alt" are **not findable under those names** anywhere in a full 12-PAT/2-token-type inventory taken today — still completely unaccounted for, 4+ months on. _(added 2026-09-14)_
 
 ---
 
