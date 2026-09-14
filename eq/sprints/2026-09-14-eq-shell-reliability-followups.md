@@ -71,7 +71,35 @@ elapsed time to 'accepted'), and only then decide whether this is one bug or sev
 
 ---
 
-## Item 2 (lower priority, still real) — EQ-SHELL-1P / EQ-SHELL-22: stale JS chunk after a deploy crashes instead of recovering
+## Item 2 — EQ-SHELL-1P / EQ-SHELL-22: stale JS chunk after a deploy — CLOSED, already fixed
+
+**Correction (2026-09-14, before any code was written for this item):** everything below this
+line was wrong about "no existing coverage." Re-verifying live before starting the build (per
+the substrate's own duplicate-work rule) surfaced three already-merged PRs this section never
+checked — #1523, #1528, and **[eq-shell#1826](https://github.com/eq-solutions/eq-shell/pull/1826)**
+(merged 2026-09-08, three days *before* this doc was written). #1826's own description names
+EQ-SHELL-1P and EQ-SHELL-22 explicitly as its motivation: `ChunkErrorBoundary` +
+`installChunkLoadRejectionGuard` (`src/lib/chunkReload.ts`) already self-heal a stale chunk via
+a silent reload, built out incrementally for the sibling EQ-SHELL-1S/10 issues — the one gap
+was Firefox's distinct wording for this same failure (`'text/html' is not a valid JavaScript
+MIME type`), which #1826 closed with one more matcher clause.
+
+**Confirmed fixed, not just merged:** both [EQ-SHELL-1P](https://eq-solutions.sentry.io/issues/EQ-SHELL-1P)
+and [EQ-SHELL-22](https://eq-solutions.sentry.io/issues/EQ-SHELL-22) already show `resolved` in
+Sentry; zero occurrences since 2026-09-11 across several deploys since; eq-shell's entire
+unresolved-issue list (checked live 2026-09-14) has nothing chunk/MIME-related. The handful of
+occurrences between #1826 merging and 2026-09-11 read as tabs that already had the pre-fix
+bundle loaded before that deploy — the one population this exact class of fix structurally
+can't reach until that tab reloads on its own; that population draining out is exactly what
+"quiet since 2026-09-11" looks like from a working fix, not a coincidence.
+
+**Where the miss came from:** the original check below only ruled out one plausibly-named
+branch (`chunk-prefetch-catch`) and never searched for the real mechanism, which lives under a
+differently-named issue family (EQ-SHELL-1S) with its own branch names. Royce confirmed
+closing this out rather than building anything further — no code needed.
+
+<details>
+<summary>Original (incorrect) write-up, kept for the record</summary>
 
 **Current state, re-checked 2026-09-14:** unchanged since 2026-09-11 (4 occurrences, 2 users,
 same incident pair — EQ-SHELL-1P is the custom telemetry capture, EQ-SHELL-22 is the raw JS
@@ -98,11 +126,13 @@ and triggers a full page reload — a fresh load fetches the current `index.html
 references the current chunk hashes, resolving the staleness. Needs care to avoid a reload
 loop if the failure has some other cause.
 
+</details>
+
 ---
 
 ## Sequencing
 
-EQ-SHELL-21 first — actively growing, every occurrence a real broken experience for a real
-person, and the root cause isn't fully understood yet so it needs investigation time before a
-fix is even shaped. EQ-SHELL-1P/22 second — real and worth closing, but dormant and the fix
-shape is already reasonably well understood, so it can wait behind item 1 without cost.
+EQ-SHELL-21 was the only real remaining item — actively growing, every occurrence a real
+broken experience for a real person. Fixed same day via `DRAW_NOTICE_MS` (see
+`eq/pending/eq-shell.md`'s matching entry). EQ-SHELL-1P/22 turned out already closed (above) —
+sequencing moot, there was nothing to schedule.
