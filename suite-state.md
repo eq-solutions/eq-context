@@ -69,6 +69,7 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1919 fix(staff): sweep pending-credentials storage on employment purge
 - #1918 docs(control-plane-ledger): mark recycle-review-phone-dup-no-graft applied
 - #1915 fix(control-plane-drift): detect + backfill the auth.users dedup triggers
 
