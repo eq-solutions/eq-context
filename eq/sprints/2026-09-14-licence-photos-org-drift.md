@@ -111,13 +111,21 @@ anything else in this sprint.
 
 ## Decisions needed from Royce
 
-1. Which of the three efforts above to land, and in what order (recommendation: segment1-fix
-   branches, then PR #1913).
+1. Land PR #1912 (eq-shell, segment1-fix) — CI green on every substantive check as of this
+   update. Merging it deploys core.eq.solutions; needs your explicit go regardless of CI colour.
 2. Apply migration `0169` (or whatever the landed detection fix ends up being) to jvkn?
-   (hand-apply via Supabase MCP, standard control-plane convention)
-3. Merge PR #1908 to `main`? (= production deploy to core.eq.solutions) — independent of 1/2.
+   (hand-apply via Supabase MCP, standard control-plane convention) — blocked on #1912 landing
+   first per the recommended sequencing above.
+3. ~~Merge PR #1908 to `main`?~~ **Done — #1908 merged.** This put PR #1912 into a git conflict
+   (both touch the same lines in `staff-licence-backfill.ts` / `staff-licence-replace-photo.ts`);
+   resolved by composing the two changes (tenant_id convention + #1908's delete-after-write
+   cleanup) rather than picking one, re-verified clean (`tsc`/`eslint`), pushed.
 4. Run PR #1913's `--apply` (and separately, `--delete-orphans`) after reviewing its dry-run
-   output?
+   output — still open, still unrun, still needs your review first.
+5. **New**: `task_7d7d8b41` (spawned by this sprint's own originating session, cwd eq-cards, per
+   the eq-shell memory file's earlier text) is very likely superseded by PR #355 (now merged) —
+   circumstantial evidence only (same originating session, "cwd eq-cards" matches exactly what
+   #355 delivered), not confirmed. Needs a yes/no from you before dismissing it, not an assumption.
 
 ## Status log
 
@@ -130,3 +138,15 @@ anything else in this sprint.
   reconciled all three now-known efforts here rather than letting a future session rediscover
   the collision. No DDL applied, no data touched, no merge or `--apply` run — every item above
   still needs its own explicit go.
+- 2026-09-14 (later same day) — A different concurrent session (the one that opened PR #355)
+  picked up the closeout: merged #355, then found #1908 had merged in the meantime and put #1912
+  into conflict with it — resolved by composing both changes rather than re-litigating either,
+  re-verified, pushed. Confirmed #1913 is still clean/mergeable. Opened eq-cards PR #356 (doc-only:
+  RUNBOOK.md's 403-troubleshooting line still implied RLS enforces segment 1; corrected). Checked
+  for eq-cards/eq-shell test coverage this new logic could slot into — neither repo has a
+  low-effort slot-in point (eq-cards' widget tests all terminate before reaching the
+  upload/cleanup code path via the pre-existing currentUser gate; eq-shell's test pattern only
+  covers extracted pure functions, and #1908's cleanup logic isn't extracted — extracting it
+  would mean touching #1908's already-merged code, out of bounds). Did not action `--apply` on
+  #1913, did not merge #1912, did not dismiss `task_7d7d8b41` — all three still need your word,
+  restated in "Decisions needed" above.
