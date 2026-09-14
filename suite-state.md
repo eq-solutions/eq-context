@@ -64,9 +64,12 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
-- #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
+- #834 chore(deps): bump lucide-react from 1.31.0 to 1.44.0
 - #833 chore(deps): bump resend from 6.21.0 to 6.26.0
-- #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
+
+**eq-shell:**
+- #1904 feat(tenant-health): surface a missing per-tenant JWT secret on the health check
+- #1903 fix(provisioning): stop org_membership from silently going missing
 
 ---
 
@@ -76,7 +79,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -86,7 +89,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-14 |
+    | eq-service | ready | 2026-09-14 |
 | eq-shell | building | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
