@@ -1,7 +1,7 @@
 ---
 title: "/close command backup — Session End Protocol"
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-15
 scope: Durability backup of Royce's user-level Claude Code /close command — source of truth is ~/.claude/commands/close.md, not this file
 read_priority: reference
 status: live
@@ -209,12 +209,15 @@ thing in one call.
 
 Now that substrate is committed + pushed, delete THIS SESSION'S flag so it doesn't carry over:
 ```
-Remove-Item "C:\Users\EQ\AppData\Local\Temp\eq-brief-<TODAY>-<SESSION_ID>.flag" -ErrorAction SilentlyContinue
+Remove-Item "C:\Users\EQ\AppData\Local\Temp\eq-brief-<SESSION_ID>.flag" -ErrorAction SilentlyContinue
 ```
-(bash: `rm -f "/c/Users/EQ/AppData/Local/Temp/eq-brief-$(date +%Y-%m-%d)-<SESSION_ID>.flag"`)
+(bash: `rm -f "/c/Users/EQ/AppData/Local/Temp/eq-brief-<SESSION_ID>.flag"`)
+
+**No date in the filename** (fixed 2026-09-15, matching brief.md's own write and guard.js's
+own check — all three must stay in lockstep) — see brief.md's flag-write step for why.
 
 `<SESSION_ID>` is this session's id (the GUID directory in the scratchpad path). **Never wildcard
-this** — `eq-brief-<TODAY>-*.flag` would delete other concurrent sessions' flags and re-block them
+this** — `eq-brief-*.flag` would delete every concurrent session's flag and re-block them
 mid-work, which is the bug this per-session naming exists to prevent.
 
 Doing this BEFORE the writes (the old ordering) is what blocked Steps 2–4 on repeat closes.

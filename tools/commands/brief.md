@@ -1,7 +1,7 @@
 ---
 title: "/brief command backup — Session Gate (Rule 0.6)"
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-15
 scope: Durability backup of Royce's user-level Claude Code /brief command — source of truth is ~/.claude/commands/brief.md, not this file
 read_priority: reference
 status: live
@@ -177,12 +177,18 @@ session's `/brief` waived the gate for sessions that never ran one. Substitute `
 below with this session's id: it is the GUID directory in the scratchpad path, and guard.js
 echoes it in any brief-gate block message (`[session <id>]`).
 
+**No date in the filename** (fixed 2026-09-15) — a session's id already scopes the flag to
+exactly one session, so a date component bought nothing and cost a real bug: a session that
+briefed before local midnight and then made its first edit after it had a flag dated
+yesterday while guard.js's check computed today's date fresh on that later call — blocked
+again, mid-session, for a session that had genuinely briefed. If you ever see that exact
+"brief not run this session" block right after actually confirming a brief, check whether
+guard.js's flag-naming has drifted from this file again before assuming the session skipped
+the step.
+
 ```powershell
-$today = Get-Date -Format 'yyyy-MM-dd'
-$sid   = '<SESSION_ID>'
-# ${today} braces are load-bearing: "$today.flag" parses as a property access and
-# yields eq-brief-.flag, which the guard.js brief-gate never matches.
-New-Item -Path "C:\Users\EQ\AppData\Local\Temp\eq-brief-${today}-${sid}.flag" -ItemType File -Force | Out-Null
+$sid = '<SESSION_ID>'
+New-Item -Path "C:\Users\EQ\AppData\Local\Temp\eq-brief-${sid}.flag" -ItemType File -Force | Out-Null
 ```
 
 Do not write code, edit files, or make tool calls beyond the reads above until Royce replies to confirm the brief.
