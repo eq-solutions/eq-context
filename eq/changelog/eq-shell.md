@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-14 (PR #1899 MERGED + LIVE — Field iframe's draw-notice threshold recalibrated against real evidence, closing EQ-SHELL-21)
+- EQ-SHELL-21 ("Field accepts the handoff but never reports 'rendered'") was live and growing (6→9 occurrences, 9 distinct users, in under 3 days) — not dormant. An initial iOS-only theory (from 2 examples) was disproven once all 9 event traces were pulled: 6 of 9 are Windows desktop.
+- Root cause: the existing 10s notice threshold was calibrated for the mint/boot leg of the handoff (see 2026-09-13's #1896 entry below), not the separate accepted→rendered draw leg — real draw times on production traffic (684-sample PostHog percentile query) run genuinely longer. Adds `DRAW_NOTICE_MS = 15_000` as its own constant, deliberately not merged into `STALL_NOTICE_MS` (10s) — the two legs have different real-world timing and conflating them would just relocate the miscalibration.
+- `FieldIframe.tsx`: draw-notice call now uses `stallDelayMs(acceptedAtRef.current, now, DRAW_NOTICE_MS)`; `elapsedS` fallback and 3 stale "10s" comment blocks updated to match.
+- Confirmed live via Netlify `commit_ref` ancestry (`1a81981f`, published 08:32:32Z, ~6 min after merge). Left `unresolved` in Sentry deliberately — only hours of post-deploy silence so far against a ~1-3 day historical recurrence rate, not enough to credit as confirmation yet. [PR #1899](https://github.com/eq-solutions/eq-shell/pull/1899).
+
 ## 2026-09-14 (PR #1878 + #1893 MERGED + LIVE — 2 real RLS gaps found and closed in the SEC-77 hardcoded-literal sweep)
 - `public.nominations` on zaap had RLS enabled with zero policies — a live silent lockout for any authenticated EQ-tenant user, found while sweeping the rest of `tender_enrichment`'s out-of-band table family. Fixed by migrations `0316` (dynamic tenant-scoped policies, mirroring `0314`'s join-through-`tenders` pattern) and `0317` (a superfluous anon grant on madagins's `nomination_clashes` view, found in the same pass). [PR #1878](https://github.com/eq-solutions/eq-shell/pull/1878), merged via admin override past an unrelated, confirmed-pre-existing control-plane drift-check regression.
 - `public.field_job_number_overrides` on madagins granted `anon` full CRUD (not currently exploitable, but a real gap ehow's own copy doesn't have) — found while directly re-verifying this table's literal substitution. Fixed by migration `0318`. [PR #1893](https://github.com/eq-solutions/eq-shell/pull/1893).
