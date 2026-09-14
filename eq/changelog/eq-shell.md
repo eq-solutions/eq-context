@@ -1,13 +1,18 @@
 ---
 title: EQ Shell — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-13
+last_updated: 2026-09-14
 scope: EQ Shell append-only history. NOTE — duplicates eq/changelog/shell.md, which stops 2026-06-30; this file is the one actually kept current. Consolidate, flagged as a follow-up.
 read_priority: reference
 status: live
 ---
 
 # eq-shell changelog
+
+## 2026-09-13 (PR #1898 MERGED + LIVE — meta/OG tags + 2 aria-label fixes on Core)
+- Added `<meta name="description">` + Open Graph tags (`og:title`, `og:description`, `og:image`) to `index.html` — shared links to core.eq.solutions previously rendered blank.
+- Added `aria-label` to 2 icon-only buttons in `AccessControlPage.tsx` (group-modal close, remove-member) that had no accessible name, matching the pattern already used elsewhere in the same file.
+- Found via a live audit against an external "polish pass" prompt — 4 of its 7 items were already done or didn't apply; the privacy-policy item was held pending a compliance decision after live data confirmed a real external tenant (Madagins) already has active accounts on Shell. [PR #1898](https://github.com/eq-solutions/eq-shell/pull/1898).
 
 ## 2026-09-13 (PR #1896 MERGED + LIVE — a slow token mint no longer eats the Field iframe's own loading budget)
 - The in-flight stall-notice timer (`STALL_NOTICE_MS`, 10s) counted purely from attempt-start (mint-start), so a slow-but-normal mint (token-exchange's own stated p95 is 5.25s) could consume most of that budget before the iframe even started loading — false-alarming a handoff that was actually progressing fine. Confirmed live: Sentry EQ-SHELL-29 shows an 8.2s mint leaving under 2s before the notice fired.

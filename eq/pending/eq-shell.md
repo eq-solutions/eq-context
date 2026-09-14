@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-13
+last_updated: 2026-09-14
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,17 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,394 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-shell: Core polish-pass audit — 2 quick fixes shipped, privacy-policy item surfaced a real compliance gap (2026-09-13)
+*Royce forwarded an external "polish pass" prompt for core.eq.solutions (meta tags, OG tags, privacy policy, form validation, loading states, alt text, image compression). Audited against live state before building anything — 4 of 7 items were already done or didn't apply; the privacy-policy item's own premise turned out to be wrong.*
+
+- **Privacy-policy premise is false — Core is not SKS-staff-only.** Live query against `shell_control.user_tenant_memberships` on jvkn confirmed Madagins (a real third-party labour-hire tenant) has 5 active accounts (3 manager, 2 labour_hire) today — exactly the condition the source prompt itself said should change the compliance bar. eq-shell also has no Footer component at all in the authenticated app (only a plain, unlinked copyright line on 5 pre-login pages) — "add a footer link" is really "build a footer." A real, live policy already exists for eq-cards (v1.1, 2026-04-29) that could potentially be adapted instead of drafting fresh.
+- **4 of 7 items were already done, not built:** analytics (Sentry/PostHog/Clarity) genuinely wired in `src/observability.ts`; Documents-feature forms already show visible inline errors, no silent failures (the actual sign-off/signing action turned out to live in EQ Field, not eq-shell); `Skeleton.tsx` (not `.js`) already used correctly for content loads, submit buttons correctly use busy-state instead; every bundled image is already small (largest is a 20KB favicon).
+- **2 real, low-risk gaps found and fixed:** missing `<meta name="description">` + OG tags on `index.html`; 2 icon-only buttons in `AccessControlPage.tsx` (group-modal close, remove-member) with no `aria-label`. Built in an isolated worktree — root checkout was mid-flight on an unrelated branch (`feat/staff-compliance-override`, untouched) — verified live-rendered, merged: **[eq-shell#1898](https://github.com/eq-solutions/eq-shell/pull/1898)**.
+
+- [ ] **Privacy-policy decision still open** — your call on disclosure now that a real external (non-SKS) tenant has live access; explicitly held this session, not built. _(added 2026-09-13)_
 
 ---
 
