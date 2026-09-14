@@ -25,7 +25,10 @@ on what segment 1 means:
 - **eq-cards** (`lib/core/utils/photo_upload.dart`) writes the worker's *current session
   tenant_id* — read fresh off the JWT on every upload.
 - **eq-shell** (`staff-licence-backfill.ts` / `staff-licence-replace-photo.ts`) writes
-  `organisations.id` (org.id) — a deliberately different, stable sentinel ID.
+  `organisations.id` (org.id) — assumed at the time to be a more stable, session-independent ID.
+  **Corrected below (see "Convention decided"): it isn't** — org.id turns out to be exactly as
+  session-dependent as tenant_id, since `organisations.tenant_id` is 1:1. The fix in progress
+  standardizes both writers on `tenant_id` instead.
 
 Neither writer checks the other, and no RLS policy ever validates segment 1 — it has been
 purely cosmetic since it was introduced (Cards Unit 4, 2026-05-21).
@@ -64,58 +67,66 @@ the *current* pointer last splits 2 ways:
 
 ## Plan
 
-### Done this session
+### Done
 - [x] Root cause identified and live-confirmed (memory file has the full trail).
 - [x] Scale quantified against jvkn (table above).
+- [x] **Convention decided: `tenant_id`, not `organisations.id`.** This sprint originally
+  deferred that choice assuming org.id was the more stable option — checked live and that's
+  wrong: `organisations.tenant_id` is `NOT NULL UNIQUE` (1:1), so org.id is exactly as
+  session-dependent as tenant_id. `tenant_id` also won on churn (every writer already has it
+  in scope). See the eq-shell memory file's corrections section for the full trail.
 
-### Staged, ready for a go/no-go (not yet applied/merged — each is a separate ask, see "Decisions needed")
-- [ ] **Detection-gap migration** (eq-shell, control plane jvkn): extend
-  `eq_sweep_orphaned_licence_photos()` (or a sibling function) to also flag "licence row exists,
-  but this object's path doesn't match any of its current evidence columns" — today it only
-  checks "does any licence row match this id at all," which is the exact reason this has gone
-  unnoticed for 3 months (first sighted in eq-cards migration `0050`'s own comment, 2026-06-26).
-  Written as a migration file in eq-shell; control-plane DDL here is hand-applied via Supabase
-  MCP with explicit go each time (this repo's standing convention, not a one-off ask).
-- [ ] **Dry-run audit/repair script** (eq-shell `scripts/`): reports every orphan and every
-  stale-pointer row (the 113 + 6, re-queried fresh at run time), and — only in a second,
-  explicit non-dry-run invocation — repairs each stale-pointer row the same way migration
-  `0137`'s own incident response did by hand: copy the object to the path the row's current
-  org/tenant would produce today, verify byte-identical, repoint the column, delete the old
-  object. Dry-run output only so far; no writes executed.
-- [ ] **PR #1908 merge** (eq-shell) — merging `main` auto-deploys core.eq.solutions. Already
-  reviewed, already correct as far as it goes (see "PR #1908" above). Standing alone since it
-  doesn't depend on anything else in this sprint.
+### Three efforts now exist on this bug — reconciled here so a future session doesn't start a fourth
+1. **Convention fix (stops NEW drift)** — two worktree branches named
+   `worktree-licence-photos-segment1-fix`, one in each repo, not yet committed/pushed/PR'd as of
+   this update:
+   - eq-cards: `photo_upload.dart` gained a `remove()` helper; `licence_edit_screen.dart` now
+     deletes a slot's superseded old path once its row update commits the new one. New migration
+     `0169_licence_photos_sweep_path_mismatch.sql` extends `eq_sweep_orphaned_licence_photos()`
+     with the "row exists but points elsewhere" detection class (that function's real home is
+     eq-cards — `0149`/`0150`/`0151` — not eq-shell's backfill-documentation-only migration file).
+     **Re-verify migration number `0169` is still free before landing** — `0168` was taken by a
+     concurrent merge mid-session once already.
+   - eq-shell: `staff-licence-backfill.ts` / `staff-licence-replace-photo.ts` changed segment 1
+     from org.id to tenant_id, deliberately with no cleanup logic added (left to PR #1908, which
+     already has the diff-and-delete mechanism on these exact lines — composes rather than
+     duplicating).
+2. **Repair (cleans up the EXISTING 113 + 6)** — [eq-shell PR #1913](https://github.com/eq-solutions/eq-shell/pull/1913),
+   `scripts/repair-licence-photo-segment-drift.mjs`. Dry-run by default; repairs a drifted row
+   via copy → verify (size match) → repoint → delete (same shape migration `0137` used by hand);
+   deletes a true orphan only if both `--apply` and `--delete-orphans` are passed. Deliberately
+   self-contained (queries `public.licences` directly, no dependency on `0169` landing or its
+   migration number). Not run with `--apply` anywhere yet.
+3. `task_7d7d8b41` — spawned background task, eq-cards. Status not verified as part of this
+   update — check before assuming it's still needed or still pending.
 
-### Deferred — needs a design decision before any code gets written
-**Unifying what Cards writes for segment 1.** Cards currently has no cheap way to learn
-`organisations.id` at upload time — the JWT's `app_metadata` only carries `tenant_id` /
-`eq_role` / `is_platform_admin` (injected by jvkn's `custom_access_token_hook`,
-`eq-cards/lib/core/utils/jwt_app_metadata.dart`). Two ways to close that gap, neither attempted
-today:
-1. Add an `org_id` claim to the access-token hook. Touches the shape of every JWT issued
-   suite-wide — an auth-adjacent change requiring its own explicit review, not something to
-   fold into this sprint's "go."
-2. Have Cards resolve org.id via a live, narrowly-scoped read/RPC at upload time (extra
-   round-trip; needs its own RLS check — unconfirmed whether `authenticated` can already read
-   `organisations.id` by tenant_id, or whether a new RPC is needed).
-Recommendation: don't block the detection-gap fix or the data repair on this — those two make
-the *existing* problem visible and fixable without touching auth. This piece only prevents
-*new* drift of the "which writer wrote it last" flavor (the write-convention mismatch), not the
-Personal-Wallet-onboarding flavor, which even a unified convention wouldn't stop on its own
-(segment 1 would still change the moment the worker's tenant changes) — so its payoff is
-smaller than it looks. Needs Royce's call on which approach, if either, is worth it.
+**Recommended sequencing** (not required for safety, just avoids the count growing between
+report and repair): land the two segment1-fix branches first, then PR #1913. #1913 only touches
+rows that already exist today either way.
+
+### PR #1908 — unrelated decision, still standing on its own
+Merging `main` auto-deploys core.eq.solutions. Already reviewed, already correct for the narrower
+side/type/extension case it targets (see "The mechanism" above). Doesn't depend on, or block,
+anything else in this sprint.
 
 ## Decisions needed from Royce
 
-1. Apply the detection-gap migration to jvkn? (hand-apply via Supabase MCP, standard
-   control-plane convention)
-2. Merge PR #1908 to `main`? (= production deploy to core.eq.solutions)
-3. Run the data repair (113 rows + 6 orphans) after reviewing the dry-run report?
-4. Cards write-convention: JWT-hook claim, live RPC lookup, or leave as-is?
+1. Which of the three efforts above to land, and in what order (recommendation: segment1-fix
+   branches, then PR #1913).
+2. Apply migration `0169` (or whatever the landed detection fix ends up being) to jvkn?
+   (hand-apply via Supabase MCP, standard control-plane convention)
+3. Merge PR #1908 to `main`? (= production deploy to core.eq.solutions) — independent of 1/2.
+4. Run PR #1913's `--apply` (and separately, `--delete-orphans`) after reviewing its dry-run
+   output?
 
 ## Status log
 
-- 2026-09-14 — Sprint opened, brief run and confirmed ("Go"). Proceeding with the two staged,
-  non-destructive items (detection-gap migration file, dry-run audit script) and preparing
-  PR #1908 for a merge decision. No DDL applied, no data touched, no merge clicked yet — each
-  still needs its own explicit go per the constraints above.
+- 2026-09-14 — Sprint opened, brief run and confirmed ("Go"). Started building a
+  detection-migration + repair script in eq-shell before discovering — via a memory-file
+  change-notification mid-session — that a concurrent session had already solved the detection
+  half more completely (and caught this sprint's own wrong assumption that org.id was the
+  stable choice). Dropped the duplicate migration, corrected the repair script to the agreed
+  `tenant_id` convention and made it self-contained, opened PR #1913 for just that piece, and
+  reconciled all three now-known efforts here rather than letting a future session rediscover
+  the collision. No DDL applied, no data touched, no merge or `--apply` run — every item above
+  still needs its own explicit go.
