@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-14)
 
+**eq-field:**
+- #982 v3.5.715 — madagins JWT secret map entry + dashboard stats retry (EQ-FIELD-1T, EQ-FIELD-1N)
+
 **eq-service:**
+- #842 fix(defects): revert incompatible JWT-tenant check breaking /defects (EQ-SOLVES-SERVICE-E, EQ-SOLVES-SERVICE-F)
 - #836 chore(deps): bump zod from 4.4.3 to 4.5.4
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
 - #834 chore(deps): bump lucide-react from 1.31.0 to 1.40.0
@@ -69,6 +73,7 @@ _If this file is >48h old, the cron is broken._
 - #829 fix(defects): consolidate raise-defect duplication, close ACB/NSX validation + attribution gaps
 
 **eq-shell:**
+- #1900 fix(field-iframe): extend stall-notice floor to boot→accepted leg (EQ-SHELL-20)
 - #1881 fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
 ---
@@ -89,9 +94,9 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-13 |
+    | eq-service | building | 2026-09-14 |
 | eq-shell | building | 2026-09-14 |
-| eq-field | ready | 2026-09-13 |
+| eq-field | new | 2026-09-14 |
 
     **Migrations:** eq-service has 245 (latest: 0241) applied
 
