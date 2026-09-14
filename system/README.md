@@ -1,7 +1,7 @@
 ---
 title: SYSTEM Tier — Index
 owner: Royce Milmlow
-last_updated: 2026-09-08
+last_updated: 2026-09-14
 scope: The substrate itself — how the AI context system works
 read_priority: reference
 status: live
@@ -38,6 +38,7 @@ Every canonical system file as a full URL — clickable from `/context/claude`:
 - [system/substrate-a-plus-plan.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/substrate-a-plus-plan.md) — **archived**, superseded by substrate-plan-v2.md — kept for history, not live
 - [system/auto-pr-scope.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/auto-pr-scope.md) — the leash for a future auto-PR-finding agent (ALLOW/DENY path list); enforced by `hooks/auto_pr_guard.py`, not just descriptive
 - [system/runbooks/supabase-restore-drill.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/runbooks/supabase-restore-drill.md) — Supabase restore drill runbook (narrowed 2026-07-05 to auth-restore + app-repoint)
+- [system/tenant-identity-drift-scoping-2026-09-09.md](https://raw.githubusercontent.com/eq-solutions/eq-context/main/system/tenant-identity-drift-scoping-2026-09-09.md) — inventory of every hardcoded tenant slug/ID across eq-shell/eq-field/eq-cards/eq-service/eq-solves-intake, judged legitimate-variance vs. completeness gap — scoping only, ~35 of ~40 findings still unbuilt; the §0 fix-now items are done (SEC-77)
 
 ## Files
 
