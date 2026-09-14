@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-14)
 
-**eq-field:**
-- #983 v3.5.716 — retire the legacy licence-expiry field + its broken Edit button
-
 **eq-service:**
 - #846 fix(tests): drop nonexistent raised_date field from defects bait seed
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
@@ -75,6 +72,9 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1906 docs(migrations): correct credentials-canonical-sync retirement comment
 - #1904 feat(tenant-health): surface a missing per-tenant JWT secret on the health check
+
+**eq-solves-intake:**
+- #124 fix(samples): reconcile contact-clean.csv with the contact.schema.json rewrite
 
 ---
 
