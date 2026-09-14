@@ -70,7 +70,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1919 fix(staff): sweep pending-credentials storage on employment purge
-- #1918 docs(control-plane-ledger): mark recycle-review-phone-dup-no-graft applied
 - #1915 fix(control-plane-drift): detect + backfill the auth.users dedup triggers
 
 ---
@@ -92,7 +91,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-14 |
-| eq-shell | new | 2026-09-14 |
+| eq-shell | building | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 248 (latest: 0245) applied
