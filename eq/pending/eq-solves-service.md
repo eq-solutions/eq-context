@@ -1,7 +1,7 @@
 ---
 title: EQ Service — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: EQ Service engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -30,6 +30,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - [ ] **Live `information_schema.role_table_grants` check on ehow** for the 3 newly-granted tables before this merges — flagged in the migration's own header. _(added 2026-09-14)_
 - [ ] **Real local `npm run test:integration` run once Docker is usable on this machine** — the actual proof this needs, not just static analysis. _(added 2026-09-14)_
 - [ ] **Docker Desktop's backend instability on this machine is now a same-day recurrence across 3+ sessions** ("backend exited before becoming ready") — worth a look outside this task's own scope. _(added 2026-09-14)_
+
+---
+
+## eq-service: app_data CI-bootstrap fixture — real grants + RLS policies added (matching live exactly), committed, not yet pushed — Docker/WSL2 still blocking a real local test run (2026-09-14/15)
+*Same root cause PR #845 targets (the fixture's `permission denied for schema app_data` failures), worked independently and in parallel — cross-checked via `gh` mid-session, confirmed no conflict with either #845 or #846. Scope is broader than #845: that PR fixes schema USAGE + `service_role` table grants for 3 specific tables (`job_plans`/`maintenance_checks`/`check_assets`) via a new migration `0244`, plus 2 real test-assertion bugs (a `customers-isolation` false-negative, a missing-site-seed false-positive) this branch doesn't touch. This branch instead edits `0000_app_data_tenant_plane_fixture.sql` directly: schema USAGE for authenticated/service_role/anon; a schema-wide `GRANT ALL ... TO service_role` (matches live's identical full privilege set on every table checked, a superset of #845's 3-table grant); the 2 helper functions (`eq_service_write_allowed`, `eq_is_check_assignee`) and `FORCE ROW LEVEL SECURITY` on `staff`; and the real POLICY bodies (105 policies) for all ~27 canonical-cutover tables, not just the 3 that were failing. **Neither #844 nor #845 add any RLS policy at all** — even with their grants fixed, a real authenticated read through a security_invoker view still hits deny-by-default (RLS enabled, zero policies) instead of genuine tenant filtering.*
+
+- Pulled every grant/policy/function definition live from ehow via the Supabase MCP once it connected mid-session (`has_schema_privilege`, `information_schema.role_table_grants`, `pg_policies`, `pg_get_functiondef`) rather than reconstructing from migration comments alone. Caught one gap a live-only check structurally can't reveal: a new policy references `app_data.staff_conversations` in a subquery — live has the table, but no migration's DDL ever needed it, so it was never in this fixture. Added a minimal 2-column stub, same replay-minimal convention as the rest of the file.
+- Committed `6449e8a` on `fix/app-data-fixture-grants-rls`, isolated worktree (`eq-service/.claude/worktrees/app-data-fixture-grants-rls`). **Not pushed, no PR.**
+- **Verification gap, same shape as #845's and #846's own sessions the same day:** Docker Desktop's backend would not stay up on this machine — "backend exited before becoming ready," now confirmed across at least 4 sessions and into a 2nd calendar day. Tried `wsl --update` (installed 2.7.14) — genuinely changed the failure mode (backend survived ~4.5min instead of ~10s before crashing with a different exit code, `0xffffffff`) but did not fix it. Verified instead via `BEGIN/ROLLBACK` transactions against live ehow (every distinct policy/function pattern applied for real, then rolled back) — real Postgres, zero risk, but not the actual CI bootstrap replay from empty.
+- Set up a session-scoped cron (25-min interval) to keep checking Docker and push automatically once `npm run test:integration` passes, per Royce's explicit standing authorization ("push it once WSL/Docker clears and tests pass"). **This dies when the session closes** — Docker was still down at the last check, so the push never happened. The authorization still stands; it just needs a fresh session to act on it once Docker is actually usable.
+
+**Deferred:**
+- [ ] **Push `fix/app-data-fixture-grants-rls` and open a PR once a real `npm run test:integration` run passes** — branch is ready, Royce's go-ahead already stands, only blocked on this machine's Docker/WSL2 issue. _(added 2026-09-14)_
+- [ ] **Reconcile with PR #845** — same root cause, complementary scope, no git-level conflict (different files), but Royce should decide whether to merge #845 as-is (it has 2 fixes this branch doesn't touch) and land this branch's broader RLS-policy coverage on top, or combine them into one PR before merging either. _(added 2026-09-14)_
+- [ ] **Docker Desktop's backend instability — escalating the item above**: now confirmed across 4+ sessions and 2 calendar days, not just same-day. `wsl --update` measurably changed the failure mode but didn't fix it — worth a dedicated look (reinstall, Hyper-V/virtualization BIOS check, or a full machine restart) outside any single task's scope. _(added 2026-09-14/15)_
 
 ---
 
