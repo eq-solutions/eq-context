@@ -188,9 +188,11 @@ anything else in this sprint.
    independently, right around that session's end — not by this session), found its required
    CI check genuinely hung (~10 hours stuck `in_progress`, everything else on the run green),
    cancelled + re-ran just that job (left the 4 already-passing checks alone), came back clean,
-   and merged on Royce's explicit go. **Migration `0171` (new RPC, `shell_control`-touching,
-   read-only) is NOT applied to jvkn** — same standing rule as every other schema change in this
-   saga, needs its own separate explicit go. The RPC is dead code until then (nothing calls it
+   and merged on Royce's explicit go. **Migration `0171` (new RPC `eq_get_user_active_tenant`,
+   `shell_control`-touching, read-only) is applied to jvkn (2026-09-15, Royce's explicit go)** —
+   verified live: function exists, `SECURITY DEFINER`, `service_role`-only (`anon`/
+   `authenticated` both confirmed `false` via `has_function_privilege`), and does not appear in
+   `get_advisors(security)`'s output at all — zero new findings. The RPC is still dead code
    yet either way).
 7. ~~`task_83d5f0f7`~~ (admin-attach-licence-photo's separate path bug) — underlying fix is
    **merged** (item 6, above). `dismiss_task` still can't reach it from this session (spawned by
@@ -318,8 +320,10 @@ anything else in this sprint.
   [PR #358](https://github.com/eq-solutions/eq-cards/pull/358) already existed (opened
   independently around that session's end), blocked on a genuinely hung required CI check
   (~10 hours stuck, everything else on the run green) — cancelled and re-ran just that job,
-  came back clean, merged on Royce's go. Details in item 6/7 above. Migration `0171` still not
-  applied to jvkn. `task_83d5f0f7`'s chip still needs Royce's own click (same cross-session
+  came back clean, merged on Royce's go. Details in item 6/7 above.
+- 2026-09-15 (eq-cards reconciliation session, cont.) — Royce said apply migration `0171` to
+  jvkn. Applied and verified live (see item 6 above for the specifics) — clean, zero new
+  advisor findings. `task_83d5f0f7`'s chip still needs Royce's own click (same cross-session
   `dismiss_task` limit as `task_7d7d8b41`). This closes out every thread this session picked
   up except the two mechanical chip-clears and whatever `task_59002a2e` (IDENTITY-MODEL.md,
   running independently as of this entry) and `task_b56ada7f` (pending-credentials trace, per
