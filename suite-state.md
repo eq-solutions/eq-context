@@ -60,12 +60,15 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-14)
 
+**eq-cards:**
+- #358 fix(cards): give admin-attach-licence-photo a 3-segment RLS-matching path
+
 **eq-service:**
-- #847 fix(rls): close the app_data + service-schema grant gaps blocking Integration tests
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1915 fix(control-plane-drift): detect a disabled/dropped control-plane trigger
 - #1914 fix(entity-browser): resolve staff_id/site_id to names instead of raw UUIDs
 
 ---
@@ -86,11 +89,11 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-14 |
+    | eq-service | building | 2026-09-14 |
 | eq-shell | building | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
-    **Migrations:** eq-service has 247 (latest: 0243) applied
+    **Migrations:** eq-service has 248 (latest: 0245) applied
 
 ---
 
