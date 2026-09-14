@@ -64,6 +64,10 @@ _If this file is >48h old, the cron is broken._
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
+**eq-shell:**
+- #1913 feat(licences): repair script for Personal-Wallet licence-photo path drift
+- #1912 fix(licences): align licence-photo storage path segment 1 on tenant_id
+
 ---
 
 ## System Health (as of 2026-09-14)
@@ -83,7 +87,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-14 |
-| eq-shell | new | 2026-09-14 |
+| eq-shell | ready | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 247 (latest: 0243) applied
