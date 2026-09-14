@@ -61,6 +61,7 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-14)
 
 **eq-cards:**
+- #357 fix(cards): stop eq_sweep_orphaned_licence_photos deleting unclaimed labour-hire evidence
 - #356 docs(cards): correct RUNBOOK's licence-photos RLS troubleshooting line
 
 **eq-service:**
@@ -79,7 +80,7 @@ _If this file is >48h old, the cron is broken._
     | Repo | Status |
     |------|--------|
     | eq-service | ✓ success |
-| eq-shell | ? in_progress |
+| eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
 | eq-solves-intake | ✓ success |
@@ -89,7 +90,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-14 |
-| eq-shell | new | 2026-09-14 |
+| eq-shell | ready | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 247 (latest: 0243) applied
