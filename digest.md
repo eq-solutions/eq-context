@@ -8,26 +8,28 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-14 10:26 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-14 10:32 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-14 10:21 UTC → 2026-09-14 10:26 UTC)
+## Since last refresh (2026-09-14 10:26 UTC → 2026-09-14 10:32 UTC)
 
-- Merged: eq-shell [#1896](https://github.com/eq-solutions/eq-shell/pull/1896) fix(field-iframe): stop a slow mint eating the iframe's own 
-- Merged: eq-shell [#1893](https://github.com/eq-solutions/eq-shell/pull/1893) fix(security): revoke superfluous anon grant on madagins's f
-- Merged: eq-shell [#1892](https://github.com/eq-solutions/eq-shell/pull/1892) fix(ci): apply the exit-truncation fix to check-shell-staff-
-- Merged: eq-shell [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped r
-- Merged: eq-shell [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-
-- Merged: eq-shell [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the p
-- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
-- Merged: eq-shell [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug
+- Merged: eq-shell [#1904](https://github.com/eq-solutions/eq-shell/pull/1904) feat(tenant-health): surface a missing per-tenant JWT secret
+- Merged: eq-shell [#1898](https://github.com/eq-solutions/eq-shell/pull/1898) Add meta/OG tags to Core; fix 2 missing aria-labels in Acces
+- Merged: eq-shell [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scri
+- Merged: eq-shell [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filt
+- Merged: eq-shell [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with 
+- Merged: eq-shell [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or sig
+- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
+- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
+- ⚠ Needs you: 5 → 6 (new items)
 
-## ⚠ Needs you (5)
+## ⚠ Needs you (6)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 5 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 - 🔴 **Cron failing** — `shared-object-drift.yml` 4 consecutive scheduled run(s) failed, last success 2026-09-09 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-09-14.md](sessions/2026-09-14.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (225)
 
@@ -51,8 +53,8 @@ _…and 213 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 1d ago | 2 | 0d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -61,7 +63,7 @@ _…and 213 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | ready | 2026-09-14 |
+| eq-shell | building | 2026-09-14 |
 
 ## Live errors (Sentry)
 
@@ -78,6 +80,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-14 | eq-shell | [#1904](https://github.com/eq-solutions/eq-shell/pull/1904) feat(tenant-health): surface a missing per-tenant JWT secret on t |
 | 2026-09-14 | eq-shell | [#1907](https://github.com/eq-solutions/eq-shell/pull/1907) docs(control-plane-ledger): note credentials-canonical-sync edge  |
 | 2026-09-14 | eq-shell | [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going missin |
 | 2026-09-14 | eq-shell | [#1905](https://github.com/eq-solutions/eq-shell/pull/1905) fix(privacy): replace vague §8 retention language with real commi |
@@ -92,7 +95,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-14 | eq-solves-service | [#835](https://github.com/eq-solutions/eq-service/pull/835) chore(deps-dev): bump tsx from 4.23.1 to 4.23.13 |
 | 2026-09-14 | eq-solves-service | [#834](https://github.com/eq-solutions/eq-service/pull/834) chore(deps): bump lucide-react from 1.31.0 to 1.44.0 |
 | 2026-09-14 | eq-solves-service | [#833](https://github.com/eq-solutions/eq-service/pull/833) chore(deps): bump resend from 6.21.0 to 6.27.0 |
-| 2026-09-14 | eq-solves-service | [#836](https://github.com/eq-solutions/eq-service/pull/836) chore(deps): bump zod from 4.4.3 to 4.5.4 |
 _Showing 15 of 83 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -187,4 +189,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 10:26 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 10:32 UTC._
