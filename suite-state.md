@@ -64,10 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
-**eq-shell:**
-- #1911 fix(provisioning): land eq_queue_* RPCs through the One Pipe
-- #1908 fix(licences): delete superseded storage objects on photo/PDF replace
-
 ---
 
 ## System Health (as of 2026-09-14)
@@ -87,7 +83,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-14 |
-| eq-shell | building | 2026-09-14 |
+| eq-shell | new | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 247 (latest: 0243) applied
