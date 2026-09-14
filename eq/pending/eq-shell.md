@@ -1720,3 +1720,13 @@ PR #1736 (auth-stall fix + 2 more bugs found on review) merged and live; the one
 **Notes:** Full session detail: `sessions/2026-09-09.md`. Review doc, kept current: `eq/sprints/2026-09-09-tenant-provisioning-review.md`. Drift-check scoping landed (~40 hardcoded tenant-identity references across 6 repos, 3 fix-now items already spawned by Royce independently): `system/tenant-identity-drift-scoping-2026-09-09.md`. Stale runbook fixed: eq-shell commit `e2d7e558`. **Field staff records — fixed twice.** First landing (`9f995940`) was silently clobbered by a concurrent session writing a stale copy of this same file back over it (`940caa00`, its own commit message: "clobbered a second time" — the sprints doc's copy of the same fix survived untouched, only this file's did not). Re-landed here: all 5 known people (Royce, Aditi, Michelle — Manager; Nelson Sareto, Conor Horgan — Labour Hire) have real `app_data.staff` rows on Madagins' project, linked to their Shell identity, `field_approved=true`, confirmed showing in the `field_people` view Field's own UI reads.
 
 ---
+
+## eq-shell: EntityBrowserPage/entity-rows — raw UUIDs replaced with real names ([PR #1914](https://github.com/eq-solutions/eq-shell/pull/1914), merged + live)
+*Found while reviewing Records navigation for a possible redesign — this fix is independent of whichever redesign direction gets picked.*
+
+- [ ] **Records-navigation redesign itself not decided or built** — the original ask surfaced duplicate entity lists across `sidebarConfig.ts`/`useCommandIndex.tsx`/`MobileRecordsDrawer.tsx`/`EntityBrowserPage.tsx`; this fix only addressed the raw-UUID display bug. _(added 2026-09-15)_
+- [ ] **Live click-through not done** — verified via `tsc -b` (project-wide) + eslint + all 5 required CI checks on the merged commit, but no real Supabase tenant credentials were available in this session to visually confirm the resolved names render correctly against real staff/site data. Worth a quick look once convenient. _(added 2026-09-15)_
+
+A merge-readiness audit run before merging (Royce's own standing rule, invoked ahead of his explicit "merge it into main") caught a real gap in the first version of the fix: `site_id` name resolution wasn't gated behind `entity.view`, so labour_hire/subcontractor (who hold the broader `field.view` but are explicitly excluded from `entity.view`) could have gotten real site names via `schedule`/`prestart`/`toolbox_talk` — a back door around the same gate that already protects site names everywhere else. Fixed in the same PR before merge (`requiresPerm: 'entity.view'` added to the site_id lookup); `staff_id` was unaffected — its existing per-entity gates already scope correctly. Full detail: `sessions/2026-09-15.md`.
+
+---
