@@ -9,6 +9,13 @@ status: live
 
 # EQ Service — Changelog
 
+## 2026-09-14 (PRs #836/#833/#834/#835 MERGED + LIVE — 4 dependency bumps cleared: zod, resend, lucide-react, tsx)
+- zod 4.4.3→4.5.4 ([#836](https://github.com/eq-solutions/eq-service/pull/836), open 9+ days): checked the upstream changelog across the 4.4.3→4.5.4 range for anything touching error-handling APIs before merging — this repo's own Zod v4 usage pattern (`.error.issues[0]`, the `error:` option, per AGENTS.md) is exactly the surface a change there would hit. Nothing breaking found; spot-checked schemas against the new version, `tsc --noEmit` clean. Squash-merged, branch deleted.
+- resend 6.21.0→6.27.0 ([#833](https://github.com/eq-solutions/eq-service/pull/833)), lucide-react 1.31.0→1.44.0 ([#834](https://github.com/eq-solutions/eq-service/pull/834)), tsx 4.23.1→4.23.13 dev-only ([#835](https://github.com/eq-solutions/eq-service/pull/835)) — clean mechanical bumps, `package.json`/`package-lock.json` only, already merged by the time this session checked them.
+- All 4 merges clean beyond the repo's already-documented pre-existing `Integration tests (Supabase local)` failure ([#845](https://github.com/eq-solutions/eq-service/issues/845), non-required check) — `Typecheck + audit` and `tsc + next build` passed on every one.
+- #833/#834/#835 merged by a real, non-bot account in rapid ~20s succession immediately after #836 (`autoMergeRequest: null` on all three) — not dependabot auto-merge.
+- Production deploy confirmed live via commit-ancestry, not elapsed time: current `service.eq.solutions` deploy serves commit `a5799df` (#846), a strict descendant of all 4 merges here; secret scan clean, all redirect/header rules and functions deployed without errors.
+
 ## 2026-09-14 (PR #842 MERGED + LIVE — /defects fixed, a live production break since 2026-09-10)
 - Migration 0241 (2026-09-10) added a JWT-tenant check to `get_defect_counts` reacting to a generic security-advisor flag — but that function is only ever called via the service-role admin client (no user JWT), so the check rejected 100% of calls with "caller (&lt;NULL&gt;) does not own tenant", not just cross-tenant ones. Three earlier migrations (0233/0237/0238) had already documented this function as JWT-exempt by design; 0241 didn't cross-check.
 - Migration `0242` reverts just the incompatible check (0241's other two role-gate fixes, on `decrypt_site_credential`/`upsert_site_credential`, are untouched — those legitimately get real user JWTs). The `/defects` page also no longer bundles this RPC's failure into a fatal throw shared with other queries — degrades to zeroed KPI tiles + a handled Sentry capture instead.
