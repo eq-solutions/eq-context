@@ -65,8 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #845 fix(ci): close the 2 remaining Integration-tests failures on main
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 - #835 chore(deps-dev): bump tsx from 4.23.1 to 4.23.13
-- #834 chore(deps): bump lucide-react from 1.31.0 to 1.44.0
-- #833 chore(deps): bump resend from 6.21.0 to 6.26.0
 
 **eq-shell:**
 - #1908 fix(licences): delete superseded storage objects on photo/PDF replace
@@ -90,7 +88,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | uploading | 2026-09-14 |
+    | eq-service | new | 2026-09-14 |
 | eq-shell | ready | 2026-09-14 |
 | eq-field | ready | 2026-09-14 |
 
