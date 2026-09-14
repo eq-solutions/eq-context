@@ -8,19 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-14 08:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-14 08:58 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-14 08:42 UTC → 2026-09-14 08:48 UTC)
+## Since last refresh (2026-09-14 08:48 UTC → 2026-09-14 08:58 UTC)
 
-- Merged: eq-shell [#1901](https://github.com/eq-solutions/eq-shell/pull/1901) Add EQ Core privacy policy (adapted, not copied, from EQ Car
-- Merged: eq-shell [#1891](https://github.com/eq-solutions/eq-shell/pull/1891) fix(ci): apply the #1886 exit-truncation fix to 12 more scri
-- Merged: eq-shell [#1890](https://github.com/eq-solutions/eq-shell/pull/1890) fix(documents): site labels a certificate, it no longer filt
-- Merged: eq-shell [#1889](https://github.com/eq-solutions/eq-shell/pull/1889) feat(documents): let a certificate's site pick combine with 
-- Merged: eq-shell [#1888](https://github.com/eq-solutions/eq-shell/pull/1888) feat(documents): let a certificate export pick a team or sig
-- Merged: eq-shell [#1886](https://github.com/eq-solutions/eq-shell/pull/1886) fix(ci): stop tenant-drift/control-plane-drift scripts trunc
-- Merged: eq-shell [#1877](https://github.com/eq-solutions/eq-shell/pull/1877) chore(deps): bump @eq-solutions/ui to v1.16.5
-- Merged: eq-shell [#1876](https://github.com/eq-solutions/eq-shell/pull/1876) fix(documents): warm push-document-audience's tenant-client 
-- ⚠ Needs you: 9 → 13 (new items)
+- Merged: eq-shell [#1900](https://github.com/eq-solutions/eq-shell/pull/1900) fix(field-iframe): extend stall-notice floor to boot→accepte
+- Merged: eq-shell [#1892](https://github.com/eq-solutions/eq-shell/pull/1892) fix(ci): apply the exit-truncation fix to check-shell-staff-
+- Merged: eq-shell [#1887](https://github.com/eq-solutions/eq-shell/pull/1887) fix(connect): fall back instead of crashing on an unmapped r
+- Merged: eq-shell [#1885](https://github.com/eq-solutions/eq-shell/pull/1885) docs(control-plane-ledger): record #1875's cancel-my-access-
+- Merged: eq-shell [#1884](https://github.com/eq-solutions/eq-shell/pull/1884) fix(token-exchange): scope platform-admin Field JWT to the p
+- Merged: eq-shell [#1882](https://github.com/eq-solutions/eq-shell/pull/1882) fix(field): make the Field-workspace picker read tenants liv
+- Merged: eq-shell [#1879](https://github.com/eq-solutions/eq-shell/pull/1879) fix(security): lock field_tenant_slug to a tenant's own slug
+- Merged: eq-shell [#1878](https://github.com/eq-solutions/eq-shell/pull/1878) fix(security): close 2 more RLS gaps found while checking te
 
 ## ⚠ Needs you (13)
 
@@ -36,7 +35,7 @@ _2026-09-14 08:48 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **PR aging 7d** — eq-solves-service [#833](https://github.com/eq-solutions/eq-service/pull/833) "chore(deps): bump resend from 6.21.0 to 6.26.0"
 - 🟠 **PR aging 9d** — eq-solves-service [#829](https://github.com/eq-solutions/eq-service/pull/829) "fix(defects): consolidate raise-defect duplication, close ACB/NSX vali"
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
-- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (228)
 
@@ -60,8 +59,8 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 4d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 6 | 9d |
+| eq-shell | ✓ success | 0d ago | 1 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 7 | 9d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 0 | — |
 | eq-solves-intake | ✗ failure | 4d ago | 0 | — |
@@ -70,7 +69,7 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | new | 2026-09-14 |
+| eq-shell | building | 2026-09-14 |
 
 ## Live errors (Sentry)
 
@@ -78,7 +77,7 @@ _…and 216 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |---------|-------|--------|-----------|
 | eq-shell | [EQ Field handoff stalled at "booted" (10s, no 'accepted' yet)](https://eq-solutions.sentry.io/issues/145052767/) | 15 | 2026-09-13 |
 | eq-shell | [EQ Field accepted the handoff but never reported 'rendered' (19s)](https://eq-solutions.sentry.io/issues/145332293/) | 9 | 2026-09-13 |
-| eq-field | [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/) | 5 | 2026-09-14 |
+| eq-field | [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/) | 6 | 2026-09-14 |
 | eq-field | [TypeError: Failed to fetch](https://eq-solutions.sentry.io/issues/146068110/) | 2 | 2026-09-11 |
 | eq-solves-service | [Error: Failed to load defects (get_defect_counts query failed)](https://eq-solutions.sentry.io/issues/146824995/) | 1 | 2026-09-14 |
 | eq-solves-service | [o](https://eq-solutions.sentry.io/issues/146824993/) | 1 | 2026-09-14 |
@@ -90,6 +89,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-14 | eq-shell | [#1900](https://github.com/eq-solutions/eq-shell/pull/1900) fix(field-iframe): extend stall-notice floor to boot→accepted leg |
 | 2026-09-14 | eq-shell | [#1901](https://github.com/eq-solutions/eq-shell/pull/1901) Add EQ Core privacy policy (adapted, not copied, from EQ Cards) |
 | 2026-09-14 | eq-shell | [#1881](https://github.com/eq-solutions/eq-shell/pull/1881) fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES |
 | 2026-09-14 | eq-shell | [#1899](https://github.com/eq-solutions/eq-shell/pull/1899) fix(field-iframe): calibrate the draw notice against real render  |
@@ -104,12 +104,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-13 | eq-shell | [#1893](https://github.com/eq-solutions/eq-shell/pull/1893) fix(security): revoke superfluous anon grant on madagins's field_ |
 | 2026-09-13 | eq-solves-service | [#841](https://github.com/eq-solutions/eq-service/pull/841) fix(ci): stop 4 check/audit scripts truncating their own report |
 | 2026-09-13 | eq-field | [#978](https://github.com/eq-solutions/eq-field/pull/978) fix(canon-read): reject the body.tenant_slug fallback instead of  |
-| 2026-09-13 | eq-field | [#980](https://github.com/eq-solutions/eq-field/pull/980) docs(field-people): record field_people_iud() v_actor_id provenan |
 _Showing 15 of 76 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (297 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (299 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (65 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (235 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (71 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -141,7 +140,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1696 | 234 / 65 | 1 | 95 |
+| [eq-shell](eq/pending/eq-shell.md) | 1708 | 236 / 65 | 1 | 95 |
 | [eq-cards](eq/pending/eq-cards.md) | 365 | 48 / 17 | 0 | 11 |
 | [eq-field](eq/pending/eq-field.md) | 1292 | 195 / 40 | 0 | 61 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 401 | 51 / 20 | 0 | 26 |
@@ -154,7 +153,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [sks](eq/pending/sks.md) | 55 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 515 | 95 / 15 | 0 | 71 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
-| [OPS](ops/pending.md) | 619 | 52 / 3 | 0 | 19 |
+| [OPS](ops/pending.md) | 675 | 56 / 3 | 0 | 19 |
 
 ## Aging open items (45d+, unconfirmed)
 
@@ -199,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 08:48 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-14 08:58 UTC._
