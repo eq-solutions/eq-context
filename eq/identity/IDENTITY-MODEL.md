@@ -1,7 +1,7 @@
 ---
 title: EQ Solutions — Unified Identity & Permissions Model
 owner: Royce Milmlow
-last_updated: 2026-09-01
+last_updated: 2026-09-15
 scope: Authoritative cross-product reference. Every present and future EQ Solutions product (Field, Quotes, Cards, Service, Intake, Tender Pipeline, anything that follows) conforms to this model. Governs the 5-tier role system, the platform-admin escape hatch, naming conventions for roles and permission keys, the invite flow, session lifecycle, the JWT shape that lets modules talk directly to Supabase, and (§3.3) identity data ownership between the control layer and tenant planes.
 read_priority: critical
 status: live
@@ -314,7 +314,7 @@ This is the source the shell reads. `SessionContext` exposes it plus the hydrate
 
 ### 6.2 The Supabase JWT (for modules that talk to Supabase directly)
 
-Some modules don't run in-shell — they have their own runtime (the Cards Flutter app, a future native iOS app, etc.) and they hit Supabase directly. RLS is the gate. For RLS to work, the JWT they present must carry the same identity the shell holds.
+Some modules don't run in-shell — they have their own runtime (a future native iOS app, etc.) and they hit Supabase directly. RLS is the gate. For RLS to work, the JWT they present must carry the same identity the shell holds. *(Cards no longer consumes this endpoint — see §7.2's 2026-09-15 correction.)*
 
 The shell's `/.netlify/functions/mint-supabase-jwt` endpoint mints a Supabase-format JWT signed with the project's JWT secret. The payload follows Supabase's convention:
 
@@ -389,13 +389,22 @@ This mapping lives in `mint-iframe-token.ts` and is the only place Field's narro
 
 ### 7.2 EQ Cards (Flutter app — Supabase JWT)
 
-Cards talks to Supabase directly from its Flutter runtime. It receives a shell-minted Supabase JWT (see §6.2) via the iframe URL hash on first load, stores it in `flutter_secure_storage`, and refreshes it before expiry by calling `mint-supabase-jwt` through a postMessage bridge to the shell. RLS on `eq-canonical` enforces tenant + role scoping; Cards never trusts client-side checks.
+**Correction 2026-09-15 (code-verified against eq-shell + eq-cards source, commits `dc2f6116` and `7a034bbe`):** the two paragraphs below describe a custom-signed Supabase JWT handed off via iframe URL hash and refreshed via `mint-supabase-jwt`. Both are stale.
 
-See the Cards canonical-migration plan at [eq/cards/canonical-migration/plan.md](../cards/canonical-migration/plan.md) for the Cards-side implementation. Cards is the first consumer of `mint-supabase-jwt`.
+- **Shell-iframe handoff:** `mint-cards-iframe-token.ts` (the custom-JWT minter the original text describes) was deleted as dead code in eq-shell `7a034bbe` (2026-07-21). Its replacement since `dc2f6116` (2026-06-24), `mint-cards-otp.ts`, mints no JWT of its own — it requires an existing `eq_shell_session` cookie and calls Supabase's native `auth.admin.generateLink()` for a `token_hash`. `CardsIframe.tsx` relays the handshake over **postMessage** (`REQUEST_SHELL_TOKEN` / `SHELL_TOKEN_RESPONSE`), not the URL hash. Flutter redeems the hash via `auth.verifyOTP(tokenHash, type: OtpType.magiclink)`, which creates a real `auth.sessions` row with its own refresh_token — an ordinary GoTrue-native sign-in, not a shell-signed token. Per `mint-cards-otp.ts`'s own header comment, the reason for the change: gotrue_dart 2.20+'s `setSession()` calls `getUser()` server-side, which rejects a shell-minted JWT that has no `auth.sessions` row.
+- **Refresh** is native GoTrue `refreshSession()` — automatic, plus a 7-minute belt-and-suspenders timer (`ShellSessionRefresh`, web-only) — not `mint-supabase-jwt` / postMessage, for the same gotrue_dart reason.
+- **Standalone sign-in** (no prior Shell session — Cards' own phone/email OTP screen) is a separate, unaffected path: `AuthRepository` calls Supabase's `signInWithOtp`/`verifyOTP` directly from Flutter. No shell function is involved.
+- Both the handoff and standalone paths converge on the same `public.custom_access_token_hook` on jvkn to populate `app_metadata.tenant_id`.
+
+Original text, retained for history, **retracted, not just stale**:
+
+~~Cards talks to Supabase directly from its Flutter runtime. It receives a shell-minted Supabase JWT (see §6.2) via the iframe URL hash on first load, stores it in `flutter_secure_storage`, and refreshes it before expiry by calling `mint-supabase-jwt` through a postMessage bridge to the shell. RLS on `eq-canonical` enforces tenant + role scoping; Cards never trusts client-side checks.~~
+
+~~See the Cards canonical-migration plan at [eq/cards/canonical-migration/plan.md](../cards/canonical-migration/plan.md) for the Cards-side implementation. Cards is the first consumer of `mint-supabase-jwt`.~~
 
 ### 7.3 EQ Intake (in-shell module)
 
-Intake runs inside the shell, not in an iframe. It reads `SessionContext` directly via `useSession()` + `useCan()`. For Supabase calls that need RLS, it uses the same `mint-supabase-jwt` flow as Cards — but invoked in-process by the shell, not via postMessage.
+Intake runs inside the shell, not in an iframe. It reads `SessionContext` directly via `useSession()` + `useCan()`. For Supabase calls that need RLS, it calls `mint-supabase-jwt` in-process by the shell, not via postMessage. *(Note 2026-09-15: no longer "the same flow as Cards" — Cards has since moved off `mint-supabase-jwt` entirely, see §7.2's correction.)*
 
 ## 8. Tenant entitlements vs role permissions
 
@@ -436,7 +445,7 @@ The five §11 questions that flagged uncertainty in the draft were all settled b
 2. ~~**Multi-tenant membership.**~~ **Superseded 2026-07-30 (Royce) — see §11.3.** The 2026-05-20 "one user, one tenant, `users.tenant_id` a single FK" decision below is retracted, not just stale. **New decision: Cards is the personal identity/control layer.** Every person gets exactly one Cards identity (one `shell_control.users` row) that they own — homed at the `__personal__` tenant. Tenant membership is additive and optional on top of that identity: a user may choose to join one or more tenants, tracked as active rows in `shell_control.user_tenant_memberships`, never by cloning the `users` row. *(Original 2026-05-20 text, superseded: "one user belongs to one tenant... if a real cross-tenant use case appears, the model becomes two `users` rows linked by email — not a single row with multiple tenant IDs.")*
 3. ~~**Role granularity beyond 5.**~~ **Decided: 5 tiers correct for v1.** AHD programme uses the existing tiers without exception (apprentice + employee + supervisor cover the field). 6th tier added only via a deliberate model bump.
 4. ~~**Self-service invite acceptance.**~~ **Decided: PIN only on the landing page.** Display name comes from the invite payload; editable by an admin later via `/admin/users/<id>`. Keeps the landing form to one field — finishable in 5 seconds on a phone.
-5. ~~**JWT TTL and refresh strategy.**~~ **Decided: 15-minute default, refresh-on-demand via `/.netlify/functions/mint-supabase-jwt`.** Cards's Flutter app (first external consumer, see Cards canonical-migration plan Unit 4) caches the most-recent JWT in `flutter_secure_storage` + refreshes opportunistically when online. If real-world Cards use shows 15 min is too tight for patchy-signal scenarios, bump to 60 min and document the trade in §11.5 web considerations.
+5. ~~**JWT TTL and refresh strategy.**~~ **Decided: 15-minute default, refresh-on-demand via `/.netlify/functions/mint-supabase-jwt`.** Cards's Flutter app (first external consumer, see Cards canonical-migration plan Unit 4) caches the most-recent JWT in `flutter_secure_storage` + refreshes opportunistically when online. If real-world Cards use shows 15 min is too tight for patchy-signal scenarios, bump to 60 min and document the trade in §11.5 web considerations. **Correction 2026-09-15: Cards no longer consumes `mint-supabase-jwt` at all — see §7.2.**
 
 ## 11.2 v2 backlog — deliberate model bumps for later
 

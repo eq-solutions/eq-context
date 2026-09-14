@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Products
 owner: Royce Milmlow
-last_updated: 2026-08-17
+last_updated: 2026-09-15
 scope: Live EQ products, plus the canonical Killed / Deferred list (CLAUDE.md §9 points here — don't duplicate facts back into CLAUDE.md). Field section flagged stale — see banner in that section.
 read_priority: standard
 status: live
@@ -170,16 +170,21 @@ subdomain alias added manually (~5 min) until automated.
   sites). The first real Phase 2 module.
 - **Cards** (iframe wedge at `/:tenant/cards`, **canonical flip
   shipped 2026-05-21**) — mounts `eq-cards.netlify.app` Flutter web
-  build. Authentication is via shell-minted JWT passed in the iframe
-  URL hash (`mint-cards-iframe-token` Netlify function); no more
-  email-OTP. Data lives in `app_data.licences` + `app_data.staff` on
-  eq-canonical, accessed via `eq_cards_list_my_licences` /
-  `eq_cards_upsert_my_licence` / `eq_cards_soft_delete_my_licence`
-  RPCs that bridge the column rename (user_id → staff_id,
-  photo_*_url → photo_*_path, deleted_at → active=false). Legacy
-  Cards Supabase (`hshvnjzczdytfiklhojz`) is read-only rollback
-  insurance until the JPG photos are also migrated (deferred — see
-  `eq/pending.md` §EQ Cards).
+  build. **Auth corrected 2026-09-15 (was stale):** no longer a
+  shell-minted JWT via iframe URL hash — `mint-cards-iframe-token`
+  was deleted 2026-07-21 (eq-shell `7a034bbe`). Live since `dc2f6116`
+  (2026-06-24): `mint-cards-otp.ts` relays a GoTrue magic-link
+  token_hash over postMessage, redeemed via `verifyOTP` — no
+  shell-signed JWT. Standalone phone/email OTP (no Shell session) is
+  a separate, still-live path. Full mechanism:
+  [IDENTITY-MODEL.md](identity/IDENTITY-MODEL.md) §7.2. Data lives in
+  `app_data.licences` + `app_data.staff` on eq-canonical, accessed via
+  `eq_cards_list_my_licences` / `eq_cards_upsert_my_licence` /
+  `eq_cards_soft_delete_my_licence` RPCs that bridge the column rename
+  (user_id → staff_id, photo_*_url → photo_*_path, deleted_at →
+  active=false). Legacy Cards Supabase (`hshvnjzczdytfiklhojz`) is
+  read-only rollback insurance until the JPG photos are also migrated
+  (deferred — see `eq/pending.md` §EQ Cards).
 - **Tender Pipeline** scaffolding under `src/modules/tender-pipeline/`
   is **stale exploration** — 5 page stubs ~9KB total, not on the
   roadmap. Tender Pipeline lives in EQ Field, not in the shell.
