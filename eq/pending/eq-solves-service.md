@@ -21,11 +21,11 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - Fixed: dropped the stray field, no replacement needed (`created_at` already covers "when raised"). [eq-service PR #846](https://github.com/eq-solutions/eq-service/pull/846), pushed — **not yet merged.**
 - Mid-session, the shared main checkout was actively in use by a concurrent session ("EQ Service automated checks failing") investigating an unrelated migration-runner bug — isolated into its own git worktree rather than fight over the shared file, per the standing shared-checkout rule.
 - CI's `Integration tests (Supabase local)` job fails on this PR — confirmed pre-existing, not caused by this change: `main` itself fails the identical job on its last 3 runs (including the exact base commit this branch is on), all with the same systemic `permission denied for schema app_data` error hitting many unrelated tables (contacts, sites, notifications, attachments, contract_scopes, etc.). `defects` itself never appears in that error list. `tsc + next build` and `Typecheck + audit` both pass on this PR.
+- **Coverage gap closed same session, not left deferred**: extended `cross-tenant-sweep.test.ts`'s own sanity check to also assert `baited.has('assets')`/`baited.has('defects')` — that check's narrow scope (missing exactly these two) is why the `raised_date` bug went undetected for as long as it did. Pushed as a second commit on the same PR #846 branch.
 
 **Deferred:**
 - [ ] **Merge PR #846.** _(added 2026-09-14)_
-- [ ] **Real end-to-end confirmation that `baited.has('defects')` flips to `true`** — blocked on the systemic `app_data` permission/migration-runner bug (being chased by a concurrent session as of this writing) landing first; needs a clean CI re-run once that's fixed. _(added 2026-09-14)_
-- [ ] **Broader coverage gap this fix only partly closes**: `cross-tenant-sweep.test.ts`'s own sanity check still only asserts `customers`/`sites`/`maintenance_checks`/`audit_logs` are baited — `defects` (and `assets`) can silently go unbaited again in future with nothing failing CI. Not touched this session — narrow, targeted fix only. _(added 2026-09-14)_
+- [ ] **Real end-to-end confirmation that `baited.has('assets')`/`baited.has('defects')` flip to `true`** — the new assertions are expected to fail until a separate, concurrent fix for the systemic `app_data` grants/RLS issue (`fix/app-data-fixture-grants-rls`, `fix/integration-test-tenant-claim-and-app-data-grants`, both in flight as of this writing) lands on `main` and this branch rebases onto it. That rebase + green re-run is the real end-to-end confirmation this whole thread has been waiting on. _(added 2026-09-14)_
 
 ---
 
