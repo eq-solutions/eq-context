@@ -16,6 +16,19 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: Core polish-pass audit — 2 quick fixes shipped, privacy-policy item surfaced a real compliance gap (rotated 2026-09-14 — privacy-policy item closed 2026-09-14, see pending.md's current top section for the follow-up work)
+*Royce forwarded an external "polish pass" prompt for core.eq.solutions (meta tags, OG tags, privacy policy, form validation, loading states, alt text, image compression). Audited against live state before building anything — 4 of 7 items were already done or didn't apply; the privacy-policy item's own premise turned out to be wrong.*
+
+- **Privacy-policy premise is false — Core is not SKS-staff-only.** Live query against `shell_control.user_tenant_memberships` on jvkn confirmed Madagins (a real third-party labour-hire tenant) has 5 active accounts (3 manager, 2 labour_hire) today — exactly the condition the source prompt itself said should change the compliance bar. eq-shell also has no Footer component at all in the authenticated app (only a plain, unlinked copyright line on 5 pre-login pages) — "add a footer link" is really "build a footer." A real, live policy already exists for eq-cards (v1.1, 2026-04-29) that could potentially be adapted instead of drafting fresh.
+- **4 of 7 items were already done, not built:** analytics (Sentry/PostHog/Clarity) genuinely wired in `src/observability.ts`; Documents-feature forms already show visible inline errors, no silent failures (the actual sign-off/signing action turned out to live in EQ Field, not eq-shell); `Skeleton.tsx` (not `.js`) already used correctly for content loads, submit buttons correctly use busy-state instead; every bundled image is already small (largest is a 20KB favicon).
+- **2 real, low-risk gaps found and fixed:** missing `<meta name="description">` + OG tags on `index.html`; 2 icon-only buttons in `AccessControlPage.tsx` (group-modal close, remove-member) with no `aria-label`. Built in an isolated worktree — root checkout was mid-flight on an unrelated branch (`feat/staff-compliance-override`, untouched) — verified live-rendered, merged: **[eq-shell#1898](https://github.com/eq-solutions/eq-shell/pull/1898)**.
+
+**Deferred (closed):**
+- [x] **Privacy-policy decision** — Royce decided to adapt (not mirror) EQ Cards' policy; built and merged as **[eq-shell#1901](https://github.com/eq-solutions/eq-shell/pull/1901)**, confirmed live. See pending.md's current top section for the full write-up. _(closed 2026-09-14)_
+
+---
+
+
 ## eq-solves-intake: contact.schema.json drift reconciled against live ehow, FK-match hint bug fixed in 3 files (rotated 2026-09-10 — deferred item closed 2026-09-09, see pending.md's current top section for the follow-up work)
 *Two copies of `contact.schema.json` had diverged: root modeled a shape (nullable `site_id`, single `name`/`phone`) that was never built. Verified live `app_data.contacts` against ehow (eq-shell `tenant-migrations` 0001–0294, generated DDL, and a live Supabase query) before touching anything — `customer_id` is required, `first_name`/`last_name` split, `work_phone`/`mobile_phone`/`fax` split, no `site_id` column ever existed. Site-level contact association is real but lives in a separate `contact_site_links` many-to-many table (7 live rows), not a nullable `site_id`.*
 

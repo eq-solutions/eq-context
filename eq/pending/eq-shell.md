@@ -15,6 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Core privacy policy shipped and confirmed live (2026-09-14)
+*Follow-up to the prior session's "hold off" on the privacy-policy item (see archive) — Royce came back and asked to decide the approach directly: can it mirror EQ Cards' policy?*
+
+- Answer: not verbatim. Read Cards' real policy (`assets/legal/privacy-policy.md`) and found it's written for Cards' specific practices (SMS-only sign-in via Twilio, Claude Vision OCR on licence photos, Medicare/health data) and doesn't even list Microsoft Clarity, which Core runs. Verified Core's actual practices via a deep code audit before drafting instead of assuming: Core also does phone/SMS sign-in with its own direct Twilio integration, and — a genuinely new finding — Core's own Staff module (`AddLicenceModal.tsx`) already collects and Claude-OCRs government ID photos (driver licence, passport, Medicare, police check, WWCC), stored on the control-plane Supabase project. Confirmed all three Supabase planes (jvkn/zaap/ehow) are `ap-southeast-2` (Sydney) directly via the Supabase API before writing that into the policy.
+- Built: new `/privacy` page (adapted content, not copied), linked from all 5 pre-login pages (the actual universal disclosure surface) and from a new Admin Hub tile next to Audit log (Royce's explicit placement call — "link it behind the audit log").
+- Deliberately left two things unresolved rather than invent them: a specific data-retention period and an automated deletion SLA, since neither could be verified in code (unlike Cards' policy, which cites real numbers). Spun off as a background task; Royce already started it in a separate session.
+- Also spun off a separate background task on whether the Staff module's licence-OCR duplicates EQ Field's licence domain (contradicts the standing "licences are Field-only" rule, or is legitimate shared canonical infrastructure — not determined here). Royce already started this one too, in a separate session.
+- Merged **[eq-shell#1901](https://github.com/eq-solutions/eq-shell/pull/1901)** (squash `c864949c`) once CI passed. Confirmed live properly, not by elapsed time: current production deploy (`5652cd90`, two unrelated PRs merged on top since) confirmed via `git merge-base --is-ancestor` to include `c864949c`, plus a direct fetch of core.eq.solutions/privacy showing the real content.
+
+No open items from this thread — both follow-ups are already running as separate sessions.
+
+---
+
 ## eq-shell: Field-handoff stall cluster — EQ-SHELL-29/21 (threshold bugs) fixed, EQ-SHELL-1P/22/20/2A all already closed by earlier work (2026-09-13 → 09-14)
 *Follow-up to the 2026-09-13 Sentry review's 3 deferred items (`sessions/2026-09-13.md`) — re-verified live before sprinting rather than assumed still current; one (EQ-FIELD-1N) turned out already resolved and was dropped. Full write-up: `eq/sprints/2026-09-14-eq-shell-reliability-followups.md`.*
 
@@ -29,30 +42,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 - **EQ-SHELL-2A ("Degraded HTTP Operation") — noise, resolved.** Sentry's automated performance detector flagging one 399.6ms PostHog analytics POST as slow (2026-09-10). Single occurrence, 0 users impacted, confirmed the only `http_client`-category issue this project has ever raised — not a pattern. Marked resolved.
 
 ---
-
-## eq-shell: Core polish-pass audit — 2 quick fixes shipped, privacy-policy item surfaced a real compliance gap (2026-09-13)
-*Royce forwarded an external "polish pass" prompt for core.eq.solutions (meta tags, OG tags, privacy policy, form validation, loading states, alt text, image compression). Audited against live state before building anything — 4 of 7 items were already done or didn't apply; the privacy-policy item's own premise turned out to be wrong.*
-
-- **Privacy-policy premise is false — Core is not SKS-staff-only.** Live query against `shell_control.user_tenant_memberships` on jvkn confirmed Madagins (a real third-party labour-hire tenant) has 5 active accounts (3 manager, 2 labour_hire) today — exactly the condition the source prompt itself said should change the compliance bar. eq-shell also has no Footer component at all in the authenticated app (only a plain, unlinked copyright line on 5 pre-login pages) — "add a footer link" is really "build a footer." A real, live policy already exists for eq-cards (v1.1, 2026-04-29) that could potentially be adapted instead of drafting fresh.
-- **4 of 7 items were already done, not built:** analytics (Sentry/PostHog/Clarity) genuinely wired in `src/observability.ts`; Documents-feature forms already show visible inline errors, no silent failures (the actual sign-off/signing action turned out to live in EQ Field, not eq-shell); `Skeleton.tsx` (not `.js`) already used correctly for content loads, submit buttons correctly use busy-state instead; every bundled image is already small (largest is a 20KB favicon).
-- **2 real, low-risk gaps found and fixed:** missing `<meta name="description">` + OG tags on `index.html`; 2 icon-only buttons in `AccessControlPage.tsx` (group-modal close, remove-member) with no `aria-label`. Built in an isolated worktree — root checkout was mid-flight on an unrelated branch (`feat/staff-compliance-override`, untouched) — verified live-rendered, merged: **[eq-shell#1898](https://github.com/eq-solutions/eq-shell/pull/1898)**.
-
-- [ ] **Privacy-policy decision still open** — your call on disclosure now that a real external (non-SKS) tenant has live access; explicitly held this session, not built. _(added 2026-09-13)_
-
----
-
-## eq-shell: Certificate "who's included" picker folded into one mechanism — MERGED + LIVE via direct push, no PR (2026-09-10)
-*Royce flagged that the document sign-off certificate flow had "wiring from previous attempts" — `CertificateActions.tsx` had two separate ways to pick who's included in an exported certificate: a per-site dropdown (only appeared once a signer had actually been tagged with a site) and a newer team/hand-pick modal built the same week. Asked to fold the dropdown into the modal so there's one mechanism, not two.*
-
-- **`CertificateAudienceModal.tsx` gained a third "By site" tab**, shown only when the document has at least one site-tagged signer — reuses the exact `site_id`-only filter branch `push-document-audience.ts`'s `buildCertificate` already had, confirmed by reading that function directly (no backend change needed). Site stays a label-only field on the other two tabs (team / hand-pick), unchanged.
-- **`CertificateActions.tsx` dropped both `DropdownMenu`s** — the plain whole-document download links are now always visible instead of being hidden behind a dropdown whenever the doc had a tagged site.
-- Verified via `pnpm run build` (packages + tokens + `tsc -b` + vite build, clean) and `eslint`, both clean. Committed (`404580f4`, two files only — three unrelated pending JWT-auth files already sitting modified in the shared checkout were left untouched) and pushed directly to `main` on Royce's explicit instruction, aware this triggers eq-shell's auto-deploy.
-
-- [ ] **Not click-tested live by a person — partially confirmed since.** Royce viewed the live Document sign-off list (`core.eq.solutions/sks/admin/documents`) and the row UI matches exactly what shipped: the per-site dropdown is gone, "Choose who's included…" and the plain "Download certificate"/"Download with document" links are always visible. SWMS-008 shows "Required at 1 site" (`countRequiredSites`, the same tagged-signer count `CertificateActions` uses) — confirms it's the one live document that would surface the new "By site" tab. Still open: nobody has actually clicked into the modal and exercised that tab. _(added 2026-09-14)_
-- [ ] **Direct push bypassed branch protection's 5 required status checks** — GitHub's own push output said so explicitly. Local build+lint covered the same ground, but this exact commit never ran the repo's actual CI on GitHub. Worth confirming `main`'s CI is still green next time someone's in this repo. _(added 2026-09-14)_
-
----
-
 ## eq-shell: "No suitable key or wrong key type" on madagins traced to root cause — fix rebuilt in an isolated worktree and opened as PR #1895 after the first draft was lost to shared-checkout drift (2026-09-13)
 *Started from a screenshot of EQ Shell's Review Queue tab on the `madagins` tenant. Traced fully: `connectTenantClient()`'s fallback chain (proxy → routed → sks-legacy) all ultimately sign a tenant JWT with either `SKS_SUPABASE_JWT_SECRET` or the shared `SUPABASE_JWT_SECRET` — but madagins' own Supabase project (`ornndtbdkxfsewspbrwk`) was never configured to accept either, so every direct-browser call fails identically. `scripts/provision-tenant.mjs` itself documents skipping this step ("Sync SUPABASE_JWT_SECRET into the new project — deferred").*
 

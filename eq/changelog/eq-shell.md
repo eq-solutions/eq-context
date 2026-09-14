@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-14 (PR #1901 MERGED + LIVE — EQ Core privacy policy published)
+- New `/privacy` page (mirrored at `admin/privacy`) covering what Core actually collects and processes — adapted from, not copied from, EQ Cards' published policy. Core also runs its own direct Twilio SMS integration and Claude-based licence-photo OCR (via the Staff module), neither of which Cards' policy framing would have covered accurately.
+- Linked from all 5 pre-login pages (Login, Reset PIN, TOTP challenge, Auth callback, Accept invite) and from a new Admin Hub tile next to Audit log.
+- Data-retention specifics and an automated deletion SLA were deliberately left unresolved (no code-verified commitment to point to) rather than invented — tracked as a follow-up. [PR #1901](https://github.com/eq-solutions/eq-shell/pull/1901).
+
 ## 2026-09-14 (PR #1899 MERGED + LIVE — Field iframe's draw-notice threshold recalibrated against real evidence, closing EQ-SHELL-21)
 - EQ-SHELL-21 ("Field accepts the handoff but never reports 'rendered'") was live and growing (6→9 occurrences, 9 distinct users, in under 3 days) — not dormant. An initial iOS-only theory (from 2 examples) was disproven once all 9 event traces were pulled: 6 of 9 are Windows desktop.
 - Root cause: the existing 10s notice threshold was calibrated for the mint/boot leg of the handoff (see 2026-09-13's #1896 entry below), not the separate accepted→rendered draw leg — real draw times on production traffic (684-sample PostHog percentile query) run genuinely longer. Adds `DRAW_NOTICE_MS = 15_000` as its own constant, deliberately not merged into `STALL_NOTICE_MS` (10s) — the two legs have different real-world timing and conflating them would just relocate the miscalibration.
