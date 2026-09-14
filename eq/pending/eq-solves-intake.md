@@ -15,6 +15,22 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-intake: seed-schemas.ts's missing dependency fixed and shipped — closes the deferred item in the entry below (2026-09-15, second session same day)
+
+*Closes the `sql/seed-schemas.ts` deferred item in the schema-sync entry directly below — reached independently, in a separate concurrent session working the same repo. Royce answered the "add the dependency vs. retire the script" question directly (structured question, not the background task that entry names): **wire it up.***
+
+**Completed:**
+- Added a `package.json` at the eq-solves-intake repo root — `@supabase/supabase-js` + `tsx`, a `seed:schemas` npm script. This is the correct fix location, not a stylistic choice: `eq-platform/` is a **sibling** of `sql/` and `scripts/`, not their ancestor, so nothing installed inside `eq-platform` (a pnpm workspace of its own, `packages/*` only) is ever on Node's module-resolution path for either directory. `demos/package.json` already proved the standalone-package.json pattern works in this repo.
+- Same fix, confirmed as a side effect (identical unresolvable import, same directory): `scripts/apply-migrations.mjs` — this repo's actual `migrate`/`migrate:dry` runner — now runs (`--dry-run` lists all 54 migrations instead of `ERR_MODULE_NOT_FOUND`). `scripts/migrate-cards-to-canonical.mjs` shares the identical import; not exercised live (it writes real data).
+- Updated `sql/seed-schemas.ts`'s header comment to the working run command. Committed (`03188fa`, only the 3 relevant files — left the working tree's unrelated `.claude/settings.local.json` edit untouched) and pushed to `main`.
+- Verified live: `npm run seed:schemas` now reaches the real `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` guard instead of dying at import.
+
+**Notes (load-bearing):**
+- **Likely duplicate/conflicting concurrent work — needs Royce to check, not something this session could resolve itself.** The entry below spawned `task_d667cade` for this exact question ("add the dependency vs. retire the script"), started by Royce in a separate local session, in this same shared (non-worktree-isolated) checkout. As of this close, that checkout still shows live unstaged changes this session didn't make — `eq-platform/package.json` modified, `SPRINT-SUMMARY.md` modified, `scripts/apply-migrations.mjs` deleted — consistent with a background session still mid-implementation of the same fix, independently of Royce's direct answer here. Two risks if so: (1) duplicated effort on an already-shipped, already-verified fix; (2) if its approach adds the dependency to `eq-platform/package.json` specifically, that can't work for the reason above (sibling, not ancestor) — it would look plausible and still not fix `sql/seed-schemas.ts`. Tried to identify and message that session directly (`ListAgents` showed two live `eq-solves-intake` peers; `list_sessions` couldn't positively resolve either to a session id) — couldn't reach it with confidence, flagging here and to Royce directly instead of guessing.
+- Separate, still-open, unrelated question spawned this session: `apply-migrations.mjs`'s own docstring says it tracks migrations in `app_data.eq_migrations` — this repo's own `CLAUDE.md` Rule 1 says the single ledger writer is `app_data._eq_migrations` (leading underscore, eq-shell's). Same table under drifted names, or two unrelated tables — not established. Spawned as `task_36ed655a`, Royce started it separately, still running as of this close.
+
+---
+
 ## eq-solves-intake: schema-sync CI gate added; site.schema.json customer_id reconciled; two stale script/doc references fixed (2026-09-15)
 *Closes the follow-up flagged in the 2026-09-14 contact.schema.json close below (`task_cd08e566`) — "this repo keeps two hand-maintained schema copies with no automated check they stay in sync." Built the check, then used it to find and fix live drift the same session.*
 
