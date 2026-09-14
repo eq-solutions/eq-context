@@ -15,6 +15,25 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: `eq_queue_list()` PGRST202 on madagins traced to a repo-wide gap — the review-queue RPC family was never in the governed migration lineage for any tenant; fixed, merged, dispatched, verified live on all 3 active tenants (2026-09-14)
+*Started from a live `404 PGRST202` calling `eq_queue_list` against madagins with a correctly-authenticated JWT (the JWT-secret bug — see the PR #1895 entry below — was a separate, already-fixed problem). Investigated live rather than assuming a scoping bug or a provisioning-script defect.*
+
+- **Root cause: `eq_queue_list/open_event/close_event/resolve` never existed in `supabase/tenant-migrations/` at all** — repo-wide grep confirmed zero hits. They were staged in eq-solves-intake as `sql/062_queue_rpcs.sql` (that repo's own internal numbering, explicitly staging-only per its own CLAUDE.md) and reached ehow only via an out-of-band apply — same failure class as the earlier `057_remediation_queue`/`eq_remediation_queue` incident (0156 adopted that table into the governed lineage; the RPC layer on top of it never was).
+- **Not madagins-specific — confirmed live via the Supabase Management API.** zaap (EQ's own tenant plane) had zero of these functions too. This wasn't a new-tenant provisioning gap; the feature had never worked on zaap at all, only ehow (via the one-off out-of-band apply). ehow's live function bodies were byte-for-byte identical to the staged draft — no drift to reconcile.
+- **Correction to `ops/authenticated-execute-sweep-2026-08-15.md`:** that doc's claim that this function family is "identical on both planes" does not hold — re-verify live before citing it for `eq_queue_*` specifically.
+- **Fix:** [eq-shell#1911](https://github.com/eq-solutions/eq-shell/pull/1911), migration `0320_queue_rpcs.sql` (fleet-wide, no Plane header — all 3 active tenants needed it), promoting the staged SQL verbatim minus the ledger self-insert this directory's README forbids. CI green (typecheck/test/lint, migration hygiene, schema-drift/policy-lint, the Plan job), merged (`7e381e73`), dispatched fleet-wide — applied cleanly to `eq`/`madagins`/`sks`, 1 applied + 347 correctly-skipped-by-scope each, nothing else touched. Live-reconfirmed post-dispatch: all four functions now exist on zaap and madagins.
+- **Post-merge health checked, not assumed:** main's post-merge check-runs (the auto-deploy's own function smoke test, the dispatch job itself, release tag, substrate notify) all green — no regression.
+
+**Deferred:**
+- [ ] **`chore/provisioning-completeness-check`** (unmerged worktree, `scripts/check-provisioning-completeness.mjs`) — a general-purpose live-vs-tracked drift detector built 2026-09-09 that would very likely have caught this exact class of gap on its own once merged and run against ehow. Flagged in PR #1911's description; spawned as background task `task_20490881` rather than merged unilaterally — prioritization is Royce's call. _(added 2026-09-14)_
+- [ ] **madagins' `app_data._eq_migrations` ledger corruption, independently re-confirmed live twice tonight** — 329 of 331 rows share the exact `applied_at` date as project creation (2026-09-09), consistent with an unverified `--bootstrap` run that stamped migrations as applied without running their SQL. Not new — already tracked and already owned by a background task spawned 2026-09-09 ("Royce's call on timing/ownership, and who ran the original bootstrap is still unknown"). Re-confirming here only because this session independently hit and re-verified the same fact twice; this migration (0320) was itself unaffected (brand-new filename). _(re-confirmed 2026-09-14)_
+
+**Notes (load-bearing):**
+- DDL/RPC-surface change — Royce's explicit review was obtained before merge ("Dispatch and merge if safe"), verified safe first: CI green, mergeable clean, the Plan job's exact pending-migrations matrix checked line-by-line before dispatch (confirmed it was 0320 and only 0320, across exactly 3 tenants) rather than trusting a blank-slug dispatch on faith.
+- A 4th tenant exists in `tenant_routing`: `favour-perfect` (project `nxojbntrpxfnbhbyaspp`), status `suspended` — correctly excluded from this dispatch by `migrate-tenants.mjs`'s own default (`--include-suspended` not passed). Not previously seen named in substrate docs read this session; worth knowing it exists.
+
+---
+
 ## eq-shell: Field-handoff stall cluster — EQ-SHELL-29/21 (threshold bugs) fixed, EQ-SHELL-1P/22/20/2A/26 all already closed by earlier work or genuine non-issues (2026-09-13 → 09-14)
 *Follow-up to the 2026-09-13 Sentry review's 3 deferred items (`sessions/2026-09-13.md`) — re-verified live before sprinting rather than assumed still current; one (EQ-FIELD-1N) turned out already resolved and was dropped. Full write-up: `eq/sprints/2026-09-14-eq-shell-reliability-followups.md`.*
 
