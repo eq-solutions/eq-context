@@ -72,6 +72,7 @@ Every session, every tool. No exceptions.
    | `digest.md` stamp > 2 days old | **STOP.** Say: "digest.md reports [date] — the read path may be serving stale content." Re-read from the local clone before proceeding. |
    | `TODAY.md` GOALS section is **UNSET** | You have **NO BASIS to defer, deprioritise, or justify work by appeal to a deadline.** Do not borrow one from an old file. Do not invent one. Say plainly that goals are unset. |
    | `TODAY.md` `last_updated` > 7 days old | Flag it: its numbers are leads, not facts. |
+   | `products.md` `last_updated` > 14 days old | Flag it: product status/version numbers are leads, not facts — check the file's own staleness banners before quoting a version number. |
    | Any file's `last_updated` predates a change you know landed | Treat the read as **poisoned**. Re-read from the local clone. Never edit a file you may have read a stale copy of. |
 
    **Why this exists (2026-07-11):** the `raw.githubusercontent.com/.../main/` alias served `CLAUDE.md` **8 days stale** and `digest.md` **12 days stale** — 200 OK, no error, while `main` was correct. A SHA-pinned fetch of the same commit returned the correct file. **The fallback below cannot catch this — it triggers on errors, and a stale cache hit is not an error.** Separately, a phantom deadline in `TODAY.md`, owned by nobody, governed two weeks of sessions while every CI check passed green. **Freshness is not truth.** (`system/failures.md` F1, F3.)
