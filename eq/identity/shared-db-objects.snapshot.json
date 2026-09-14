@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-08T09:27:44Z",
-  "generated_by": "eq-context session 2026-09-08 -- rebaseline after confirming field_people_iud's drift is migrations 0273/0274 (eq-shell PR #1567/#1572, 2026-08-24, merged+dispatched+verified live) plus eq-cards PR #325 (2026-08-27) on the receiving side -- reviewed, intentional, shipped work that was never rebaselined, not an unreviewed change. Live defs fetched via the Supabase MCP (not the raw Management API token), hashed with this script's own normalize()/fingerprint().",
+  "generated_at": "2026-09-14T18:50:00Z",
+  "generated_by": "eq-context session 2026-09-08 -- rebaseline after confirming field_people_iud's drift is migrations 0273/0274 (eq-shell PR #1567/#1572, 2026-08-24, merged+dispatched+verified live) plus eq-cards PR #325 (2026-08-27) on the receiving side -- reviewed, intentional, shipped work that was never rebaselined, not an unreviewed change. Live defs fetched via the Supabase MCP (not the raw Management API token), hashed with this script's own normalize()/fingerprint(). UPDATED 2026-09-14 via a /triage pass, 2 objects: (1) app_data.field_people_iud -- drift is today's eq-field PR #977 (null-tenant guard) + PR #980 (v_actor_id provenance comment), both merged and applied live, independently verified by two other sessions this same day -- reviewed, intentional, rebaselined. (2) app_data.field_job_numbers_src -- ACCEPTED AS KNOWN DEBT, NOT RESOLVED: the function's LANGUAGE has changed from sql to plpgsql since the 2026-09-08 baseline, adding a hard tenant-mismatch guard (raise exception, not a silent empty result as originally scoped) -- an improvement, but the underlying issue is unchanged and still open: the function remains hardcoded to SKS's tenant_id/org_id throughout (three literal occurrences of 7dee117c-... and the org_id sentinel), with no per-tenant parameterization. This is the exact still-pending decision logged in eq/sprints/2026-09-09-provisioning-completeness-followup.md item 1b (\"your call: SKS-only forever vs. real parameterisation, now covers both field_job_numbers_src and sync_staff_to_field\"). Rebaselined here only to stop this cron re-alerting on an already-tracked, already-cited item -- NOT a signal that the architecture question is resolved. Re-open this entry's own review the moment that decision actually gets made, whichever way.",
   "plane": "ehow",
   "objects": {
     "app_data.field_people": {
@@ -21,8 +21,8 @@
       "schema": "app_data",
       "name": "field_people_iud",
       "kind": "function",
-      "sha256": "7ac4eb924cf2575e41d029e41538a395a8639481c2b7006fdb1f79ec7a26d76c",
-      "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\n    declare v_name text; v_first text; v_last text; v_sid uuid; v_tid uuid;\n            v_can_licences boolean; v_can_labour_hire boolean; v_can_people boolean;\n            v_actor_id uuid;\n            v_secret text; v_worker_id uuid; v_"
+      "sha256": "8380135a54fcf5f7f1515da7d8666585dc6918087c1beb5d1dc8f9eed672c56e",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_people_iud()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'app_data', 'public'\nAS $function$\n    declare v_name text; v_first text; v_last text; v_sid uuid; v_tid uuid;\n            v_can_licences boolean; v_can_labour_hire boolean; v_can_people boolean;\n            v_actor_id uuid;\n            v_secret text; v_worker_id uuid; v_push_body jsonb;\n    begin\n      v_tid := nullif(auth.jwt() -> 'app_metadata' ->> 'tenant_id', '')::uuid;\n  if v_tid is null then\n    raise exception 'field_people_iud: JWT has no app_metadata.tenant_id"
     },
     "app_data.field_people_removed_iud": {
       "schema": "app_data",
@@ -70,8 +70,8 @@
       "schema": "app_data",
       "name": "field_job_numbers_src",
       "kind": "function",
-      "sha256": "9701a8b36480dfcec2633d1ab7d966298521bee15e374acc5af4697cf251a9bf",
-      "preview": "CREATE OR REPLACE FUNCTION app_data.field_job_numbers_src()\n RETURNS TABLE(id text, number text, job_number text, description text, client character varying, site_name character varying, status text, notes text, active boolean, org_id uuid, source text)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'app_data', 'public', 'pg_temp'\nAS $function$\n  with ops as (\n    -- One row per job nu"
+      "sha256": "f6ac690500998d8dec9503d3edba0dbdb73bb88e054e18481b69b9c7d0bff424",
+      "preview": "CREATE OR REPLACE FUNCTION app_data.field_job_numbers_src()\n RETURNS TABLE(id text, number text, job_number text, description text, client character varying, site_name character varying, status text, notes text, active boolean, org_id uuid, source text)\n LANGUAGE plpgsql\n STABLE SECURITY DEFINER\n SET search_path TO 'app_data', 'public', 'pg_temp'\nAS $function$\nbegin\n  if (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid is distinct from '7dee117c-98bd-4d39-af8c-2c81d02a1e85'::uuid then\n    raise exception 'tenant mismatch' using errcode = 'EQ010';\n  end if;"
     },
     "app_data.field_managers": {
       "schema": "app_data",
