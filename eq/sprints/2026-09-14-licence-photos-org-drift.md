@@ -156,7 +156,17 @@ anything else in this sprint.
    (eq-cards) to trace these two candidate ids and confirm safe-to-delete or not, before
    `--delete-orphans` is ever run.** Until that resolves, treat `--delete-orphans` as unsafe at
    its current scope (it would touch all 26, not just the 6). `--apply` alone (the 169-column
-   repair, no orphan deletion) has no such caveat.
+   repair, no orphan deletion) has no such data-safety caveat.
+   **Tooling correction, 2026-09-15 (caught before running anything, not after):** a Claude
+   session cannot actually execute `--apply` itself, even with Royce's go and even with the real
+   env vars sourced somehow — the repair's copy step (`sb.storage.from(BUCKET).copy(...)`) is a
+   genuine Storage API call, and the Supabase MCP tooling available in these sessions only
+   exposes Postgres/project-management operations (`execute_sql`, migrations, edge functions,
+   etc.) — no storage-object copy/upload/move. A raw SQL insert into `storage.objects` would
+   create a metadata row with no real file behind it — worse than doing nothing. **The script
+   must be run by a human (or a non-Claude process) with real shell/Node access and the real
+   `CONTROL_SUPABASE_URL`/`CONTROL_SUPABASE_SERVICE_KEY`** — this was offered as a Claude-doable
+   action once already this update before being caught; don't repeat the offer.
 5. `task_7d7d8b41` (spawned by this sprint's own originating session, cwd eq-cards, per
    the eq-shell memory file's earlier text) is very likely superseded by PR #355 (now merged) —
    circumstantial evidence only (same originating session, "cwd eq-cards" matches exactly what
