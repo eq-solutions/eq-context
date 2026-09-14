@@ -15,17 +15,28 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-solves-service: cross-tenant-sweep's `defects` bait seed was silently failing every run — found, fixed, PR open (2026-09-14)
-*Task: fix a stray `raised_date` field in `cross-tenant-sweep.test.ts`'s best-effort `seed('defects', {...})` bait call — that column doesn't exist on `app_data.defects`/`service.defects` (confirmed against the fixture migration and generated `database.types.ts`). `seed()` swallows insert errors by design, so this failed silently on every run: `defects` never got baited, and the sanity check only covers `customers`/`sites`/`maintenance_checks`/`audit_logs`, so nothing ever failed CI over it.*
+## eq-service: cross-tenant-sweep's remaining `service`-schema + `contacts` failures — 3 distinct root causes found, fixed, committed locally, not yet pushed (2026-09-14)
+*Follow-on to the same test file's `raised_date` bait-seed fix (#846, merged — see below) and PR #845's app_data grants fix (open, explicitly out-of-scope for this class of gap per its own PR body). Investigated the 8 remaining "policy errors while sweeping as Tenant B" failures from PR #844's CI run (34825165697), none of which PR #845 covers.*
 
-- Fixed: dropped the stray field, no replacement needed (`created_at` already covers "when raised"). [eq-service PR #846](https://github.com/eq-solutions/eq-service/pull/846), pushed — **not yet merged.**
-- Mid-session, the shared main checkout was actively in use by a concurrent session ("EQ Service automated checks failing") investigating an unrelated migration-runner bug — isolated into its own git worktree rather than fight over the shared file, per the standing shared-checkout rule.
-- CI's `Integration tests (Supabase local)` job fails on this PR — confirmed pre-existing, not caused by this change: `main` itself fails the identical job on its last 3 runs (including the exact base commit this branch is on), all with the same systemic `permission denied for schema app_data` error hitting many unrelated tables (contacts, sites, notifications, attachments, contract_scopes, etc.). `defects` itself never appears in that error list. `tsc + next build` and `Typecheck + audit` both pass on this PR.
-- **Coverage gap closed same session, not left deferred**: extended `cross-tenant-sweep.test.ts`'s own sanity check to also assert `baited.has('assets')`/`baited.has('defects')` — that check's narrow scope (missing exactly these two) is why the `raised_date` bug went undetected for as long as it did. Pushed as a second commit on the same PR #846 branch.
+- **`service.customer_notification_preferences`/`media_library`/`site_local`** (migrations 0142/0143) — created with RLS + real `FOR ALL` policies but never granted to `authenticated`/`service_role` at the table level; same undocumented-hand-edit pattern as the app_data fixture gap. New migration `0245` backfills the grant, mirroring each table's own policy shape.
+- **`customer_contacts_legacy_20260702`/`site_contacts_legacy_20260702`** — NOT a grant gap. Migration 0167 deliberately `REVOKE ALL ... FROM authenticated` on them as a soak-window rollback backup. Added both to the test's `SERVICE_ROLE_ONLY` allow-list instead of granting them back, which would have undone an intentional lockdown.
+- **`contacts`** — a real, separate `public.contacts` table (migration 00425; 0054's own header calls it "the orphaned `public.contacts` table"), distinct from the `service.customer_contacts`/`site_contacts` canonical views. Added to the test's existing `PUBLIC_SCHEMA_TABLES` override set, same treatment as `thermal_scans`/`thermal_scan_findings`.
+- Committed locally on `fix/service-schema-grants-and-contacts-sweep` (worktree `eq-service/.claude/worktrees/service-schema-grants-and-contacts-sweep`, commit `6c0a686`). **Not pushed, no PR** — awaiting Royce's go.
+- **Verification gap, disclosed not glossed over:** Docker Desktop would not stay up on this machine all session (3 checks, same "backend exited before becoming ready" failure two other sessions hit earlier the same day); Supabase MCP not connected this session; `supabase db query --linked` blocked by an IPv6 network issue needing a DB password not sourced. Verified instead via direct migration-source reading (exact CREATE TABLE/GRANT/REVOKE statements traced by hand) plus `tsc --noEmit` + `eslint` clean — no live or local-integration-test confirmation happened.
+- **Also found, not acted on (different task's scope):** `fix/app-data-fixture-grants-rls` (commit `6449e8a`, the app_data-schema sibling of this same fix) has no PR open yet.
 
 **Deferred:**
-- [ ] **Merge PR #846.** _(added 2026-09-14)_
-- [ ] **Real end-to-end confirmation that `baited.has('assets')`/`baited.has('defects')` flip to `true`** — the new assertions are expected to fail until a separate, concurrent fix for the systemic `app_data` grants/RLS issue (`fix/app-data-fixture-grants-rls`, `fix/integration-test-tenant-claim-and-app-data-grants`, both in flight as of this writing) lands on `main` and this branch rebases onto it. That rebase + green re-run is the real end-to-end confirmation this whole thread has been waiting on. _(added 2026-09-14)_
+- [ ] **Push branch + open PR** for `fix/service-schema-grants-and-contacts-sweep` — needs Royce's explicit go first. _(added 2026-09-14)_
+- [ ] **Live `information_schema.role_table_grants` check on ehow** for the 3 newly-granted tables before this merges — flagged in the migration's own header. _(added 2026-09-14)_
+- [ ] **Real local `npm run test:integration` run once Docker is usable on this machine** — the actual proof this needs, not just static analysis. _(added 2026-09-14)_
+- [ ] **Docker Desktop's backend instability on this machine is now a same-day recurrence across 3+ sessions** ("backend exited before becoming ready") — worth a look outside this task's own scope. _(added 2026-09-14)_
+
+---
+
+## eq-solves-service: cross-tenant-sweep's `defects` bait seed was silently failing every run — found, fixed, MERGED (2026-09-14)
+
+**Deferred:**
+- [ ] **Real end-to-end confirmation that `baited.has('assets')`/`baited.has('defects')` flip to `true`** — the new assertions are expected to fail until the concurrent app_data/service-schema grant fixes land on `main` and this branch's descendants rebase onto it (`fix/app-data-fixture-grants-rls`, `fix/integration-test-tenant-claim-and-app-data-grants`, and now `fix/service-schema-grants-and-contacts-sweep` above, all in flight as of this writing). That rebase + green re-run is the real end-to-end confirmation this whole thread has been waiting on. _(added 2026-09-14)_
 
 ---
 
