@@ -1,7 +1,7 @@
 ---
 title: OPS — Security Register
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-14
 scope: Single tracked register of open security findings across the EQ/SKS Supabase surface — advisor output + live probes + known P0s. This is the ONLY security-register.md in the repo — a same-named file mentioned in eq/pending.md lives in a local scratchpad/ folder for an unrelated Trust-page/SOC2 draft, not tracked in git.
 read_priority: critical
 status: live
@@ -1916,6 +1916,30 @@ live bug found across the entire ~31-table sweep.** Everything else was either a
 deliberately excluded, or never a live thing. eq-service's own real
 contribution to this list is `acknowledgments`/`app_config`/`audit_log` (3
 tables); the rest belong to eq-shell and eq-field.
+
+**Follow-up, 2026-09-14 (later same day) — eq-service's own 3 tables checked live too. This
+closes SEC-77 completely, all three repos.** `acknowledgments`: correct on ehow/madagins
+(hardcoded-but-correctly-substituted); doesn't exist on zaap, deliberate — same "feature not
+enabled for this tenant" pattern seen throughout eq-field's own share. `app_config`: correct
+on all 3 planes, including zaap, whose leaner 3-policy set (vs. ehow/madagins's 6, missing the
+separate manager/supervisor role split) initially looked like a bug — its `org_id` literal
+(`a0000000-0000-0000-0000-000000000001`) is documented elsewhere as "the Demo tenant ID," which
+looked like a copy-paste error from ehow's Demo-tenant context. **Checked against jvkn directly
+rather than assumed: EQ's own `organisations.id` is that exact value — EQ genuinely is the Demo
+org, not a mismatch.** The policy's other literal (JWT `tenant_id` claim, `dcb71d03-...`) also
+matches EQ's real `shell_control.tenants.id` exactly. `audit_log`: correct on all 3 planes —
+hardcoded-but-correct on ehow/madagins plus a `deny_all` backstop on ehow, fully locked down
+(deliberate) on zaap. `service.audit_logs` (the properly-migrated but stale sibling, see the
+`public.audit_log` note above): the best-designed policy found in this entire investigation —
+fully dynamic (`tenant_id = jwt claim`, plus a live `service.tenant_members` manager/supervisor
+membership check), no hardcoded literal anywhere. Only exists on ehow; the separate,
+already-tracked question of why app code still writes `public.audit_log` instead
+(`task_53ac5191`) is untouched here, unrelated to RLS correctness. Same dead-twin pattern found
+once more, fully inert everywhere: `app_data.audit_log` exists on all 3 planes with zero
+policies and no grants at all — unlike `nominations`, nothing can even reach it, so it's not a
+live gap. **No bug found on eq-service's side. SEC-77 is now fully closed across eq-shell,
+eq-field, and eq-service — `nominations` on zaap remains the only real live bug the entire
+investigation found.**
 
 **Severity, eq-service's own scope:** ehow is not single-tenant — the Demo
 tenant (`a0000000-0000-0000-0000-000000000001`, publicly advertised on
