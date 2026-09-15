@@ -1,13 +1,19 @@
 ---
 title: EQ Service — Changelog
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: EQ Service append-only history. Canonical (repo-slug convention, matching eq-shell.md/eq-cards.md/eq-field.md/etc.) — this file absorbed eq-solves-service.md 2026-08-17, merging both same-day product histories by date (no entries dropped, both files' own internal ordering was already imperfectly chronological so blocks are sorted strictly by date; same-date ties keep this file's prior entries first, then eq-solves-service.md's). The two files had been left deliberately unreconciled since 2026-08-11/15 pending Royce's own call on how to interleave them (see sessions/2026-08-11.md) — this merge is that call, made 2026-08-17. eq-solves-service.md is now a stub pointing here; don't split the log again.
 read_priority: reference
 status: live
 ---
 
 # EQ Service — Changelog
+
+## 2026-09-15 (PRs #847/#849 MERGED + LIVE, PR #851 MERGED — cross-tenant-sweep grant gaps fully closed; migration governance documented)
+- [PR #847](https://github.com/eq-solutions/eq-service/pull/847) (`8efc1a9`) closed 22 of the app_data/service-schema `cross-tenant-sweep.test.ts` grant gaps: real RLS policies + `GRANT USAGE ON SCHEMA app_data` added to the CI-only `0000_app_data_tenant_plane_fixture.sql`, plus migration `0245` granting 3 `service.*` views (`site_local`/`media_library`/`customer_notification_preferences`) that were created but never granted.
+- [PR #849](https://github.com/eq-solutions/eq-service/pull/849) (`8a4d5f3`) closed the remaining 14: migration `0246` grants 14 `service.*` views that migrations 0148/0149 created without a grant step, restores `service.sites`'s grant (silently dropped by migration 0156's bare `DROP VIEW`+`CREATE VIEW`, the same regression migration 0227 already fixed for `service.assets`), and grants `app_data.contract_scopes`/`app_data.staff_conversations`. `cross-tenant-sweep.test.ts` confirmed 3/3 green on main afterward.
+- eq-service/CLAUDE.md gained a "Migration governance" section documenting `apply-service-migrations.yml` — merging a migration-touching PR never applies anything to live ehow; needs a separate explicit `workflow_dispatch`. [PR #851](https://github.com/eq-solutions/eq-service/pull/851), merged.
+- Remaining CI red on main (`customers-isolation`, `technician-update-gating`, `auto-defect-from-fail`, `admin-only-delete`) is a separate bug — the integration-test harness never set `app_metadata.tenant_id` on seeded users. [PR #845](https://github.com/eq-solutions/eq-service/pull/845) already fixes it, open, needs a rebase against current main + merge.
 
 ## 2026-09-14 (PRs #836/#833/#834/#835 MERGED + LIVE — 4 dependency bumps cleared: zod, resend, lucide-react, tsx)
 - zod 4.4.3→4.5.4 ([#836](https://github.com/eq-solutions/eq-service/pull/836), open 9+ days): checked the upstream changelog across the 4.4.3→4.5.4 range for anything touching error-handling APIs before merging — this repo's own Zod v4 usage pattern (`.error.issues[0]`, the `error:` option, per AGENTS.md) is exactly the surface a change there would hit. Nothing breaking found; spot-checked schemas against the new version, `tsc --noEmit` clean. Squash-merged, branch deleted.
