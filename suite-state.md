@@ -61,11 +61,11 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-15)
 
 **eq-cards:**
+- #369 feat(cards): precheck + log identity_collision before it's unaudited
 - #368 fix(cards): drop identity_collision's detail leak (existing_worker_id)
 
 **eq-field:**
 - #995 v3.5.726 — Leave: New Leave Request modal no longer closes on an accidental backdrop click
-- #994 v3.5.725 — Leave: fix madagins submissions, make canonical routing tenant-scalable
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
@@ -93,7 +93,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | new | 2026-09-15 |
+| eq-shell | ready | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
@@ -107,7 +107,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,560 | ✓ 2,560 |
-| Operational | app_data.field_timesheets | 698 | ✓ 698 |
+| Operational | app_data.field_timesheets | 679 | ✓ 679 |
 | Safety | public.prestarts | 255 | ✓ 255 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
