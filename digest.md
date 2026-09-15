@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 08:49 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 08:55 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 08:44 UTC → 2026-09-15 08:49 UTC)
+## Since last refresh (2026-09-15 08:49 UTC → 2026-09-15 08:55 UTC)
 
-- Merged: eq-shell [#1932](https://github.com/eq-solutions/eq-shell/pull/1932) feat(records): "Find anything" search for mobile Records dra
-- Merged: eq-shell [#1917](https://github.com/eq-solutions/eq-shell/pull/1917) docs(control-plane-ledger): live-verify 2026_08_30b/c phone-
-- Merged: eq-shell [#1916](https://github.com/eq-solutions/eq-shell/pull/1916) fix(auth): recycle-review approve stops grafting duplicate i
-- Merged: eq-shell [#1914](https://github.com/eq-solutions/eq-shell/pull/1914) fix(entity-browser): resolve staff_id/site_id to names inste
-- Merged: eq-shell [#1913](https://github.com/eq-solutions/eq-shell/pull/1913) feat(licences): repair script for Personal-Wallet licence-ph
-- Merged: eq-shell [#1911](https://github.com/eq-solutions/eq-shell/pull/1911) fix(provisioning): land eq_queue_* RPCs through the One Pipe
-- Merged: eq-shell [#1910](https://github.com/eq-solutions/eq-shell/pull/1910) fix(staff): fall back to shell_control.users.phone when Card
-- Merged: eq-shell [#1904](https://github.com/eq-solutions/eq-shell/pull/1904) feat(tenant-health): surface a missing per-tenant JWT secret
+- Merged: eq-shell [#1918](https://github.com/eq-solutions/eq-shell/pull/1918) docs(control-plane-ledger): mark recycle-review-phone-dup-no
+- Merged: eq-shell [#1912](https://github.com/eq-solutions/eq-shell/pull/1912) fix(licences): align licence-photo storage path segment 1 on
+- Merged: eq-shell [#1909](https://github.com/eq-solutions/eq-shell/pull/1909) fix(cards): carry emergency contact fields into staff on Car
+- Merged: eq-shell [#1908](https://github.com/eq-solutions/eq-shell/pull/1908) fix(licences): delete superseded storage objects on photo/PD
+- Merged: eq-shell [#1907](https://github.com/eq-solutions/eq-shell/pull/1907) docs(control-plane-ledger): note credentials-canonical-sync 
+- Merged: eq-shell [#1905](https://github.com/eq-solutions/eq-shell/pull/1905) fix(privacy): replace vague §8 retention language with real 
+- Merged: eq-shell [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going m
+- Merged: eq-shell [#1881](https://github.com/eq-solutions/eq-shell/pull/1881) fix(connect): add 'revoked' to ORG_ACCESS_REQUEST_STATUSES
 
 ## ⚠ Needs you (5)
 
@@ -27,7 +27,7 @@ _2026-09-15 08:49 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Cron failing** — `index-drift.yml` 6 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-09-14.md](sessions/2026-09-14.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
-- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (231)
 
@@ -53,15 +53,15 @@ _…and 219 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 3 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 1d |
-| eq-field | ✓ success | 0d ago | 1 | 0d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Deploys
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | new | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 
 ## Live errors (Sentry)
 
@@ -101,8 +101,8 @@ _Showing 15 of 94 · full record in [sessions/](sessions/)_
 
 - **eq-shell** (305 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (68 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
-- **eq-field** (240 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
-- **eq-solves-service** (75 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
+- **eq-field** (238 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
+- **eq-solves-service** (76 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (20 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
 - **eq-design-tokens** (1 open) · [eq/pending/eq-design-tokens.md](eq/pending/eq-design-tokens.md)
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
@@ -133,8 +133,8 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1772 | 242 / 68 | 3 | 99 |
 | [eq-cards](eq/pending/eq-cards.md) | 393 | 51 / 20 | 0 | 11 |
-| [eq-field](eq/pending/eq-field.md) | 1339 | 202 / 41 | 0 | 63 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 459 | 58 / 20 | 1 | 28 |
+| [eq-field](eq/pending/eq-field.md) | 1330 | 201 / 40 | 0 | 63 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 471 | 58 / 20 | 2 | 28 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 233 | 14 / 6 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
@@ -197,4 +197,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 08:49 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 08:55 UTC._
