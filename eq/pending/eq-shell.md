@@ -15,6 +15,12 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: worker-invite identity gap fully closed — email pre-check + audit logging for all three refusals (2026-09-15)
+
+AMBIGUITY-REGISTER decision 2's remaining half. An invite whose phone matched nothing but whose **email** matched exactly one already-claimed worker linked silently to that stranger's record — not ambiguous, so eq-cards `0173` never fired, and the phone pre-check never saw it. Closed at the pre-check, resolver untouched, so `0073`'s multi-org reuse intent survives. [#1935](https://github.com/eq-solutions/eq-shell/pull/1935) (`9ba99644`), [#1940](https://github.com/eq-solutions/eq-shell/pull/1940) (`1a8550b0`, audit logging), [#1942](https://github.com/eq-solutions/eq-shell/pull/1942) (`60931721`, ledger doc). All merged, deploy published 10:20:41Z. Full trail in `eq/identity/AMBIGUITY-REGISTER.md` and `sessions/2026-09-15.md`.
+
+- [ ] **Read the new `invite.existing_account_phone` / `invite.existing_account_email` counts once a few weeks of real use have accumulated** — measuring these was the whole point of #1940. Two questions they answer and nothing else can: how often Group B's shared-phone pair is being turned away invisibly, and whether the email refusal's one known friction case (a genuinely new person sharing a company email) is real or theoretical. 74 of jvkn's 107 workers are claimed and carry an email, so the surface is real. No dashboard reads these yet — it's a manual `shell_control.audit_log` query until someone needs it often enough to build one. _(added 2026-09-15)_
+
 ## eq-shell: Control-plane migration runner — per-file error isolation shipped and merged (2026-09-15)
 
 `scripts/migrate-control-plane.mjs`'s real-apply loop wrapped the whole sequential migration batch in one outer `try`/`catch` — a SQL error on any single file aborted the run with no record distinguishing "already applied" from "failed" from "never reached." This is the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around (see that PR's own body). Fixed via `applyAllMigrations()`, split into a new `scripts/_migrate-control-plane-apply.mjs` for testability — every migration now lands in exactly one of applied/skipped/failed/notAttempted, fail-stop (not continue-on-error — Royce's explicit design call, made before any code was written; migrations have no dependency graph beyond sequential file order).
