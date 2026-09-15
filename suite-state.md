@@ -61,8 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-15)
 
 **eq-cards:**
+- #370 fix(cards): org_credential_requirements admin RLS + gap RPC use canonical is_org_admin()
 - #369 feat(cards): precheck + log identity_collision before it's unaudited
-- #368 fix(cards): drop identity_collision's detail leak (existing_worker_id)
+
+**eq-field:**
+- #997 v3.5.727 — Apprentices: current site prefers the active rotation over the roster guess
+- #996 v3.5.727 — Roster/Timesheets: make canonical routing tenant-scalable
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
