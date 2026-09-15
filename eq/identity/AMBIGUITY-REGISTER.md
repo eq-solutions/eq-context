@@ -282,7 +282,7 @@ touched, or when they cause an incident — not in a sweep.
 | # | Decision | Royce's call | State |
 |---|---|---|---|
 | 1 | `_eq_intake_check_tenant_match` fails open | **Check callers first, then fix** | Checked: **zero callers** — fix is inert on its own. Real target is `eq_intake_find_template_by_signature` (see Shape 1 note). Fix + wiring pending |
-| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match** | **Built, awaiting merge.** [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) raises on >1; [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934) catches it, writes `invite.worker_match_ambiguous` to `shell_control.audit_log` and returns an actionable 409. Design call resolved — no new queue. See the note below |
+| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match**, then (2026-09-15) **close the email half too** | **`>1` half SHIPPED AND LIVE.** [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) merged 09:04Z and `0173` **applied to jvkn** 09:08Z (dispatch run [34950868345](https://github.com/eq-solutions/eq-cards/actions/runs/34950868345), step "Apply pending control-plane migrations" = success); [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934) merged (`79889bdc`), catches it, writes `invite.worker_match_ambiguous` to `shell_control.audit_log`, returns an actionable 409. **Email half built, awaiting merge** — [eq-shell #1935](https://github.com/eq-solutions/eq-shell/pull/1935). See the note below |
 | 3 | The `coalesce`-to-own-tenant fault, present in every tenant's templated copy | **Roll out company by company** | **Scope shrank sharply on verification (2026-09-15).** For `field_people_iud` the rollout is already **done**: guarded on ehow *and* madagins, and the function doesn't exist on zaap. The remaining work is a **different function** nobody had flagged — `field_people_removed_iud`, unguarded on all three planes. `task_9b876f68` should be re-briefed against that, not the original target |
 | 4 | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) — `custom_access_token_hook` phone-fallback logging | **Merge** | Merging on green; all checks pass except the Netlify preview |
 | 5 | Should admin-invite capture a phone number? | **Make it required** | Pending — `invite-user.ts` plus the admin invite form |
@@ -458,13 +458,65 @@ into this migration." Until that exists, group B has no defined resolution path.
 customer-data migration and auth-flow changes are Royce's call under the global authority
 model, and jvkn is the shared control plane every tenant depends on.
 
-**Left open deliberately — needs Royce.** Only the `>1` case is closed. *Exactly one
-match that is already claimed by a different user* still links silently. That
-behaviour is deliberate in `0073` (a multi-org tradie must reuse their real row), and
-refusing it would block legitimate re-invites of someone who already has an account —
-a different change with a different blast radius. Partly mitigated already:
-`eq_cards_worker_claimed_by_phone` (2026_09_09b) 409s first on the same normalisation,
-but it only checks the **phone**, so a claimed row matched by **email** still links.
+**The email half — decided 2026-09-15, built.** This was left open for Royce because
+refusing an already-claimed *single* match is a product decision, not a bug fix: `0073`
+deliberately reuses a claimed row so a multi-org tradie keeps one identity, and refusing
+outright would block legitimate re-invites. **Royce's call: option (a′)** — close it at
+the pre-check, leave the resolver alone. Built as
+[eq-shell #1935](https://github.com/eq-solutions/eq-shell/pull/1935)
+(`eq_cards_worker_claimed_by_email` + a second pre-check in `create-worker-invite.ts`).
+**Open, not merged; migration not applied** — `control-plane-migrate.yml`'s `apply` job is
+`workflow_dispatch` only, and its push job only comments a dispatch link.
+
+**Option (a) as originally written could not be built, and the reason is worth keeping.**
+The register proposed extending the pre-check "keeping the existing consent-gated
+Connect-existing routing." That routing cannot carry an email match — it is phone-keyed
+end to end:
+
+- the admin form's 409 handler calls `sendConnectRequestForThisPhone(phone)`
+- `eq_cards_request_worker_access(p_org_id, p_phone, p_note)` has **no email parameter**;
+  it matches `auth.users.phone`
+- on a miss it does **not** raise — it inserts an `org_access_requests` row with
+  `worker_user_id = NULL`
+
+On this path the phone matched nobody by definition, so reusing code `existing_account`
+would have filed a pending request addressed to no one and reported it to the admin as
+sent — strictly worse than the silent link it was meant to fix. #1935 therefore returns a
+**distinct** code, `existing_account_email`, which falls through to the form's existing
+generic branch (`setErr(detail ?? errMap[raw] ?? raw)`), so no client change is needed —
+the same shape #1934 uses for `ambiguous_identity_match`.
+
+**Why the blast radius is smaller than it looks.** Phone is already mandatory at this
+endpoint (`create-worker-invite.ts`, `if (!rawPhone) return json(400, …)`), so the phone
+pre-check already runs on *every* invite. A multi-org tradie re-invited on their real
+mobile is therefore *already* turned away and routed to consent-gated Connect existing
+today. #1935 makes email behave the way phone already does rather than adding a new class
+of refusal, and `0073`'s "reuse the real row, never spawn a parallel one" intent is
+untouched — Connect existing reuses that same row, with consent. The cost is one real
+friction case: an admin inviting a genuinely new person who shares a company email gets a
+clear 409. Email is optional on the form, so re-submitting without it is the workaround,
+and the `detail` string says so.
+
+**Normalisation is byte-identical to the resolver's**, deliberately: `lower(w.email)`
+against `lower(NULLIF(TRIM(COALESCE(p_email,'')), ''))` — the stored column lowercased but
+**not** trimmed. A positive in the pre-check therefore always agrees with what the resolver
+would itself match. Trimming `w.email` in the helper would 409 on rows the resolver would
+not match.
+
+> ⚠️ **Sequencing.** The Netlify function calls the new RPC, so the migration must be
+> applied **before or with** the deploy. Merge-then-forget leaves every invite that
+> carries an email failing on `Failed to check existing accounts`.
+
+**Not verified live:** the session that built #1935 had no Supabase credentials, so
+`pg_get_functiondef` was **not** run against jvkn — function bodies were read from
+`git show origin/main:<path>`. The same-day live check recorded above (resolver identical
+to `0073`, no drift) is the most recent ground truth. Re-verify before dispatching apply.
+
+**Still filed nowhere: the pre-check 409s themselves.** Neither the phone check nor the
+new email one writes an audit row, so "this person already has an account" refusals are
+absorbed silently. That is the half of the Group B note below which that investigation
+confirmed as correct, and #1935 does not change it — it deliberately mirrors its phone
+sibling's shape. #1934 logs only the `>1` refusal. Tracked separately.
 
 Related but separately tracked: **SEC-71** (2FA enforcement is client-side only —
 `shell-login.ts` issues a full session regardless of `requires_totp_enrollment`),

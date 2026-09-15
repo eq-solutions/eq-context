@@ -1,7 +1,7 @@
 ---
 title: Worktree Registry
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: Active and stale git worktrees — check before creating a new one
 read_priority: critical
 status: live
@@ -78,6 +78,10 @@ different naming schemes, illustrating exactly the problem F16 fixes:
 ---
 
 ## Active (do not touch)
+
+`C:\Projects\eq-shell\.claude\worktrees\invite-claimed-email-check (eq-shell)` | `fix/invite-claimed-email-check` | session 040c535e — AMBIGUITY-REGISTER decision 2, email half (`eq_cards_worker_claimed_by_email` + second pre-check in `create-worker-invite.ts`) | 2026-09-15 | active — [PR #1935](https://github.com/eq-solutions/eq-shell/pull/1935) OPEN, **not merged, migration not applied to jvkn** (apply is `workflow_dispatch` only). Remove once merged + dispatched.
+
+`C:\Projects\eq-context\.claude\worktrees\ambiguity-reg-decision2-email (eq-context)` | `docs/ambiguity-register-decision2-email` | session 040c535e — close-out note for the same decision; branched from `origin/main` because the shared checkout was 17 behind | 2026-09-15 | active — remove once the substrate commit lands.
 
 `C:\Projects\eq-field\.claude\worktrees\documents-to-sign-feature-3035a3 (eq-field)` | `claude/apprentices-tab-security-603749` (folder name is now stale — was detached HEAD when first logged) | re-checked live minutes after first being logged here, already reclaimed by another session for unrelated work | 2026-08-28 | **NOT TOUCHED** — no longer the mystery-commit case originally flagged (that HEAD is gone, replaced by real work on a real branch). Ordinary active work now, same as the two rows below — logged here only because this file's own age-out sweep hasn't run yet.
 
