@@ -131,14 +131,18 @@ anything else in this sprint.
    more than one, so `resolveCurrentTenantPath`'s "most recent wins" pick is unambiguous for
    every candidate today. Still worth hardening defensively for a future multi-tenant worker,
    just not a blocker.
-   **`--apply` (repair) and `--delete-orphans` (the 6) are still NOT run anywhere.** Dry-run
-   replicated 2026-09-15 via direct read-only SQL against jvkn (the script's own
-   `CONTROL_SUPABASE_URL`/`CONTROL_SUPABASE_SERVICE_KEY` aren't set in this machine's `.env` —
-   same gap as yesterday's script, not sourced from Netlify per Royce's standing preference not
-   to put that credential in a session): **169 candidate columns across 115 licences** would
-   repoint to SKS's real tenant_id `7dee117c-...`; **1 column (1 licence)** skips (no real
-   tenant yet). Matches the live count of 116 distinct mis-pathed licences (115 + 1), up from
-   113 on 2026-09-14.
+   ~~`--apply` (repair) is still NOT run anywhere.~~ **Done (2026-09-15, separate session,
+   Royce running the script locally end-to-end).** After several rounds of pure Windows/
+   PowerShell/OneDrive friction (env vars set in one terminal tab not surviving into another,
+   a paste splitting the long JWT service key across lines, a OneDrive-redirected Desktop path
+   the initial file save didn't account for — none of it a script or logic bug, all of it
+   terminal/environment plumbing), Royce ran `node scripts/repair-licence-photo-segment-drift.mjs
+   --apply` from a saved `.ps1` file. **Verified independently, live against jvkn** (direct
+   query, not trusting the script's own console output alone): the count of licences with any
+   evidence column still under the Personal Wallet prefix dropped from 115 to **1**. That 1 is
+   confirmed to be the same already-known no-real-tenant-yet skip case from the dry-run above,
+   not a new failure. **This closes the repair side of the sprint.** `--delete-orphans` (the
+   true-orphan class) was deliberately not run in the same pass — see below, still open.
    **New finding, changes the `--delete-orphans` picture**: the repair script's own orphan
    report uses the RPC's combined `orphan_count` (32 = 26 `no_licence_row` + 6
    `superseded_by_different_path`) as its single gate for `--delete-orphans` — it does not
@@ -330,3 +334,19 @@ anything else in this sprint.
   up except the two mechanical chip-clears and whatever `task_59002a2e` (IDENTITY-MODEL.md,
   running independently as of this entry) and `task_b56ada7f` (pending-credentials trace, per
   item 4) come back with.
+- 2026-09-15 (the original eq-shell session that opened #1908, resumed) — Royce ran PR #1913's
+  `--apply` himself after this session tried and failed to run it directly (blocked by the
+  Claude Code auto-mode classifier on a Bash command carrying a live production credential,
+  even after explicit re-confirmation — a hard platform gate, not a judgment call). Most of the
+  actual difficulty was Windows terminal/PowerShell/OneDrive mechanics unrelated to the script
+  itself: env vars not surviving across terminal tabs, a long JWT key splitting across lines on
+  paste, a OneDrive-redirected Desktop path. The fix that actually worked was going back to a
+  saved `.ps1` file edited in a text editor (not retyped into an interactive prompt) — every
+  fresh terminal-paste variant attempted in between failed a different way. Verified independently
+  live afterward (see item 4 above): 114 of 115 stale licences repaired, the 1 remaining
+  confirmed as the genuine no-real-tenant-yet skip case, not a bug. Updated this doc and the
+  eq-shell memory file to close out the repair item. Remaining open items (32 orphans'
+  `--delete-orphans`, eq-cards #356, `task_7d7d8b41`'s chip) are all pre-existing threads already
+  tracked above, not new from this entry — deliberately not touched here to avoid re-deciding
+  something another concurrent session may already be mid-resolving (per item 5's own
+  cross-session dismiss_task lesson).
