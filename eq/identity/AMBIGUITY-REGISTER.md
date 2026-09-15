@@ -348,14 +348,14 @@ Three independent reasons, any one of which alone is sufficient:
    `IF NEW.phone IS NULL OR NEW.phone = '' THEN RETURN NEW`. An identity created by email
    signup, admin provisioning or invite-claim — with the phone landing on
    `public.workers` — exits on line one and is never revisited.
-3. **The lookup that would have caught it post-dates the row.** Group B's second row was
-   created **2026-08-20**. The third lookup — a *live* account matched via
-   `shell_control.users.phone` where `au.id IS NOT NULL` — was added by
-   `2026_08_30c_phone_dedup_shell_only_phone.sql` ten days later. On 2026-08-20 the
-   function had only two lookups: `auth.users.phone`, and placeholder-with-`au.id IS NULL`.
-   Group B's first row carries an `@sks.com.au` email, i.e. an email-auth staffer — exactly
-   the Leif Lundberg shape `2026_08_30c` was written for. If its `auth.users.phone` is
-   NULL, lookup 1 misses and lookup 2 requires `au.id IS NULL` (false). Nothing matched.
+3. ~~**The lookup that would have caught it post-dates the row.**~~ **Overtaken by the
+   live read — see below.** This was written as the timing argument: the third lookup
+   (`2026_08_30c`, live account via `shell_control.users.phone`) post-dates the 2026-08-20
+   row by ten days. True, but **not the operative cause, and weaker than reason 1** — that
+   lookup would not have caught it either. Verified on jvkn 2026-09-15: the work identity
+   has `auth.users.phone` **NULL** *and* `shell_control.users.phone` **NULL**. The number
+   exists **only** on `public.workers.phone`. So reason 1 is not one of three contributing
+   causes — it is the whole story, and it is still live today with `2026_08_30c` applied.
 
 And `2026_08_30c` **is not retroactive** — it changed what a future INSERT can find, and
 nothing swept the collisions it newly made detectable. There is also no uniqueness guard
@@ -370,15 +370,63 @@ keep reporting zero for group B no matter how reliably it is watched, and that z
 keep looking like good news. Coverage is a separate property from watchedness, and only
 coverage was ever asserted for this queue — never tested.
 
-**Live-unverified — stated plainly.** The session that produced this had **no Supabase
-MCP and no sanctioned REST path to jvkn**, so none of the following was checked and none
-of it should be repeated as fact: whether either worker's `auth.users.phone` is set;
-whether the two workers map to two distinct `shell_control.users` rows; whether this is
-one human duplicated or two humans genuinely sharing a number. Everything above is
-derived from committed source on `origin/main`, which is why it is stated structurally
-rather than as a live reading.
+### Resolved live 2026-09-15 — one human, and possibly not a collision at all
 
-**Leads worth one query each, when someone has live access.**
+Supabase MCP became available later in the same session; every claim below is a live
+read of jvkn, not inference.
+
+**It is one human, duplicated — not two humans sharing a number.**
+
+| | Work identity | Wallet identity |
+|---|---|---|
+| worker | `5e9d6e83` (2026-06-15) | `406d2b0f` (2026-08-20) |
+| shell name | Zemi Asri | Mohamed Zemi Asri Bin Mohamed Azri |
+| tenant | `7dee117c` (SKS) | `279a6da0` (**personal-wallet sentinel**) |
+| auth | email, `phone_confirmed=false` | phone OTP, `email_confirmed=false` |
+| `auth.users.phone` / `shell_control.users.phone` | **NULL / NULL** | set / set |
+| active | true | false |
+| last sign-in | 2026-09-09 | 2026-09-09 |
+| credentials / invites | 0 / 0 | 0 / 1 |
+
+The short name is the long name. Same person, signing into both on the same day.
+
+**Scale: it is a one-off, not a class.** The full sweep over all workers on jvkn returns
+**exactly one** normalised-phone group with >1 row — this one. Nothing else is hiding
+behind the 409.
+
+**The reframe that matters.** 35 of the 81 claimed worker rows are owned by
+personal-wallet (sentinel-tenant) identities, so a wallet identity *separate from* a work
+identity is the **normal, common pattern** — not an anomaly. What is unique here is one
+human holding both, on one number. That makes the open question a **product** question,
+not a data one:
+
+> Should one human have **one** worker row spanning employer and personal wallet, or
+> **two**?
+
+Nobody has decided this, and every technical option depends on the answer. If the model
+is one-row-per-human, this is a real defect and a workers-level detector is justified. If
+work and wallet are deliberately separate rows, **this was never a collision**,
+`eq_cards_worker_claimed_by_phone`'s 409 is behaving correctly, and group B should be
+**reclassified rather than fixed**. One answer flips the whole thing.
+
+**Both leads from the first pass: closed, both negative.**
+
+- `shell_control.phone_link_review`'s pending 2026-08-20 row is a **different user and a
+  different pair of phones**. The shared date was coincidence — group B was filed
+  **nowhere**, in any queue.
+- `identity_recycle_review` still holds exactly one row: the by-hand `phone_orphan` from
+  the 2026-09-14 Aditi reconciliation. The trigger has still never filed one.
+
+**Not resolved, deliberately — and cheap to leave.** Zero credentials on either row, so
+nothing is diverging today and no data is at risk; the cost of the split is purely future.
+It is also the cheapest a merge will ever be, and gets expensive the moment either row
+accrues a credential. Decision protocol run 2026-09-15 recommended **answering the product
+question before merging or building a detector**: a merge without it is a guess on
+customer identity data (wrong-survivor risk is real — the active row is the one with no
+credentials), and a detector built against n=1 would fire on all 35 legitimate wallet rows
+and become the next unwatched queue.
+
+**Leads from the first pass — both now run and closed (kept for the reasoning trail).**
 
 - `shell_control.phone_link_review`'s single pending row has sat since **2026-08-20** —
   the same date group B's second row was created. `fn_link_worker_on_user_create` matches
@@ -387,18 +435,20 @@ rather than as a live reading.
   from group B (email-matched, phone-mismatched — not phone-matched), so the shared date
   may be coincidence. But if it is the same person, then group B was filed after all —
   in the other queue, by the site that flags-then-proceeds. Worth ruling in or out first.
-- **Most likely explanation, untested:** row 1 (named, `@sks.com.au`, 2026-06-15 — a date
-  that looks like a bulk SKS staff import cohort) plus row 2 (no name, no email,
-  2026-08-20 — the shape of a self-service phone signup) reads as **one person imported by
-  their employer who later signed up themselves by phone**, not two humans on one number.
-  If so the resolution is a merge, not a policy question. Check `shell_control.users` for
-  row 2's `user_id`: a name matching row 1 settles it.
+- **Most likely explanation, untested at the time — since CONFIRMED:** row 1 (named,
+  `@sks.com.au`) plus row 2 (no name, no email, phone-signup shape) reads as one person
+  who later signed up themselves by phone, not two humans on one number. The live read
+  confirmed this exactly: `shell_control.users` gives row 2 the same person's full legal
+  name. What the guess missed is that row 2's tenant is the **personal-wallet sentinel**,
+  which is what turns a merge into a product question rather than a cleanup.
 
 **Recycled-number policy — partial, and the gap is Royce's call, not an invention.** A
 *mechanism* policy exists for the recycle case and is live: `handle_phone_dedup()`'s
 `[0071]` guard holds anything whose matched source has not been seen in 90 days. There is
-no policy at all for the case group B actually represents — two *live* identities sharing
-a number (a partner's phone, a shared household line, a work mobile handed on).
+no policy at all for the case group B actually represents. And group B turns out **not**
+to be a shared-number case at all (it is one human with a work identity and a wallet
+identity), so the shared-number policy question is **still open and still unevidenced** —
+no live example of two different humans on one number exists on jvkn today.
 `2026_09_15_recycle_review_phone_dup_no_graft.sql` names the intended direction in its own
 header: a consent-gated flow where the affected worker confirms it themselves, mirroring
 `eq_cards_request_worker_access` — explicitly "a real build, scoped separately, not rushed
