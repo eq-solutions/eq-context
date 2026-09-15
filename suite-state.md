@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-cards:**
 - #370 fix(cards): org_credential_requirements admin RLS + gap RPC use canonical is_org_admin()
-- #369 feat(cards): precheck + log identity_collision before it's unaudited
 
 **eq-field:**
 - #997 v3.5.727 — Apprentices: current site prefers the active rotation over the roster guess
@@ -109,7 +108,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,560 | ✓ 2,560 |
 | Operational | app_data.field_timesheets | 679 | ✓ 679 |
-| Safety | public.prestarts | 255 | ✓ 255 |
+| Safety | public.prestarts | 256 | ✓ 256 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -124,7 +123,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 3 |  |
 | Maintenance checks completed | 1 |  |
-| Prestarts created | 16 |  |
+| Prestarts created | 17 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
