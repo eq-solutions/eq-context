@@ -15,6 +15,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: accept-invite.ts + shell-join-tenant.ts's licence-promotion loops had the same missing-never_expires gap as eq_cards_claim_invite — fixed, merged (2026-09-15)
+
+*Found while root-causing a third broken jvkn `licences` row for eq-cards (see `eq/pending/eq-cards.md`'s own 2026-09-15 entry) — `promote-labour-hire-photo`'s own header names these two files plus `eq_cards_claim_invite` as the three independent "claim doors" that promote a staged `worker_credentials` row into a real `public.licences` row. `eq_cards_claim_invite`'s copy of this bug was fixed same-day in eq-cards PR #364; these two eq-shell doors inherited the identical gap and were never fixed alongside it.*
+
+**Shipped:**
+1. [PR #1939](https://github.com/eq-solutions/eq-shell/pull/1939) — both files' licence-promotion `insert` now defaults `never_expires: true` / `expiry_date: '9999-12-31'` when the source credential has no OCR'd expiry (e.g. `working_at_heights`, confirmed live elsewhere to legitimately OCR to null), instead of trusting the caller and taking the table's `false` default. Same sentinel convention as eq-cards PR #364/#365. `tsc -p tsconfig.netlify.json --noEmit` and `eslint` both clean; not click-tested live.
+
+**Notes:**
+- Not confirmed as the writer of the specific broken row that prompted this (jvkn's Fernando Alba row lacks `source_worker_cred_id`; both these files' promotion inserts always set it) — closed as a still-live instance of the same bug class regardless, not a targeted fix for that one row. Actual root cause for that row was eq-cards' `eq_cards_upsert_my_licence` (PR #365).
+
+---
+
 ## eq-shell: Control-plane migration runner — per-file error isolation shipped and merged (2026-09-15)
 
 `scripts/migrate-control-plane.mjs`'s real-apply loop wrapped the whole sequential migration batch in one outer `try`/`catch` — a SQL error on any single file aborted the run with no record distinguishing "already applied" from "failed" from "never reached." This is the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around (see that PR's own body). Fixed via `applyAllMigrations()`, split into a new `scripts/_migrate-control-plane-apply.mjs` for testability — every migration now lands in exactly one of applied/skipped/failed/notAttempted, fail-stop (not continue-on-error — Royce's explicit design call, made before any code was written; migrations have no dependency graph beyond sequential file order).

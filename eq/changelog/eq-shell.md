@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-15 (PR #1939 MERGED — accept-invite.ts + shell-join-tenant.ts's licence-promotion loops get the same never-expires default eq-cards' claim-invite RPC got)
+- Found while root-causing a third broken jvkn `licences` row for eq-cards — `promote-labour-hire-photo`'s own header names these two files plus `eq_cards_claim_invite` as the three independent "claim doors" that promote a staged `worker_credentials` row into a real `public.licences` row. `eq_cards_claim_invite`'s copy of the bug (null OCR expiry + `never_expires` left at the table's `false` default, crashing a worker's whole wallet) was fixed same-day in eq-cards PR #364; these two eq-shell doors had the identical gap and were never fixed alongside it.
+- Both files' licence-promotion `insert` now defaults `never_expires: true` / `expiry_date: '9999-12-31'` when the source credential has no OCR'd expiry, instead of trusting the caller. `tsc`/`eslint` both clean.
+- Not confirmed as the writer of the specific broken row that prompted this (that row lacks `source_worker_cred_id`; both these files' promotion inserts always set it) — closed as a still-live instance of the same bug class regardless. Actual root cause for that row was eq-cards' `eq_cards_upsert_my_licence` — see eq-cards changelog, [PR #365](https://github.com/eq-solutions/eq-cards/pull/365).
+- [PR #1939](https://github.com/eq-solutions/eq-shell/pull/1939), squash-merged (`eb7bc8cb`).
+
 ## 2026-09-15 (PR #1937 OPEN — mobile Home page: 5-row Records category list replaced with a single search entry point)
 - The Home page's mobile "Records" card (Customers/Sites/Contacts/Staff/Licences, each its own row/tap-target with a count badge) required guessing which category something was filed under before you could go look for it — the one entry point into records that still predated the "Find anything" model shipped earlier today (#1932). Replaced with a single search-styled trigger that opens the same records drawer, landed straight in its search box (new `autoFocusSearch` prop on `MobileRecordsDrawer`). The separate "Licences expiring" hero stat is untouched — still its own deep link straight to the Licences tab.
 - Built off a live screenshot Royce sent of the page in production. `pnpm run build`/`eslint`/`check-css-coverage` (548/548)/`pnpm test` (660/662, 2 pre-existing skips) all clean.
