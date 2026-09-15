@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1945 feat(identity): add handle_email_dedup, the email sibling of handle_phone_dedup
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
