@@ -60,6 +60,9 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-15)
 
+**eq-cards:**
+- #361 fix(cards): worker-invite resolver holds instead of tie-breaking on >1 match
+
 **eq-field:**
 - #988 v3.5.720 — fix clipped card border on the Quarterly Review modal
 
@@ -67,7 +70,7 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1932 feat(records): "Find anything" search for mobile Records drawer + desktop palette
+- #1934 fix(invite): hold and log when a worker invite matches more than one person
 - #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -90,8 +93,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | building | 2026-09-15 |
-| eq-field | new | 2026-09-15 |
+| eq-shell | new | 2026-09-15 |
+| eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
 
