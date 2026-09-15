@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: Operational support to-do list — Webb, infra, substrate
 read_priority: standard
 status: live
@@ -66,6 +66,23 @@ despite "it's because we're an org" being a very reasonable first guess.
   automation" purpose, one probably backs the others' work unnecessarily duplicated) — pure
   hygiene, no urgency. Down from 5 after today's cleanup deleted the expired, the unused,
   and both `eq-solutions-latest`/`eq-solutions` variants. _(added 2026-09-14)_
+
+---
+
+## F19 built + closed same-session — ~/.claude command/hook durability backups now drift-checked (2026-09-15)
+
+*Follow-up to this file's earlier `guard.js` backup gap: a real fix landed in live `~/.claude/commands/{brief,close}.md` + `hooks/guard.js` but eq-context's own backups sat 7 days stale with nothing to catch it, and guard.js itself had zero backup anywhere. Investigated existing prior art first (F12's two dead branches, `check_shared_object_drift.py`, eq-field's `cache-buster-drift`/`csp-drift`) before building — confirmed CI structurally can't reach `~/.claude` on Royce's machine, so this has to be a local check.*
+
+- **`hooks/session_start.py`** — new CMDSYNC gate line (8th check), warn-only, every session: hashes live `~/.claude/commands/{brief,close,housekeep}.md` + `hooks/guard.js` against their `tools/commands/` backups (frontmatter/meta stripped from both sides first).
+- **`tools/commands/guard.js`** — new backup, previously had none. Verified via `node --check` (caught a real bug: the first draft put the provenance comment above the shebang and broke Node's parser) and via actually running `session_start.py` twice, confirming `CMDSYNC ok`.
+- **`system/failures.md`** — F19 registered, rung 4/4 (guard shipped same session, matching F16's precedent).
+- **`tools/commands/README.md`** — updated; also fixed a stale count (`triage.md` was live but missing from the doc).
+- Royce, via structured questions: build the session_start.py check, include guard.js, register F19 now. Full detail: `sessions/2026-09-15.md` "brief-gate backup-drift" entry, eq-context commit `0363168d`.
+
+**Deferred:**
+- [ ] **`~/.claude/hooks/ddl_migration_gate.py` (10KB) and `selftest.js` (26KB, guard.js's own test suite) also have zero backup in eq-context** — same risk class as guard.js, found while listing the live hooks directory, out of scope for what was approved today. Spawned as `task_804dec35`. _(added 2026-09-15)_
+
+No other open items.
 
 ---
 
