@@ -28,13 +28,16 @@ costs no ceremony. Prints, unprompted, at every session start:
                    The informational half of failure F16; pre_tool_use.py carries
                    the enforcement half (active, blocks Edit/Write in the bare root).
   8. CMDSYNC     — drift between Royce's LIVE ~/.claude/commands/*.md + hooks/
-                   guard.js (his machine, user-level, not version-controlled)
-                   and their eq-context durability backups (tools/commands/).
-                   Recurred once — a real guard.js/brief.md/close.md fix sat
-                   unmirrored for 7 days with nothing to catch it, and guard.js
-                   itself had no backup at all — before this check existed
-                   (failure F19, built 2026-09-15). Local-only by necessity:
-                   CI cannot reach a path on Royce's machine.
+                   {guard.js,ddl_migration_gate.py,selftest.js} (his machine,
+                   user-level, not version-controlled) and their eq-context
+                   durability backups (tools/commands/). Recurred once — a
+                   real guard.js/brief.md/close.md fix sat unmirrored for 7
+                   days with nothing to catch it, and guard.js itself had no
+                   backup at all — before this check existed (failure F19,
+                   built 2026-09-15; extended same day to guard.js's own test
+                   suite and the DDL-migration Stop hook, found to have the
+                   same zero-backup gap). Local-only by necessity: CI cannot
+                   reach a path on Royce's machine.
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
 Fails open but loud: a silent guard is the bug we are fixing.
@@ -472,7 +475,14 @@ _CMDSYNC_PAIRS = [
     (os.path.join(_HOME, ".claude", "commands", "close.md"), "tools/commands/close.md", "md"),
     (os.path.join(_HOME, ".claude", "commands", "housekeep.md"), "tools/commands/housekeep.md", "md"),
     (os.path.join(_HOME, ".claude", "hooks", "guard.js"), "tools/commands/guard.js", "js"),
+    (os.path.join(_HOME, ".claude", "hooks", "ddl_migration_gate.py"), "tools/commands/ddl_migration_gate.py", "py"),
+    (os.path.join(_HOME, ".claude", "hooks", "selftest.js"), "tools/commands/selftest.js", "js"),
 ]
+
+_CMDSYNC_META_MARKER = {
+    "js": "// === DURABILITY BACKUP META ===",
+    "py": "# === DURABILITY BACKUP META ===",
+}
 
 
 def _cmdsync_strip_preamble(text, kind):
@@ -480,13 +490,17 @@ def _cmdsync_strip_preamble(text, kind):
         end = text.find("\n---\n", 4)
         if end != -1:
             return text[end + 5:]
-    if kind == "js":
-        # Meta block lives at the END of the backup (not the top) so the
-        # shebang stays byte 0 — `node --check` treats "#!" as a syntax
-        # error the instant it isn't the literal first line of the file.
-        # Truncating at the start marker makes the END marker purely
-        # documentation; nothing here depends on finding it.
-        start = text.find("// === DURABILITY BACKUP META ===")
+    marker = _CMDSYNC_META_MARKER.get(kind)
+    if marker:
+        # Meta block lives at the END of every non-md backup (not the top) —
+        # guard.js's shebang has to stay byte 0 or `node --check` treats "#!"
+        # as a syntax error the instant it isn't the literal first line, and
+        # every other file just follows the same one convention rather than
+        # inventing a second placement rule for a language that wouldn't
+        # technically need it (ddl_migration_gate.py). Truncating at the
+        # start marker makes the END marker purely documentation; nothing
+        # here depends on finding it.
+        start = text.find(marker)
         if start != -1:
             return text[:start]
     return text

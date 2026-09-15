@@ -2,7 +2,7 @@
 title: Claude Code Command + Hook Backups — Index
 owner: Royce Milmlow
 last_updated: 2026-09-15
-scope: Explains why brief/close/housekeep + guard.js are mirrored here, why decide/deploy-topology-verify/entity-boundary-guard/gap/reflect/tidy/triage aren't, and how drift against the live files is now checked
+scope: Explains why brief/close/housekeep + guard.js/selftest.js/ddl_migration_gate.py are mirrored here, why decide/deploy-topology-verify/entity-boundary-guard/gap/reflect/tidy/triage aren't, and how drift against the live files is now checked
 read_priority: reference
 status: live
 ---
@@ -14,7 +14,8 @@ hook, normally kept at `~/.claude/commands/` and `~/.claude/hooks/`
 (currently `C:\Users\EQ\.claude\commands\` / `...\hooks\` on his Windows
 machine). Added 2026-09-06 after a PC migration, when checking which custom
 commands survived surfaced that these had no backup anywhere except that one
-machine's user profile. `guard.js` joined 2026-09-15 (see Hooks below).
+machine's user profile. `guard.js`, `selftest.js`, and `ddl_migration_gate.py`
+all joined 2026-09-15 (see Hooks below).
 
 **This is a backup, not a synced mirror — copying still has to happen by
 hand.** Editing a live file does **not** update its copy here, and vice
@@ -28,7 +29,7 @@ stale even though you've now been told. This is exactly the failure mode the
 rest of this repo works hard to avoid (`system/failures.md` -> F19, the
 incident that motivated CMDSYNC in the first place).
 
-## Why only these three commands (+ one hook)
+## Why only these three commands (+ three hooks)
 
 Claude Code auto-discovers commands from `~/.claude/commands/*.md`. Ten exist
 today: `brief`, `close`, `decide`, `deploy-topology-verify`, `entity-boundary-guard`,
@@ -71,13 +72,29 @@ carries a `// === DURABILITY BACKUP META ===` … `// === END META ===` comment
 block instead of YAML frontmatter (staying valid JS); CMDSYNC strips it
 before comparing, the same way it strips the commands' YAML frontmatter.
 
+Two more `~/.claude/hooks/` files joined the same day, found while backing up
+guard.js and confirmed to have the identical zero-backup gap:
+
+- `selftest.js` — guard.js's own test suite (`node selftest.js`, 24 cases).
+  Same `// === DURABILITY BACKUP META ===` convention as guard.js, meta block
+  at the end of the file for the same reason (nothing about *this* file
+  requires it, but one convention across every non-`.md` backup beats two).
+- `ddl_migration_gate.py` — the Stop-hook that flags live DDL applied via the
+  Supabase MCP with no matching migration file committed. Python doesn't
+  share guard.js's byte-0-shebang constraint, but the meta block still goes
+  at the end, matching the other two.
+
+Restoring either: copy everything above the `DURABILITY BACKUP META` marker
+back to its `~/.claude/hooks/` path unchanged.
+
 ## Restoring onto a new machine
 
 Copy `brief.md`, `close.md`, `housekeep.md` into `~/.claude/commands/` and
-`guard.js` into `~/.claude/hooks/` on the new machine (`decide.md`, `gap.md`,
-`reflect.md`, `tidy.md`, `triage.md` are short enough to recreate from scratch
-by hand from the table above, or copy them from the working machine the same
-way if convenient). Strip each file's backup-only header first — the YAML
-frontmatter on the three `.md` files, the `DURABILITY BACKUP META` comment
-block on `guard.js` — before dropping it into place; a stray frontmatter
-block would break `guard.js` as valid JS.
+`guard.js`, `selftest.js`, `ddl_migration_gate.py` into `~/.claude/hooks/` on
+the new machine (`decide.md`, `gap.md`, `reflect.md`, `tidy.md`, `triage.md`
+are short enough to recreate from scratch by hand from the table above, or
+copy them from the working machine the same way if convenient). Strip each
+file's backup-only header first — the YAML frontmatter on the three `.md`
+files, the `DURABILITY BACKUP META` comment block on the three hook files —
+before dropping it into place; a stray frontmatter block would break
+`guard.js`/`selftest.js` as valid JS.
