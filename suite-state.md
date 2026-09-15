@@ -60,10 +60,14 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-15)
 
+**eq-field:**
+- #988 v3.5.720 — fix clipped card border on the Quarterly Review modal
+
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1932 feat(records): "Find anything" search for mobile Records drawer + desktop palette
 - #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -75,7 +79,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? in_progress |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -85,9 +89,9 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | uploading | 2026-09-15 |
+    | eq-service | ready | 2026-09-15 |
 | eq-shell | building | 2026-09-15 |
-| eq-field | ready | 2026-09-15 |
+| eq-field | new | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
 
