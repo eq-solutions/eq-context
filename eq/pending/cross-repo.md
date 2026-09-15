@@ -1,7 +1,7 @@
 ---
 title: Cross-Repo — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-16
 scope: Work that genuinely spans 2+ EQ product repos as a single unit (a combined header, or the body clearly touches both). Suite-wide/substrate-process items with no single owning repo also land here.
 read_priority: critical
 status: live
@@ -943,6 +943,29 @@ Diagnosed 2026-05-19. 17 advisor warnings, fix drafted but not applied.
 - [ ] **Sentry [EQ-SOLVES-SERVICE-D](https://eq-solutions.sentry.io/issues/EQ-SOLVES-SERVICE-D) left unresolved** — single occurrence, no sourcemaps uploaded for this project, stack trace is fully minified with no first-party frame. Nothing actionable without more data; needs sourcemap upload (same gap already on record for eq-shell, 2026-07-12) or a recurrence to investigate. _(added 2026-08-17)_
 - [ ] **eq-shell [PR #1417](https://github.com/eq-solutions/eq-shell/pull/1417) and [PR #1418](https://github.com/eq-solutions/eq-shell/pull/1418)'s test-plan click-throughs never run live** — "trigger a real lockout against a deliberately-inactive test account, confirm the warning lands in Sentry" — on all three doors now (PIN reset, magic-link, phone-OTP). Verified by direct DB/code inspection instead (traced Richard Brown's actual live lockout through each exact code path); the merged fixes are confirmed correct by that trace, but nobody's watched a real Sentry event land from this code yet. _(added 2026-08-17)_
 - [ ] **This jvkn-side identity merge is separate from the ehow-side `staff_id` duplicate already closed 2026-08-15/16** ([EQ-SHELL-1M](https://eq-solutions.sentry.io/issues/EQ-SHELL-1M), PR #1373) — same person, two independent duplication incidents on two different systems. Don't read this entry as a repeat of that one, and don't assume closing one closes the other if Richard (or anyone else) shows a similar symptom again. _(added 2026-08-17)_
+
+---
+
+## eq-roles + eq-shell + eq-field + eq-service + eq-cards: permission-model consolidation — fully scoped, build prompt delivered, nothing built yet (2026-09-16)
+*Follow-on from eq-shell PR #1943's "backend permission-checking logic itself still not consolidated" open item. Royce asked how this scales and whether it's what a world-class SaaS team would do; answering required actually auditing all 4 apps rather than assuming eq-shell's problem was universal.*
+
+**Audited all 4 apps + the eq-roles package itself, live, before proposing anything:**
+- `@eq-solutions/roles` (v2.7.7) — a mature RBAC core (6 roles × 63 permissions, one generated `MATRIX`, `can()`/`resolveEffectivePermissions()`/etc. already exist) with zero concept of *resources* — it knows `entity.view` is a permission, not that a "customer" needs it. That's the actual gap.
+- eq-shell is the outlier: 7 files independently hardcode their own entity→permission Sets, already the source of 2 real bugs fixed same-day in PR #1943/#1914.
+- eq-field and eq-service **already have mature, working versions of the pattern eq-shell lacks** — one matrix, one gate function, and (both) a CI test that fails the build if a declared permission has zero real enforcement call sites. Neither needs the new shared layer; each solved its own version of this problem independently already.
+- eq-cards has a different bug shape entirely (no per-entity Sets — it's a single-entity-type app) but a confirmed-live cousin bug: `org_credential_requirements`'s RLS admin policy never adopted the canonical `is_org_admin()` function that `org_join_requirements`'s sibling policy already uses, so a valid platform admin can manage one but not the other for the same org.
+
+**Delivered**: a complete, self-contained, 6-workstream build prompt, `C:\Projects\eq-roles-permission-model-prompt.md` — not committed to substrate, Royce's to save and paste into a fresh session per workstream. Workstreams, independent unless noted: **W1** eq-cards RLS fix (independent, smallest, do first); **W2** eq-roles gains `RESOURCE_PERMS`/`canAccessResource()` (the one genuinely new shared piece — a declarative resource+action→permission table, generated the same way `MATRIX` already is, explicitly NOT a move to ReBAC/Zanzibar-style relationship graphs, which would solve a harder problem EQ doesn't have); **W3** eq-shell migrates its 7 files onto W2 one file/PR at a time (depends on W2 shipping first); **W4** eq-shell adopts the drift-ratchet test pattern Field/Service already proved out (independent, ships today); **W5**/**W6** optional low-priority hardening in Field/Service on patterns already working.
+
+- [ ] **Nothing in this initiative has been built yet** — the prompt above is the full scope; whoever picks it up next should start with W1 (eq-cards), per the prompt's own priority order. _(added 2026-09-16)_
+
+**Decided:**
+- Royce: eq-roles should be where this resource-level mapping lives (not an eq-shell-local module) — confirmed as his own stated intent, honored even though eq-shell is currently the only real consumer.
+- Royce, closing the PR #1943 pending item above: labour_hire should NOT gain `entity.view` (no need for labour hire to see customer/site records) — current state (labour_hire holds `equipment.view`/`field.view` only) is correct as-is, not a gap. No code change.
+
+**Notes:**
+- This reframed the task from "eq-shell has a mess, fix it" to "eq-shell is the one app lagging the suite's own already-proven pattern" — a meaningfully different (smaller, better-informed) scope than assumed at the start of the conversation, found only by actually auditing the other 3 apps rather than assuming the eq-shell problem generalized.
+- Full detail: `sessions/2026-09-16.md`.
 
 ---
 
