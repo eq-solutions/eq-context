@@ -218,7 +218,7 @@ first actually **stops**.
 
 | Site | Queue | Stops? | Verified |
 |---|---|---|---|
-| `handle_phone_dedup()` — stale >90d, and live-duplicate branches | `identity_recycle_review` | **Yes** — inherits nothing, holds | **LIVE** |
+| `handle_phone_dedup()` — stale >90d, and live-duplicate branches | `identity_recycle_review` | **Yes** — inherits nothing, holds — but see the coverage note under decision 2's group B: it stops the shapes it can *see*, and `public.workers` is not one of them | **LIVE** |
 | ~~`link_pending_invites` phone branch~~ | ~~`identity_recycle_review`~~ | **STALE — retired 2026-09-15.** Verified live: no longer references the queue at all | ✅ GONE |
 | `fn_link_worker_on_user_create` | `phone_link_review` | **No — flags the phone disagreement, then claims the worker anyway** | LIVE |
 | `eq_cards_link_or_create_worker` | `identity_collision_flags` | **No — flags the collision, then provisions the duplicate anyway** | **LIVE** |
@@ -328,9 +328,85 @@ the claimed record is the right resolution; until it is merged, that person cann
 re-invited. Worth doing before or shortly after applying, not because the refusal is
 wrong but because it is the refusal working on data that should not exist.
 
-Group B is the more interesting one and is *not* addressed here: two claimed identities
-sharing a phone is exactly `handle_phone_dedup`'s territory, and it is being absorbed
-silently by the pre-check's 409 rather than filed anywhere.
+### Group B — investigated 2026-09-15. It is *not* `handle_phone_dedup`'s territory.
+
+The note above originally read: "two claimed identities sharing a phone is exactly
+`handle_phone_dedup`'s territory, and it is being absorbed silently by the pre-check's
+409 rather than filed anywhere." The second half is correct. **The first half is wrong,
+and that is the finding** — the trigger did not fail to file this. It cannot see it.
+Three independent reasons, any one of which alone is sufficient:
+
+1. **Wrong table.** `handle_phone_dedup()` never reads `public.workers`. It matches
+   `NEW.phone` against `auth.users.phone` and `shell_control.users.phone` only. Group B
+   is a collision between two `public.workers.phone` values. It becomes visible to the
+   trigger only if the same duplication is *also* mirrored onto `shell_control.users`.
+2. **INSERT-only, so a phone that arrives later is never re-checked.** Confirmed by the
+   live `pg_get_triggerdef` captured in `2026_09_15_backfill_auth_users_dedup_triggers.sql`:
+   `on_auth_users_insert_dedup` is `AFTER INSERT ON auth.users` — there is no
+   `UPDATE OF phone`. It fires once per auth identity, at creation, and only if the phone
+   is present at that instant; the body's first statement is
+   `IF NEW.phone IS NULL OR NEW.phone = '' THEN RETURN NEW`. An identity created by email
+   signup, admin provisioning or invite-claim — with the phone landing on
+   `public.workers` — exits on line one and is never revisited.
+3. **The lookup that would have caught it post-dates the row.** Group B's second row was
+   created **2026-08-20**. The third lookup — a *live* account matched via
+   `shell_control.users.phone` where `au.id IS NOT NULL` — was added by
+   `2026_08_30c_phone_dedup_shell_only_phone.sql` ten days later. On 2026-08-20 the
+   function had only two lookups: `auth.users.phone`, and placeholder-with-`au.id IS NULL`.
+   Group B's first row carries an `@sks.com.au` email, i.e. an email-auth staffer — exactly
+   the Leif Lundberg shape `2026_08_30c` was written for. If its `auth.users.phone` is
+   NULL, lookup 1 misses and lookup 2 requires `au.id IS NULL` (false). Nothing matched.
+
+And `2026_08_30c` **is not retroactive** — it changed what a future INSERT can find, and
+nothing swept the collisions it newly made detectable. There is also no uniqueness guard
+to fall back on: no unique index or constraint on `public.workers.phone` exists in any
+migration (`2026_08_23e` normalises the *format* on write, nothing more).
+
+**The lesson sharpens the one already recorded above.** "The queues themselves were
+unwatched" is now closed by [#1927](https://github.com/eq-solutions/eq-shell/pull/1927).
+This is the next layer: a watcher on a queue proves the queue is read, **not** that the
+detector feeding it covers the shape you think it covers. `identity_recycle_review` will
+keep reporting zero for group B no matter how reliably it is watched, and that zero will
+keep looking like good news. Coverage is a separate property from watchedness, and only
+coverage was ever asserted for this queue — never tested.
+
+**Live-unverified — stated plainly.** The session that produced this had **no Supabase
+MCP and no sanctioned REST path to jvkn**, so none of the following was checked and none
+of it should be repeated as fact: whether either worker's `auth.users.phone` is set;
+whether the two workers map to two distinct `shell_control.users` rows; whether this is
+one human duplicated or two humans genuinely sharing a number. Everything above is
+derived from committed source on `origin/main`, which is why it is stated structurally
+rather than as a live reading.
+
+**Leads worth one query each, when someone has live access.**
+
+- `shell_control.phone_link_review`'s single pending row has sat since **2026-08-20** —
+  the same date group B's second row was created. `fn_link_worker_on_user_create` matches
+  a worker **by email** (`lower(w.email) = lower(NEW.email)`, `LIMIT 1`), writes that row
+  when the phones disagree, then claims the worker anyway. That is a *different* shape
+  from group B (email-matched, phone-mismatched — not phone-matched), so the shared date
+  may be coincidence. But if it is the same person, then group B was filed after all —
+  in the other queue, by the site that flags-then-proceeds. Worth ruling in or out first.
+- **Most likely explanation, untested:** row 1 (named, `@sks.com.au`, 2026-06-15 — a date
+  that looks like a bulk SKS staff import cohort) plus row 2 (no name, no email,
+  2026-08-20 — the shape of a self-service phone signup) reads as **one person imported by
+  their employer who later signed up themselves by phone**, not two humans on one number.
+  If so the resolution is a merge, not a policy question. Check `shell_control.users` for
+  row 2's `user_id`: a name matching row 1 settles it.
+
+**Recycled-number policy — partial, and the gap is Royce's call, not an invention.** A
+*mechanism* policy exists for the recycle case and is live: `handle_phone_dedup()`'s
+`[0071]` guard holds anything whose matched source has not been seen in 90 days. There is
+no policy at all for the case group B actually represents — two *live* identities sharing
+a number (a partner's phone, a shared household line, a work mobile handed on).
+`2026_09_15_recycle_review_phone_dup_no_graft.sql` names the intended direction in its own
+header: a consent-gated flow where the affected worker confirms it themselves, mirroring
+`eq_cards_request_worker_access` — explicitly "a real build, scoped separately, not rushed
+into this migration." Until that exists, group B has no defined resolution path.
+
+**Not resolved here, deliberately.** No identity was merged, deleted or re-pointed:
+customer-data migration and auth-flow changes are Royce's call under the global authority
+model, and jvkn is the shared control plane every tenant depends on.
 
 **Left open deliberately — needs Royce.** Only the `>1` case is closed. *Exactly one
 match that is already claimed by a different user* still links silently. That
