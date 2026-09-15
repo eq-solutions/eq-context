@@ -9,6 +9,18 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-15 (PR #1937 OPEN — mobile Home page: 5-row Records category list replaced with a single search entry point)
+- The Home page's mobile "Records" card (Customers/Sites/Contacts/Staff/Licences, each its own row/tap-target with a count badge) required guessing which category something was filed under before you could go look for it — the one entry point into records that still predated the "Find anything" model shipped earlier today (#1932). Replaced with a single search-styled trigger that opens the same records drawer, landed straight in its search box (new `autoFocusSearch` prop on `MobileRecordsDrawer`). The separate "Licences expiring" hero stat is untouched — still its own deep link straight to the Licences tab.
+- Built off a live screenshot Royce sent of the page in production. `pnpm run build`/`eslint`/`check-css-coverage` (548/548)/`pnpm test` (660/662, 2 pre-existing skips) all clean.
+- [PR #1937](https://github.com/eq-solutions/eq-shell/pull/1937) — CI running, not yet merged. Held for an explicit merge confirmation rather than reusing the standing "merge once CI's green" call given earlier today for #1932, which was scoped to that PR.
+
+## 2026-09-15 (PR #1932 MERGED — "Find anything": unified record search replaces the mobile drawer's dead category rows and adds a desktop command palette + sticky search trigger)
+- Mobile `MobileRecordsDrawer` rows all routed to the same generic page regardless of which row was tapped (`rowHref()` ignored the row data it was given) — the actual priority bug this whole effort started from. Fixed, and a live search box added to the drawer so a record can be found directly instead of only browsed by category/tab.
+- New shared engine (`useRecordSearch.ts` + `recordHistory.ts`) powers both the mobile drawer and a new desktop `CommandPalette` (rewritten to merge nav-destination search with live record search) + a sticky `RecordSearchTrigger` in `HubLayout` — one search implementation, not two parallel ones. Recent/pinned records persist per-tenant via localStorage.
+- Site/Contact search results route to the real Customer page (`customer_id`, already present on every row via `to_jsonb(t.*)`, was just unused) instead of landing on a raw generic table.
+- Also fixed in the same pass: `useCommandIndex.tsx`'s `RECORD_DEFS` was a hand-copied duplicate of `sidebarConfig.ts`'s `SIDEBAR_RECORDS` — now derives from it — plus an unrelated stale-dependency bug in the same file's `items` useMemo.
+- Squash-merged `788d3b59` (2026-09-15T08:48:55Z), branch `feat/records-find-anything-search` deleted. Not click-tested live — no real Supabase tenant credentials in this environment (9 attempts at a local `netlify dev` session all hung on its proxy specifically, isolated as environment-specific, not a code problem).
+
 ## 2026-09-15 (PR #1930 MERGED + LIVE — shell-join-tenant.ts now stamps origin_org_id on self-join worker writes; closes the Madagins/Aditi incident)
 - Root cause of the Madagins/Aditi cross-tenant incident: `shell-join-tenant.ts`'s Step 7 resolves the joining tenant's real org several steps before Step 10 writes `public.workers` — but never carried that org id into the write, in either the fresh-insert or claim-existing-stub branch. `workers-canonical-sync` (eq-cards) defaults any `origin_org_id IS NULL` row to SKS unconditionally, so a true self-join for any other tenant silently landed on SKS's own roster.
 - Both write paths now stamp `origin_org_id`: the insert directly, the update fill-if-missing (never overwrites a value another producer already set). New regression test verified non-vacuous (reverted the fix, confirmed the exact expected failure, restored).

@@ -60,14 +60,13 @@ Root cause (confirmed, ~5 sessions converged on it independently): `public.worke
 
 ---
 
-## eq-shell: Records navigation redesign — mobile + desktop "Find anything" search shipped to a branch; 3 of 7 originally-deferred items closed same day (2026-09-14 → 09-15)
+## eq-shell: Records navigation redesign — mobile + desktop "Find anything" search merged; Home page single-search entry point open for review (2026-09-14 → 09-15)
 
 **Deferred:**
 - [ ] **Live browser verification still never obtained** — 7 attempts total now (one more this pass, same result). Consistently hangs on `netlify dev`'s proxy specifically, not a code problem (plain Vite connects fine on another port via the same tooling). Royce to try `netlify dev --filter eq-shell` from his own terminal.
 - [ ] **Licences aren't in the unified search** — checked the endpoint before building anything: `staff-canonical-licences` has no search/filter and no staff name on the row (bare `staff_id` only), so wiring it in needs a real fetch/cache design, not a bolt-on. Deliberately not started.
 - [ ] **Phase 2 relational richness** (on-site-now, equipment-on-site on a record's own page) — needs a small RPC/migration extension via the One Pipe and Royce's explicit go. Untouched.
-
-_Closed this pass: branch committed + pushed (`5290fa41`); site/contact search results now route to the real Customer page instead of the old raw table (`sites`/`contacts`.`customer_id` was already in every row via `to_jsonb(t.*)`, just unused); the `RECORD_DEFS`/`SIDEBAR_RECORDS` hand-copy duplication fixed (derives from sidebarConfig now) plus a real unrelated stale-dependency bug found and fixed in the same file; the 3 stale worktrees turned out already gone (cleaned by someone/something else before this session got to them). Full detail: `sessions/2026-09-15.md`._
+- [ ] **[eq-shell#1937](https://github.com/eq-solutions/eq-shell/pull/1937) open, needs Royce's merge call** — replaced the mobile Home page's 5-row Records category list (Customers/Sites/Contacts/Staff/Licences, each its own tap target) with a single search-styled trigger into the same drawer, landing focus straight in search (`autoFocusSearch`) — so Home matches the "Find anything" model instead of asking "which category" before you can look. Separate "Licences expiring" hero stat deep-link left untouched. `pnpm run build`/eslint/`check-css-coverage`/tests (660/662, 2 pre-existing skips) all clean pre-push. CI running as of this close. Treated the earlier "merge once CI's green" call (given for #1932) as scoped to that PR only, not standing — held this one for an explicit merge confirmation instead of auto-merging a second, later PR on the same say-so. _(added 2026-09-15)_
 
 ---
 
