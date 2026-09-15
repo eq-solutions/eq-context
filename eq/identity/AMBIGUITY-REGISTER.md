@@ -517,39 +517,54 @@ not match.
 > applied **before or with** the deploy. Merge-then-forget leaves every invite that
 > carries an email failing on `Failed to check existing accounts`.
 
-**Verified live 2026-09-15 09:34Z** (Supabase MCP became available mid-session, after the
-"not verified" note this replaces). `eq_cards_find_or_create_worker_for_invite` now carries
-`0173`'s raise; `eq_cards_worker_claimed_by_phone` exists.
+**CLOSED — the email half is LIVE, 2026-09-15.** `eq_cards_worker_claimed_by_email`
+applied to jvkn **09:49:46Z**; [eq-shell #1935](https://github.com/eq-solutions/eq-shell/pull/1935)
+merged 09:48:30Z and its deploy **published 09:54:52Z** (Netlify `commit_ref` = `9ba99644`,
+state `ready` — verified by commit ancestry, not elapsed time). The migration landed **five
+minutes before** the code that calls it went live, so the 500 window never opened.
 
-**Email half now shipped and live too — re-verified 2026-09-15 after #1935 merged
-(`9ba99644`, 09:48:30Z).** `eq_cards_worker_claimed_by_email` **exists on jvkn**, its live
-body is byte-identical to the committed `2026_09_15d` migration, and it is
-`anon=false` / `authenticated=false` / `service_role`-only. Call order in
-`create-worker-invite.ts` is phone check → **email check** → resolver, so the email gap is
-closed upstream of `0173` rather than by it. (The line this replaces said the migration was
-not applied; it was hand-applied, which is the correct path for eq-shell's tree — the
-warning below still stands.)
+Function verified live: `STABLE`, not `SECURITY DEFINER`, `service_role` EXECUTE only
+(`authenticated` and `anon` both false) — identical posture to its phone sibling. Behaviour
+spot-checked against real rows: a claimed worker's email → true, uppercased → true,
+space-padded → true, an *unclaimed* stub's email → false, unknown/empty/NULL → false.
+**74 of jvkn's 107 workers are claimed and carry an email**, so this refusal has a real
+surface rather than a hypothetical one.
 
-**Consequence worth knowing: both duplicate groups are now caught by the pre-checks, not by
-`0173`.** Calling the live functions against the two real duplicate keys returns true for
-both — group A on email, group B on phone. So each gets the consent-gated
-`existing_account` 409 and never reaches the resolver, and **`0173`'s raise has no reachable
-trigger in today's data**. That is the right shape: the pre-checks route the common case to
-a path a human can act on, and the raise is the backstop for whatever they miss. It also
-means merging group A's duplicate is data hygiene, not an unblock — an earlier reading of
-this file implied that person would be blocked until it was merged.
-
-> ⚠️ **`control-plane-migrate.yml` is NOT the apply path for eq-shell's `supabase/migrations/`.**
-> `eq-shell/supabase/CONTROL-PLANE-LEDGER.md` states it outright: "This tree has **no CI apply
-> path**: files are applied by hand (Supabase MCP / dashboard / CLI), so **merge ≠ applied**."
-> The `2026_*` rows in `_eq_control_plane_migrations` came from a one-time `--bootstrap` stamp;
-> the **12** eq-shell files added since `2026_09_05` have no ledger row but several *are* live
-> (e.g. `2026_09_09b`'s `eq_cards_worker_claimed_by_phone`). **Dispatching that workflow would
-> replay all 12**, against hazards that same doc documents by name — action item 3
-> (`2026_06_16_cards_claim_explicit_user_id.sql`, "Never re-apply": resurrects a deliberately
-> dropped 2-arg overload) and item 4 (duplicate unique index). The CI dispatch belongs to
-> **eq-cards'** tree, which is why `0173` went that way. An earlier version of this note, and
-> #1935's PR body, both got this wrong.
+> ### ⚠️ A warning in an earlier version of this note was WRONG — recorded because the
+> ### reasoning failure is reusable
+>
+> That version said dispatching `control-plane-migrate.yml` "would replay all 12"
+> un-ledgered eq-shell migrations, against the replay hazards
+> `eq-shell/supabase/CONTROL-PLANE-LEDGER.md` names (its items 3 and 4). **It would not.**
+> The real dispatch applied **exactly 1 migration, skipped 165, failed 0**
+> ([run 34954639340](https://github.com/eq-solutions/eq-shell/actions/runs/34954639340)) —
+> `migrate-control-plane.mjs` skips anything holding a ledger row, so the named hazards were
+> never reachable. Two mistakes produced that warning: a `string_agg` ledger query whose
+> result came back **truncated**, read as if it were complete; and treating
+> `CONTROL-PLANE-LEDGER.md`'s header claim — "This tree has **no CI apply path**: files are
+> applied by hand" — as current. **That header is stale.** There is a CI apply path, it is
+> `control-plane-migrate.yml`, and it works.
+>
+> **The real hazard sits elsewhere, and it is worth keeping.** Those 12 files got their
+> ledger rows at **09:40:22–09:40:44Z** from a `--bootstrap` run
+> ([34953767228](https://github.com/eq-solutions/eq-shell/actions/runs/34953767228)), whose
+> own banner reads *"will stamp unrecorded files as already-applied, **run no SQL**."* That is
+> exactly what `migrate-control-plane.mjs`'s header warns against: *"running it again after
+> real new migrations have been added (and not yet applied) would wrongly mark them applied
+> too."* A file stamped that way is **permanently invisible to the pipeline** and will never
+> run. **Checked, and this time it was benign:** all 11 non-`0173` files were verified live
+> by object existence or function-body marker (`trg_sync_tenants`, `trg_sync_organisations_tier`,
+> `eq_cards_cancel_my_access_request`, `organisations.tenant_id NOT NULL`,
+> `on_auth_users_insert_dedup`, the recycle-review phone column, `_eq_intake_check_tenant_match`'s
+> fail-closed body, plus `v_requested_field_slug` / `archived` / `v_email_match_count` /
+> `review_not_pending` markers in the four replace-only ones). Every one already applied by
+> hand — the bootstrap only papered over records, not behaviour. **Next time nobody may check.**
+> Treat `--bootstrap` on this tree as a one-time cutover, never a way to quiet a dirty plan.
+>
+> **Also corrected: `0173`'s own provenance.** The 09:08 eq-cards dispatch cited by an earlier
+> version of this row ran with `plan: true` — it printed "5 pending", changed nothing, and
+> still concluded **success**. `0173` really landed 09:30:58Z. A green workflow is not evidence
+> a migration applied; the function body is.
 
 **Still filed nowhere: the pre-check 409s themselves.** Neither the phone check nor the
 new email one writes an audit row, so "this person already has an account" refusals are
