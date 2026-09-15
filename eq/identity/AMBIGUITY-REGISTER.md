@@ -93,6 +93,46 @@ ever; templates are import column-mappings, not people data) but the cross-tenan
 read is real. **Lesson worth keeping: fixing the guard blind would have hardened
 dead code and closed the ticket with the reachable path untouched.**
 
+> ### ⚠ Corrected 2026-09-15, later the same day — "near-dormant" was wrong
+>
+> The paragraphs above led to a proposal to **delete** the jvkn intake surface
+> as vestigial. Royce authorised that deletion; it was stopped at the
+> blast-radius check and **nothing was dropped**. The proposal is withdrawn.
+>
+> The surface is **live**. Per-function, against real eq-shell app code
+> (`src/`, `netlify/`, excluding vendored and generated trees):
+>
+> | Function | App callers |
+> |---|---|
+> | `eq_intake_rollback` | 1 — `AdminAuditPage.tsx` Rollback button |
+> | `eq_intake_event_rows` | 1 |
+> | `_eq_intake_record_committed` | 2 |
+> | `eq_intake_template_track_use` / `_track_outcome` | 0, but **each has a trigger attached** |
+>
+> Plus `intake-commit.ts`, `intake-stage.ts`, `intake-staging-approve.ts` and
+> `_shared/intake-modules.ts`. eq-solves-intake is actively developed. Dropping
+> this would have broken the Rollback button and two triggers on the shared
+> control plane.
+>
+> **Why the call was wrong — this is the reusable part, and it applies to every
+> SRC/LIVE row in this register.** The "zero callers" evidence was a
+> `pg_get_functiondef` search across `pg_proc`. That finds **SQL functions
+> calling SQL functions** and is structurally blind to application code invoking
+> an RPC over PostgREST. A DB-internal caller search is not a caller search. It
+> was then compounded by reading `tenant-migrations/0005` and `0027`'s drops as
+> "dead", when they mean the opposite: intake runs on the **control** plane, so
+> tenant planes correctly strip it.
+>
+> **What survives:** `_eq_intake_check_tenant_match` genuinely has zero callers
+> in both the DB *and* app code, so the fail-closed fix (`2026_09_15c`, applied
+> and behaviourally verified) remains correct and inert exactly as described.
+> `eq_intake_find_template_by_signature` is also uncalled in both — its
+> `authenticated` EXECUTE grant is a real but much smaller **grant-tightening**
+> question, explicitly **not** a deletion one.
+>
+> **Before proposing any deletion from this register, check app callers as well
+> as DB callers.** Two independent searches, or the finding is not established.
+
 **Counter-example worth copying:** `eq-field/netlify/functions/canon-read.js` ~160
 refuses and reports to Sentry when the session carries no `tenant_slug`, rather
 than falling back to Origin or body. This is the shape the rest should match.
