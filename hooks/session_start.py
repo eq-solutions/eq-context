@@ -27,11 +27,19 @@ costs no ceremony. Prints, unprompted, at every session start:
                    changes via scripts/safe_commit.py rather than a raw commit/push.
                    The informational half of failure F16; pre_tool_use.py carries
                    the enforcement half (active, blocks Edit/Write in the bare root).
+  8. CMDSYNC     — drift between Royce's LIVE ~/.claude/commands/*.md + hooks/
+                   guard.js (his machine, user-level, not version-controlled)
+                   and their eq-context durability backups (tools/commands/).
+                   Recurred once — a real guard.js/brief.md/close.md fix sat
+                   unmirrored for 7 days with nothing to catch it, and guard.js
+                   itself had no backup at all — before this check existed
+                   (failure F19, built 2026-09-15). Local-only by necessity:
+                   CI cannot reach a path on Royce's machine.
 
 Reads the LOCAL CLONE, never a URL. The URL is what lied on 2026-07-11.
 Fails open but loud: a silent guard is the bug we are fixing.
 """
-import os, re, subprocess, sys
+import hashlib, os, re, subprocess, sys
 from datetime import datetime, timezone
 
 # Windows consoles default to cp1252; digest.md's "Needs you" section contains
@@ -442,6 +450,82 @@ out.append(
     "           scripts/safe_commit.py -m \"...\" <files>    (land a substrate change)\n"
     "           system/failures.md -> F16 · system/worktree-registry.md"
 )
+
+# --- 8. CMDSYNC (F19 — durability backups of ~/.claude drift with no guard) --
+# 2026-09-15: a real fix landed in the live ~/.claude/commands/{brief,close}.md
+# and ~/.claude/hooks/guard.js, but eq-context's own durability backups
+# (tools/commands/{brief,close}.md) sat 7 days stale with nothing to catch it —
+# tools/commands/README.md already named this exact risk in prose and nothing
+# enforced it. guard.js had no backup here at all. This closes the gap the
+# same way every other check in this file does: LOCAL (CI cannot reach a path
+# on Royce's machine), warn-only (a stale backup is a trust problem, not a
+# production incident — same "fail open but loud" posture as everything
+# above), fires every session, unconditionally. system/failures.md -> F19.
+#
+# Frontmatter/preamble is excluded from the comparison on both sides — the
+# backup copies intentionally carry their own YAML frontmatter (commands) or
+# a marker-delimited provenance comment (guard.js) that the live files don't
+# have; only the BODY has to match.
+_HOME = os.environ.get("USERPROFILE") or os.path.expanduser("~")
+_CMDSYNC_PAIRS = [
+    (os.path.join(_HOME, ".claude", "commands", "brief.md"), "tools/commands/brief.md", "md"),
+    (os.path.join(_HOME, ".claude", "commands", "close.md"), "tools/commands/close.md", "md"),
+    (os.path.join(_HOME, ".claude", "commands", "housekeep.md"), "tools/commands/housekeep.md", "md"),
+    (os.path.join(_HOME, ".claude", "hooks", "guard.js"), "tools/commands/guard.js", "js"),
+]
+
+
+def _cmdsync_strip_preamble(text, kind):
+    if kind == "md" and text.startswith("---\n"):
+        end = text.find("\n---\n", 4)
+        if end != -1:
+            return text[end + 5:]
+    if kind == "js":
+        # Meta block lives at the END of the backup (not the top) so the
+        # shebang stays byte 0 — `node --check` treats "#!" as a syntax
+        # error the instant it isn't the literal first line of the file.
+        # Truncating at the start marker makes the END marker purely
+        # documentation; nothing here depends on finding it.
+        start = text.find("// === DURABILITY BACKUP META ===")
+        if start != -1:
+            return text[:start]
+    return text
+
+
+def _cmdsync_hash(path, kind):
+    try:
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            text = fh.read()
+    except Exception:
+        return None
+    text = _cmdsync_strip_preamble(text, kind)
+    norm = "\n".join(line.rstrip() for line in text.replace("\r\n", "\n").split("\n")).strip()
+    return hashlib.sha256(norm.encode("utf-8")).hexdigest()
+
+
+_cmdsync_drift, _cmdsync_missing, _cmdsync_checked = [], [], False
+for _live_path, _backup_rel, _kind in _CMDSYNC_PAIRS:
+    if not os.path.isfile(_live_path):
+        continue  # different machine / no ~/.claude here — not an error, nothing to check
+    _cmdsync_checked = True
+    _backup_path = os.path.join(ROOT, _backup_rel)
+    if not os.path.isfile(_backup_path):
+        _cmdsync_missing.append(_backup_rel)
+        continue
+    if _cmdsync_hash(_live_path, _kind) != _cmdsync_hash(_backup_path, _kind):
+        _cmdsync_drift.append(_backup_rel)
+
+if _cmdsync_drift or _cmdsync_missing:
+    _lines = ["CMDSYNC    *** DRIFT *** durability backup(s) don't match their live source:"]
+    for _r in _cmdsync_drift:
+        _lines.append(f"           {_r} — out of date, re-copy the body from its live file")
+    for _r in _cmdsync_missing:
+        _lines.append(f"           {_r} — MISSING entirely, live file has no backup")
+    _lines.append("           Live source: ~/.claude/commands/*.md and ~/.claude/hooks/guard.js.")
+    _lines.append("           Keep each backup's own frontmatter/meta block. system/failures.md -> F19.")
+    out.append("\n".join(_lines))
+elif _cmdsync_checked:
+    out.append("CMDSYNC    ok — durability backups match their live source")
 
 print("=== EQ SESSION GATE (local clone — never the URL) ===")
 print("\n".join(out))

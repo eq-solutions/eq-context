@@ -1,7 +1,7 @@
 ---
 title: SYSTEM — Failure Ledger (the ratchet's memory)
 owner: Royce Milmlow
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 scope: Every failure that escaped the safeguards, with the rung its guard currently sits at. Machine-read by guard-ratchet.yml. Append-only for entries; rung/count are mutable.
 read_priority: high
 status: live
@@ -286,6 +286,19 @@ failures:
     cost: "None material this occurrence -- caught before the destructive UPSERT ran, which would have overwritten a real encrypted service_role_key with NULL. Real cost was upstream: this session's own prior message to Royce, minutes earlier, incorrectly reported the row as missing (same wrong-id query) while directly answering his question about tenant redundancy posture -- a wrong operational fact stated with confidence, corrected immediately once caught. SUSPECTED, not confirmed, same root cause: a 2026-09-09 close entry in sessions/2026-09-09.md ('madagins's own database fully caught up; shell_control.tenant_routing confirmed missing again at close') reports the row checked 'via direct LEFT JOIN' against 'organisations.id = dd5d8622-9688-4dea-b5ed-ca42fc18487c' -- the exact wrong id this entry describes -- and found null. That session's raw SQL wasn't preserved, so this can't be verified byte-for-byte, but the cited id matches closely enough to be the likely explanation for at least one leg of that day's much-discussed 'tenant_routing keeps flapping present/missing' narrative, which multiple sessions treated as a live coordination/data-integrity risk and surfaced to Royce directly. Not re-litigating that whole narrative here -- flagging the plausible alternative explanation for whoever next has reason to pick it up."
     note: "public.organisations.id and shell_control.tenants.id are two independent primary keys for what a session naturally reads as 'the same tenant' -- nothing in a casual schema browse (list_tables, a bare information_schema query) signals they differ, and shell_control.tenant_routing.tenant_id reads as equally plausibly either one to someone who hasn't already learned this. The join that actually works: organisations -> shell_control.tenants (by slug, or name as a fallback) -> tenant_routing (by shell_control.tenants.id). For madagins specifically, confirmed live 2026-09-10: organisations.id dd5d8622-9688-4dea-b5ed-ca42fc18487c, shell_control.tenants.id fc06cd56-ec63-4507-a03e-c3c552ea09a9 -- same tenant, two different uuids. The mitigation shipped same day (see guard) is deliberately modest -- a column comment, not an enforced check -- because the actual failure mode is an ad-hoc SQL query typed fresh each time by whichever session needs it; no hook in this repo currently intercepts a query for correctness, only for destination. A stronger fix would be a helper view or SECURITY DEFINER function (e.g. shell_control.tenant_routing_for_org(org_id uuid)) that hides the join entirely, so no session has to get it right by hand -- not built this pass, flagged as the natural target_rung 2-3 candidate if this recurs a second confirmed time."
     signal: "tenant_routing.{0,80}(missing|null|no row).{0,80}organisations\\.id|organisations\\.id.{0,80}tenant_routing|shell_control\\.tenants\\.id.{0,40}(different|not the same|≠|!=).{0,40}organisations\\.id|\\bF18\\b"
+
+  - id: F19
+    title: eq-context's durability backups of ~/.claude/commands + hooks/guard.js drift from their live source with no guard, and guard.js itself had no backup at all
+    first_seen: 2026-09-15
+    last_seen: 2026-09-15
+    recurrences: 1
+    rung: 4
+    target_rung: 4
+    guard: "hooks/session_start.py -- CMDSYNC check (rung 4, built 2026-09-15)"
+    detected_by: "human-directed investigation, following the same day's earlier brief-gate flag-convention incident (that session's own Deferred note asked whether this backup needed a real mechanism); confirmed via exhaustive grep plus a background agent that no existing mechanism (the two F12 branches, cache-buster-drift/CSP-drift) already covered this before building anything new"
+    cost: "7 days of stale brief.md/close.md instructions served to at least one live session before being caught by direct diff, not by any guard; guard.js -- the enforcement engine itself, not just instructions -- had zero backup anywhere in this repo the entire time"
+    signal: "(durability backup|tools/commands/(brief|close|housekeep|guard)).{0,80}(stale|drift|never resynced|out of sync|not (kept in )?sync)"
+    confirmed_in: ["sessions/2026-09-15.md"]
 ```
 
 ---
