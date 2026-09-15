@@ -68,12 +68,11 @@ Investigated whether `on_auth_users_insert_dedup` (EQ-SHELL-11's phone-dedup gua
 
 ---
 
-## eq-shell: Licence-photo path drift — root cause found and fixed live; repair tool built and dry-run clean; deletion still gated on one open safety question (2026-09-14 → 09-15)
+## eq-shell: Licence-photo path drift — root cause fixed live; repair applied and verified (114/115); deletion still gated on one open safety question (2026-09-14 → 09-15)
 
-Full write-up: eq-context `eq/sprints/2026-09-14-licence-photos-org-drift.md` (the running record — read that before re-deriving any of this) and eq-shell memory `project_licence_photos_path_segment1_dual_convention.md`. Root cause (two writers disagreeing on a storage-path segment), the convention fix, and migration `0169`'s detection extension are all merged/applied/live — not restated here.
+Full write-up: eq-context `eq/sprints/2026-09-14-licence-photos-org-drift.md` (the running record — read that before re-deriving any of this) and eq-shell memory `project_licence_photos_path_segment1_dual_convention.md`. Root cause, the convention fix, migration `0169`'s detection extension, and the data repair (PR #1913's `--apply`, run by Royce locally, verified live: 114 of 115 mispathed licences repaired, the 1 remaining is a genuine no-real-tenant-yet case not a bug) are all merged/applied/verified live — not restated here.
 
 **Deferred:**
-- [ ] **Run PR #1913's `--apply` (repairs 169 mispathed references across 115 licences)** — dry-run replicated and clean, the one flagged risk (a worker with multiple current companies) checked and doesn't occur in the live data. **Must be run by a human with real Node access** — a Claude session cannot perform the script's storage-copy step itself (no Storage API tool available, only SQL/project-management), confirmed live 2026-09-15 after almost offering to run it anyway. Command in the sprint doc.
 - [ ] **`--delete-orphans` (the 32 flagged, not just the well-vetted 6) is unsafe until `task_b56ada7f` reports back** — 2 of the other 26 look like the same real-unclaimed-document false positive PR #357 just fixed, just not caught by that fix. Royce started the task in a separate session 2026-09-15, running independently, not yet reported.
 - [ ] **`task_7d7d8b41`** — likely superseded by merged work, two independent sessions now think so, still needs Royce's explicit yes/no before dismissing (not assumed).
 - [ ] **Royce asked to dismiss a task chip for the superseded `scripts/cleanup-licence-photo-orphans.mjs`** — this session has no task_id for it (never spawned via `spawn_task` here); needs the ID off the chip itself before it can be dismissed. _(added 2026-09-15)_

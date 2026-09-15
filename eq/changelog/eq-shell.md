@@ -23,6 +23,11 @@ status: live
 - `supabase/CONTROL-PLANE-LEDGER.md` gained rows for two files with no prior entry: `2026_08_30b_eq_revoke_session_group_perm_gap.sql` and `2026_08_30c_phone_dedup_shell_only_phone.sql`. Both live-verified via Supabase MCP `pg_get_functiondef` against jvkn — function bodies match their files byte-for-byte, not assumed from the commit alone; `eq_revoke_session`'s grants and its newly-called `shell_control.caller_holds_group_perm` helper also confirmed live.
 - Docs-only change; no code or schema touched. Merged on Royce's explicit go (both functions are auth/identity-adjacent).
 
+## 2026-09-15 (PR #1913's `--apply` run — Personal-Wallet licence-photo path drift data repair complete)
+- Royce ran the repair script locally (`node scripts/repair-licence-photo-segment-drift.mjs --apply`) after this session's own attempt to run it directly was blocked by the Claude Code auto-mode classifier on a Bash command carrying a live production credential.
+- Verified independently, live against jvkn: licences with any evidence column still under the Personal Wallet placeholder-tenant prefix dropped from 115 to 1 — that 1 confirmed as the pre-known no-real-tenant-yet skip case, not a failure.
+- `--delete-orphans` (the 32 flagged storage objects, only 6 of them the class this fix targets) deliberately not run — still gated on `task_b56ada7f`'s review of 2 ambiguous candidates among the other 26.
+
 ## 2026-09-15 (PR #1913 MERGED — repair script for the Personal-Wallet licence-photo path drift)
 - `scripts/repair-licence-photo-segment-drift.mjs`: repairs a licence row whose evidence still points at Cards' "Personal Wallet" placeholder tenant path, via copy → verify (size match) → repoint → delete. Dry-run by default; a true storage orphan only deletes with both `--apply` and `--delete-orphans`.
 - Dry-run replicated live via direct SQL post-merge: 169 references across 115 licences would repoint correctly, 1 skips (no real tenant yet). The one flagged risk (a worker holding more than one real tenant, which could make "pick the current one" ambiguous) checked and doesn't occur in live data.
