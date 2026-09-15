@@ -61,10 +61,8 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-15)
 
 **eq-cards:**
+- #362 fix(sync): require a verified SKS membership before defaulting an unstamped worker there
 - #361 fix(cards): worker-invite resolver holds instead of tie-breaking on >1 match
-
-**eq-field:**
-- #988 v3.5.720 — fix clipped card border on the Quarterly Review modal
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
@@ -127,7 +125,7 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 57 |  |
+| Active users (Shell sign-ins, jvkn) | 56 |  |
 
 _No flips this run._
 ---
