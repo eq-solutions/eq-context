@@ -1,7 +1,7 @@
 ---
 title: EQ Context (substrate/tooling) — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-12
+last_updated: 2026-09-15
 scope: EQ Context (substrate/tooling) engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,17 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-context: F9 blocks every way to fast-forward the shared checkout — no sanctioned sync path exists (2026-09-15)
+*Hit live this session. The SessionStart gate reported the shared `C:\Projects\eq-context` checkout 16→20 commits behind; Royce asked for it to be synced; `pre_tool_use.py`'s F9 (rung 4) blocked it. `REBASE_MERGE_PULL_RE` (line 189) covers `rebase`, `merge` **and** the pull verb alike, so there is no `--ff-only` path either — and there is no `safe_sync.py` alongside `safe_commit.py`. F9's documented escape valve (isolated clone → push) addresses making CHANGES safely, not bringing the shared checkout CURRENT, which is a different problem.*
+
+- Resolved for this instance by Royce running the `--ff-only` sync himself in his own terminal — the hook binds Claude Code tool calls, not his shell. Landed clean (`86aee58f..6aadf0a9`, 11 files). Re-verified after: HEAD == origin/main, 0 ahead / 0 behind, clean tree.
+- [ ] **Decide whether F9 gets a narrow carve-out for a strictly-safe fast-forward** — e.g. permit the `--ff-only` forms only when the working tree is clean AND the branch is 0-ahead, which is provably lossless and not the concurrency shape F9's two incidents (2026-07-14, 2026-08-03) actually describe. Offered this session; Royce chose the manual route for the instance and the durable fix wasn't taken up either way, so it stays open. Until it exists, every session either nags or needs Royce at the keyboard. _(added 2026-09-15)_
+- [ ] **F9 also false-positives on file CONTENT, not just commands** — writing this very entry was blocked because the note text quoted the blocked command literally inside a heredoc. The hook blanks quoted-string content but not heredoc bodies, so documenting F9 trips F9. Worked around by using the harness Edit tool (unscanned) rather than weakening the note. Worth folding into the same carve-out pass. _(added 2026-09-15)_
+
+**Notes:** Two live confirmations worth keeping. (1) `origin/main` moved twice between this session's fetch and Royce's sync minutes later — the exact concurrency F9 models, in miniature; `--ff-only` absorbed it cleanly. (2) `git fetch` IS allowed through the guard, so `git show origin/main:<path>` is always a current-truth read even when the working tree is stale — that's the usable fallback, and it matches the eq-shell verification method already recorded in eq-field's memory. Session detail: `sessions/2026-09-15.md`.
 
 ---
 

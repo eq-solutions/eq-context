@@ -13,6 +13,18 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Quarterly Review modal card border clipped — fixed, merged, live (v3.5.720, PR #988, 2026-09-15)
+*Royce reported it from a screenshot: "Border of review card is cut off" (Apprentices → a profile → Reviews → + New Review, on `core.eq.solutions/sks/field`). `openNewReviewModal()` built the modal by hand as a bare `<div class="modal">` around one unstructured body div, skipping the `.modal-header`/`.modal-body`/`.modal-footer` children every other modal uses. `.modal` carries no padding of its own by design (`styles/base.css:1305`) — the inset comes from those three children — so the body had zero horizontal gutter and each `width:100%` `.form-input` parked its 1px border exactly on the card edge, where `.modal`'s `border-radius:12px` + `overflow-y:auto` clipped it away. Measured, not assumed: full-width textarea gutter 0px/0px before → 20px/20px after.*
+
+- Rebuilt on the real three-part structure, matching `scripts/site-reports-shared.js`'s in-repo precedent for a dynamically-created modal. Three deliberate side effects of using the right shape: the ✕ close button and sticky header this modal never had, and `styles/mobile.css`'s v3.5.326 sticky `.modal-footer` — so on a phone "Save Review" is in thumb reach instead of below seven textareas. Dropped the inline `max-height:85vh`/`overflow-y` for `.modal`'s own defaults (92vh on desktop), a deliberate change, not a no-op.
+- The hand-rolled shell had been there since the feature shipped (v3.5.168, per v3.5.647's own changelog entry); v3.5.647 fixed this same modal's input classes and open/close wiring but left the structure in place. Shell is now rebuilt on every open, not only on first create, so it can't drift from the body content.
+- Verified on the real deploy preview, not just a harness: confirmed `APP_VERSION` 3.5.720 serving, opened the actual modal through the app's own function, measured 20px/20px, no console errors, and re-checked that v3.5.647's close fix didn't regress (✕, Cancel, reopen, header stays pinned while scrolled). Production confirmed by content after merge — `sw.js` banner **and** the deployed `apprentices-reviews-rotations.js` carrying the new shell — not by elapsed time.
+- [ ] Nothing outstanding on this specific thread.
+
+**Notes:** The demo tenant (`?tenant=demo`) reaches supervisor mode on a deploy preview but short-circuits all writes, so `apprenticeProfiles` stays empty and the apprentice screens can't be exercised with real data there — smoking this needed a synthetic profile row injected at runtime. Worth knowing before planning any future apprentice-surface preview test. Session detail: `sessions/2026-09-15.md`.
+
+---
+
 ## eq-field: Aditi (Madagins) phantom SKS staff row — CLOSED: exact mechanism found, fixed, confirmed live (2026-09-15)
 
 - [ ] **`eq_cards_submit_access_request`'s premature-attribution gap — deliberately parked, still real.** A pending (or later-declined) application to any org still creates an unstamped `public.workers` row via `eq_cards_link_or_create_worker`, which `workers-canonical-sync` can still default to SKS on the rare path where that matters. Not touched by either #360 or #1930 on purpose — stamping at submission time would be premature attribution (the request can still be declined), a genuinely harder design call than a fill-if-missing fix. Same root question as `resolveTenantRoute()`'s own SKS-default, which stays correct and untouched for Nelson Sareto/Conor Horgan's legitimate case. _(added 2026-09-15)_
