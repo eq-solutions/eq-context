@@ -8,27 +8,27 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 19:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 19:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 19:15 UTC → 2026-09-15 19:19 UTC)
+## Since last refresh (2026-09-15 19:19 UTC → 2026-09-15 19:33 UTC)
 
-- Merged: eq-shell [#1948](https://github.com/eq-solutions/eq-shell/pull/1948) perf(entity-search): indexed, column-scoped search for eq_br
-- Merged: eq-shell [#1931](https://github.com/eq-solutions/eq-shell/pull/1931) docs(control-plane-ledger): 2026_09_15c applied; correct #19
-- Merged: eq-shell [#1929](https://github.com/eq-solutions/eq-shell/pull/1929) fix(intake): close the fail-open tenant guard on the control
-- Merged: eq-shell [#1927](https://github.com/eq-solutions/eq-shell/pull/1927) feat(identity): watch the two review queues nothing was read
-- Merged: eq-shell [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) fix(auth): log custom_access_token_hook phone-fallback match
-- Merged: eq-shell [#1923](https://github.com/eq-solutions/eq-shell/pull/1923) fix(auth): require email_confirmed_at before phone-otp email
-- Merged: eq-shell [#1922](https://github.com/eq-solutions/eq-shell/pull/1922) fix(ci): allowlist eq_get_user_active_tenant as eq-cards-sou
-- Merged: eq-field [#993](https://github.com/eq-solutions/eq-field/pull/993) v3.5.723 — Leave: split leave-cc.js + leave-lifecycle.js out
+- Merged: eq-shell [#1933](https://github.com/eq-solutions/eq-shell/pull/1933) docs(control-plane-ledger): withdraw the wrong "intake is ve
+- Merged: eq-shell [#1930](https://github.com/eq-solutions/eq-shell/pull/1930) fix(join-tenant): stamp origin_org_id on public.workers rows
+- Merged: eq-shell [#1928](https://github.com/eq-solutions/eq-shell/pull/1928) feat(invite): require a mobile when issuing an admin invite
+- Merged: eq-shell [#1926](https://github.com/eq-solutions/eq-shell/pull/1926) docs(control-plane-ledger): record link_pending_invites dead
+- Merged: eq-shell [#1924](https://github.com/eq-solutions/eq-shell/pull/1924) fix(control-plane-migrate): per-file error isolation in the 
+- Merged: eq-shell [#1919](https://github.com/eq-solutions/eq-shell/pull/1919) fix(staff): sweep pending-credentials storage on employment 
+- Merged: eq-shell [#1915](https://github.com/eq-solutions/eq-shell/pull/1915) fix(control-plane-drift): detect + backfill the auth.users d
+- Merged: eq-field [#994](https://github.com/eq-solutions/eq-field/pull/994) v3.5.725 — Leave: fix madagins submissions, make canonical r
+- ✅ Needs you: 7 → 6
 
-## ⚠ Needs you (7)
+## ⚠ Needs you (6)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 7 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-09-14.md](sessions/2026-09-14.md) · [failures.md](system/failures.md)
 - 🔴 **Guard bypass? rung 4** — F17: safe_commit.py could silently overwrite a concurrent session's already-pushed edit -- a me · possibly recurred in [2026-09-15.md](sessions/2026-09-15.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
-- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
 - 🟠 **Cron failing** — `shared-object-drift.yml` 1 consecutive scheduled run(s) failed, last success 2026-09-14 · [failures.md](system/failures.md) F11
 
 ## 🙋 Waiting on you (233)
@@ -55,15 +55,15 @@ _…and 221 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 1d |
-| eq-field | ✓ success | 0d ago | 2 | 0d |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Deploys
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | new | 2026-09-15 |
+| eq-shell | ready | 2026-09-15 |
 
 ## Live errors (Sentry)
 
@@ -103,7 +103,7 @@ _Showing 15 of 100 · full record in [sessions/](sessions/)_
 ## Pending (EQ)
 
 - **eq-shell** (307 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (73 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-cards** (72 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (75 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (20 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -135,7 +135,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1807 | 242 / 70 | 11 | 99 |
-| [eq-cards](eq/pending/eq-cards.md) | 446 | 56 / 21 | 0 | 11 |
+| [eq-cards](eq/pending/eq-cards.md) | 446 | 55 / 21 | 0 | 11 |
 | [eq-field](eq/pending/eq-field.md) | 1337 | 201 / 40 | 0 | 63 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 473 | 57 / 20 | 1 | 28 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 233 | 14 / 6 | 0 | 17 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 19:19 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 19:33 UTC._
