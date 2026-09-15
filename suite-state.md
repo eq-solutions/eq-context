@@ -87,7 +87,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | ready | 2026-09-15 |
+    | eq-service | building | 2026-09-15 |
 | eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-14 |
 
