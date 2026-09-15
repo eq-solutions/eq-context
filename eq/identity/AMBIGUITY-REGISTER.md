@@ -289,7 +289,7 @@ duplicate (resolved) and a genuine open product question (not resolved).
 | # | Decision | Royce's call | State |
 |---|---|---|---|
 | 1 | `_eq_intake_check_tenant_match` fails open | **Check callers first, then fix** | **Fix applied and behaviourally verified** — [eq-shell #1929](https://github.com/eq-solutions/eq-shell/pull/1929) merged, migration hand-applied same day (ledger-corrected in [#1931](https://github.com/eq-solutions/eq-shell/pull/1931) after a `merge ≠ applied` mistake). "Wiring" was never done, deliberately: checking further found the fix has zero callers (inert by design) and the actually-reachable function, `eq_intake_find_template_by_signature`, is a **separate, smaller, still-open question** — tighten its `authenticated` EXECUTE grant, or leave it — genuinely Royce's call, not chased further today |
-| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match**, then (2026-09-15) **close the email half too** | **Both halves shipped and live.** `>1` via [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) (`0173`) + [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934); email via [eq-shell #1935](https://github.com/eq-solutions/eq-shell/pull/1935), applied through the governed `control-plane-migrate.yml` dispatch, deploy published 09:54:52Z. Full verification trail, including a caught `plan:true`-dispatch-looked-like-an-apply near-miss, is in the note below. Audit logging for both pre-check refusals is in progress, [#1940](https://github.com/eq-solutions/eq-shell/pull/1940) (open). The investigation into what this change would newly block also found two real live duplicate-identity groups — see decisions 7 and 8 |
+| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match**, then (2026-09-15) **close the email half too** | **Both halves shipped and live.** `>1` via [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) (`0173`) + [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934); email via [eq-shell #1935](https://github.com/eq-solutions/eq-shell/pull/1935), applied through the governed `control-plane-migrate.yml` dispatch, deploy published 09:54:52Z. Full verification trail, including a caught `plan:true`-dispatch-looked-like-an-apply near-miss, is in the note below. Audit logging for both pre-check refusals shipped in [#1940](https://github.com/eq-solutions/eq-shell/pull/1940), merged `1a8550b0` 10:07:58Z. The investigation into what this change would newly block also found two real live duplicate-identity groups — see decisions 7 and 8 |
 | 3 | The `coalesce`-to-own-tenant fault, present in every tenant's templated copy | **Roll out company by company** | **Closed.** Scope shrank on verification: `field_people_iud` was already done (guarded on ehow + madagins, doesn't exist on zaap). The real remaining gap, `field_people_removed_iud`, was unguarded on all three and is now fixed everywhere via [eq-field #991](https://github.com/eq-solutions/eq-field/pull/991), re-briefed as `task_e0ba7aba` (superseded `task_9b876f68`) and verified behaviourally. Royce's call, once severity was shown to be service-role-only: all three planes in one pass |
 | 4 | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) — `custom_access_token_hook` phone-fallback logging | **Merge** | **Merged** — `a06bc609` |
 | 5 | Should admin-invite capture a phone number? | **Make it required** | **Merged** — [eq-shell #1928](https://github.com/eq-solutions/eq-shell/pull/1928), `2cb574e5`. Presence required on any path that issues a new invite; not required on the branch that only adds an existing account to a tenant (mints no new identity) |
@@ -599,11 +599,13 @@ surface rather than a hypothetical one.
 > still concluded **success**. `0173` really landed 09:30:58Z. A green workflow is not evidence
 > a migration applied; the function body is.
 
-**Still filed nowhere: the pre-check 409s themselves.** Neither the phone check nor the
-new email one writes an audit row, so "this person already has an account" refusals are
-absorbed silently. That is the half of the Group B note below which that investigation
-confirmed as correct, and #1935 does not change it — it deliberately mirrors its phone
-sibling's shape. #1934 logs only the `>1` refusal. Tracked separately.
+**The pre-check 409s are filed now — closed by [#1940](https://github.com/eq-solutions/eq-shell/pull/1940),
+merged `1a8550b0` 2026-09-15 10:07:58Z.** This paragraph used to read "Still filed nowhere:
+neither the phone check nor the new email one writes an audit row, so 'this person already
+has an account' refusals are absorbed silently." True of #1934/#1935; no longer true.
+`create-worker-invite.ts` now writes `invite.existing_account_phone` and
+`invite.existing_account_email` beside `invite.worker_match_ambiguous`, so **all three
+refusal paths leave a record** and none is silent. Code-only, no migration.
 
 Related but separately tracked: **SEC-71** (2FA enforcement is client-side only —
 `shell-login.ts` issues a full session regardless of `requires_totp_enrollment`),
