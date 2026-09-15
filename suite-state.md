@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1923 fix(auth): require email_confirmed_at before phone-otp email self-heal
 - #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -98,11 +97,11 @@ _If this file is >48h old, the cron is broken._
 ## Field Data Plane — SKS tenant (as of 2026-09-15)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 70 | ✓ 70 |
+| Directory | app_data.field_people | 69 | ✓ 69 |
 | Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,312 | ✓ 2,312 |
-| Operational | app_data.field_timesheets | 695 | ✓ 695 |
+| Operational | app_data.field_schedule | 2,560 | ✓ 2,560 |
+| Operational | app_data.field_timesheets | 698 | ✓ 698 |
 | Safety | public.prestarts | 255 | ✓ 255 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
@@ -117,14 +116,14 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
 | Maintenance checks created | 3 |  |
-| Maintenance checks completed | 0 |  |
+| Maintenance checks completed | 1 | ⚠ FLIPPED |
 | Prestarts created | 16 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 55 |  |
+| Active users (Shell sign-ins, jvkn) | 57 |  |
 
-_No flips this run._
+⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**
 ---
 
 ## Architecture: What Owns What
