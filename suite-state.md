@@ -68,7 +68,6 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1930 fix(join-tenant): stamp origin_org_id on public.workers rows
 - #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -91,7 +90,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | ready | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 250 (latest: 0247) applied
