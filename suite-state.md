@@ -65,9 +65,9 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1923 fix(auth): require email_confirmed_at before phone-otp email self-heal
 - #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1915 fix(control-plane-drift): detect + backfill the auth.users dedup triggers
 
 ---
 
@@ -98,7 +98,7 @@ _If this file is >48h old, the cron is broken._
 ## Field Data Plane — SKS tenant (as of 2026-09-15)
 | Layer | View / Table | Rows | Status |
 |-------|-------------|------|--------|
-| Directory | app_data.field_people | 71 | ✓ 71 |
+| Directory | app_data.field_people | 70 | ✓ 70 |
 | Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
 | Operational | app_data.field_schedule | 2,312 | ✓ 2,312 |
