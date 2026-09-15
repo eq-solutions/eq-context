@@ -16,6 +16,19 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-shell: control-plane ledger fully reconciled — doc row merged, ledger table backfilled (rotated 2026-09-15)
+*`migrate-control-plane.mjs --plan` originally reported 8 files pending against the new `shell_control._eq_control_plane_migrations` ledger table — all already applied to jvkn by hand, just never recorded in the new table. By the time of bootstrap, the day's other work had added 4 more files to the same pending set. Individually verified all 12 against live jvkn (ledger-doc rows, introducing-PR history, or a fresh `pg_get_functiondef`/`pg_trigger`/grant pull) before treating any as confirmed — including re-diffing the pending set fresh immediately before dispatching, rather than trusting the original 8-file count from earlier in the day.*
+
+**Shipped:**
+1. [eq-shell PR #1921](https://github.com/eq-solutions/eq-shell/pull/1921) — added the one missing `CONTROL-PLANE-LEDGER.md` row (`2026_09_09b_worker_claimed_by_phone_check.sql`), sourced from its introducing PR (#1844)'s own account. Merged — its only failing check turned out to be unrelated pre-existing drift (an eq-cards function not yet tracked by eq-shell's own drift check, already fixed on `main` by the time of merge), resolved by updating the branch rather than investigating a phantom problem in the docs change itself.
+2. `shell_control._eq_control_plane_migrations` bootstrapped for eq-shell for the first time ever (confirmed zero prior rows for any eq-shell filename) — 12 files stamped as already-applied, zero SQL executed, on Royce's explicit "dispatch the bootstrap job now." Verified two ways post-run: the workflow's own log confirms exactly 12 files with no SQL run, and a direct query confirms all 12 rows present with checksums.
+
+**Notes:**
+- The ledger table is shared across repos (eq-cards already had ~250+ of its own entries in it) — a naive unfiltered read of the table looks nothing like "empty," which nearly produced a wrong diff before catching a path-prefix bug (comparing `supabase/migrations/<name>` against bare `<name>`) that would have wrongly flagged all 165 of eq-shell's files as unbootstrapped.
+- This closes the original reconciliation task in full — nothing about it remains open.
+
+---
+
 ## eq-service: PR #845 fully landed (4 more commits: eq_role claim, corrected 2 tests) + PR #853 merged (3-layer trigger fix) — main fully green across every check (rotated 2026-09-15)
 *Direct continuation of the PR #849/#845/#851 entry (still open at time of rotation, see `eq-solves-service.md`). Rebasing #845 alone wasn't enough — CI stayed red through 4 more rounds, each revealing a genuinely new, unrelated layer, not a retry of the same problem.*
 

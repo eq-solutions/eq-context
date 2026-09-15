@@ -35,18 +35,6 @@ Root cause (confirmed, ~5 sessions converged on it independently): `public.worke
 
 ---
 
-## eq-shell: control-plane ledger reconciled — 8-file gap closed, one doc row still needs merging (2026-09-15)
-
-*Separate from the Madagins incident above. `migrate-control-plane.mjs --plan` reported 8 files pending against the new `shell_control._eq_control_plane_migrations` ledger table — all already applied to jvkn by hand, just never recorded in the new table (the old apply path never wrote to it). Individually verified each of the 8 against live jvkn (ledger-doc rows, introducing-PR history, or a fresh `pg_get_functiondef`/grant pull) before treating any as confirmed.*
-
-**Shipped:** 7 of 8 already had a `CONTROL-PLANE-LEDGER.md` row; added the missing one for `2026_09_09b_worker_claimed_by_phone_check.sql`, sourced from its introducing PR (#1844)'s own account (Royce's call that this was sufficient without a fresh live re-check). [PR #1921](https://github.com/eq-solutions/eq-shell/pull/1921) — **open, not merged** (docs-only, no schema change).
-
-**Deferred:**
-- [ ] **PR #1921 needs merging.** _(added 2026-09-15)_
-- [ ] **Backfilling `shell_control._eq_control_plane_migrations` itself** (via `--bootstrap`, seeding all 8 filenames+checksums with no SQL re-run) — left for Royce to dispatch himself via `control-plane-migrate.yml`'s workflow_dispatch. Not confirmed whether he has yet. _(added 2026-09-15)_
-
----
-
 ## eq-shell: Control-plane migration runner — per-file error isolation shipped and merged (2026-09-15)
 
 `scripts/migrate-control-plane.mjs`'s real-apply loop wrapped the whole sequential migration batch in one outer `try`/`catch` — a SQL error on any single file aborted the run with no record distinguishing "already applied" from "failed" from "never reached." This is the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around (see that PR's own body). Fixed via `applyAllMigrations()`, split into a new `scripts/_migrate-control-plane-apply.mjs` for testability — every migration now lands in exactly one of applied/skipped/failed/notAttempted, fail-stop (not continue-on-error — Royce's explicit design call, made before any code was written; migrations have no dependency graph beyond sequential file order).
