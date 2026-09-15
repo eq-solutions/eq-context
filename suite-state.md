@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #362 fix(sync): require a verified SKS membership before defaulting an unstamped worker there
 
 **eq-service:**
-- #854 docs(claude): document maintenance-check write-role RLS model
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
@@ -79,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ✓ success |
+    | eq-service | ? in_progress |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -90,7 +89,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | building | 2026-09-15 |
-| eq-shell | ready | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
