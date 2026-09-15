@@ -63,12 +63,13 @@ _If this file is >48h old, the cron is broken._
 **eq-cards:**
 - #364 fix(cards): stop a null-expiry OCR result crashing a worker's whole wallet
 - #363 fix(cards): stamp origin_org_id on submit-access-request's new worker rows
-- #362 fix(sync): require a verified SKS membership before defaulting an unstamped worker there
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1937 feat(mobile): replace Home records list with a single search entry point
+- #1936 feat(identity): add worker-to-tenant projection reconciliation
 - #1935 fix(invite): refuse when the email belongs to a claimed worker
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
