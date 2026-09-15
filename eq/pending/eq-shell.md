@@ -65,6 +65,7 @@ Full write-up: eq-context `eq/sprints/2026-09-14-licence-photos-org-drift.md` (t
 - [ ] **`--delete-orphans` (the 32 flagged, not just the well-vetted 6) is unsafe until `task_b56ada7f` reports back** — 2 of the other 26 look like the same real-unclaimed-document false positive PR #357 just fixed, just not caught by that fix. Royce started the task in a separate session 2026-09-15, running independently, not yet reported.
 - [ ] **`task_7d7d8b41`** — likely superseded by merged work, two independent sessions now think so, still needs Royce's explicit yes/no before dismissing (not assumed).
 - [ ] **Royce asked to dismiss a task chip for the superseded `scripts/cleanup-licence-photo-orphans.mjs`** — this session has no task_id for it (never spawned via `spawn_task` here); needs the ID off the chip itself before it can be dismissed. _(added 2026-09-15)_
+- [ ] **jvkn's service-role key (`eq-shell`'s `SUPABASE_SERVICE_ROLE_KEY`) is now sitting in plaintext in a chat transcript**, pasted while running the repair script's `--apply` locally — Claude never handled it directly. Rotation is Royce's call, still undecided. _(added 2026-09-15)_
 
 ---
 

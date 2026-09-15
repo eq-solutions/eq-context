@@ -716,3 +716,15 @@ status: live
 
 ## 2026-09-07
 - **PR [#343](https://github.com/eq-solutions/eq-cards/pull/343) MERGED + DEPLOYED — Wallet info-density punch-list item finished; live worker-sync bug found and fixed.** Search/filter bar now hides under 6 licences; Wallet ID card moved from the bottom of the list to a compact "Show ID" strip near the top; licence-detail metadata rows cap at 2 with a "Show more" expander. Same PR: `workers-canonical-sync` was silently failing its nightly merge for every Cards-linked worker with a date of birth on file (Shell's `dob_locked_to_cards` constraint, added after this function's code was written) — fixed, verified live via a manual reconcile re-fire, 105/105 workers synced clean. Full write-up: `system/punch-list.md` Closed section item 4, `eq/pending/eq-cards.md` 2026-09-07 entry.
+
+## 2026-09-14 (PR #355 MERGED — licence-photo path drift: orphan-prevention + sweep-function detection)
+- `photo_upload.dart` gained a `remove()` helper; `licence_edit_screen.dart` now deletes a slot's superseded old evidence object once its row update actually commits the new path.
+- Migration `0169_licence_photos_sweep_path_mismatch.sql` extends `eq_sweep_orphaned_licence_photos()` with a second orphan class: a licence row exists but none of its current evidence columns point at this object any more.
+- `flutter analyze` clean on both changed files. Companion eq-shell PR #1912 (org.id → tenant_id convention) merged same session.
+
+## 2026-09-14 (PR #357 MERGED, applied live — sweep function was mis-excluding real orphans as false negatives)
+- `eq_sweep_orphaned_licence_photos()`'s protection for pending labour-hire candidate documents checked dead columns (`worker_credentials.photo_front_path`/`photo_back_path`, never populated); should check `metadata->>'source_document_url'`. 16 of 34 objects reported as orphans were real, unclaimed candidate documents.
+- Fixed (migration `0170`, applied live to jvkn via Supabase MCP on Royce's go) before eq-shell PR #1913's `--delete-orphans` flag was ever used.
+
+## 2026-09-14 (PR #356 MERGED — RUNBOOK.md licence-photos troubleshooting line corrected)
+- The 403 troubleshooting entry implied RLS enforces the full path shape. It doesn't — segment 1 has never been RLS-enforced. Doc-only.
