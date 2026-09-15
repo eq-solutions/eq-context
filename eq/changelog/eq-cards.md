@@ -9,7 +9,8 @@ status: live
 
 # EQ Cards — Changelog
 
-## 2026-09-16 (PR #367 opened — eq_cards_link_or_create_worker stops on identity collision, not applied to jvkn)
+## 2026-09-16 (eq_cards_link_or_create_worker identity-collision fix — PR #367 + #368, applied live to jvkn)
+- [PR #368](https://github.com/eq-solutions/eq-cards/pull/368), merged. Closes the `identity_collision` audit-trail gap PR #367 left open: refusals from `eq_cards_link_or_create_worker`'s collision branch now leave a record.
 - `eq_cards_link_or_create_worker` now raises `identity_collision` (P0014) instead of flagging into `identity_collision_flags` and provisioning a duplicate worker anyway (AMBIGUITY-REGISTER Shape 6, policy rule 3). Exempts the legitimate work+wallet shape (decision 8): skips the raise only when exactly one side of the match — caller or existing row — is the Personal Wallet sentinel tenant, never both, never neither.
 - Migration `0178` (renumbered from `0177` — collided with PR #366 below, both branched off the same pre-#366 `origin/main` tip; no content overlap).
 - [PR #367](https://github.com/eq-solutions/eq-cards/pull/367), squash-merged `6c6046ad`. **Applied live to jvkn** via `jvkn-control-plane-apply.yml` dispatch (apply mode), Royce's explicit go — verified live (function body, grants, security advisors, and the pipeline's own ledger).
