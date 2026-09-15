@@ -60,7 +60,11 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-15)
 
+**eq-cards:**
+- #368 fix(cards): drop identity_collision's detail leak (existing_worker_id)
+
 **eq-field:**
+- #995 v3.5.726 — Leave: New Leave Request modal no longer closes on an accidental backdrop click
 - #994 v3.5.725 — Leave: fix madagins submissions, make canonical routing tenant-scalable
 
 **eq-service:**
@@ -68,7 +72,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-shell:**
 - #1949 docs(control-plane-ledger): refresh stale eq_cards_link_or_create_worker backfill copy
-- #1948 perf(entity-search): indexed, column-scoped search for eq_browse_entity
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -91,7 +94,7 @@ _If this file is >48h old, the cron is broken._
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
 | eq-shell | new | 2026-09-15 |
-| eq-field | new | 2026-09-15 |
+| eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
 
