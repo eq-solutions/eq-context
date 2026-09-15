@@ -8,26 +8,27 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 08:31 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 08:33 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 08:01 UTC → 2026-09-15 08:31 UTC)
+## Since last refresh (2026-09-15 08:31 UTC → 2026-09-15 08:33 UTC)
 
-- Merged: eq-shell [#1917](https://github.com/eq-solutions/eq-shell/pull/1917) docs(control-plane-ledger): live-verify 2026_08_30b/c phone-
-- Merged: eq-shell [#1916](https://github.com/eq-solutions/eq-shell/pull/1916) fix(auth): recycle-review approve stops grafting duplicate i
-- Merged: eq-shell [#1914](https://github.com/eq-solutions/eq-shell/pull/1914) fix(entity-browser): resolve staff_id/site_id to names inste
-- Merged: eq-shell [#1913](https://github.com/eq-solutions/eq-shell/pull/1913) feat(licences): repair script for Personal-Wallet licence-ph
-- Merged: eq-shell [#1911](https://github.com/eq-solutions/eq-shell/pull/1911) fix(provisioning): land eq_queue_* RPCs through the One Pipe
-- Merged: eq-shell [#1910](https://github.com/eq-solutions/eq-shell/pull/1910) fix(staff): fall back to shell_control.users.phone when Card
-- Merged: eq-shell [#1904](https://github.com/eq-solutions/eq-shell/pull/1904) feat(tenant-health): surface a missing per-tenant JWT secret
-- Merged: eq-shell [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going m
-- ✅ Needs you: 5 → 4
+- Merged: eq-shell [#1930](https://github.com/eq-solutions/eq-shell/pull/1930) fix(join-tenant): stamp origin_org_id on public.workers rows
+- Merged: eq-shell [#1918](https://github.com/eq-solutions/eq-shell/pull/1918) docs(control-plane-ledger): mark recycle-review-phone-dup-no
+- Merged: eq-shell [#1912](https://github.com/eq-solutions/eq-shell/pull/1912) fix(licences): align licence-photo storage path segment 1 on
+- Merged: eq-shell [#1909](https://github.com/eq-solutions/eq-shell/pull/1909) fix(cards): carry emergency contact fields into staff on Car
+- Merged: eq-shell [#1908](https://github.com/eq-solutions/eq-shell/pull/1908) fix(licences): delete superseded storage objects on photo/PD
+- Merged: eq-shell [#1907](https://github.com/eq-solutions/eq-shell/pull/1907) docs(control-plane-ledger): note credentials-canonical-sync 
+- Merged: eq-shell [#1905](https://github.com/eq-solutions/eq-shell/pull/1905) fix(privacy): replace vague §8 retention language with real 
+- Merged: eq-shell [#1902](https://github.com/eq-solutions/eq-shell/pull/1902) docs: document the manual per-tenant JWT-secret step in onbo
+- ⚠ Needs you: 4 → 5 (new items)
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (5)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 6 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-09-14.md](sessions/2026-09-14.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (231)
 
@@ -51,7 +52,7 @@ _…and 219 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 6d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
@@ -61,7 +62,7 @@ _…and 219 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | ready | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 
 ## Live errors (Sentry)
 
@@ -80,6 +81,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-15 | eq-shell | [#1930](https://github.com/eq-solutions/eq-shell/pull/1930) fix(join-tenant): stamp origin_org_id on public.workers rows |
 | 2026-09-15 | eq-shell | [#1929](https://github.com/eq-solutions/eq-shell/pull/1929) fix(intake): close the fail-open tenant guard on the control plan |
 | 2026-09-15 | eq-shell | [#1928](https://github.com/eq-solutions/eq-shell/pull/1928) feat(invite): require a mobile when issuing an admin invite |
 | 2026-09-15 | eq-shell | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) fix(auth): log custom_access_token_hook phone-fallback matches fo |
@@ -94,7 +96,6 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-15 | eq-solves-service | [#852](https://github.com/eq-solutions/eq-service/pull/852) test(rls): extend cross-tenant-sweep sanity check to assets/defec |
 | 2026-09-15 | eq-solves-service | [#851](https://github.com/eq-solutions/eq-service/pull/851) docs(claude-md): document apply-service-migrations.yml governance |
 | 2026-09-15 | eq-field | [#987](https://github.com/eq-solutions/eq-field/pull/987) v3.5.719 — Roster: iPad sees full week grid; site filter is searc |
-| 2026-09-15 | eq-cards | [#359](https://github.com/eq-solutions/eq-cards/pull/359) fix(cards): report undiagnosed licences/profile load failures to  |
 _Showing 15 of 92 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
@@ -197,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 08:31 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 08:33 UTC._
