@@ -282,7 +282,7 @@ touched, or when they cause an incident — not in a sweep.
 | # | Decision | Royce's call | State |
 |---|---|---|---|
 | 1 | `_eq_intake_check_tenant_match` fails open | **Check callers first, then fix** | Checked: **zero callers** — fix is inert on its own. Real target is `eq_intake_find_template_by_signature` (see Shape 1 note). Fix + wiring pending |
-| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match**, then (2026-09-15) **close the email half too** | **`>1` half SHIPPED AND LIVE.** [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) merged 09:04Z and `0173` **applied to jvkn 09:30:58Z** — verified by `pg_get_functiondef` (the raise is present; body 1678→2560 chars) and a ledger row in `shell_control._eq_control_plane_migrations`. ⚠️ **Not** by the 09:08 dispatch ([34950868345](https://github.com/eq-solutions/eq-cards/actions/runs/34950868345)): that run was dispatched with `plan: true`, so it listed "5 pending" and changed nothing while still concluding **success**. An earlier version of this row cited it as the apply — a green workflow is not evidence a migration landed; the function body is; [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934) merged (`79889bdc`), catches it, writes `invite.worker_match_ambiguous` to `shell_control.audit_log`, returns an actionable 409. **Email half built, awaiting merge** — [eq-shell #1935](https://github.com/eq-solutions/eq-shell/pull/1935). See the note below |
+| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match**, then (2026-09-15) **close the email half too** | **`>1` half SHIPPED AND LIVE.** [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) merged 09:04Z and `0173` **applied to jvkn 09:30:58Z** — verified by `pg_get_functiondef` (the raise is present; body 1678→2560 chars) and a ledger row in `shell_control._eq_control_plane_migrations`. ⚠️ **Not** by the 09:08 dispatch ([34950868345](https://github.com/eq-solutions/eq-cards/actions/runs/34950868345)): that run was dispatched with `plan: true`, so it listed "5 pending" and changed nothing while still concluding **success**. An earlier version of this row cited it as the apply — a green workflow is not evidence a migration landed; the function body is; [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934) merged (`79889bdc`), catches it, writes `invite.worker_match_ambiguous` to `shell_control.audit_log`, returns an actionable 409. **Email half SHIPPED AND LIVE** — [eq-shell #1935](https://github.com/eq-solutions/eq-shell/pull/1935) merged `9ba99644` 09:48:30Z, migration hand-applied and verified live. See the note below |
 | 3 | The `coalesce`-to-own-tenant fault, present in every tenant's templated copy | **Roll out company by company** | **Scope shrank sharply on verification (2026-09-15).** For `field_people_iud` the rollout is already **done**: guarded on ehow *and* madagins, and the function doesn't exist on zaap. The remaining work was a **different function** nobody had flagged — `field_people_removed_iud`, unguarded on all three planes. Re-briefed as `task_e0ba7aba` (superseding `task_9b876f68`) and **✅ CLOSED the same day**: guard applied to ehow, zaap and madagins via [eq-field #991](https://github.com/eq-solutions/eq-field/pull/991), verified behaviourally. **Both functions in this family are now guarded on every plane they exist on.** Royce's call was "all three in one pass" once severity was shown to be service-role-only rather than browser-reachable |
 | 4 | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) — `custom_access_token_hook` phone-fallback logging | **Merge** | Merging on green; all checks pass except the Netlify preview |
 | 5 | Should admin-invite capture a phone number? | **Make it required** | Pending — `invite-user.ts` plus the admin invite form |
@@ -519,8 +519,25 @@ not match.
 
 **Verified live 2026-09-15 09:34Z** (Supabase MCP became available mid-session, after the
 "not verified" note this replaces). `eq_cards_find_or_create_worker_for_invite` now carries
-`0173`'s raise; `eq_cards_worker_claimed_by_phone` exists; `eq_cards_worker_claimed_by_email`
-**does not exist yet** — #1935's migration is NOT applied.
+`0173`'s raise; `eq_cards_worker_claimed_by_phone` exists.
+
+**Email half now shipped and live too — re-verified 2026-09-15 after #1935 merged
+(`9ba99644`, 09:48:30Z).** `eq_cards_worker_claimed_by_email` **exists on jvkn**, its live
+body is byte-identical to the committed `2026_09_15d` migration, and it is
+`anon=false` / `authenticated=false` / `service_role`-only. Call order in
+`create-worker-invite.ts` is phone check → **email check** → resolver, so the email gap is
+closed upstream of `0173` rather than by it. (The line this replaces said the migration was
+not applied; it was hand-applied, which is the correct path for eq-shell's tree — the
+warning below still stands.)
+
+**Consequence worth knowing: both duplicate groups are now caught by the pre-checks, not by
+`0173`.** Calling the live functions against the two real duplicate keys returns true for
+both — group A on email, group B on phone. So each gets the consent-gated
+`existing_account` 409 and never reaches the resolver, and **`0173`'s raise has no reachable
+trigger in today's data**. That is the right shape: the pre-checks route the common case to
+a path a human can act on, and the raise is the backstop for whatever they miss. It also
+means merging group A's duplicate is data hygiene, not an unblock — an earlier reading of
+this file implied that person would be blocked until it was merged.
 
 > ⚠️ **`control-plane-migrate.yml` is NOT the apply path for eq-shell's `supabase/migrations/`.**
 > `eq-shell/supabase/CONTROL-PLANE-LEDGER.md` states it outright: "This tree has **no CI apply
