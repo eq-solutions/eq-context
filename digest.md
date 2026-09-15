@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 07:56 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 08:01 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 07:55 UTC → 2026-09-15 07:56 UTC)
+## Since last refresh (2026-09-15 07:56 UTC → 2026-09-15 08:01 UTC)
 
-- Merged: eq-shell [#1916](https://github.com/eq-solutions/eq-shell/pull/1916) fix(auth): recycle-review approve stops grafting duplicate i
-- Merged: eq-shell [#1914](https://github.com/eq-solutions/eq-shell/pull/1914) fix(entity-browser): resolve staff_id/site_id to names inste
-- Merged: eq-shell [#1913](https://github.com/eq-solutions/eq-shell/pull/1913) feat(licences): repair script for Personal-Wallet licence-ph
-- Merged: eq-shell [#1911](https://github.com/eq-solutions/eq-shell/pull/1911) fix(provisioning): land eq_queue_* RPCs through the One Pipe
-- Merged: eq-shell [#1910](https://github.com/eq-solutions/eq-shell/pull/1910) fix(staff): fall back to shell_control.users.phone when Card
-- Merged: eq-shell [#1904](https://github.com/eq-solutions/eq-shell/pull/1904) feat(tenant-health): surface a missing per-tenant JWT secret
-- Merged: eq-shell [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going m
-- Merged: eq-shell [#1902](https://github.com/eq-solutions/eq-shell/pull/1902) docs: document the manual per-tenant JWT-secret step in onbo
+- Merged: eq-shell [#1912](https://github.com/eq-solutions/eq-shell/pull/1912) fix(licences): align licence-photo storage path segment 1 on
+- Merged: eq-shell [#1909](https://github.com/eq-solutions/eq-shell/pull/1909) fix(cards): carry emergency contact fields into staff on Car
+- Merged: eq-shell [#1908](https://github.com/eq-solutions/eq-shell/pull/1908) fix(licences): delete superseded storage objects on photo/PD
+- Merged: eq-shell [#1907](https://github.com/eq-solutions/eq-shell/pull/1907) docs(control-plane-ledger): note credentials-canonical-sync 
+- Merged: eq-shell [#1905](https://github.com/eq-solutions/eq-shell/pull/1905) fix(privacy): replace vague §8 retention language with real 
+- Merged: eq-shell [#1901](https://github.com/eq-solutions/eq-shell/pull/1901) Add EQ Core privacy policy (adapted, not copied, from EQ Car
+- Merged: eq-shell [#1900](https://github.com/eq-solutions/eq-shell/pull/1900) fix(field-iframe): extend stall-notice floor to boot→accepte
+- Merged: eq-shell [#1899](https://github.com/eq-solutions/eq-shell/pull/1899) fix(field-iframe): calibrate the draw notice against real re
 
 ## ⚠ Needs you (5)
 
@@ -27,12 +27,13 @@ _2026-09-15 07:56 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🔴 **Cron failing** — `index-drift.yml` 6 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-09-14.md](sessions/2026-09-14.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
-- 🟠 **Deploy new** — eq-shell (core.eq.solutions)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
-## 🙋 Waiting on you (229)
+## 🙋 Waiting on you (230)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
+- **eq-shell** · **Live browser verification still never obtained** — 7 attempts total now (one more this pass, same result). Consistently hangs on `netlify dev`'s proxy specifically, not a code problem (plain Vite connects fine on another port via the same tooling). Royce to try `netlify dev --filter eq-shell` from his own terminal.
 - **eq-shell** · **`task_7d7d8b41`** — likely superseded by merged work, two independent sessions now think so, still needs Royce's explicit yes/no before dismissing (not assumed).
 - **eq-shell** · **jvkn's service-role key (`eq-shell`'s `SUPABASE_SERVICE_ROLE_KEY`) is now sitting in plaintext in a chat transcript**, pasted while running the repair script's `--apply` locally — Claude never handled it directly. Rotation is Royce's call, still undecided. _(added 2026-09-15)_
 - **eq-shell** · **madagins' `app_data._eq_migrations` ledger corruption, independently re-confirmed live twice tonight** — 329 of 331 rows share the exact `applied_at` date as project creation (2026-09-09), consistent with an unverified `--bootstrap` run that stamped migrations as applied without running their SQL. Not new — already tracked and already owned by a background task spawned 2026-09-09 ("Royce's call on timing/ownership, and who ran the original bootstrap is still unknown"). Re-confirming here only because this session independently hit and re-verified the same fact twice; this migration (0320) was itself unaffected (brand-new filename). _(re-confirmed 2026-09-14)_
@@ -44,15 +45,14 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Bulk backfill still blocked on Royce** — `scripts/import-sks-manager-lines.mjs` exists (double-gated dry-run/`--apply`, reuses the identity-bridge resolver from `etl-nspbmir-to-ehow.mjs`) but its `parseExport()` shape is provisional — nobody has seen a real export from `SKS_NSW_Org_Chart_Interactive.html`'s own Export function yet. Needs Royce to supply the file; run dry-run first, review the unmatched/ambiguous report with him before `--apply`. _(added 2026-09-07)_
 - **eq-shell** · **None of tonight's 4 fixes have been click-tested live by a person** — verified via full test suite + lint + an independent merge-readiness audit only. Worth a real pass once convenient: try resetting a platform_admin's PIN as a regular manager (should 403 `cannot-reset-platform-admin`); try switching tenant on a session that's been logged out/revoked elsewhere (should 401, not succeed).
 - **eq-shell** · **#711/SEC-71 — mandatory TOTP enforcement is genuinely client-side only**, reconfirmed live (`shell-login.ts:476-495` issues a full session regardless of the flag). The issue itself says it needs Royce's call on intended grace-period semantics before anyone implements a fix — not built.
-- **eq-shell** · **The one piece not done: actually clicking Grant/Revoke platform admin end-to-end.** Deliberately not tested against a real employee — granting or revoking "every permission, in every tenant," even briefly and reversibly, is real enough that it needs either Royce's own hands or a disposable test account named for the purpose. Nobody's pointed at one yet. Full detail on what WAS confirmed live: `sessions/2026-09-05.md`. _(added 2026-08-17, 2026-08-18, 2026-08-25; consolidated 2026-09-05; click-tested 2026-09-05; deferred again 2026-09-07 via `/triage` — still nobody pointed at a disposable test account)_
-_…and 217 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 218 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
-| eq-solves-service | ✓ success | 0d ago | 3 | 0d |
+| eq-solves-service | ✓ success | 0d ago | 2 | 0d |
 | eq-field | ✓ success | 0d ago | 0 | — |
 | eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
@@ -61,7 +61,7 @@ _…and 217 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | new | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 
 ## Live errors (Sentry)
 
@@ -90,16 +90,16 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-15 | eq-shell | [#1915](https://github.com/eq-solutions/eq-shell/pull/1915) fix(control-plane-drift): detect + backfill the auth.users dedup  |
 | 2026-09-15 | eq-shell | [#1919](https://github.com/eq-solutions/eq-shell/pull/1919) fix(staff): sweep pending-credentials storage on employment purge |
 | 2026-09-15 | eq-shell | [#1922](https://github.com/eq-solutions/eq-shell/pull/1922) fix(ci): allowlist eq_get_user_active_tenant as eq-cards-sourced |
+| 2026-09-15 | eq-solves-service | [#853](https://github.com/eq-solutions/eq-service/pull/853) fix(migrations): coalesce missing NOT-NULL-default columns in 014 |
 | 2026-09-15 | eq-solves-service | [#852](https://github.com/eq-solutions/eq-service/pull/852) test(rls): extend cross-tenant-sweep sanity check to assets/defec |
 | 2026-09-15 | eq-solves-service | [#851](https://github.com/eq-solutions/eq-service/pull/851) docs(claude-md): document apply-service-migrations.yml governance |
 | 2026-09-15 | eq-field | [#987](https://github.com/eq-solutions/eq-field/pull/987) v3.5.719 — Roster: iPad sees full week grid; site filter is searc |
 | 2026-09-14 | eq-shell | [#1918](https://github.com/eq-solutions/eq-shell/pull/1918) docs(control-plane-ledger): mark recycle-review-phone-dup-no-graf |
-| 2026-09-14 | eq-shell | [#1917](https://github.com/eq-solutions/eq-shell/pull/1917) docs(control-plane-ledger): live-verify 2026_08_30b/c phone-dedup |
-_Showing 15 of 90 · full record in [sessions/](sessions/)_
+_Showing 15 of 91 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (308 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (305 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (68 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (240 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (78 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -131,7 +131,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1774 | 244 / 67 | 3 | 99 |
+| [eq-shell](eq/pending/eq-shell.md) | 1777 | 241 / 68 | 3 | 99 |
 | [eq-cards](eq/pending/eq-cards.md) | 388 | 52 / 18 | 0 | 11 |
 | [eq-field](eq/pending/eq-field.md) | 1339 | 202 / 41 | 0 | 63 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 459 | 58 / 20 | 1 | 28 |
@@ -197,4 +197,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 07:56 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 08:01 UTC._
