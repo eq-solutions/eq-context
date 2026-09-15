@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-15 (PR #1915 MERGED + LIVE — control-plane trigger drift check + auth.users dedup triggers backfilled)
+- `scripts/check-control-plane-drift.mjs` gained a `REQUIRED_TRIGGERS` check — verifies a curated allowlist of control-plane triggers exist and are enabled (`tgenabled='O'`) on live jvkn, gated under `--strict`. Starts with the two `auth.users` triggers behind EQ-SHELL-11's phone-dedup fix (`on_auth_users_insert_dedup`, `link_pending_invites_on_confirm`).
+- `supabase/CONTROL-PLANE-LEDGER.md` + a new migration source both triggers' `CREATE TRIGGER` definitions byte-for-byte for the first time — confirmed live and enabled, not an incident.
+- Merged on Royce's explicit go.
+
 ## 2026-09-15 (PR #1917 MERGED + LIVE — control-plane ledger: 2026_08_30b/c verified against live jvkn)
 - `supabase/CONTROL-PLANE-LEDGER.md` gained rows for two files with no prior entry: `2026_08_30b_eq_revoke_session_group_perm_gap.sql` and `2026_08_30c_phone_dedup_shell_only_phone.sql`. Both live-verified via Supabase MCP `pg_get_functiondef` against jvkn — function bodies match their files byte-for-byte, not assumed from the commit alone; `eq_revoke_session`'s grants and its newly-called `shell_control.caller_holds_group_perm` helper also confirmed live.
 - Docs-only change; no code or schema touched. Merged on Royce's explicit go (both functions are auth/identity-adjacent).

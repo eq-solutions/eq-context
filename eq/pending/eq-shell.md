@@ -15,6 +15,17 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: auth.users dedup triggers backfilled + a required-trigger drift check added; no incident found, but a related dead-code question spun off (2026-09-15)
+
+Investigated whether `on_auth_users_insert_dedup` (EQ-SHELL-11's phone-dedup guard) could be silently disabled — nothing anywhere (this ledger, `check-control-plane-drift.mjs`, `check-tenant-drift.mjs`, any CI job) had ever verified a control-plane trigger's live existence or enabled state; the only prior record of its live name was a code comment. Confirmed live via Supabase MCP: both `on_auth_users_insert_dedup` and its sibling `link_pending_invites_on_confirm` exist and are enabled (`tgenabled='O'`) — not an incident, a detection gap only.
+
+**Fix:** [eq-shell#1915](https://github.com/eq-solutions/eq-shell/pull/1915), merged (`d690bdfd`) and confirmed live via Netlify's own deploy record. New `REQUIRED_TRIGGERS` check in `check-control-plane-drift.mjs` (live existence + enabled-state, gated under `--strict`) plus a source-parity backfill migration capturing both triggers' definitions byte-for-byte. Rebase hit a real conflict with a concurrent, unrelated fix ([#1916](https://github.com/eq-solutions/eq-shell/pull/1916), `eq_resolve_recycle_review` re-grafting duplicate identities — already applied) — resolved by keeping both ledger entries.
+
+**Deferred:**
+- [ ] **`link_pending_invites_on_confirm`'s `WHEN` clause only fires on `email_confirmed_at`, despite its function having a separate phone-match branch** — 21 of 93 jvkn `auth.users` rows are phone-confirmed with no email at all, so that branch may never have run for them. Auth-flow-adjacent, needs Royce's call. Spawned as background `task_4ae84033`; Royce started it in a separate session 2026-09-15, running independently, not yet reported back. _(added 2026-09-15)_
+
+---
+
 ## eq-shell: Licence-photo path drift — root cause found and fixed live; repair tool built and dry-run clean; deletion still gated on one open safety question (2026-09-14 → 09-15)
 
 Full write-up: eq-context `eq/sprints/2026-09-14-licence-photos-org-drift.md` (the running record — read that before re-deriving any of this) and eq-shell memory `project_licence_photos_path_segment1_dual_convention.md`. Root cause (two writers disagreeing on a storage-path segment), the convention fix, and migration `0169`'s detection extension are all merged/applied/live — not restated here.
