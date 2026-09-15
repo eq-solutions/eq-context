@@ -297,6 +297,27 @@ duplicate (resolved) and a genuine open product question (not resolved).
 | 7 | **New, found investigating decision 2's blast radius.** Group A: one real person held two worker rows (an unclaimed 2026-06-15 email stub + their claimed 2026-08-18 account) — a plain duplicate, not a genuine collision, and the new `>1`-match guard would have blocked re-inviting them | **Merge the stub into the claimed row** | **Done.** Royce's explicit go. Stub `b1ec35fb` deleted, `cb49cbf5` kept — full precondition/postcondition verification in the eq-context session log, following `merge-william-brown-duplicate-identity.sql`'s methodology with the "repoint ehow first" step correctly identified as not applicable here (separate `staff_id`s, not shared). jvkn: 107 → 106 workers, zero email-duplicate groups remain |
 | 8 | **New, found the same investigation. Group B**: one SKS person has two accounts sharing one phone — a "work" identity (email signup, SKS tenant) and a "wallet" identity (phone-OTP signup, `__personal__` tenant). Turned out to be the **normal, common shape** (35 of 81 claimed workers on jvkn have this same work+wallet split) — the shared phone is what made it *look* like the duplicate-detection problem this whole register is about | **Two rows is correct** | **Closed, 2026-09-15 — no code change.** Confirms the current shape as intentional: one human legitimately holds a separate work identity and a separate personal-wallet identity. **No merge, no defect.** `eq_cards_worker_claimed_by_phone`'s 409 on this shape was already correct behaviour and needed no change. This forecloses the alternative that was on the table — a `public.workers`-level phone detector would have fired on all 35 legitimate work+wallet pairs; **do not build one for this shape.** The full sweep at investigation time found this was the *only* `public.workers` phone group with >1 row on all of jvkn, so there is no other live case sitting behind it either. `identity_recycle_review` still cannot see `public.workers.phone` at all (it only reads `auth.users.phone`/`shell_control.users.phone`) — that remains true, but is no longer a "gap" for this shape specifically, since this shape was never a collision to catch |
 
+**A concurrent session collided with this decision, caught before it landed live.** While
+this row was being settled, a sibling session — separately told "one row per human," build
+the detector — had already opened
+[eq-shell #1944](https://github.com/eq-solutions/eq-shell/pull/1944), the exact
+`public.workers.phone` detector this row rules out. `safe_commit.py`'s own staleness check
+caught the conflict before that session's register edit could push (it fetches
+`origin/main` fresh at commit time, not at worktree-creation time) — nothing was
+overwritten. jvkn was never touched: `#1944`'s migration was PR-only, apply is
+`workflow_dispatch`-only and was never dispatched. Royce confirmed this row stands; `#1944`
+closed unmerged, its branch deleted, and its three spawned follow-up tasks (built on the
+same now-rejected premise) messaged directly to stop and re-read this decision before
+continuing — two of the three were already running by the time the conflict surfaced, past
+the point `dismiss_task` could withdraw them.
+
+**Why this is worth keeping, not tidying away:** it is a live instance of exactly the
+failure class this session gate's own F12 warns about — two sessions independently
+producing "Royce's call" on the same question. Caught this time because the write path
+(`safe_commit.py`) refuses to push against anything but a freshly-fetched base. That
+property is what made the catch possible; it is not a substitute for checking before
+building expensive things on a contested question.
+
 **Decision 2 — what "ask" turned out to mean.** The durable record cannot be
 written by the function. `RAISE` aborts the RPC's transaction, so any flag row the
 function inserted would roll back with the refusal that caused it, and jvkn has no
