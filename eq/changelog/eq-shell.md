@@ -9,6 +9,12 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-15 (PR #1936 MERGED + LIVE — worker-to-tenant projection reconciliation check added)
+- New `scripts/check-worker-tenant-projection-drift.mjs` + daily-cron workflow: compares expected (`org_memberships`, active) against actual (`app_data.staff` per tenant) for every active tenant, flagging `missing_projection` / `cross_tenant_leak` / `orphaned_link` / `user_id_mismatch`. Permanent monitoring — closes the gap `check-tenant-membership-roster-drift.mjs` doesn't cover.
+- Modeled on that script's exact convention (`_mgmt.mjs` helpers, `--json`/`--output-file`, daily-cron + `workflow_dispatch` + auto-managed-issue).
+- Classification logic tested against real, live-queried 2026-09-15 data before shipping — caught two real bugs in the first draft: a lookup map built in the wrong key direction, and a stale-`user_id`-column resolution path (must resolve a linked row's current identity via `cards_worker_id`, never via the staff row's own `user_id` column).
+- `npx eslint` clean, all CI green. Merged, deployed automatically (eq-shell: merge is the deploy).
+
 ## 2026-09-15 (PR #1937 OPEN — mobile Home page: 5-row Records category list replaced with a single search entry point)
 - The Home page's mobile "Records" card (Customers/Sites/Contacts/Staff/Licences, each its own row/tap-target with a count badge) required guessing which category something was filed under before you could go look for it — the one entry point into records that still predated the "Find anything" model shipped earlier today (#1932). Replaced with a single search-styled trigger that opens the same records drawer, landed straight in its search box (new `autoFocusSearch` prop on `MobileRecordsDrawer`). The separate "Licences expiring" hero stat is untouched — still its own deep link straight to the Licences tab.
 - Built off a live screenshot Royce sent of the page in production. `pnpm run build`/`eslint`/`check-css-coverage` (548/548)/`pnpm test` (660/662, 2 pre-existing skips) all clean.

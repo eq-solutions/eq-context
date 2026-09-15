@@ -9,6 +9,17 @@ status: live
 
 # EQ Shell — Pending
 
+## eq-shell + eq-cards: worker-to-tenant reconciliation monitoring shipped; genuine multi-tenant Cards worker sync ("Tier 2") fully scoped, not started (2026-09-15)
+
+*Built alongside the Madagins/Aditi incident fix (now archived — see `eq/pending-archive.md`), but this section itself is not part of that incident: the reconciliation check is permanent monitoring, and Tier 2 is real, ongoing forward-looking product work Royce confirmed as near-term ("Q1 2027 at the latest"), not incident cleanup.*
+
+**Shipped:** [eq-shell PR #1936](https://github.com/eq-solutions/eq-shell/pull/1936) — `scripts/check-worker-tenant-projection-drift.mjs` + daily-cron workflow. Compares expected (`org_memberships`, active) against actual (`app_data.staff` per tenant) across all active tenants, flagging `missing_projection` / `cross_tenant_leak` / `orphaned_link` / `user_id_mismatch`. Modeled on `check-tenant-membership-roster-drift.mjs`'s exact convention. Classification logic tested against real live 2026-09-15 data before shipping — caught two real bugs first (a lookup map built in the wrong key direction; resolving a linked row's current identity via the staff row's own possibly-stale `user_id` column instead of via `cards_worker_id`). Merged, CI green, live (eq-shell: merge is the deploy).
+
+**Deferred:**
+- [ ] **Tier 2 — genuine multi-tenant Cards worker sync** (one Cards account, real independently-synced staff rows on every tenant a worker actually works for — not incident cleanup, Royce's own longer-term product direction). Deliberately not started this session: `/decide` concluded the incident fix + reconciliation monitoring above already capture the safety value; a real build deserves its own scoping pass. Full design settled and written up as a complete, self-contained build prompt, delivered directly to Royce as a file (`tier2-multitenant-worker-sync-prompt.md`, not committed to substrate). Key decisions already made, for whoever picks this up: routing authority is `shell_control.tenant_routing`, not the independently-confirmed-drifted `organisations.supabase_url`; link model derives via `cards_worker_id` rather than adding a new pointer table; removal semantics write nothing on membership-end (archival + rating is Royce's own EQ Field workflow); tenant-plane writes route through eq-shell's existing audited client (`getAuditedTenantDataClientById`), never a master decryption key placed directly in eq-cards. _(added 2026-09-15)_
+
+---
+
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines (currently 1,394 — over budget; a dedicated prune pass is needed to pick which entries are stale enough to archive, not attempted mechanically here). `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
