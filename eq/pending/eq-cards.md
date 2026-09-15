@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-15
+last_updated: 2026-09-16
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,21 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-cards: admin-upsert worker blank-name bug root-caused, claimed-match audit flag added, merged (2026-09-16)
+*Investigated why jvkn worker `406d2b0f-bf93-4959-b658-d65c3ac390d9` was created 2026-08-20 with a phone but blank first_name/last_name. Traced to `eq_cards_admin_upsert_worker`'s INSERT branch, which — unlike every other worker-creation path in the suite — never defaulted a blank name; reachable only via a direct RPC call bypassing the Flutter admin form's client-side validation. A peer session flagged mid-task that eq-context decision 8 (two claimed workers sharing a phone = intentional work+wallet split) overturned the premise — verified directly against the primary source rather than trusting the paraphrase, and found the two investigations are about different, non-conflicting questions about the same row (full reasoning in the PR's own comment thread).*
+
+**Shipped:**
+1. [PR #366](https://github.com/eq-solutions/eq-cards/pull/366) / migration `0177` — `eq_cards_admin_upsert_worker`'s INSERT now defaults `first_name` to `'Unknown'` when blank/omitted (matching `eq_cards_link_or_create_worker`/`eq_cards_find_or_create_worker_for_invite`); adds a non-blocking `eq_write_audit_log` entry (`worker.admin_upsert_matched_claimed_worker`) when the phone/email adopt-match resolves to an already-claimed worker, using the same audit channel this function already uses for role changes. Merged (`121bde4`), squash, on Royce's explicit "go merge."
+
+**Deferred:**
+- [ ] **Migration `0177` merged to git but NOT applied to live jvkn.** This repo has no CI-driven apply for jvkn migrations — needs a separate Supabase MCP `apply_migration` call, and this one is auth-adjacent (touches a SECURITY DEFINER worker-identity function), so it's waiting on Royce's explicit go for that step specifically, distinct from the merge approval already given. Verification queries are in the migration's own header comment. _(added 2026-09-16)_
+
+**Notes:**
+- Worked from an isolated worktree (`eq-cards-worker-collision-gap-wt`) per this repo's established convention — the shared `C:\Projects\eq-cards` checkout's checked-out branch visibly shifted mid-session from a concurrent session, confirming the isolation was load-bearing, not precautionary.
+- Cross-session coordination note: a peer session's "read eq-context decision 8, your task's premise is overturned" message needed the primary source read directly, not just trusted — the register's own text (`eq/identity/AMBIGUITY-REGISTER.md`, decision 8 / Group B, commit `9fcbbaf1`) actually corroborates this PR's finding rather than contradicting it. Full comparison posted as a PR comment for the record.
 
 ---
 
