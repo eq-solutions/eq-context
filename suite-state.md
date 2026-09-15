@@ -65,7 +65,6 @@ _If this file is >48h old, the cron is broken._
 - #364 fix(cards): stop a null-expiry OCR result crashing a worker's whole wallet
 
 **eq-field:**
-- #991 fix(field): guard field_people_removed_iud against a null tenant claim
 - #990 v3.5.721 — Apprentices: archive/delete for Feedback, Skills Passport, Rotations, Reviews, Journal
 - #989 v3.5.721 — Apprentices: cards show current site + how long there
 
@@ -73,7 +72,8 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1937 feat(mobile): replace Home records list with a single search entry point
+- #1940 fix(invite): log the two pre-check "already has an account" refusals
+- #1939 fix(licences): default never_expires on the two other licence-promotion doors
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -95,7 +95,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | building | 2026-09-15 |
+| eq-shell | new | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
