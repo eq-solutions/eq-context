@@ -15,6 +15,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-service: maintenance-check write-role RLS model now documented in CLAUDE.md — PR #854 merged (2026-09-15)
+*Closes the deferred item from the PR #845/#853 entry (archived below to `eq/pending-archive.md`): the confirmed manager/supervisor/employee tenant-wide write-access design, and the soft-delete-runs-through-UPDATE mechanism behind it, had only ever lived in PR comments/commits and this pending file — no durable home in the repo itself.*
+
+- Added a bullet to `eq-service/CLAUDE.md`'s Maintenance Checks section, right after the existing "RLS — who can create checks" bullet: `manager`/`supervisor`/`employee` have tenant-wide write access to *any* check — `assigned_to = auth.uid()` is only a fallback for roles with no tenant-wide write grant (`apprentice`, `labour_hire`). DELETE is soft and runs through the identical write-role check as UPDATE, not a separate narrower policy — `maintenance_checks`' `INSTEAD OF DELETE` trigger converts every delete into a plain UPDATE first, which runs as the calling user.
+- [PR #854](https://github.com/eq-solutions/eq-service/pull/854), merged (`a69e924`) once CI passed — docs-only, no functional change.
+
+No open items — fully closed.
+
+---
+
 ## eq-service: the `assets`/`defects` sanity-check fix never actually landed despite looking merged — found, re-landed properly, verified against live main content (2026-09-15)
 *A real process bug, not a code bug: a second commit was pushed to `fix/cross-tenant-sweep-defects-bait-seed-wt` after PR #846 had already merged on its first commit alone. `gh pr edit` on an already-merged PR only updates the description text — the second commit sat orphaned on the branch, silently never part of `main`, while #846's own description kept describing an assertion that was never actually shipped. Caught by reading a concurrent (spawned) session's own investigation log, which had independently found the same gap while root-causing something else; confirmed directly against `origin/main`'s live file content before acting, not assumed from the earlier "merged" claim.*
 
@@ -35,18 +45,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 **Deferred:**
 - [x] **PR #845 needs a rebase against current main + a fresh CI run, then Royce's review to merge.** Done — see the top 2026-09-15 entry for the full story (took 4 more rounds, not just a rebase).
 - [ ] **Docker Desktop still cannot start on this machine — reconfirmed a 4th+ time, 2nd calendar day.** Genuinely persistent now, not a same-day flake; worth a dedicated look (reinstall / Hyper-V check / full restart) outside any single task's scope. _(added 2026-09-15, escalates the 2026-09-14 items in the two entries below)_
-
----
-
-## eq-service: PR #845 fully landed (4 more commits: eq_role claim, corrected 2 tests) + PR #853 merged (3-layer trigger fix) — main fully green across every check (2026-09-15)
-*Direct continuation of the PR #849/#845/#851 entry below. Rebasing #845 alone wasn't enough — CI stayed red through 4 more rounds, each revealing a genuinely new, unrelated layer, not a retry of the same problem.*
-
-- **PR #853** (migration 0247) fixes `auto-defect-from-fail.test.ts`: migration 0148's trigger functions passed `sort_order`/`result`/3 more `rcd_test_circuits` columns straight through as raw `NEW.col` instead of `COALESCE(NEW.col, default)`, silently NULL-overriding the table's own NOT NULL DEFAULT. Confirmed dormant in production (every real app code path supplies these fields via form + Zod defaults) but real — any future caller that omits one hits a hard `23502`. Found 2 more layers while pushing this: (1) a first attempt hand-transcribed function bodies from migration 0148's own pre-fix file text and accidentally reintroduced a bug migration 0179 had already fixed live (the `v_tenant` resolver's `::uuid` cast outside vs inside the coalesce) — caught immediately (target test went `23502`→`42804`, never actually green), corrected by pulling bodies fresh via `pg_get_functiondef` against live instead of the migration file; (2) `service.fn_severity_from_reading_label` — called by the auto-defect triggers — existed on live but was never captured in any migration (0062 only creates the `public` version). Added using the live-verified body. Merged.
-- **PR #845, on top of #853:** `app_metadata` also needed `eq_role`, not just `tenant_id` — `eq_service_write_allowed()` (gates every write-role check) reads it separately, so admin-only writes still failed CI after the tenant claim alone. Fixing that surfaced a real architecture question: `tg_maintenance_checks_iud()`'s DELETE branch is a soft-delete UPDATE (`is_active=false`), which runs as the calling user and is gated by the **UPDATE** policy (`manager/supervisor/employee`), not the manager-only DELETE policy — the narrower delete policy is structurally unreachable from the app's real write path, and `employee`/`supervisor` have tenant-wide write access, not assignment-scoped. **Confirmed with Royce: intentional design, not a gap.** Corrected 2 tests to match (not the RLS/trigger): `admin-only-delete.test.ts` now uses `apprentice` — a genuinely non-write role — for its "blocked" case, and checks `is_active`/`deleted_at` instead of row-absence (soft delete never removes the row, so the old assertion could never pass regardless of role); `technician-update-gating.test.ts`'s cross-assignment case inverted to assert the real write-role access instead of a false assignment-only boundary. Merged.
-- **`main` (`071c7c3`) confirmed fully green across every workflow** — Integration tests, CI, check, Canonical types drift, Data Quality, Service invariants, Apply service migrations — not just the PR's own run.
-
-**Deferred:**
-- [ ] **Whether `employee`/`supervisor`'s confirmed-intentional tenant-wide write access is documented anywhere durable** (eq-service/CLAUDE.md, a design doc) — right now the only record is this session's PR comments/commits and this entry. Worth a permanent home given how easily the opposite assumption crept into 2 separate test files' own doc comments before this session. _(added 2026-09-15)_
 
 ---
 
