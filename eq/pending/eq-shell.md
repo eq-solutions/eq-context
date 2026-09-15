@@ -15,6 +15,27 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Madagins/Aditi cross-tenant JWT incident — PR #1925's root-cause theory doesn't hold up against live data; real mechanism still unidentified (2026-09-15)
+
+*Continuation of the 2026-09-14/09-15 Aditi Rajbhandari incident (see eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`) and [PR #1925](https://github.com/eq-solutions/eq-shell/pull/1925), written up in a prior session with no Supabase MCP access. Royce granted a Supabase MCP for jvkn mid-session; both of the PR's own "before applying" checks were run live, and the result reopens the investigation rather than closing it.*
+
+**Check 1 (fresh `pg_get_functiondef` pull):** confirms a real bug in PR #1925 as written — its migration includes a `raw_app_meta_data` mirror block that was live as of 2026-07-28 but has since been removed from the actual live function (fresh pull matches eq-cards' 2026-08-03 reconciled file exactly, no mirror block). Applying the PR as-is would silently reintroduce a removed write-on-every-token-mint side effect, undocumented anywhere in the PR. Must be stripped before applying.
+
+**Check 2 (the phone-collision query) comes back negative.** No other `shell_control.users` row shares Aditi's phone besides her own (correctly Madagins-scoped) record — meaning `custom_access_token_hook`'s phone-fallback has no row it could have matched against for her. PR #1925's own test plan proposed this exact query as confirmation; it disconfirms instead.
+
+**Followed up two steps further (read-only, live):** `ehow.app_data.audit_log` shows the phantom `staff` row was a genuine code-driven insert (`actor_id` = Aditi's own new identity, `source: 'shell'`, not a raw-SQL bypass), 2 seconds after her identity was created, with `cards_worker_id`/`on_roster`/`field_approved` all populated — the same shape as the *original* 6-fake-candidate incident, not a manager-driven `staff-create.ts` call (ruled out — read in full; its insert branch always sets `imported_from`/`imported_at` and never touches those three fields, and the phantom row has neither). Points at the still-unidentified Cards-candidate→tenant-roster promotion path the original incident write-up already flagged as open, now with a second, cleaner data point.
+
+**Net: PR #1925 is not confirmed to fix Aditi's specific incident.** Still reasonable as unrelated hardening (visibility on any future phone-fallback trust event), but its description should be corrected before merge, and the actual promotion code path is still unfound.
+
+**Deferred:**
+- [ ] **Find the Cards-candidate-promotion code path** that wrote Aditi's phantom row — shape: writes `cards_worker_id`+`on_roster`+`field_approved` together, tagged `source='shell'` in tenant audit logs, and resolved the wrong target tenant DB (ehow/SKS instead of Madagins' own `ornndtbdkxfsewspbrwk`) for her. Not eq-field (that side was already fully ruled out) — look in eq-shell/eq-cards. `netlify/functions/worker-profile-push.ts` is an unchecked candidate by name (found alongside `staff-create.ts` in the same grep, not yet read) — start there. _(added 2026-09-15)_
+- [ ] **PR #1925 needs rework before Royce's go**: strip the `raw_app_meta_data` UPDATE block (not live, undocumented reintroduction), and reframe the PR body/commit — it's hardening, not a confirmed fix for the Aditi incident specifically. _(added 2026-09-15)_
+
+**Notes:**
+- Full technical detail (queries run, exact rows, timing analysis) in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md` — read that before re-deriving any of this.
+
+---
+
 ## eq-shell: Control-plane migration runner — per-file error isolation shipped and merged (2026-09-15)
 
 `scripts/migrate-control-plane.mjs`'s real-apply loop wrapped the whole sequential migration batch in one outer `try`/`catch` — a SQL error on any single file aborted the run with no record distinguishing "already applied" from "failed" from "never reached." This is the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around (see that PR's own body). Fixed via `applyAllMigrations()`, split into a new `scripts/_migrate-control-plane-apply.mjs` for testability — every migration now lands in exactly one of applied/skipped/failed/notAttempted, fail-stop (not continue-on-error — Royce's explicit design call, made before any code was written; migrations have no dependency graph beyond sequential file order).
