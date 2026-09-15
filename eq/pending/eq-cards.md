@@ -1,7 +1,7 @@
 ---
 title: EQ Cards — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-15
 scope: EQ Cards engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -12,6 +12,29 @@ status: live
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
 
 **Budget:** ~500 lines. `- [x]` items already auto-rotate out nightly via `scripts/rotate_pending.py`; past this line count even so, propose moving the oldest stale open items to `eq/pending-archive.md`. (`rules/tidy-protocol.md` Step 5, 2026-09-07.)
+
+---
+
+## eq-cards + eq-shell + eq-context: licence-photos-org-drift sprint closed out — #358 merged after unsticking hung CI, migration 0171 applied, F18 tenant-UUID question resolved (2026-09-15)
+*Picked up a multi-repo sprint (licence-photos storage-path segment-1 convention, tracked in `eq-context/eq/sprints/2026-09-14-licence-photos-org-drift.md`) already worked by 4+ concurrent sessions. Re-verified every fact in the handoff brief against live state rather than trusting it — found #1912 already merged+deployed (brief said "open"), found a 4th untracked concurrent effort (admin-attach-licence-photo), found migration 0171 sitting unshipped in a worktree after its own session went idle.*
+
+**Shipped:**
+1. [eq-cards PR #358](https://github.com/eq-solutions/eq-cards/pull/358) — `admin-attach-licence-photo` wrote 2-segment storage paths, missing tenant_id entirely; migration 0137's RLS keys off segment 3 so nothing this function ever wrote was readable by its own owner or an org admin. Zero live callers found — structural fix ahead of a real incident, not a live bug fix. Found the PR already open but blocked on a genuinely hung CI job (~10 hours stuck); cancelled + re-ran just that job, merged clean.
+2. Migration `0171` (new `eq_get_user_active_tenant` RPC, `shell_control`-touching, read-only, `service_role`-only) applied to jvkn and verified live — zero new security-advisor findings.
+3. Resolved a live open question (not a bug): confirmed eq-cards' JWT-claim tenant_id and eq-shell's session-cookie tenant_id always resolve to the same `shell_control.tenants.id`, no `organisations.id` substitution path in either.
+
+**Deferred:**
+- [ ] **`task_7d7d8b41` and `task_83d5f0f7`'s chips both still need Royce's own click.** Both decisions are made (dismiss / underlying fix shipped) and recorded in the sprint doc, but `dismiss_task` only reaches chips the calling session itself spawned — both were spawned by other sessions. Royce said he'll clear them himself. _(added 2026-09-15)_
+- [ ] **`task_59002a2e`** (correct `eq-context/eq/identity/IDENTITY-MODEL.md`'s stale description of Cards' auth-handoff mechanism) — spawned this session, Royce started it running independently in a separate session, not yet concluded as of this close. _(added 2026-09-15)_
+- [ ] **`task_b56ada7f`** (spawned by a different concurrent session) — traces whether 2 of the 26 "true orphan" licence-photo objects are actually safe to delete, or the same false-positive class eq-cards #357 just fixed. Blocks `--delete-orphans` on eq-shell PR #1913 at its current full scope until resolved. Not this session's task, tracked here for visibility. _(added 2026-09-15)_
+- [ ] **eq-shell PR #1913's `--apply` (data repair) and `--delete-orphans`** still not run anywhere. Confirmed this session: no Claude session can actually execute `--apply` even with explicit go — the repair script's copy step is a genuine Storage API call the Supabase MCP tooling here doesn't expose (Postgres/project-management only). Needs a human or non-Claude process with real shell/Node access. _(added 2026-09-15)_
+- [ ] **Segment-1's stated reason to exist** ("a future all-licences-for-a-tenant admin tool," per `photo_upload.dart`'s own header) has never been built, 4 months and 3 fix attempts into this convention. Genuine open product-scope question, surfaced not decided — still wanted, or vestigial? _(added 2026-09-15)_
+
+**Notes:**
+- Every eq-context substrate write this session went through an isolated worktree + `scripts/safe_commit.py`, never the shared bare-root checkout — needed it twice for real reasons: `safe_commit.py`'s own upstream-divergence check caught two genuine concurrent races on the sprint doc (once against a same-day #356/#357/#1913 update, once against Royce's own direct correction that Claude sessions can't run `--apply`'s Storage-copy step) and refused rather than clobbering either. Re-read fresh and reapplied on top both times.
+- Hit `guard.js`'s brief-gate flag bug mid-session (date-embedded filename broke across the 2026-09-14→15 midnight rollover) — fixed mid-session by another concurrent session; re-ran `/brief eq-context` to pick up the corrected dateless flag format rather than fight the stale one.
+- A `detect-fake-worktree` guard fired once on a chained-`cd` Bash command targeting an eq-context worktree — resolved by using `git -C <absolute-path>` instead of `cd`-chaining.
+- This session's Supabase MCP access was not available at session start (confirmed via `ToolSearch`) but appeared later, mid-session, unexplained — worth knowing tool availability can change within a single session here.
 
 ---
 
