@@ -329,14 +329,38 @@ For this function that is now a number: of **107** workers on jvkn there are exa
 
 | Group | Key | Rows | Reaches the resolver? |
 |---|---|---|---|
-| A | shared **email** (`…@sks.com.au`) | an email-only stub (2026-06-15, unclaimed) + the same person's claimed account (2026-08-18) — same initials, one human | **Yes** — the phone pre-check never looks at email |
+| A | shared **email** (`…@sks.com.au`) | an email-only stub (2026-06-15, unclaimed) + the same person's claimed account (2026-08-18) — same initials, one human | **Was yes** — the phone pre-check never looked at email. **Merged 2026-09-15, group A no longer exists** (see below) |
 | B | shared **phone** | two rows, **both claimed** — two auth identities on one number | No — `eq_cards_worker_claimed_by_phone` already 409s on it first |
 
-So in practice `0173` changes the outcome for **one** identity today, and group A is a
-plain duplicate of one person rather than a genuine collision. Merging that stub into
-the claimed record is the right resolution; until it is merged, that person cannot be
-re-invited. Worth doing before or shortly after applying, not because the refusal is
-wrong but because it is the refusal working on data that should not exist.
+So in practice `0173` changed the outcome for **one** identity, and group A was a plain
+duplicate of one person rather than a genuine collision.
+
+**Group A merged 2026-09-15, on Royce's explicit go — jvkn now has zero email-duplicate
+groups (107 → 106 workers).** Worker `b1ec35fb` (the unclaimed stub) deleted, `cb49cbf5`
+(claimed) kept. Nothing needed carrying across: the keeper was already a strict superset —
+same name and email, plus the phone — and the stub held zero credentials, assignments,
+inductions, invites, collision flags and licences. Its 31 `worker_sync_dispatch` telemetry
+rows went with it; `audit_log` was left alone (append-only, and an accurate record of what
+that identity did).
+
+Followed `eq-shell/scripts/merge-william-brown-duplicate-identity.sql`, including its rule
+that the loser is **DELETE**d and never UPDATEd — an UPDATE fires the sync's upsert branch,
+whose `findStaffId` probes all miss, and it then inserts a fresh staff row.
+
+**Why that script's load-bearing "repoint ehow first" step did not apply here** — worth
+recording, because the two cases look identical and are not. William's two workers shared
+**one** `staff_id`, so deleting the loser while ehow still pointed at it would have
+deactivated his live row. Group A's workers had **separate** staff rows (`381fbd81` stub,
+`13969d35` keeper), so the AFTER DELETE trigger's
+`.eq("cards_worker_id", …)` deactivation could only ever match the stub's row, which was
+already `active=false`. Confirmed after the fact: the keeper's ehow row is still
+`active=true`.
+
+**Left dangling on purpose.** ehow staff row `381fbd81` still carries a `cards_worker_id`
+pointing at the deleted worker. Nulling it would look like tidying and is the wrong move:
+`findStaffId`'s probes 3 and 4 only consider rows where `cards_worker_id IS NULL`, so
+blanking it would make this dead row *adoptable* by a future sync and re-link it to somebody
+else. The dangling pointer is what keeps it inert.
 
 ### Group B — investigated 2026-09-15. It is *not* `handle_phone_dedup`'s territory.
 
