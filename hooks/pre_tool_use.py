@@ -611,6 +611,91 @@ def _strip_quoted(s):
     return re.sub(r"'[^']*'|\"[^\"]*\"", '""', s or "")
 
 
+# F9(b) carve-out, 2026-09-15. The block below has no way to bring the shared
+# checkout CURRENT — it covers rebase/merge/pull alike, there is no safe_sync.py
+# beside safe_commit.py, and F9's own escape valve (isolated clone -> push)
+# answers "make a change safely", which is a different problem. Live cost, the
+# session that prompted this: the SessionStart gate reported the shared checkout
+# 16 -> 20 commits behind over one session, and clearing it needed Royce at his
+# own keyboard, because the hook binds tool calls and not his shell.
+#
+# Why --ff-only specifically, and nothing else: git refuses it outright unless
+# the update is a true fast-forward, so it cannot drop a local commit, cannot
+# produce a merge commit, and cannot leave conflict markers — the three damage
+# shapes F9's ledger actually records (2026-07-14, 2026-08-03). The clean-tree
+# and zero-ahead checks below are belt-and-braces on top of that, not the whole
+# argument, and they are verified LIVE rather than assumed from the command text.
+#
+# Residual risk, stated rather than papered over: a fast-forward still rewrites
+# the working tree, so a concurrent writer in this same directory could still
+# interleave with the checkout step. That is strictly smaller than rebase/merge
+# (no multi-step ref surgery, no conflict resolution, nothing to get stuck
+# inside) but it is not zero. Anything writing into this shared root is already
+# violating F16.
+_FF_ONLY_RE = re.compile(r"(?<![\w-])--ff-only(?![\w-])")
+# Flags that turn a nominal --ff-only invocation back into the thing F9 blocks.
+# --rebase wins over --ff-only on `git pull`; --no-ff contradicts it outright.
+_FF_DISQUALIFY_RE = re.compile(r"(?<![\w-])--(no-ff|rebase)(?![\w-])")
+
+
+def _git_out(root, *args):
+    """Run a read-only git query in `root`. Returns stdout stripped, or None on
+    ANY failure (non-zero, timeout, git missing). Callers MUST treat None as
+    'could not verify' and fall through to the block — fail closed, same
+    rationale as this module's F2 handling."""
+    try:
+        p = subprocess.run(["git", "-C", root, *args],
+                           capture_output=True, text=True, timeout=10)
+    except Exception:
+        return None
+    if p.returncode != 0:
+        return None
+    return (p.stdout or "").strip()
+
+
+def _f9_safe_ff(stripped, verb, root):
+    """F9(b) exception — True only for a provably-lossless fast-forward.
+
+    Every condition must hold, and any one of them being unverifiable returns
+    False (-> the caller blocks):
+      1. verb is pull or merge. `git rebase` has no --ff-only, so a command
+         matching it is something else wearing the flag.
+      2. --ff-only is present, and neither --no-ff nor --rebase is.
+      3. the working tree is clean (no staged, unstaged or untracked changes).
+      4. HEAD is 0 commits ahead of what is being fast-forwarded onto.
+
+    (4) resolves the comparison ref the same way git will: the branch's
+    configured upstream if there is one, else an explicit `<remote> <branch>`
+    pair in the command. If neither resolves, it is unverifiable -> False."""
+    if verb not in ("pull", "merge"):
+        return False
+    if not _FF_ONLY_RE.search(stripped) or _FF_DISQUALIFY_RE.search(stripped):
+        return False
+
+    # (3) clean tree. --porcelain is empty iff nothing is staged/modified/untracked.
+    status = _git_out(root, "status", "--porcelain")
+    if status is None or status != "":
+        return False
+
+    # (4) zero ahead. Try the configured upstream first.
+    ahead = _git_out(root, "rev-list", "--count", "@{upstream}..HEAD")
+    if ahead is None:
+        # No upstream configured — fall back to an explicit `<remote> <branch>`
+        # in the command itself (`git pull --ff-only origin main`).
+        m = re.search(r"(?<![\w-])(?:pull|merge)(?:\s+--?[\w-]+)*\s+"
+                      r"([\w.\-/]+)\s+([\w.\-/]+)(?!\S)", stripped)
+        if not m:
+            return False
+        ahead = _git_out(root, "rev-list", "--count",
+                         "%s/%s..HEAD" % (m.group(1), m.group(2)))
+    if ahead is None:
+        return False
+    try:
+        return int(ahead) == 0
+    except ValueError:
+        return False
+
+
 def _norm_hookspath(v):
     """F10 — identical normalization to session_start.py's own _norm_hp(), kept
     in lockstep deliberately: this hook decides whether to BLOCK a hooksPath
@@ -866,8 +951,9 @@ def main():
             # operation and must stay allowed, or this hook would trap a session
             # inside the exact stuck state it exists to prevent.
             m9 = REBASE_MERGE_PULL_RE.search(stripped9)
-            if m9 and not re.search(r"--(abort|continue|skip)\b",
-                                     stripped9[m9.end():m9.end() + 40]):
+            if (m9 and not re.search(r"--(abort|continue|skip)\b",
+                                     stripped9[m9.end():m9.end() + 40])
+                    and not _f9_safe_ff(stripped9, m9.group(1), root9)):
                 verb9 = m9.group(1)
                 block(
                     f"BLOCKED by pre_tool_use (F9, rung 4).\n\n"
@@ -886,6 +972,14 @@ def main():
                     f"    git push origin main\n\n"
                     f"  Already mid-{verb9}, trying to get OUT of a stuck state?\n"
                     f"  --abort / --continue / --skip are allowed through.\n\n"
+                    f"  Just trying to bring this checkout CURRENT? A pure\n"
+                    f"  fast-forward is allowed, because git itself refuses it\n"
+                    f"  unless it is lossless:\n"
+                    f"    git pull --ff-only origin main\n"
+                    f"  It must be a real fast-forward AND this tree must be clean\n"
+                    f"  AND 0 commits ahead — all three checked live, and anything\n"
+                    f"  unverifiable lands you back here. `--no-ff` / `--rebase`\n"
+                    f"  alongside it disqualify it.\n\n"
                     f"  system/failures.md -> F9. rules/agentic-coding.md.\n"
                 )
 

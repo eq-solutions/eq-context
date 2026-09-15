@@ -237,6 +237,107 @@ te("PowerShell bare commit in the SHARED checkout -> BLOCK (tool matching)",
    {"tool_name": "PowerShell", "tool_input": {"command": "git commit -m x"}, "cwd": f9_repo}, 2, SAME)
 
 
+def f9_ff_fixture_repo(suffix, ahead=0, dirty=False, upstream=True):
+    """A clone with a REAL origin, for F9(b)'s --ff-only carve-out (2026-09-15).
+
+    The carve-out's conditions are checked live against git, not parsed out of
+    the command, so these have to be genuine repo states: a real remote with a
+    real commit the clone hasn't got (so a fast-forward is actually available),
+    plus whichever disqualifying state the case is proving.
+      ahead>0    -> local commits the remote doesn't have (not a fast-forward)
+      dirty      -> an uncommitted change in the working tree
+      upstream=0 -> branch with no configured upstream, to prove the
+                    unverifiable case fails CLOSED rather than being waved through
+    """
+    base = os.path.join(ROOT, ".tmp_f9_ff" + suffix)
+    _rmtree_retry(base)
+    remote, work = base + "-remote.git", base
+    os.makedirs(work)
+    subprocess.run(["git", "init", "-q", "--bare", "-b", "main", remote],
+                   capture_output=True, text=True)
+    seed = base + "-seed"
+    _rmtree_retry(seed)
+    os.makedirs(seed)
+    rs = lambda *a: subprocess.run(["git", "-C", seed, *a], capture_output=True, text=True)
+    rs("init", "-q", "-b", "main")
+    rs("config", "user.email", "test@example.com")
+    rs("config", "user.name", "test")
+    with open(os.path.join(seed, "seed.md"), "w") as fh:
+        fh.write("one\n")
+    rs("add", "-A"); rs("commit", "-q", "-m", "one")
+    rs("remote", "add", "origin", remote); rs("push", "-q", "origin", "main")
+
+    _rmtree_retry(work)
+    subprocess.run(["git", "clone", "-q", remote, work], capture_output=True, text=True)
+    rw = lambda *a: subprocess.run(["git", "-C", work, *a], capture_output=True, text=True)
+    rw("config", "user.email", "test@example.com")
+    rw("config", "user.name", "test")
+
+    # A second commit on the remote -> the clone is genuinely behind, so a
+    # fast-forward is a real, available operation rather than a no-op.
+    with open(os.path.join(seed, "seed.md"), "w") as fh:
+        fh.write("one\ntwo\n")
+    rs("commit", "-q", "-am", "two"); rs("push", "-q", "origin", "main")
+    rw("fetch", "-q", "origin")
+
+    for i in range(ahead):
+        with open(os.path.join(work, "local%d.md" % i), "w") as fh:
+            fh.write("local\n")
+        rw("add", "-A"); rw("commit", "-q", "-m", "local %d" % i)
+    if dirty:
+        with open(os.path.join(work, "seed.md"), "a") as fh:
+            fh.write("uncommitted\n")
+    if not upstream:
+        rw("checkout", "-q", "-b", "detached-topic")   # new branch, no upstream set
+    _rmtree_retry(seed)
+    return work
+
+
+print("=== F9(b) --ff-only carve-out - a provably-lossless sync is allowed, everything else still blocks ===")
+ff_clean = f9_ff_fixture_repo("-clean")
+FF = {"EQ_CONTEXT": ff_clean, "EQ_FORCE_GUARD": "0"}
+te("`git pull --ff-only origin main` on a clean, 0-ahead tree -> allowed",
+   bash_at("git pull --ff-only origin main", ff_clean), 0, FF)
+te("`git merge --ff-only origin/main` likewise -> allowed",
+   bash_at("git merge --ff-only origin/main", ff_clean), 0, FF)
+te("plain `git pull` in the same repo -> still BLOCK (carve-out needs --ff-only)",
+   bash_at("git pull", ff_clean), 2, FF)
+te("`git pull --ff-only --rebase` -> BLOCK (--rebase wins over --ff-only)",
+   bash_at("git pull --ff-only --rebase origin main", ff_clean), 2, FF)
+te("`git merge --ff-only --no-ff origin/main` -> BLOCK (contradictory)",
+   bash_at("git merge --ff-only --no-ff origin/main", ff_clean), 2, FF)
+te("`git rebase --ff-only origin/main` -> BLOCK (rebase is never eligible)",
+   bash_at("git rebase --ff-only origin/main", ff_clean), 2, FF)
+te("`--ff-only` appearing inside a quoted string only -> BLOCK (not a real flag)",
+   bash_at('git pull -m "see --ff-only note" origin main', ff_clean), 2, FF)
+
+ff_dirty = f9_ff_fixture_repo("-dirty", dirty=True)
+te("`git pull --ff-only` with an UNCOMMITTED change -> BLOCK (dirty tree)",
+   bash_at("git pull --ff-only origin main", ff_dirty),
+   2, {"EQ_CONTEXT": ff_dirty, "EQ_FORCE_GUARD": "0"})
+
+ff_ahead = f9_ff_fixture_repo("-ahead", ahead=1)
+te("`git pull --ff-only` while 1 commit AHEAD -> BLOCK (not lossless)",
+   bash_at("git pull --ff-only origin main", ff_ahead),
+   2, {"EQ_CONTEXT": ff_ahead, "EQ_FORCE_GUARD": "0"})
+
+ff_noup = f9_ff_fixture_repo("-noupstream", upstream=False)
+te("`git pull --ff-only` with no upstream and no explicit ref -> BLOCK (fails CLOSED)",
+   bash_at("git pull --ff-only", ff_noup),
+   2, {"EQ_CONTEXT": ff_noup, "EQ_FORCE_GUARD": "0"})
+te("same repo, but naming `origin main` explicitly -> allowed (ref resolvable)",
+   bash_at("git pull --ff-only origin main", ff_noup),
+   0, {"EQ_CONTEXT": ff_noup, "EQ_FORCE_GUARD": "0"})
+
+te("`git pull --ff-only` OUTSIDE the shared checkout -> allowed, F9 dormant",
+   bash_at("git pull --ff-only origin main", ff_clean), 0,
+   {"EQ_CONTEXT": ff_clean + "-not-the-shared-one", "EQ_FORCE_GUARD": "0"})
+
+for _d in (ff_clean, ff_dirty, ff_ahead, ff_noup):
+    _rmtree_retry(_d)
+    _rmtree_retry(_d + "-remote.git")
+
+
 def f9_merge_conflict_repo():
     """A real repo with a genuine in-progress merge (.git/MERGE_HEAD present) --
     two branches touching the same line of the same file, merged, conflicting,
