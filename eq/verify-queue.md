@@ -1,7 +1,7 @@
 ---
 title: EQ Tier — Verify Queue
 owner: Royce Milmlow
-last_updated: 2026-09-12
+last_updated: 2026-09-15
 scope: Items whose only remaining blocker is your own live sign-in/click-through — the underlying work is already built, merged, and (unless the line itself says otherwise) live. Moved here from eq/pending.md by scripts/rotate_pending.py once a session's real build work is fully done, so a stale "click through to confirm" line no longer pins a whole finished write-up in the live pending doc.
 read_priority: high
 status: live
@@ -2641,5 +2641,11 @@ a bug rather than just deleting the line.
 **From:** eq-shell: "My documents" nav badge closes the signer-notification gap, merged, live (PR #1825, 2026-09-09)
 
 - [ ] **Live click-test (2026-09-09) — page verified correct; badge widget itself not visually confirmable with the accounts available.** Royce's own SKS account is Manager-tier (has `documents.assign`), so the nav badge correctly does not render for him — confirmed absent from the sidebar, consistent with the tier gate working as designed, not a defect. Navigating directly to `/sks/admin/documents/mine` (not linked in his nav, but not route-blocked either) shows his own real data correctly: 1 document (SWMS-005), status SIGNED, 0 outstanding — so there's nothing to alert on for his account right now even if the badge were visible to him. Confirming the *positive* case (badge rendering with a real nonzero count) needs either a genuine Viewer-tier account or a moment when a Viewer-tier person has something outstanding — neither available this pass.
+
+---
+
+**From:** eq-shell: EntityBrowserPage/entity-rows — raw UUIDs replaced with real names ([PR #1914](https://github.com/eq-solutions/eq-shell/pull/1914), merged + live)
+
+- [ ] **Live click-through not done** — verified via `tsc -b` (project-wide) + eslint + all 5 required CI checks on the merged commit, but no real Supabase tenant credentials were available in this session to visually confirm the resolved names render correctly against real staff/site data. Worth a quick look once convenient. _(added 2026-09-15)_
 
 ---

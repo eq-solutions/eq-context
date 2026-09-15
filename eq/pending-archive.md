@@ -10716,3 +10716,70 @@ Investigated whether `on_auth_users_insert_dedup` (EQ-SHELL-11's phone-dedup gua
 - **Data-side re-checked 2026-09-07** (a separate session, a different bug): both workers' licence photos/documents came back fully populated and complete — confirmed live while re-verifying the unrelated 2026-08-25/26 photo-promotion fix (`eq_cards_claim_invite`/migration `0161` + eq-shell PRs #1517/#1519/#1603 — see `eq/pending/cross-repo.md`'s 2026-09-07 entry). Rules out a data gap as the explanation if either worker is still hitting this section's "Sign in again" symptom — the stale-session question itself is untouched and remains exactly as unconfirmed as the row above.
 
 ---
+
+## eq-shell: sidebar/nav had no tablet tier — the same cross-suite iPad audit that fixed eq-service's embedded nav, extended to all 4 MobileTabBar consumers, merged, live (2026-09-08) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: full security/quality review; issue tracker reconciled; 4 fixes shipped+live (2026-09-07) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: WorkerHome was missing the Service tile and never showed the tenant's logo — found via screenshot review, fixed, merged, live (2026-08-19) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: 4 places were showing worker or contact details to people who shouldn't see them — fixed, PR open, waiting on your go to ship (2026-08-16) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Shell Conversations built end-to-end — logging, permission-locked, resourcing dashboard, draft org chart, team assignment (2026-08-11 → 2026-08-13) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: self-join's "double sign-in" for Cards root-caused and fixed — worker-add nav trimmed further too (2026-08-03) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: fixed 8 pre-existing react-hooks/refs eslint errors in the iframe pre-warm keeper (2026-08-03) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Richard Brown's mobile crash fixed, then a simplified mobile nav for supervisors driven by real usage data (2026-07-31) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: Staff page edits silently reverting overnight — root-caused and fixed, deployed (2026-07-28) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EQ Ops quote-detail panel simplified for real-world use, then the Coupa PO import tool rebuilt from scratch against the real export (2026-07-23 → 2026-07-24) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## Core dashboard rebuilt — replaced the passive AI-brief-only home with three permission-gated live signal bands (2026-07-17, MERGED + LIVE) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: cross-customer contacts wired into EQ Ops quoting, dropdown sort fixed, bottom bulk bar added (2026-08-20) (rotated 2026-09-15 — open items remain in eq-shell.md)
+
+
+---
+
+## eq-shell: EntityBrowserPage/entity-rows — raw UUIDs replaced with real names ([PR #1914](https://github.com/eq-solutions/eq-shell/pull/1914), merged + live) (rotated 2026-09-15)
+
+
+A merge-readiness audit run before merging (Royce's own standing rule, invoked ahead of his explicit "merge it into main") caught a real gap in the first version of the fix: `site_id` name resolution wasn't gated behind `entity.view`, so labour_hire/subcontractor (who hold the broader `field.view` but are explicitly excluded from `entity.view`) could have gotten real site names via `schedule`/`prestart`/`toolbox_talk` — a back door around the same gate that already protects site names everywhere else. Fixed in the same PR before merge (`requiresPerm: 'entity.view'` added to the site_id lookup); `staff_id` was unaffected — its existing per-entity gates already scope correctly. Full detail: `sessions/2026-09-15.md`.
+
+---

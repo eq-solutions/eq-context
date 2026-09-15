@@ -1773,14 +1773,6 @@ PR #1736 (auth-stall fix + 2 more bugs found on review) merged and live; the one
 
 ---
 
-## eq-shell: EntityBrowserPage/entity-rows — raw UUIDs replaced with real names ([PR #1914](https://github.com/eq-solutions/eq-shell/pull/1914), merged + live)
-
-- [ ] **Live click-through not done** — verified via `tsc -b` (project-wide) + eslint + all 5 required CI checks on the merged commit, but no real Supabase tenant credentials were available in this session to visually confirm the resolved names render correctly against real staff/site data. Worth a quick look once convenient. _(added 2026-09-15)_
-
-A merge-readiness audit run before merging (Royce's own standing rule, invoked ahead of his explicit "merge it into main") caught a real gap in the first version of the fix: `site_id` name resolution wasn't gated behind `entity.view`, so labour_hire/subcontractor (who hold the broader `field.view` but are explicitly excluded from `entity.view`) could have gotten real site names via `schedule`/`prestart`/`toolbox_talk` — a back door around the same gate that already protects site names everywhere else. Fixed in the same PR before merge (`requiresPerm: 'entity.view'` added to the site_id lookup); `staff_id` was unaffected — its existing per-entity gates already scope correctly. Full detail: `sessions/2026-09-15.md`.
-
----
-
 ## eq-shell + eq-cards + eq-field: identity & tenant-ambiguity register built, ~50 sites catalogued, 8 decisions settled (2026-09-15)
 
 *Started from "why did identity_recycle_review miss a real collision" (one incident), widened on Royce's own call into a suite-wide sweep: every place across eq-shell/eq-cards/eq-field that decides "which person is this" or "which tenant is this" under ambiguity, and what it does when it can't tell. New durable doc: `eq/identity/AMBIGUITY-REGISTER.md`. This session ran concurrently with several others working the same file and the same live database — the register's own text records two near-misses that self-corrected (a `plan:true` dispatch that looked like an apply but changed nothing; a "vestigial, safe to delete" call on the intake surface that was wrong and was withdrawn before anything was actually dropped) and one real production risk that turned out to already be fixed by a concurrent session before it could bite (an RPC a deployed function depended on, verified live rather than assumed).*
