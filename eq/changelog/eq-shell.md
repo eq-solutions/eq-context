@@ -9,6 +9,11 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-15 (PR #1924 MERGED — control-plane migration runner: per-file error isolation)
+- `scripts/migrate-control-plane.mjs`'s real-apply loop no longer aborts opaquely on a single file's SQL error. Extracted into `applyAllMigrations()` (new `scripts/_migrate-control-plane-apply.mjs`, split out so it's unit-testable without the parent script's top-level CLI/env/filesystem side effects) — every migration now classifies as applied/skipped/failed/notAttempted; fail-stop semantics unchanged (Royce's explicit design call, confirmed before implementation).
+- Fixes the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around. 6 new unit tests mock `_mgmt.mjs`, including the PR #1918 scenario itself; `control-plane-migrate.yml` was not dispatched at any point, per explicit instruction. `pnpm test`'s glob now covers `scripts/**/*.test.mjs` (previously uncovered).
+- CI green (typecheck/test/lint 657/659 pass, 2 pre-existing skips; schema-drift, gitleaks, function-grants, migration-ledger-hygiene, deploy-preview all pass), merged (`2a129238`) on Royce's "merge it once CI's green."
+
 ## 2026-09-15 (PR #1915 MERGED + LIVE — control-plane trigger drift check + auth.users dedup triggers backfilled)
 - `scripts/check-control-plane-drift.mjs` gained a `REQUIRED_TRIGGERS` check — verifies a curated allowlist of control-plane triggers exist and are enabled (`tgenabled='O'`) on live jvkn, gated under `--strict`. Starts with the two `auth.users` triggers behind EQ-SHELL-11's phone-dedup fix (`on_auth_users_insert_dedup`, `link_pending_invites_on_confirm`).
 - `supabase/CONTROL-PLANE-LEDGER.md` + a new migration source both triggers' `CREATE TRIGGER` definitions byte-for-byte for the first time — confirmed live and enabled, not an incident.

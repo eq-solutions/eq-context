@@ -15,6 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-shell: Control-plane migration runner — per-file error isolation shipped and merged (2026-09-15)
+
+`scripts/migrate-control-plane.mjs`'s real-apply loop wrapped the whole sequential migration batch in one outer `try`/`catch` — a SQL error on any single file aborted the run with no record distinguishing "already applied" from "failed" from "never reached." This is the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around (see that PR's own body). Fixed via `applyAllMigrations()`, split into a new `scripts/_migrate-control-plane-apply.mjs` for testability — every migration now lands in exactly one of applied/skipped/failed/notAttempted, fail-stop (not continue-on-error — Royce's explicit design call, made before any code was written; migrations have no dependency graph beyond sequential file order).
+
+[eq-shell#1924](https://github.com/eq-solutions/eq-shell/pull/1924) — 6 new unit tests (mocking `_mgmt.mjs`, no live jvkn access; `control-plane-migrate.yml` deliberately never dispatched, per explicit instruction), CI green (typecheck/test/lint, schema-drift, gitleaks, function-grants, migration-ledger-hygiene, deploy-preview), merged (`2a129238`) on Royce's "merge it once CI's green."
+
+**Notes:**
+- The 7-file ledger-reconciliation gap PR #1918 separately flagged (already-applied files missing a ledger row on `shell_control._eq_control_plane_migrations`) is untouched by this fix — stays its own open item, not duplicated here.
+- `scripts/**/*.test.mjs` added to `pnpm test`'s glob — `scripts/` had no test coverage at all before this.
+- Found the shared `C:\Projects\eq-shell` checkout mid-use by another concurrent session (uncommitted records-search work — see the Records navigation entry below, same checkout) at brief time — isolated into a dedicated worktree instead.
+
+---
+
 ## eq-shell: Records navigation redesign — mobile dead-link bug fixed + desktop command palette built on one shared search engine; live browser verification never obtained this session (2026-09-14 → 09-15)
 *Started from Royce flagging that EQ Core's "records buttons" show inconsistent, meaningless info. Live-code review (not docs) found 4 separate hardcoded lists of "what a record is" (`ENTITY_VIEW`, `RECORD_TABS`, `SIDEBAR_RECORDS`, `RECORD_DEFS`), 5+ different UI implementations, raw truncated UUIDs rendered as table data, and zero visible search entry point anywhere in the app (⌘K/`/` only, undiscoverable). Gave Royce a 3-option Claude Design prompt; he returned mockups for Option 1 ("Find anything" — search replaces the record-type menu). Steelmanned, then built.*
 
