@@ -62,7 +62,6 @@ _If this file is >48h old, the cron is broken._
 
 **eq-cards:**
 - #364 fix(cards): stop a null-expiry OCR result crashing a worker's whole wallet
-- #363 fix(cards): stamp origin_org_id on submit-access-request's new worker rows
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
@@ -92,7 +91,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | building | 2026-09-15 |
+| eq-shell | ready | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
