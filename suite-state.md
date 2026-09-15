@@ -61,13 +61,15 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-15)
 
 **eq-cards:**
+- #364 fix(cards): stop a null-expiry OCR result crashing a worker's whole wallet
+- #363 fix(cards): stamp origin_org_id on submit-access-request's new worker rows
 - #362 fix(sync): require a verified SKS membership before defaulting an unstamped worker there
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
+- #1935 fix(invite): refuse when the email belongs to a claimed worker
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -78,7 +80,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? in_progress |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -88,7 +90,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-15 |
+    | eq-service | ready | 2026-09-15 |
 | eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
