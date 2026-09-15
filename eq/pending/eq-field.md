@@ -25,11 +25,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-field: Aditi (Madagins) phantom SKS staff row — CLOSED: exact mechanism found, fixed, confirmed live (2026-09-15)
-
-- [ ] **`eq_cards_submit_access_request`'s premature-attribution gap — deliberately parked, still real.** A pending (or later-declined) application to any org still creates an unstamped `public.workers` row via `eq_cards_link_or_create_worker`, which `workers-canonical-sync` can still default to SKS on the rare path where that matters. Not touched by either #360 or #1930 on purpose — stamping at submission time would be premature attribution (the request can still be declined), a genuinely harder design call than a fill-if-missing fix. Same root question as `resolveTenantRoute()`'s own SKS-default, which stays correct and untouched for Nelson Sareto/Conor Horgan's legitimate case. _(added 2026-09-15)_
-
-**Notes:** Full evidentiary trail (every live query, both disconfirmed theories, the exact deployed source reads, the eq-shell PR #1930 fix + live commit-ancestry verification) lives in eq-field's own Claude memory, `incident_madagins_demo_candidates_in_sks_roster.md` — canonical and continuously updated across today's sessions; this entry is the pointer, not a duplicate. Session detail: `sessions/2026-09-15.md`.
 
 ---
 

@@ -15,26 +15,6 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell + eq-cards: Madagins/Aditi cross-tenant incident — CLOSED, both producer-path gaps fixed (2026-09-15)
-
-Root cause (confirmed, ~5 sessions converged on it independently): `public.workers` rows written without a stamped `origin_org_id` get defaulted straight to SKS by `workers-canonical-sync`'s `resolveTenantRoute()` — deliberate, correct behavior for genuine SKS-adjacent labour hire (Nelson Sareto, Conor Horgan), wrong for anyone else. Not a JWT/auth-hook bug — both earlier theories (`field_people_iud`, `custom_access_token_hook`/PR #1925) are dead ends, disconfirmed by direct live-data checks; don't re-open either.
-
-**Shipped, applied to jvkn, and merged:** [eq-shell PR #1925](https://github.com/eq-solutions/eq-shell/pull/1925) (visibility hardening on the now-disconfirmed phone-fallback theory — real gap, just not this incident's cause), [eq-cards PR #360](https://github.com/eq-solutions/eq-cards/pull/360) (stamps `origin_org_id` in the 3 Postgres RPCs that had a confirmed org in scope but never wrote it: `eq_cards_admin_upsert_worker`, `eq_cards_claim_invite`, `eq_cards_respond_to_access_request`), and [eq-shell PR #1930](https://github.com/eq-solutions/eq-shell/pull/1930) (`shell-join-tenant.ts` — Aditi's own actual self-join path, both write branches). All live-verified post-apply — zero drift, grants intact — and #1930 additionally confirmed genuinely live on core.eq.solutions by commit-ancestry check.
-
-**Correction (this close):** an earlier version of this section said `shell-join-tenant.ts` was still unfixed and Aditi's own `workers` row (`bc573ba3-4f02-4a35-a1fe-92f6ae89f269`) still showed `origin_org_id: null` — stale as of a few minutes later the same session: PR #1930 closes exactly that gap for every *future* self-join. Don't re-open it.
-
-**Backfilled (this close):** #1930 only stops new rows landing unstamped — it doesn't touch rows that predate it, and Aditi's own `workers` row was one of them. Confirmed live it was still `origin_org_id: NULL` after #1930 merged; Royce approved a one-row fill (`WHERE origin_org_id IS NULL`, so it can't clobber anything), now stamped to Madagins's real org id (`dd5d8622-9688-4dea-b5ed-ca42fc18487c`). Caught and corrected a near-miss first: Madagins has 3 different UUIDs across `public.organisations`/`shell_control.tenants`/`public.tenants` (matches the live RATCHET F18 warning) — resolved by replicating `shell-join-tenant.ts`'s actual lookup chain instead of guessing from a name match. Full detail in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`. **The incident is now fully closed** — nothing about Aditi's specific case remains open, only the 2 general design questions below.
-
-**Deferred (genuinely still open):**
-- [ ] **`resolveTenantRoute()`'s default-to-SKS-when-unstamped behavior itself** — the harder, deliberately parked design question: no existing signal distinguishes "should've been stamped but wasn't" from "genuinely SKS-adjacent." _(added 2026-09-15)_
-- [ ] **`eq_cards_submit_access_request` creates an unstamped `workers` row at submission time**, before any approval — same downstream symptom, deliberately left unfixed by #360 (stamping pre-approval would be premature attribution). _(added 2026-09-15)_
-- [ ] **The `users_email_unique` constraint violation at 23:23:34.414 UTC**, 0.24s before Aditi's identity row was created — flagged early as a live clue, never chased to a firm conclusion. Possibly moot now the mechanism is confirmed (one session's note suggests it's this same function's documented retry-without-email path, not a separate bug) — worth a two-minute sanity check before fully writing off. _(added 2026-09-15)_
-
-**Notes:**
-- Full technical trail — every query, every session's convergence, the disconfirmed theories' evidence — lives in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`. Read that before re-deriving any of this.
-
----
-
 ## eq-shell: Control-plane migration runner — per-file error isolation shipped and merged (2026-09-15)
 
 `scripts/migrate-control-plane.mjs`'s real-apply loop wrapped the whole sequential migration batch in one outer `try`/`catch` — a SQL error on any single file aborted the run with no record distinguishing "already applied" from "failed" from "never reached." This is the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around (see that PR's own body). Fixed via `applyAllMigrations()`, split into a new `scripts/_migrate-control-plane-apply.mjs` for testability — every migration now lands in exactly one of applied/skipped/failed/notAttempted, fail-stop (not continue-on-error — Royce's explicit design call, made before any code was written; migrations have no dependency graph beyond sequential file order).

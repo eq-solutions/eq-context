@@ -29,6 +29,31 @@ section's done items live here; its open items stayed in `eq/pending.md`.
 
 ---
 
+## eq-field: Aditi (Madagins) phantom SKS staff row — CLOSED: exact mechanism found, fixed, confirmed live (rotated 2026-09-15)
+
+The premature-attribution gap in `eq_cards_submit_access_request` this section's own open item pointed at is now closed too — see the eq-shell + eq-cards Madagins/Aditi archive entry directly below for the full cross-repo picture. Nothing eq-field-specific left open on this incident.
+
+---
+
+## eq-shell + eq-cards: Madagins/Aditi cross-tenant incident — CLOSED, both producer-path gaps fixed (rotated 2026-09-15)
+
+Root cause (confirmed, ~5 sessions converged on it independently): `public.workers` rows written without a stamped `origin_org_id` get defaulted straight to SKS by `workers-canonical-sync`'s `resolveTenantRoute()` — deliberate, correct behavior for genuine SKS-adjacent labour hire (Nelson Sareto, Conor Horgan), wrong for anyone else. Not a JWT/auth-hook bug — both earlier theories (`field_people_iud`, `custom_access_token_hook`/PR #1925) are dead ends, disconfirmed by direct live-data checks.
+
+**Shipped, applied to jvkn, and merged — 4 layers, not 2:** [eq-shell PR #1925](https://github.com/eq-solutions/eq-shell/pull/1925) (visibility hardening on the disconfirmed phone-fallback theory — real gap, just not this incident's cause), [eq-cards PR #360](https://github.com/eq-solutions/eq-cards/pull/360) (stamps `origin_org_id` in 3 Postgres RPCs: `eq_cards_admin_upsert_worker`, `eq_cards_claim_invite`, `eq_cards_respond_to_access_request`), [eq-shell PR #1930](https://github.com/eq-solutions/eq-shell/pull/1930) (`shell-join-tenant.ts` — Aditi's own actual self-join path, both write branches), [eq-cards PR #363](https://github.com/eq-solutions/eq-cards/pull/363) (`eq_cards_submit_access_request`, the last deliberately-parked producer path — migration `0174`, renumbered from a same-day `0173` collision), and [eq-cards PR #362](https://github.com/eq-solutions/eq-cards/pull/362) (the general fix: `resolveTenantRoute()` now refuses the SKS default for any logged-in worker without a verified active membership there — closes the *class*, not just known instances). All live-verified post-apply, not just merged: zero drift on every migration, grants intact throughout, #1930 confirmed live via commit-ancestry, #362's Edge Function deploy confirmed via its own live `updated_at`/version bump.
+
+**Backfilled:** Aditi's own pre-existing `public.workers` row (`bc573ba3-4f02-4a35-a1fe-92f6ae89f269`) — #1930 only stops *new* rows landing unstamped, so her row (which predated the fix) needed a one-time fill (`WHERE origin_org_id IS NULL`, non-clobbering) to Madagins's real org id (`dd5d8622-9688-4dea-b5ed-ca42fc18487c`). Two other, unrelated dormant rows found the same day (a declined `eq` applicant, an old pending Madagins request under a different identity) were deliberately left untouched — backfilling the declined one specifically would make that person newly, unrequested-ly visible on a roster that rejected them; flagged to Royce, not assumed.
+
+**All 3 deferred design questions closed the same day:**
+- `resolveTenantRoute()`'s default-to-SKS-when-unstamped behavior — closed by #362 (verified-membership gate), not removed — the bulk-import population still gets the old unconditional default, deliberately, confirmed safe (17 of 19 checked already inactive).
+- `eq_cards_submit_access_request`'s submission-time unstamped write — closed by #363.
+- The `users_email_unique` constraint violation at 23:23:34.414 UTC — confirmed benign: `shell-join-tenant.ts`'s own documented retry-without-email path (an applicant's real email collided with their own pre-existing identity's row), not a separate bug. Read the actual source to confirm, not inferred.
+
+**Notes:**
+- Full technical trail — every query, every session's convergence, the disconfirmed theories' evidence, the final live-verification steps — lives in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`. Read that before re-deriving any of this if it ever resurfaces.
+- An extremely high-concurrency incident throughout — at least 5-6 sessions touched it independently over a few hours, including two genuine same-day migration-number collisions (`0173` claimed twice) and multiple branch-behind races on every PR. Routine by the end, not a sign anything was wrong.
+
+---
+
 ## eq-service: PR #845 fully landed (4 more commits: eq_role claim, corrected 2 tests) + PR #853 merged (3-layer trigger fix) — main fully green across every check (rotated 2026-09-15)
 *Direct continuation of the PR #849/#845/#851 entry (still open at time of rotation, see `eq-solves-service.md`). Rebasing #845 alone wasn't enough — CI stayed red through 4 more rounds, each revealing a genuinely new, unrelated layer, not a retry of the same problem.*
 
