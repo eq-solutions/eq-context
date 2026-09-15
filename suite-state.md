@@ -65,7 +65,7 @@ _If this file is >48h old, the cron is broken._
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1925 fix(auth): log custom_access_token_hook phone-fallback matches for review
+- #1927 feat(identity): watch the two review queues nothing was reading
 - #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -87,7 +87,7 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-15 |
+    | eq-service | ready | 2026-09-15 |
 | eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-14 |
 
