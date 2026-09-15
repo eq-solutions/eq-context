@@ -79,10 +79,6 @@ different naming schemes, illustrating exactly the problem F16 fixes:
 
 ## Active (do not touch)
 
-`C:\Projects\eq-shell\.claude\worktrees\invite-precheck-audit-log (eq-shell)` | `fix/invite-precheck-audit-log` | session 040c535e — audit-logs the two pre-check "already has an account" refusals in `create-worker-invite.ts` | 2026-09-15 | active — [PR #1940](https://github.com/eq-solutions/eq-shell/pull/1940) OPEN, green, mergeable. **Was #1938**: it targeted #1935's branch, and GitHub force-closed it when that branch was deleted on merge — a closed PR whose base ref is gone can be neither reopened nor retargeted, so it needed a rebase onto `main` and a new number. Stacked PRs in eq-shell also get **no CI at all** (`ci.yml` gates on `branches: [main]`). Don't stack here.
-
-`C:\Projects\eq-shell\.claude\worktrees\ledger-doc-ci-path (eq-shell)` | `docs/control-plane-ledger-ci-path` | session 040c535e — corrects CONTROL-PLANE-LEDGER.md's stale "no CI apply path" header and files the `2026_09_15d` row | 2026-09-15 | active — [PR #1942](https://github.com/eq-solutions/eq-shell/pull/1942) OPEN. Remove once merged.
-
 `C:\Projects\eq-field\.claude\worktrees\documents-to-sign-feature-3035a3 (eq-field)` | `claude/apprentices-tab-security-603749` (folder name is now stale — was detached HEAD when first logged) | re-checked live minutes after first being logged here, already reclaimed by another session for unrelated work | 2026-08-28 | **NOT TOUCHED** — no longer the mystery-commit case originally flagged (that HEAD is gone, replaced by real work on a real branch). Ordinary active work now, same as the two rows below — logged here only because this file's own age-out sweep hasn't run yet.
 
 `C:\Projects\eq-field\.claude\worktrees\site-contact-mapping-fix (eq-field)` | `claude/site-contact-mapping-fix` | found live during the same audit (owning session unknown) — clean tree, branch has since taken a further commit | 2026-08-28 | **NOT TOUCHED** — [PR #821](https://github.com/eq-solutions/eq-field/pull/821) OPEN, not merged (v3.5.592 — site contact info silently dead since v3.5.551). Active work.
