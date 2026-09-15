@@ -143,7 +143,7 @@ than falling back to Origin or body. This is the shape the rest should match.
 
 | Site | Repo | Tie-break | Verified |
 |---|---|---|---|
-| `eq_cards_find_or_create_worker_for_invite` | eq-cards | `ORDER BY (w.user_id IS NOT NULL) DESC` — **prefers an already-claimed worker**, so an invite can attach to someone else's account. Writes no flag row | **LIVE** |
+| `eq_cards_find_or_create_worker_for_invite` | eq-cards | `ORDER BY (w.user_id IS NOT NULL) DESC` — **prefers an already-claimed worker**, so an invite can attach to someone else's account. Writes no flag row | **OPEN** — holds on >1 via [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361); the refusal is logged as `invite.worker_match_ambiguous` by [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934). Both awaiting Royce. Not user-reachable (`service_role`-only since `0136`) — an admin-flow correctness bug, not a security hole |
 | `eq_cards_link_or_create_worker` | eq-cards | Ranks by credential count then `created_at`, `LIMIT 1` | **LIVE** (does write `identity_collision_flags`) |
 | `roster-match.ts` `findRosterMatch` | eq-shell | `matches.find(active) ?? matches[0]` | SRC |
 | `accept-invite.ts` ~269 | eq-shell | `phoneStubs?.[0]` — first of N phone-variant matches, no ambiguity check | SRC |
@@ -255,11 +255,37 @@ touched, or when they cause an incident — not in a sweep.
 | # | Decision | Royce's call | State |
 |---|---|---|---|
 | 1 | `_eq_intake_check_tenant_match` fails open | **Check callers first, then fix** | Checked: **zero callers** — fix is inert on its own. Real target is `eq_intake_find_template_by_signature` (see Shape 1 note). Fix + wiring pending |
-| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match** | Pending. First application of staged rule 2. Needs a design call: there is no review queue for this case today, so "ask" has to mean something concrete to the admin |
+| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match** | **Built, awaiting merge.** [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) raises on >1; [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934) catches it, writes `invite.worker_match_ambiguous` to `shell_control.audit_log` and returns an actionable 409. Design call resolved — no new queue. See the note below |
 | 3 | The `coalesce`-to-own-tenant fault, present in every tenant's templated copy | **Roll out company by company** | Relayed to `task_9b876f68`, which already owns it. Not duplicated here |
 | 4 | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) — `custom_access_token_hook` phone-fallback logging | **Merge** | Merging on green; all checks pass except the Netlify preview |
 | 5 | Should admin-invite capture a phone number? | **Make it required** | Pending — `invite-user.ts` plus the admin invite form |
 | 6 | Adopt the policy | **Adopt rules 1/3/4 now, stage rule 2** | Done — see the Policy section above |
+
+**Decision 2 — what "ask" turned out to mean.** The durable record cannot be
+written by the function. `RAISE` aborts the RPC's transaction, so any flag row the
+function inserted would roll back with the refusal that caused it, and jvkn has no
+dblink or autonomous-transaction path around that. So the function raises and the
+*caller* logs, on its own service client in a separate transaction — the same shape
+`shell-join-tenant.ts` already uses for `login.join_register_rejected`, and the same
+reason `writeAuditLog` deliberately bypasses `public.eq_write_audit_log` ("silent drop
+issues"). `shell_control.identity_recycle_review` was rejected for the reasons in the
+Shape 6 notes: `new_user_id`/`source_user_id` are both NOT NULL with no auth identity
+in existence at invite time, and `eq_list_recycle_reviews()` INNER JOINs
+`shell_control.users` on `source_user_id`, so a forced row would never render on the
+Number Reviews page.
+
+Sequencing is eq-shell first (Royce, 2026-09-15): the catch is inert until the
+migration applies, so shipping it first means no refusal is ever unlogged. Merging
+eq-cards does **not** apply the migration — `jvkn-control-plane-apply.yml` is
+`workflow_dispatch`-only; verify against the live DB, not a green check.
+
+**Left open deliberately — needs Royce.** Only the `>1` case is closed. *Exactly one
+match that is already claimed by a different user* still links silently. That
+behaviour is deliberate in `0073` (a multi-org tradie must reuse their real row), and
+refusing it would block legitimate re-invites of someone who already has an account —
+a different change with a different blast radius. Partly mitigated already:
+`eq_cards_worker_claimed_by_phone` (2026_09_09b) 409s first on the same normalisation,
+but it only checks the **phone**, so a claimed row matched by **email** still links.
 
 Related but separately tracked: **SEC-71** (2FA enforcement is client-side only —
 `shell-login.ts` issues a full session regardless of `requires_totp_enrollment`),
