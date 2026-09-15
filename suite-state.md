@@ -78,7 +78,7 @@ _If this file is >48h old, the cron is broken._
 
     | Repo | Status |
     |------|--------|
-    | eq-service | ? in_progress |
+    | eq-service | ✓ success |
 | eq-shell | ✓ success |
 | eq-field | ✓ success |
 | eq-cards | ✓ success |
@@ -88,8 +88,8 @@ _If this file is >48h old, the cron is broken._
     
     | Site | State | Last deploy |
     |------|-------|-------------|
-    | eq-service | building | 2026-09-15 |
-| eq-shell | ready | 2026-09-15 |
+    | eq-service | ready | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-14 |
 
     **Migrations:** eq-service has 249 (latest: 0246) applied
