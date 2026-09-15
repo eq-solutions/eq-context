@@ -9,6 +9,11 @@ status: live
 
 # EQ Cards — Changelog
 
+## 2026-09-16 (PR #367 opened — eq_cards_link_or_create_worker stops on identity collision, not applied to jvkn)
+- `eq_cards_link_or_create_worker` now raises `identity_collision` (P0014) instead of flagging into `identity_collision_flags` and provisioning a duplicate worker anyway (AMBIGUITY-REGISTER Shape 6, policy rule 3). Exempts the legitimate work+wallet shape (decision 8): skips the raise only when exactly one side of the match — caller or existing row — is the Personal Wallet sentinel tenant, never both, never neither.
+- Migration `0178` (renumbered from `0177` — collided with PR #366 below, both branched off the same pre-#366 `origin/main` tip; no content overlap).
+- [PR #367](https://github.com/eq-solutions/eq-cards/pull/367). **Not merged, not applied to jvkn** — auth-adjacent, held for its own explicit sign-off per CLAUDE.md non-negotiable #6.
+
 ## 2026-09-16 (PR #366 MERGED, migration 0177 APPLIED LIVE — admin-upsert worker blank-name bug fixed end to end)
 - Root-caused jvkn `public.workers` row `406d2b0f-bf93-4959-b658-d65c3ac390d9` (created 2026-08-20, phone set, `first_name`/`last_name` both blank) to `eq_cards_admin_upsert_worker`'s INSERT branch, which has never defaulted a blank name across any of its 5 revisions — unlike every other worker-creation path in the suite. The Flutter admin form requires a name client-side, so the row came from a direct RPC call bypassing that.
 - Migration `0177`: INSERT now defaults `first_name` to `'Unknown'` when blank (matching `eq_cards_link_or_create_worker`/`eq_cards_find_or_create_worker_for_invite`); adds a non-blocking `eq_write_audit_log` entry when the phone/email adopt-match resolves to an already-claimed worker — `identity_collision_flags` itself doesn't apply (its `new_user_id` is NOT NULL against `auth.users`, and this RPC never binds a `user_id` by design), so this reuses the audit channel the function already has instead.
