@@ -15,6 +15,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-service: pending migrations 0243–0246 dispatched to live ehow, verified two ways (2026-09-15)
+*Closing action on the whole cross-tenant-sweep thread (#846→#847→#849→#852→#845/#853/#854) — everything above landed on `main`, but per eq-service/CLAUDE.md's own governance section, merging never applies DDL to production; only an explicit `workflow_dispatch` of `apply-service-migrations.yml` does. Checked live first via the Supabase MCP (newly available this session): `service._eq_migrations` showed `0243`/`0245`/`0246` already applied (an earlier dispatch, before #845 merged) but `0244` still pending.*
+
+- Dispatched `apply-service-migrations.yml` (`workflow_dispatch`, run `34949655374`) — completed `success`.
+- **Verified directly against live ehow, not just the workflow's own report**: `service._eq_migrations` now shows `0244_grant_service_role_job_plans_maintenance_checks.sql` applied at `08:56:01 UTC`, and `information_schema.role_table_grants` confirms `authenticated` genuinely has SELECT/INSERT/UPDATE/DELETE on `service.job_plans`/`maintenance_checks`/`check_assets` — the actual grants the migration was meant to create, not just a ledger row.
+
+No open items — the entire thread is now merged on `main` and applied to production, both confirmed live.
+
+---
+
 ## eq-service: maintenance-check write-role RLS model now documented in CLAUDE.md — PR #854 merged (2026-09-15)
 *Closes the deferred item from the PR #845/#853 entry (archived below to `eq/pending-archive.md`): the confirmed manager/supervisor/employee tenant-wide write-access design, and the soft-delete-runs-through-UPDATE mechanism behind it, had only ever lived in PR comments/commits and this pending file — no durable home in the repo itself.*
 
@@ -35,15 +45,9 @@ No open items — fully closed.
 
 ---
 
-## eq-service: cross-tenant-sweep fully closed via PR #849 (found already merged, not this session's own fix); PR #845 identified as the real fix for the separate "caller identity null" failures; migration governance documented in CLAUDE.md (2026-09-15)
-*Follow-on to the two entries below (both now merged as #847) — #847 closed 22 of the then-known grant-gap tables, but its own merge-commit CI run still failed `cross-tenant-sweep.test.ts` on 14 more. Root-caused all 14 independently (migrations 0148/0149 never granted the `service.*` views they created; migration 0156 silently dropped `service.sites`'s grant on a bare `DROP VIEW` + `CREATE VIEW`; `contract_scopes` was missing its `app_data` base-table `SELECT`) and wrote a fix migration — but a concurrent session merged PR #849 with the identical, more thorough fix (live-verified via Supabase MCP, explicitly granted `service.site_contacts`, caught a deeper `app_data.staff_conversations` gap) while this session was still investigating. Own migration collided on the same number (`0246`) and broke CI outright.*
-
-- **`cross-tenant-sweep.test.ts` confirmed 3/3 green on main** (run 34892994971) — the actual test this whole thread exists to fix. Closed own now-redundant/broken [PR #850](https://github.com/eq-solutions/eq-service/pull/850) with an explanatory comment rather than merging it.
-- **The original task's assumption that 8 other failing tests (customers-isolation, technician-update-gating, auto-defect-from-fail, admin-only-delete) were "downstream" of the same grant gap was wrong.** Confirmed they're a separate bug: `caller (<null>) does not own tenant` — the integration-test harness never set `app_metadata.tenant_id` on seeded users, plus missing `service_role` grants for bait-seeding, plus a `customers-isolation` false-positive from an unseeded site. **[PR #845](https://github.com/eq-solutions/eq-service/pull/845) already fixes this, open, unmerged** — predates #847/#849 so its own CI is stale (last run before either merged); needs a rebase against current main before it shows true green. Recommended for review/merge — not touched further this session, not this session's PR to merge unprompted.
-- **eq-service/CLAUDE.md gained a "Migration governance" section** documenting `apply-service-migrations.yml` (merging a migration-touching PR does NOT apply anything to live ehow — needs a separate explicit `workflow_dispatch`), mirroring how eq-shell/CLAUDE.md documents `tenant-migrate.yml`. [PR #851](https://github.com/eq-solutions/eq-service/pull/851), merged on explicit "merge it" instruction. Its own CI showed one `fail`, confirmed to be a 15-minute infra timeout in GitHub's `supabase/setup-cli` action (never reached `supabase start` or any test) — unrelated to the docs-only change, not investigated further.
+## eq-service: cross-tenant-sweep fully closed via PR #849/#845/#851 (2026-09-15)
 
 **Deferred:**
-- [x] **PR #845 needs a rebase against current main + a fresh CI run, then Royce's review to merge.** Done — see the top 2026-09-15 entry for the full story (took 4 more rounds, not just a rebase).
 - [ ] **Docker Desktop still cannot start on this machine — reconfirmed a 4th+ time, 2nd calendar day.** Genuinely persistent now, not a same-day flake; worth a dedicated look (reinstall / Hyper-V check / full restart) outside any single task's scope. _(added 2026-09-15, escalates the 2026-09-14 items in the two entries below)_
 
 ---
