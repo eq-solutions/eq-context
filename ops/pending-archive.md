@@ -1,7 +1,7 @@
 ---
 title: OPS Tier — Pending Actions Archive
 owner: Royce Milmlow
-last_updated: 2026-09-10
+last_updated: 2026-09-15
 scope: Done items rotated out of ops/pending.md nightly by scripts/rotate_pending.py to keep the live doc scannable. Nothing here is actionable — pure historical record (also covered in changelogs and sessions/*.md). Append-only, in rotation order.
 read_priority: reference
 status: archived
@@ -566,5 +566,21 @@ No open items.
 A second, unrelated session today hit `core.hooksPath` resolving to the wrong-but-set shape (absolute path, matching mechanisms 1-3) via `hooks/session_start.py`'s HOOKS check — this session's own gate reported the identical symptom independently, minutes later. Both times the *effective* value was observed wrong, not just a stale print (`failures.md` F10's own distinction between a genuine recurrence and its documented LATENT SHADOW false-positive). Not the 2026-09-06 self-heal: that fix only covers a fully-*unset* value at every scope, and this was wrong-but-set. Not mechanism 3 (worktree-shadow): `extensions.worktreeConfig` confirmed off (`--worktree` queries fail outright), so a `--worktree` scope cannot have been winning. By the time this session checked live — a few minutes after its own gate output — the value was already back to the correct `.githooks`; re-asserted defensively (no-op). Cause unconfirmed: the other session (working via `EnterWorktree`) explicitly logged that it did not fix this itself; whether Royce corrected it by hand, or some other mechanism did, is unknown.
 
 - [x] **Needs Royce's call**: log this as F10's 5th recurrence in `system/failures.md` (per the file's own process, that's a proposal `guard-ratchet.yml`/Royce decides, not something a session should self-file), and worth someone actually testing whether `EnterWorktree` is the trigger the other session suspected — untested as of this entry. _(added 2026-09-07, closed 2026-09-09 via `/triage` — Royce: yes, log it. F10 now `recurrences: 5`, `confirmed_in` includes `sessions/2026-09-07.md`. The `EnterWorktree` trigger test is still untested — not carried forward as a separate item here.)_
+
+---
+
+## F19 built + closed same-session — ~/.claude command/hook durability backups now drift-checked (2026-09-15) (rotated 2026-09-15)
+
+*Follow-up to eq-context's earlier `guard.js` backup gap: a real fix landed in live `~/.claude/commands/{brief,close}.md` + `hooks/guard.js` but eq-context's own backups sat 7 days stale with nothing to catch it, and guard.js itself had zero backup anywhere. Investigated existing prior art first (F12's two dead branches, `check_shared_object_drift.py`, eq-field's `cache-buster-drift`/`csp-drift`) before building — confirmed CI structurally can't reach `~/.claude` on Royce's machine, so this has to be a local check.*
+
+- **`hooks/session_start.py`** — new CMDSYNC gate line (8th check), warn-only, every session: hashes live `~/.claude/commands/{brief,close,housekeep}.md` + `hooks/guard.js` against their `tools/commands/` backups (frontmatter/meta stripped from both sides first).
+- **`tools/commands/guard.js`** — new backup, previously had none. Verified via `node --check` (caught a real bug: the first draft put the provenance comment above the shebang and broke Node's parser) and via actually running `session_start.py` twice, confirming `CMDSYNC ok`.
+- **`system/failures.md`** — F19 registered, rung 4/4 (guard shipped same session, matching F16's precedent).
+- **`tools/commands/README.md`** — updated; also fixed a stale count (`triage.md` was live but missing from the doc).
+- Royce, via structured questions: build the session_start.py check, include guard.js, register F19 now. Full detail: `sessions/2026-09-15.md` "brief-gate backup-drift" entry, eq-context commit `0363168d`.
+
+- [x] **`~/.claude/hooks/ddl_migration_gate.py` (10KB) and `selftest.js` (26KB, guard.js's own test suite) also had the same zero-backup gap** — extended CMDSYNC to 6 pairs same day, both files now backed up in `tools/commands/` and verified (ran the backed-up `selftest.js` against the backed-up `guard.js`: 33/33 passed, not just `node --check`). `sessions/2026-09-15.md` "CMDSYNC extended to ddl_migration_gate.py + selftest.js" entry, eq-context commit `d39edc01`. _(added 2026-09-15, closed 2026-09-15 via spawned task `task_804dec35`)_
+
+No open items — fully closed.
 
 ---
