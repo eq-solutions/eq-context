@@ -64,13 +64,14 @@ _If this file is >48h old, the cron is broken._
 - #370 fix(cards): org_credential_requirements admin RLS + gap RPC use canonical is_org_admin()
 
 **eq-field:**
+- #998 v3.5.728 - Leave: magic-link canonical-JWT mechanism no longer hardcoded to one tenant
 - #997 v3.5.727 — Apprentices: current site prefers the active rotation over the roster guess
-- #996 v3.5.727 — Roster/Timesheets: make canonical routing tenant-scalable
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1950 feat(field): add mint-leave-jwt for eq-field's leave-approval magic link
 - #1949 docs(control-plane-ledger): refresh stale eq_cards_link_or_create_worker backfill copy
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
@@ -106,9 +107,9 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 69 | ✓ 69 |
 | Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,560 | ✓ 2,560 |
-| Operational | app_data.field_timesheets | 679 | ✓ 679 |
-| Safety | public.prestarts | 256 | ✓ 256 |
+| Operational | app_data.field_schedule | 2,544 | ✓ 2,544 |
+| Operational | app_data.field_timesheets | 678 | ✓ 678 |
+| Safety | public.prestarts | 258 | ✓ 258 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
 | Safety | public.site_audits | 0 | ⚠ no data yet |
 _Auto-refreshed on merge + nightly backstop. ✓ = has data · ⚠ = empty (no data yet) · ✗ = table missing_
@@ -123,11 +124,11 @@ crossing since the last run, not a raw count. Machine-generated only; see
 |--------|-----------:|-------|
 | Maintenance checks created | 3 |  |
 | Maintenance checks completed | 1 |  |
-| Prestarts created | 17 |  |
+| Prestarts created | 16 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
-| Active users (Shell sign-ins, jvkn) | 56 |  |
+| Active users (Shell sign-ins, jvkn) | unavailable |  |
 
 _No flips this run._
 ---
