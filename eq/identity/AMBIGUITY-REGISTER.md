@@ -306,6 +306,32 @@ migration applies, so shipping it first means no refusal is ever unlogged. Mergi
 eq-cards does **not** apply the migration — `jvkn-control-plane-apply.yml` is
 `workflow_dispatch`-only; verify against the live DB, not a green check.
 
+**Live-verified 2026-09-15, after the PRs were written.** `pg_get_functiondef` on
+jvkn returns a body **identical to `0073`** — no drift — and
+`has_function_privilege` confirms `anon=false`, `authenticated=false`,
+`service_role=true`. So the severity calibration holds: admin-flow correctness bug,
+not a security hole.
+
+**Blast radius, measured rather than guessed.** Rule 2's rollout was deferred partly
+because it "will surface latent duplicate data currently being absorbed silently."
+For this function that is now a number: of **107** workers on jvkn there are exactly
+**two** ambiguous groups.
+
+| Group | Key | Rows | Reaches the resolver? |
+|---|---|---|---|
+| A | shared **email** (`…@sks.com.au`) | an email-only stub (2026-06-15, unclaimed) + the same person's claimed account (2026-08-18) — same initials, one human | **Yes** — the phone pre-check never looks at email |
+| B | shared **phone** | two rows, **both claimed** — two auth identities on one number | No — `eq_cards_worker_claimed_by_phone` already 409s on it first |
+
+So in practice `0173` changes the outcome for **one** identity today, and group A is a
+plain duplicate of one person rather than a genuine collision. Merging that stub into
+the claimed record is the right resolution; until it is merged, that person cannot be
+re-invited. Worth doing before or shortly after applying, not because the refusal is
+wrong but because it is the refusal working on data that should not exist.
+
+Group B is the more interesting one and is *not* addressed here: two claimed identities
+sharing a phone is exactly `handle_phone_dedup`'s territory, and it is being absorbed
+silently by the pre-check's 409 rather than filed anywhere.
+
 **Left open deliberately — needs Royce.** Only the `>1` case is closed. *Exactly one
 match that is already claimed by a different user* still links silently. That
 behaviour is deliberate in `0073` (a multi-org tradie must reuse their real row), and
