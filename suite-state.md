@@ -61,15 +61,19 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-15)
 
 **eq-cards:**
+- #365 fix(cards): default never_expires when eq_cards_upsert_my_licence gets no expiry
 - #364 fix(cards): stop a null-expiry OCR result crashing a worker's whole wallet
+
+**eq-field:**
+- #991 fix(field): guard field_people_removed_iud against a null tenant claim
+- #990 v3.5.721 — Apprentices: archive/delete for Feedback, Skills Passport, Rotations, Reviews, Journal
+- #989 v3.5.721 — Apprentices: cards show current site + how long there
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
 - #1937 feat(mobile): replace Home records list with a single search entry point
-- #1936 feat(identity): add worker-to-tenant projection reconciliation
-- #1935 fix(invite): refuse when the email belongs to a claimed worker
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -91,7 +95,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | ready | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
