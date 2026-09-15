@@ -64,7 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #365 fix(cards): default never_expires when eq_cards_upsert_my_licence gets no expiry
 
 **eq-field:**
-- #990 v3.5.721 — Apprentices: archive/delete for Feedback, Skills Passport, Rotations, Reviews, Journal
 - #989 v3.5.721 — Apprentices: cards show current site + how long there
 
 **eq-service:**
@@ -74,8 +73,6 @@ _If this file is >48h old, the cron is broken._
 - #1943 refactor(entities): consolidate the fragmented entity registry
 - #1942 docs(control-plane-ledger): this tree HAS a CI apply path; record 2026_09_15d
 - #1941 feat(staff): scheduled check for the licence-review backlog nothing was watching
-- #1940 fix(invite): log the two pre-check "already has an account" refusals
-- #1939 fix(licences): default never_expires on the two other licence-promotion doors
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -97,8 +94,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | new | 2026-09-15 |
-| eq-field | ready | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
+| eq-field | new | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
 
