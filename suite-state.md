@@ -67,7 +67,6 @@ _If this file is >48h old, the cron is broken._
 **eq-shell:**
 - #1921 docs(control-plane-ledger): record PR #1844's live-apply of worker_claimed_by_phone_check
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
-- #1919 fix(staff): sweep pending-credentials storage on employment purge
 - #1915 fix(control-plane-drift): detect + backfill the auth.users dedup triggers
 
 ---
@@ -102,7 +101,7 @@ _If this file is >48h old, the cron is broken._
 | Directory | app_data.field_people | 71 | ✓ 71 |
 | Directory | app_data.field_sites | 59 | ✓ 59 |
 | Directory | app_data.field_managers | 0 | ⚠ no data yet |
-| Operational | app_data.field_schedule | 2,314 | ✓ 2,314 |
+| Operational | app_data.field_schedule | 2,312 | ✓ 2,312 |
 | Operational | app_data.field_timesheets | 695 | ✓ 695 |
 | Safety | public.prestarts | 255 | ✓ 255 |
 | Safety | public.toolbox_talks | 7 | ✓ 7 |
