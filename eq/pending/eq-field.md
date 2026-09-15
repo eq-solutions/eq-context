@@ -1,7 +1,7 @@
 ---
 title: EQ Field — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-15
+last_updated: 2026-09-16
 scope: EQ Field engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -10,6 +10,19 @@ status: live
 # EQ Field — Pending
 
 Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS items live in `sks/pending.md`. OPS items (entities, tax, infra) in `ops/pending.md`.
+
+---
+
+## eq-field: Roster/Timesheets canonical-routing gate made tenant-scalable, madagins live-verified + entitlements seeded — FIXED, merged, live ([eq-field#996](https://github.com/eq-solutions/eq-field/pull/996), v3.5.728, 2026-09-16)
+*Direct follow-up to PR #994 (EQ-FIELD-1V, `leave-adapter.js`) — `roster-adapter.js`/`timesheets-adapter.js` had the identical hardcoded-allow-list-only canonical-routing gate, flagged explicitly as a follow-up in that PR's own description. `isCanonicalRosterTenant()`/`isCanonicalTimesheetsTenant()` now read canonical `module_entitlements` (`roster_canonical`/`timesheets_canonical`) as their PRIMARY signal, existing per-adapter slug allow-list kept as a fallback floor.*
+
+- **Live-verified madagins** (`ornndtbdkxfsewspbrwk`) against ehow's (`ehowgjardagevnrluult`) known-normalized shape for both `app_data.schedule_entries` and `app_data.timesheets`, via Supabase MCP once Royce granted access mid-session: columns, CHECK constraints, RLS policies, `authenticated` grants, and triggers (incl. the security-critical `eq__guard_timesheet_status` trigger) all match — one harmless extra `org_id` column on madagins, nullable/defaulted, not written by either adapter.
+- **Seeded `roster_canonical: true` / `timesheets_canonical: true`** for both `sks` and `madagins` in eq-canonical (`jvknxcmbtrfnxfrwfimn.module_entitlements`), verified via independent read-back — makes this PR's net effect live behaviour-changing for sks and madagins on Roster/Timesheets, not just infrastructure.
+- Opened at v3.5.727; rebased mid-session after #994+#995 both merged concurrently; re-bumped to v3.5.728 after a second live version-number collision, this time with a different concurrently-opened PR. Merged on Royce's explicit go; production confirmed serving v3.5.728 by content (polled `sw.js`, not elapsed time).
+- Checked this session's own fresh memory findings before merging — `module_entitlements` is fail-open for the separate 26-item `MODULE_UNIVERSE` mechanism, and a similarly-named eq-shell table exists at a different layer (see [[feedback_module_entitlements_fail_open_two_tables]]). Confirmed neither applies here: these two adapters gate on an explicit `enabled: true` match (never on absence), and the table written to was schema-confirmed live as eq-field's own `module_entitlements`, not eq-shell's `org_module_entitlements`.
+- Full detail: eq-field repo memory [[feedback_no_live_supabase_access_eq_field_session]] (Supabase MCP access pattern, 3rd recurrence, closed same-session this time).
+
+- [ ] Nothing outstanding on this specific thread.
 
 ---
 
