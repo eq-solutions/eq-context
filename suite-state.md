@@ -61,14 +61,12 @@ _If this file is >48h old, the cron is broken._
 ## Open PRs (as of 2026-09-15)
 
 **eq-field:**
-- #992 v3.5.722 — Leave: assign pending requests to another supervisor + reminder
 - #989 v3.5.721 — Apprentices: cards show current site + how long there
 
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
-- #1944 fix(auth): widen handle_phone_dedup to catch phones that only live on public.workers.phone
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -90,7 +88,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | building | 2026-09-15 |
+| eq-shell | ready | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
