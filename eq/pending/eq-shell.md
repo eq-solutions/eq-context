@@ -15,24 +15,19 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell: Madagins/Aditi cross-tenant JWT incident — PR #1925's root-cause theory doesn't hold up against live data; real mechanism still unidentified (2026-09-15)
+## eq-shell + eq-cards: Madagins/Aditi cross-tenant incident — root cause found, two of three gaps shipped; her own actual path still unfixed (2026-09-15)
 
-*Continuation of the 2026-09-14/09-15 Aditi Rajbhandari incident (see eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`) and [PR #1925](https://github.com/eq-solutions/eq-shell/pull/1925), written up in a prior session with no Supabase MCP access. Royce granted a Supabase MCP for jvkn mid-session; both of the PR's own "before applying" checks were run live, and the result reopens the investigation rather than closing it.*
+Root cause (confirmed, ~5 sessions converged on it independently): `public.workers` rows written without a stamped `origin_org_id` get defaulted straight to SKS by `workers-canonical-sync`'s `resolveTenantRoute()` — deliberate, correct behavior for genuine SKS-adjacent labour hire (Nelson Sareto, Conor Horgan), wrong for anyone else. Not a JWT/auth-hook bug — both earlier theories (`field_people_iud`, `custom_access_token_hook`/PR #1925) are dead ends, disconfirmed by direct live-data checks; don't re-open either.
 
-**Check 1 (fresh `pg_get_functiondef` pull):** confirms a real bug in PR #1925 as written — its migration includes a `raw_app_meta_data` mirror block that was live as of 2026-07-28 but has since been removed from the actual live function (fresh pull matches eq-cards' 2026-08-03 reconciled file exactly, no mirror block). Applying the PR as-is would silently reintroduce a removed write-on-every-token-mint side effect, undocumented anywhere in the PR. Must be stripped before applying.
-
-**Check 2 (the phone-collision query) comes back negative.** No other `shell_control.users` row shares Aditi's phone besides her own (correctly Madagins-scoped) record — meaning `custom_access_token_hook`'s phone-fallback has no row it could have matched against for her. PR #1925's own test plan proposed this exact query as confirmation; it disconfirms instead.
-
-**Followed up two steps further (read-only, live):** `ehow.app_data.audit_log` shows the phantom `staff` row was a genuine code-driven insert (`actor_id` = Aditi's own new identity, `source: 'shell'`, not a raw-SQL bypass), 2 seconds after her identity was created, with `cards_worker_id`/`on_roster`/`field_approved` all populated — the same shape as the *original* 6-fake-candidate incident, not a manager-driven `staff-create.ts` call (ruled out — read in full; its insert branch always sets `imported_from`/`imported_at` and never touches those three fields, and the phantom row has neither). Points at the still-unidentified Cards-candidate→tenant-roster promotion path the original incident write-up already flagged as open, now with a second, cleaner data point.
-
-**Net: PR #1925 is not confirmed to fix Aditi's specific incident.** Still reasonable as unrelated hardening (visibility on any future phone-fallback trust event), but its description should be corrected before merge, and the actual promotion code path is still unfound.
+**Shipped, applied to jvkn, and merged:** [eq-shell PR #1925](https://github.com/eq-solutions/eq-shell/pull/1925) (visibility hardening on the now-disconfirmed phone-fallback theory — real gap, just not this incident's cause) and [eq-cards PR #360](https://github.com/eq-solutions/eq-cards/pull/360) (stamps `origin_org_id` in the 3 Postgres RPCs that had a confirmed org in scope but never wrote it: `eq_cards_admin_upsert_worker`, `eq_cards_claim_invite`, `eq_cards_respond_to_access_request`). Both live-verified post-apply — zero drift, grants intact.
 
 **Deferred:**
-- [ ] **Find the Cards-candidate-promotion code path** that wrote Aditi's phantom row — shape: writes `cards_worker_id`+`on_roster`+`field_approved` together, tagged `source='shell'` in tenant audit logs, and resolved the wrong target tenant DB (ehow/SKS instead of Madagins' own `ornndtbdkxfsewspbrwk`) for her. Not eq-field (that side was already fully ruled out) — look in eq-shell/eq-cards. `netlify/functions/worker-profile-push.ts` is an unchecked candidate by name (found alongside `staff-create.ts` in the same grep, not yet read) — start there. _(added 2026-09-15)_
-- [ ] **PR #1925 needs rework before Royce's go**: strip the `raw_app_meta_data` UPDATE block (not live, undocumented reintroduction), and reframe the PR body/commit — it's hardening, not a confirmed fix for the Aditi incident specifically. _(added 2026-09-15)_
+- [ ] **`shell-join-tenant.ts` (app code, not a Postgres RPC) still doesn't stamp `origin_org_id`** — this is Aditi's own actual path, so #360 doesn't cover it. Confirmed live 2026-09-15: her `public.workers` row (`bc573ba3-4f02-4a35-a1fe-92f6ae89f269`) still shows `origin_org_id: null`. Needs the same fix #360 gave the 3 RPCs, in TypeScript this time. _(added 2026-09-15)_
+- [ ] **`resolveTenantRoute()`'s default-to-SKS-when-unstamped behavior itself** — the harder, deliberately parked design question: no existing signal distinguishes "should've been stamped but wasn't" from "genuinely SKS-adjacent." _(added 2026-09-15)_
+- [ ] **`eq_cards_submit_access_request` creates an unstamped `workers` row at submission time**, before any approval — same downstream symptom, deliberately left unfixed by #360 (stamping pre-approval would be premature attribution). _(added 2026-09-15)_
 
 **Notes:**
-- Full technical detail (queries run, exact rows, timing analysis) in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md` — read that before re-deriving any of this.
+- Full technical trail — every query, every session's convergence, the disconfirmed theories' evidence — lives in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`. Read that before re-deriving any of this.
 
 ---
 
