@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 19:39 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 19:59 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 19:33 UTC → 2026-09-15 19:39 UTC)
+## Since last refresh (2026-09-15 19:39 UTC → 2026-09-15 19:59 UTC)
 
-- Merged: eq-shell [#1931](https://github.com/eq-solutions/eq-shell/pull/1931) docs(control-plane-ledger): 2026_09_15c applied; correct #19
-- Merged: eq-shell [#1929](https://github.com/eq-solutions/eq-shell/pull/1929) fix(intake): close the fail-open tenant guard on the control
-- Merged: eq-shell [#1927](https://github.com/eq-solutions/eq-shell/pull/1927) feat(identity): watch the two review queues nothing was read
-- Merged: eq-shell [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) fix(auth): log custom_access_token_hook phone-fallback match
-- Merged: eq-shell [#1923](https://github.com/eq-solutions/eq-shell/pull/1923) fix(auth): require email_confirmed_at before phone-otp email
-- Merged: eq-shell [#1922](https://github.com/eq-solutions/eq-shell/pull/1922) fix(ci): allowlist eq_get_user_active_tenant as eq-cards-sou
-- Merged: eq-field [#995](https://github.com/eq-solutions/eq-field/pull/995) v3.5.726 — Leave: New Leave Request modal no longer closes o
-- Merged: eq-field [#993](https://github.com/eq-solutions/eq-field/pull/993) v3.5.723 — Leave: split leave-cc.js + leave-lifecycle.js out
+- Merged: eq-shell [#1933](https://github.com/eq-solutions/eq-shell/pull/1933) docs(control-plane-ledger): withdraw the wrong "intake is ve
+- Merged: eq-shell [#1930](https://github.com/eq-solutions/eq-shell/pull/1930) fix(join-tenant): stamp origin_org_id on public.workers rows
+- Merged: eq-shell [#1928](https://github.com/eq-solutions/eq-shell/pull/1928) feat(invite): require a mobile when issuing an admin invite
+- Merged: eq-shell [#1926](https://github.com/eq-solutions/eq-shell/pull/1926) docs(control-plane-ledger): record link_pending_invites dead
+- Merged: eq-shell [#1924](https://github.com/eq-solutions/eq-shell/pull/1924) fix(control-plane-migrate): per-file error isolation in the 
+- Merged: eq-shell [#1919](https://github.com/eq-solutions/eq-shell/pull/1919) fix(staff): sweep pending-credentials storage on employment 
+- Merged: eq-shell [#1915](https://github.com/eq-solutions/eq-shell/pull/1915) fix(control-plane-drift): detect + backfill the auth.users d
+- Merged: eq-field [#994](https://github.com/eq-solutions/eq-field/pull/994) v3.5.725 — Leave: fix madagins submissions, make canonical r
 
 ## ⚠ Needs you (6)
 
@@ -54,7 +54,7 @@ _…and 221 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 |------|-----------|--------|----------|-----------|
 | eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 1d |
-| eq-field | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 2 | 0d |
 | eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
@@ -97,7 +97,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-15 | eq-shell | [#1921](https://github.com/eq-solutions/eq-shell/pull/1921) docs(control-plane-ledger): record PR #1844's live-apply of worke |
 | 2026-09-15 | eq-shell | [#1934](https://github.com/eq-solutions/eq-shell/pull/1934) fix(invite): hold and log when a worker invite matches more than  |
 | 2026-09-15 | eq-shell | [#1932](https://github.com/eq-solutions/eq-shell/pull/1932) feat(records): "Find anything" search for mobile Records drawer + |
-_Showing 15 of 100 · full record in [sessions/](sessions/)_
+_Showing 15 of 101 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
@@ -199,4 +199,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 19:39 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 19:59 UTC._
