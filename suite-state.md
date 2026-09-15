@@ -60,9 +60,6 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-15)
 
-**eq-cards:**
-- #365 fix(cards): default never_expires when eq_cards_upsert_my_licence gets no expiry
-
 **eq-field:**
 - #992 v3.5.722 — Leave: assign pending requests to another supervisor + reminder
 - #989 v3.5.721 — Apprentices: cards show current site + how long there
@@ -93,7 +90,7 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | new | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 | eq-field | ready | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
