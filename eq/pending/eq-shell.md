@@ -1,7 +1,7 @@
 ---
 title: EQ Shell — Pending Actions
 owner: Royce Milmlow
-last_updated: 2026-09-15
+last_updated: 2026-09-16
 scope: EQ Shell engineering backlog, split out of eq/pending.md (2026-08-17) so a session working in this repo isn't wading through the other 8 repos' items too. Same conventions as before: "- [ ]" open, "- [x]" done (rotated out nightly by scripts/rotate_pending.py), "- [~]" in progress.
 read_priority: critical
 status: live
@@ -1786,7 +1786,7 @@ PR #1736 (auth-stall fix + 2 more bugs found on review) merged and live; the one
 - [x] A real duplicate person found investigating the invite-resolver fix's blast radius (one SKS employee, an unclaimed email stub + their claimed account) — merged on Royce's explicit go, following the existing `merge-william-brown-duplicate-identity.sql` precedent. jvkn: 107 → 106 workers, zero email-duplicate groups remain.
 - [x] A second finding from the same investigation — one person holding a separate "work" identity and "wallet" identity sharing a phone — turned out to be the *normal* shape (35 of 81 claimed jvkn workers have this same split), not a bug. Royce's call: two rows is correct, no code change. This also settles that no `public.workers`-level phone detector should be built for this shape.
 - [ ] **`eq_intake_find_template_by_signature`'s `authenticated` EXECUTE grant** — uncalled in both DB and app code, cross-tenant-readable if it were ever called. Grant-tightening question, not urgent (near-dormant surface), genuinely Royce's call — deliberately not chased today after the vestigial-call correction above. _(added 2026-09-15)_
-- [ ] **Policy rule 2 ("one match links, zero or many holds") is adopted in principle but staged** — only 1 of ~8 identified `LIMIT 1`-tie-break sites (the invite resolver above) has actually been converted. The register's own stated policy is this is a review criterion for new/touched code, not a retrofit mandate — listed here so it isn't mistaken for a completed sweep. _(added 2026-09-15)_
+- [ ] **Policy rule 2 ("one match links, zero or many holds") is adopted in principle but staged** — only 1 of ~8 identified `LIMIT 1`-tie-break sites (the invite resolver above) has actually been converted. The register's own stated policy is this is a review criterion for new/touched code, not a retrofit mandate — listed here so it isn't mistaken for a completed sweep. A background task attempted the next candidate site (`resolve_invite_auth_identity`) 2026-09-16; no PR resulted — still just the 1 site converted. _(added 2026-09-15, updated 2026-09-16)_
 
 Full detail, live-verification method, and the two self-corrected near-misses: `eq/identity/AMBIGUITY-REGISTER.md`. Session narrative: `sessions/2026-09-15.md`.
 
