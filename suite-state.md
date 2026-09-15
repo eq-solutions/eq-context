@@ -64,9 +64,6 @@ _If this file is >48h old, the cron is broken._
 - #369 feat(cards): precheck + log identity_collision before it's unaudited
 - #368 fix(cards): drop identity_collision's detail leak (existing_worker_id)
 
-**eq-field:**
-- #995 v3.5.726 — Leave: New Leave Request modal no longer closes on an accidental backdrop click
-
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
