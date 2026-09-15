@@ -116,14 +116,14 @@ crossing since the last run, not a raw count. Machine-generated only; see
 | Signal | Value (7d) | Flip? |
 |--------|-----------:|-------|
 | Maintenance checks created | 3 |  |
-| Maintenance checks completed | 1 | ⚠ FLIPPED |
+| Maintenance checks completed | 1 |  |
 | Prestarts created | 16 |  |
 | Toolbox talks created | 0 |  |
 | Site audits created | 0 |  |
 | Non-system writes (`audit_log`) | 0 |  |
 | Active users (Shell sign-ins, jvkn) | 57 |  |
 
-⚠️ **At least one signal flipped zero↔nonzero since the last run — see `digest.md`.**
+_No flips this run._
 ---
 
 ## Architecture: What Owns What
