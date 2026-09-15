@@ -8,25 +8,27 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 09:30 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 09:48 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 09:22 UTC → 2026-09-15 09:30 UTC)
+## Since last refresh (2026-09-15 09:30 UTC → 2026-09-15 09:48 UTC)
 
-- Merged: eq-shell [#1918](https://github.com/eq-solutions/eq-shell/pull/1918) docs(control-plane-ledger): mark recycle-review-phone-dup-no
-- Merged: eq-shell [#1912](https://github.com/eq-solutions/eq-shell/pull/1912) fix(licences): align licence-photo storage path segment 1 on
-- Merged: eq-shell [#1909](https://github.com/eq-solutions/eq-shell/pull/1909) fix(cards): carry emergency contact fields into staff on Car
-- Merged: eq-shell [#1908](https://github.com/eq-solutions/eq-shell/pull/1908) fix(licences): delete superseded storage objects on photo/PD
-- Merged: eq-shell [#1907](https://github.com/eq-solutions/eq-shell/pull/1907) docs(control-plane-ledger): note credentials-canonical-sync 
-- Merged: eq-shell [#1903](https://github.com/eq-solutions/eq-shell/pull/1903) fix(provisioning): stop org_membership from silently going m
-- Merged: eq-field [#988](https://github.com/eq-solutions/eq-field/pull/988) v3.5.720 — fix clipped card border on the Quarterly Review m
-- Merged: eq-field [#987](https://github.com/eq-solutions/eq-field/pull/987) v3.5.719 — Roster: iPad sees full week grid; site filter is 
+- Merged: eq-shell [#1936](https://github.com/eq-solutions/eq-shell/pull/1936) feat(identity): add worker-to-tenant projection reconciliati
+- Merged: eq-shell [#1935](https://github.com/eq-solutions/eq-shell/pull/1935) fix(invite): refuse when the email belongs to a claimed work
+- Merged: eq-shell [#1922](https://github.com/eq-solutions/eq-shell/pull/1922) fix(ci): allowlist eq_get_user_active_tenant as eq-cards-sou
+- Merged: eq-shell [#1917](https://github.com/eq-solutions/eq-shell/pull/1917) docs(control-plane-ledger): live-verify 2026_08_30b/c phone-
+- Merged: eq-shell [#1916](https://github.com/eq-solutions/eq-shell/pull/1916) fix(auth): recycle-review approve stops grafting duplicate i
+- Merged: eq-shell [#1914](https://github.com/eq-solutions/eq-shell/pull/1914) fix(entity-browser): resolve staff_id/site_id to names inste
+- Merged: eq-shell [#1913](https://github.com/eq-solutions/eq-shell/pull/1913) feat(licences): repair script for Personal-Wallet licence-ph
+- Merged: eq-shell [#1911](https://github.com/eq-solutions/eq-shell/pull/1911) fix(provisioning): land eq_queue_* RPCs through the One Pipe
+- ⚠ Needs you: 4 → 5 (new items)
 
-## ⚠ Needs you (4)
+## ⚠ Needs you (5)
 
 - 🔴 **Open security finding** — SEC-71 (P1 — deliberate, review 2026-12-04) — Two-factor authentication is switched off for everyone by two hard-coded constan · [security-register.md](ops/security-register.md)
 - 🔴 **Cron failing** — `index-drift.yml` 6 consecutive scheduled run(s) failed, last success 2026-09-08 · [failures.md](system/failures.md) F11
 - 🔴 **Guard bypass? rung 4** — F12: Side-clone reconciliation blind-overwrote a concurrent session's already-pushed shared-fil · possibly recurred in [2026-09-14.md](sessions/2026-09-14.md) · [failures.md](system/failures.md)
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
+- 🟠 **Deploy building** — eq-shell (core.eq.solutions)
 
 ## 🙋 Waiting on you (233)
 
@@ -50,17 +52,17 @@ _…and 221 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 1d |
-| eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 1 | 0d |
+| eq-field | ✓ success | 0d ago | 3 | 0d |
+| eq-cards | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Deploys
 
 | Site | State | Last deploy |
 |------|-------|-------------|
-| eq-shell | ready | 2026-09-15 |
+| eq-shell | building | 2026-09-15 |
 
 ## Live errors (Sentry)
 
@@ -79,6 +81,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-15 | eq-shell | [#1935](https://github.com/eq-solutions/eq-shell/pull/1935) fix(invite): refuse when the email belongs to a claimed worker |
+| 2026-09-15 | eq-shell | [#1936](https://github.com/eq-solutions/eq-shell/pull/1936) feat(identity): add worker-to-tenant projection reconciliation |
 | 2026-09-15 | eq-shell | [#1921](https://github.com/eq-solutions/eq-shell/pull/1921) docs(control-plane-ledger): record PR #1844's live-apply of worke |
 | 2026-09-15 | eq-shell | [#1934](https://github.com/eq-solutions/eq-shell/pull/1934) fix(invite): hold and log when a worker invite matches more than  |
 | 2026-09-15 | eq-shell | [#1932](https://github.com/eq-solutions/eq-shell/pull/1932) feat(records): "Find anything" search for mobile Records drawer + |
@@ -92,14 +96,12 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-15 | eq-shell | [#1926](https://github.com/eq-solutions/eq-shell/pull/1926) docs(control-plane-ledger): record link_pending_invites dead-bran |
 | 2026-09-15 | eq-shell | [#1924](https://github.com/eq-solutions/eq-shell/pull/1924) fix(control-plane-migrate): per-file error isolation in the real- |
 | 2026-09-15 | eq-shell | [#1923](https://github.com/eq-solutions/eq-shell/pull/1923) fix(auth): require email_confirmed_at before phone-otp email self |
-| 2026-09-15 | eq-shell | [#1915](https://github.com/eq-solutions/eq-shell/pull/1915) fix(control-plane-drift): detect + backfill the auth.users dedup  |
-| 2026-09-15 | eq-shell | [#1919](https://github.com/eq-solutions/eq-shell/pull/1919) fix(staff): sweep pending-credentials storage on employment purge |
 _Showing 15 of 97 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
 - **eq-shell** (307 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
-- **eq-cards** (71 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
+- **eq-cards** (73 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (75 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
 - **eq-solves-intake** (20 open) · [eq/pending/eq-solves-intake.md](eq/pending/eq-solves-intake.md)
@@ -131,9 +133,9 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
 | [eq-shell](eq/pending/eq-shell.md) | 1788 | 243 / 69 | 3 | 99 |
-| [eq-cards](eq/pending/eq-cards.md) | 408 | 54 / 20 | 0 | 11 |
+| [eq-cards](eq/pending/eq-cards.md) | 408 | 56 / 20 | 0 | 11 |
 | [eq-field](eq/pending/eq-field.md) | 1342 | 202 / 40 | 0 | 63 |
-| [eq-solves-service](eq/pending/eq-solves-service.md) | 469 | 57 / 20 | 2 | 28 |
+| [eq-solves-service](eq/pending/eq-solves-service.md) | 473 | 57 / 20 | 1 | 28 |
 | [eq-solves-intake](eq/pending/eq-solves-intake.md) | 233 | 14 / 6 | 0 | 17 |
 | [eq-design-tokens](eq/pending/eq-design-tokens.md) | 25 | 1 / 0 | 0 | 1 |
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
@@ -196,4 +198,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 09:30 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 09:48 UTC._
