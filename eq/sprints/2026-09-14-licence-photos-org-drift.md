@@ -225,8 +225,10 @@ anything else in this sprint.
    untouched by this saga, but confirmation that F18's failure class is a live standing hazard
    elsewhere, not a one-off. Separately: the investigation found
    `eq-context/eq/identity/IDENTITY-MODEL.md` §6.2/§7.2 stale (still describes the pre-2026-06-24
-   `mint-supabase-jwt`/postMessage mechanism) — spawned as `task_59002a2e`, not fixed here
-   (different doc, out of this sprint's scope).
+   `mint-supabase-jwt`/postMessage mechanism) — spawned as `task_59002a2e`. **Done (2026-09-15)**:
+   corrected directly on `eq-context` main, commit `9b7052e2` ("correct Cards auth-handoff
+   mechanism (mint-cards-otp, not mint-cards-iframe-token)") — confirmed via git log, not just
+   assumed from the task having run. Only the mechanical chip-clear remains.
 
 ## Status log
 
