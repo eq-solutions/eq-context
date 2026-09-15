@@ -13,6 +13,23 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-field: Aditi (Madagins) phantom SKS staff row — cleaned up; real root cause of the cross-tenant leak found + confirmed, fix not yet written (2026-09-15)
+*Royce: "i THINK Aditi from madagina sign in has added to SKS tech tenant - can you check how this happened?" Investigated against live data throughout rather than trusting either of two plausible-looking theories that turned out wrong — multiple sessions converged on this same thread in parallel today (this one, plus a spawned eq-shell trace `local_cce276fc`, plus at least two more that verified/corrected its work); this entry is the eq-field-side summary, not the whole story.*
+
+- **Fixed:** Aditi Rajbhandari had a duplicate, blank-named `app_data.staff` row on ehow (SKS) — real phone, real `cards_worker_id`, `on_roster=true`, created 2026-09-13 23:23:36 UTC. Hard-deleted after confirming zero FK dependents across all 22 live references to `staff.staff_id`; her real Madagins record untouched. Royce's explicit approval, matching his Sept 10 precedent for this bug class.
+- **Two plausible theories investigated and DISCONFIRMED, in order — don't re-open either:** (1) `field_people_iud()`'s null-tenant guard (PR #977) — confirmed live and working, wasn't bypassed. (2) `custom_access_token_hook`'s phone-based fallback (eq-shell PR #1925 was written against this theory) — disconfirmed twice independently, live: her jvkn Shell identity has zero SKS trace, ever, in any form.
+- **Actual root cause CONFIRMED** (read the live deployed Edge Function source directly, not just a report): `jvkn.public.workers` syncs to ehow via a trigger → Edge Function `workers-canonical-sync`. Its `resolveTenantRoute()` deliberately defaults any worker row with `origin_org_id IS NULL` straight to SKS, no lookup — a known, tested, long-standing design decision (flagged as a risk back on 2026-07-10, "before a second tenant onboards"). Aditi's `jvkn.workers` row (`bc573ba3-...`) was created with `origin_org_id: null` at the exact moment of her second Shell identity, and the sync defaulted her onto SKS's roster. **Not fixable trivially**: Nelson Sareto and Conor Horgan hit this exact same default-to-SKS path on 2026-08-20 and it's *correct* for them (genuine SKS labour-hire membership) — no existing single signal distinguishes "legitimately unstamped, SKS-adjacent" from "wrongly unstamped, not SKS at all."
+- Swept zaap and Madagins's own DB for other instances of this shape — both clean.
+- Ran `/decide` on fix scope: recommended shipping a narrow patch now (stamp `origin_org_id` wherever it's missing) while tracking the broader `resolveTenantRoute()` redesign as a real, owned follow-up — not urgent today, but real given dedicated-per-tenant onboarding is the suite's ongoing direction.
+
+- [ ] **Fix not yet written** — neither the narrow stamping gap (peer session's claim: `shell-join-tenant.ts` Step 10 never stamps `origin_org_id`; not independently re-verified this session) nor the broader `resolveTenantRoute()` redesign. Scope being decided directly with Royce in the parallel eq-shell session. _(added 2026-09-15)_
+- [ ] **`users_email_unique` violation on `shell_control.users`, 0.24s before Aditi's identity row was created** — real, precisely timestamped, never causally connected to anything. Unexplored. _(added 2026-09-15)_
+- [ ] **eq-shell PR #1925** (custom_access_token_hook phone-fallback hardening) — still open, unmerged. Worthwhile on its own merits (closes the same gap class `handle_phone_dedup()` already closed), but not a fix for this incident — needs Royce's explicit view on its undisclosed `raw_app_meta_data` scope addition before merging either way. _(added 2026-09-15)_
+
+**Notes:** Full evidentiary trail (every live query, both disconfirmed theories, the exact deployed source read) lives in eq-field's own Claude memory, `incident_madagins_demo_candidates_in_sks_roster.md` — canonical and continuously updated across today's sessions; this entry is the pointer, not a duplicate. Session detail: `sessions/2026-09-15.md`.
+
+---
+
 ## eq-field: madagins JWT-mint 500s + dashboard stats retry — fixed, live; found and corrected an env var set on the wrong site (2026-09-14)
 *Part of a suite-wide Sentry sprint. Two independent gaps: `TENANT_JWT_SECRETS` (`verify-pin.js`) never had a madagins entry — same "new tenant, one hardcoded map missed" pattern as PR #978's `DATA_TENANT_IDS` fix; `sbRpcPublicData()`'s fetch had zero timeout/retry, unlike every sibling call in the file.*
 
