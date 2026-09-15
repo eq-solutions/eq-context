@@ -169,7 +169,7 @@ than falling back to Origin or body. This is the shape the rest should match.
 
 | Site | Repo | Tie-break | Verified |
 |---|---|---|---|
-| `eq_cards_find_or_create_worker_for_invite` | eq-cards | `ORDER BY (w.user_id IS NOT NULL) DESC` — **prefers an already-claimed worker**, so an invite can attach to someone else's account. Writes no flag row | **OPEN** — holds on >1 via [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361); the refusal is logged as `invite.worker_match_ambiguous` by [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934). Both awaiting Royce. Not user-reachable (`service_role`-only since `0136`) — an admin-flow correctness bug, not a security hole |
+| `eq_cards_find_or_create_worker_for_invite` | eq-cards | Was `ORDER BY (w.user_id IS NOT NULL) DESC` — **preferred an already-claimed worker**, so an invite could attach to someone else's account, with no flag row | **FIXED** — [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361) (`0173`) holds on >1; [eq-shell #1934](https://github.com/eq-solutions/eq-shell/pull/1934) logs `invite.worker_match_ambiguous` + returns a 409. Applied to jvkn 2026-09-15 09:30:58Z, verified live: guard present, `LIMIT 1` gone, grants still `service_role`-only |
 | `eq_cards_link_or_create_worker` | eq-cards | Ranks by credential count then `created_at`, `LIMIT 1` | **LIVE** (does write `identity_collision_flags`) |
 | `roster-match.ts` `findRosterMatch` | eq-shell | `matches.find(active) ?? matches[0]` | LIVE |
 | `accept-invite.ts` ~269 | eq-shell | `phoneStubs?.[0]` — first of N phone-variant matches, no ambiguity check | LIVE |
@@ -305,6 +305,16 @@ Sequencing is eq-shell first (Royce, 2026-09-15): the catch is inert until the
 migration applies, so shipping it first means no refusal is ever unlogged. Merging
 eq-cards does **not** apply the migration — `jvkn-control-plane-apply.yml` is
 `workflow_dispatch`-only; verify against the live DB, not a green check.
+
+**The ledger was behind, not the database.** The plan run listed five pending
+migrations rather than one. `0169`–`0172` turned out to be **already live** — hand-applied
+via MCP and never stamped — so the real run re-ran four migrations whose bodies were
+already in place. It was safe only because all five were pure `CREATE OR REPLACE
+FUNCTION` with no standalone DML: every `UPDATE`/`INSERT` in them sits *inside* a function
+body as code, so nothing re-backfilled. Check that before any catch-up apply — "pending"
+in this pipeline means "unstamped", which is not the same as "not applied", and a
+migration carrying top-level DML would have re-run it. (A sixth, `0174`, merged while the
+run was queued and was swept in.)
 
 **Live-verified 2026-09-15, after the PRs were written.** `pg_get_functiondef` on
 jvkn returns a body **identical to `0073`** — no drift — and
