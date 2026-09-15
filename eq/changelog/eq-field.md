@@ -3488,3 +3488,9 @@ Reviewed all 8 open eq-field Sentry issues. 3 real bugs found and fixed: `eqhExt
 - New CI check (`scripts/check-csp-drift.mjs` + `.github/workflows/csp-drift.yml`, modeled on `cache-buster-drift.yml`) fails a PR if `netlify.toml` and `_headers` disagree on any Content-Security-Policy directive's source list — host, scheme, or keyword tokens, `connect-src`'s `wss:` entries included.
 - Closes the gap behind #976/#981: #976 (2026-09-10) added madagins's Supabase project to `_headers` only, missing `netlify.toml` (the file Netlify actually serves), silently CSP-blocking every browser fetch to that tenant's database for 4+ days until #981 (2026-09-14) caught it live. No automated catch existed for either PR.
 - No app code or version stamp changed — pure CI/tooling, nothing served to a browser is different.
+
+## 2026-09-15 (PR #991 MERGED, applied live to all 3 planes — field_people_removed_iud null-tenant guard)
+- Same defect class as the SKS phantom-roster incident: `field_people_removed_iud()`'s UPDATE/DELETE predicates fall back to `coalesce(v_tid, tenant_id)`, a tautology when the caller's JWT carries no tenant claim, so the write is unscoped. Unguarded on ehow/zaap/madagins, unlike its sibling `field_people_iud` which was already fixed.
+- Measured before fixing, not assumed: an `authenticated` browser caller with no claim sees 0 rows through the view (RLS on `app_data.staff` already denies), a `service_role` caller sees all of them — so the live vector is a service-role/definer caller with no claim, not a browser-facing door.
+- Guard applied to all three planes in one pass (anchor-spliced per plane so each body's own shape survived — the three planes are not byte-identical). Proven behaviourally on ehow against a real row: null claim now raises, valid claim still writes.
+- Part of a same-day suite-wide identity/tenant-ambiguity sweep — full detail in eq-context `eq/identity/AMBIGUITY-REGISTER.md`.

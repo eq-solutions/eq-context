@@ -3026,6 +3026,14 @@ Reviewed all 10 open eq-shell Sentry issues. Found and fixed the root cause of t
 - Also resolves [#1915](https://github.com/eq-solutions/eq-shell/pull/1915)'s flagged-not-fixed WHEN-clause finding (`link_pending_invites_on_confirm` gating the phone branch for 21/93 `auth.users` rows) as a side effect: that branch no longer has a body to reach.
 - All CI green (typecheck/test/lint, gitleaks, migration-ledger-hygiene guard, function-grants-preserved guard, Netlify deploy preview). Squash-merged `c0ab2d66`.
 
+## 2026-09-15 (#1927, #1928, #1929, #1931, #1933, #1925 all MERGED — identity & tenant-ambiguity register, remainder)
+- New `check-review-queues.ts` (#1927) — `identity_recycle_review`/`phone_link_review` had no scheduled reader; one row had sat pending 26 days unnoticed.
+- Admin-invite phone now required on any path that mints a new identity (#1928) — the structural reason an admin-invited person is invisible to phone-based dedup.
+- `_eq_intake_check_tenant_match()` fail-open tenant guard closed (#1929), applied and behaviourally verified live; ledger corrected (#1931) after a `merge ≠ applied` mistake in the original PR body.
+- Wrong "intake surface is vestigial" call withdrawn same-day (#1933), before anything was deleted — the surface backs a live Admin Audit button and 2 live triggers.
+- `custom_access_token_hook` phone-fallback now logs to `identity_recycle_review` (#1925, `match_path='jwt_fallback'`).
+- The worker-invite resolver work (#1934/#1935/#1940/#1942) is covered in its own entry elsewhere in this file rather than repeated here. Full sweep detail, live-verification method, and two self-corrected near-misses: eq-context `eq/identity/AMBIGUITY-REGISTER.md`. One real duplicate person found and merged, one product question (work identity vs. wallet identity, same phone) resolved as "not a bug" — both on Royce's explicit call, detail in the same register.
+
 ## 2026-09-15 (PR #1943, MERGED — entity/records registry consolidation: nav layer + backend CRUD metadata)
 - New `src/lib/entityRegistry.ts` — canonical key/label/route/viewPerm/capabilities per record entity, replacing hand-copied, already-drifted lists in `sidebarConfig.ts`, `HubSidebar.tsx`, `useCommandIndex.tsx`, `MobileRecordsDrawer.tsx`, and the "find anything" search feature's `useRecordSearch.ts` (PR #1932). Absorbs `entityCapabilities.ts` (deleted). Resolves the `asset`/`equipment` naming split via an explicit alias.
 - New `netlify/functions/_shared/entity-registry.ts` — canonical table/pk/field-allowlist metadata for `entity-patch.ts`/`entity-insert.ts`/`entity-actions.ts`, which each hand-typed their own copy. Metadata only — zero permission-logic change, verified byte-identical against the three files' old values before merging.

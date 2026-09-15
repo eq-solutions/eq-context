@@ -1781,6 +1781,25 @@ A merge-readiness audit run before merging (Royce's own standing rule, invoked a
 
 ---
 
+## eq-shell + eq-cards + eq-field: identity & tenant-ambiguity register built, ~50 sites catalogued, 8 decisions settled (2026-09-15)
+
+*Started from "why did identity_recycle_review miss a real collision" (one incident), widened on Royce's own call into a suite-wide sweep: every place across eq-shell/eq-cards/eq-field that decides "which person is this" or "which tenant is this" under ambiguity, and what it does when it can't tell. New durable doc: `eq/identity/AMBIGUITY-REGISTER.md`. This session ran concurrently with several others working the same file and the same live database — the register's own text records two near-misses that self-corrected (a `plan:true` dispatch that looked like an apply but changed nothing; a "vestigial, safe to delete" call on the intake surface that was wrong and was withdrawn before anything was actually dropped) and one real production risk that turned out to already be fixed by a concurrent session before it could bite (an RPC a deployed function depended on, verified live rather than assumed).*
+
+- [x] Eighth identity-health scheduled check added — the two hold-for-review queues (`identity_recycle_review`, `phone_link_review`) had no reader at all; one had sat pending 26 days unnoticed. [#1927](https://github.com/eq-solutions/eq-shell/pull/1927), merged, live.
+- [x] Admin-invite now requires a mobile number on any path that mints a new identity — the structural reason an admin-invited person is invisible to phone-based dedup. [#1928](https://github.com/eq-solutions/eq-shell/pull/1928), merged, live.
+- [x] `_eq_intake_check_tenant_match()`'s fail-open tenant guard closed (was inert — zero callers, confirmed both DB- and app-side before fixing). [#1929](https://github.com/eq-solutions/eq-shell/pull/1929) + ledger correction [#1931](https://github.com/eq-solutions/eq-shell/pull/1931), merged, applied and behaviourally verified on jvkn.
+- [x] Wrong "intake surface is vestigial, safe to delete" call withdrawn same-day, before anything was dropped — the surface is live (backs the Admin Audit Rollback button + 2 triggers). [#1933](https://github.com/eq-solutions/eq-shell/pull/1933), merged.
+- [x] `eq_cards_find_or_create_worker_for_invite` no longer silently prefers an already-claimed worker on ambiguous phone/email match — holds and 409s instead, both halves (phone `>1`-match, email-belongs-to-claimed-worker): [eq-cards #361](https://github.com/eq-solutions/eq-cards/pull/361), [#1934](https://github.com/eq-solutions/eq-shell/pull/1934), [#1935](https://github.com/eq-solutions/eq-shell/pull/1935), [#1940](https://github.com/eq-solutions/eq-shell/pull/1940) (audit logging for both refusals), all merged, migrations applied and live-verified.
+- [x] `field_people_removed_iud()` (eq-field, all 3 tenant planes) — same null-tenant-fallback defect class as the SKS phantom-roster incident, unguarded on ehow/zaap/madagins, now guarded on all three: [eq-field #991](https://github.com/eq-solutions/eq-field/pull/991), merged, live, proven behaviourally against a real row.
+- [x] A real duplicate person found investigating the invite-resolver fix's blast radius (one SKS employee, an unclaimed email stub + their claimed account) — merged on Royce's explicit go, following the existing `merge-william-brown-duplicate-identity.sql` precedent. jvkn: 107 → 106 workers, zero email-duplicate groups remain.
+- [x] A second finding from the same investigation — one person holding a separate "work" identity and "wallet" identity sharing a phone — turned out to be the *normal* shape (35 of 81 claimed jvkn workers have this same split), not a bug. Royce's call: two rows is correct, no code change. This also settles that no `public.workers`-level phone detector should be built for this shape.
+- [ ] **`eq_intake_find_template_by_signature`'s `authenticated` EXECUTE grant** — uncalled in both DB and app code, cross-tenant-readable if it were ever called. Grant-tightening question, not urgent (near-dormant surface), genuinely Royce's call — deliberately not chased today after the vestigial-call correction above. _(added 2026-09-15)_
+- [ ] **Policy rule 2 ("one match links, zero or many holds") is adopted in principle but staged** — only 1 of ~8 identified `LIMIT 1`-tie-break sites (the invite resolver above) has actually been converted. The register's own stated policy is this is a review criterion for new/touched code, not a retrofit mandate — listed here so it isn't mistaken for a completed sweep. _(added 2026-09-15)_
+
+Full detail, live-verification method, and the two self-corrected near-misses: `eq/identity/AMBIGUITY-REGISTER.md`. Session narrative: `sessions/2026-09-15.md`.
+
+---
+
 ## eq-shell: entity/records registry consolidation — nav layer + backend CRUD metadata ([PR #1943](https://github.com/eq-solutions/eq-shell/pull/1943), merged + live)
 *Follow-on from PR #1914 above — Royce asked to "digest and fix up" the broader Records-navigation mess that fix was found under.*
 
