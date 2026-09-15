@@ -61,7 +61,8 @@ instead of an error, so wrong-tenant data looks like ordinary data.
 | `app_data.field_people_iud()` INSERT | eq-field | `coalesce(v_tid, '<that plane's own tenant uuid>')` — writes a real roster row to that tenant. Caused the SKS demo-candidate leak (2026-09-10) and its recurrence (2026-09-15) | **OPEN** — partial guard in `20260910_field_people_iud_null_tenant_guard.sql`; general fix is `task_9b876f68` |
 | `field_people_iud()` UPDATE/DELETE | eq-field | `coalesce(v_tid, tenant_id)` — the tenant predicate becomes a tautology, so the write is unscoped | SRC |
 | `field_people_removed_iud()` | eq-field | same tautology — restore/purge of a removed person runs unscoped | SRC |
-| `_eq_intake_check_tenant_match()` | eq-shell (jvkn) | **Guard fails open.** `(auth.jwt()->…->>'tenant_id')::uuid <> p_tenant_id` is NULL when the claim is absent, so the `IF` never fires and the tenant check silently passes | **LIVE** |
+| `_eq_intake_check_tenant_match()` | eq-shell (jvkn) | **Guard fails open.** `(auth.jwt()->…->>'tenant_id')::uuid <> p_tenant_id` is NULL when the claim is absent, so the `IF` never fires and the tenant check silently passes. **But it has zero callers on jvkn** — see the note below; fixing it alone changes nothing | **LIVE** |
+| `eq_intake_find_template_by_signature(p_tenant_id, …)` | eq-shell (jvkn) | The *actually reachable* version of the row above: `authenticated`-executable, `SECURITY DEFINER`, takes a caller-supplied tenant id and never compares it to the caller's claim. Cross-tenant read of intake templates | **LIVE** |
 | `custom_access_token_hook` phone-fallback | eq-cards (live copy) | Falls back to phone match when the uid lookup misses; `tenant_id = coalesce(last_active_tenant_id, tenant_id)` | **OPEN** — [eq-shell #1925](https://github.com/eq-solutions/eq-shell/pull/1925), awaiting Royce |
 | `resolveTenantRoute` | eq-cards | `originOrgId ?? defaultOrgId` — a null origin silently defaults to SKS | SRC |
 | `verify-pin.js` ~789 | eq-field | Signed claim's tenant not in `DATA_TENANT_IDS` → falls back to **client-supplied** `body.tenantSlug`; mismatch is warn-only, does not block | SRC |
@@ -70,6 +71,27 @@ instead of an error, so wrong-tenant data looks like ordinary data.
 | `staff-resync-licences.ts` ~111 | eq-shell | `body.tenant_id ?? session.tenant_id` — caller-supplied tenant, silent default | SRC |
 | `eq_cards_auto_provision`, `eq_cards_claim_invite` | eq-cards | Default to the `is_personal = true` tenant, chosen by `LIMIT 1` | SRC |
 | `send-digest-test.js` ~80 | eq-field | Unset env → hardcoded SKS uuid | SRC |
+
+**The intake guard is dead code — checked 2026-09-15 before touching it.** A
+caller search on jvkn (`pg_get_functiondef ~* '_eq_intake_check_tenant_match'`)
+returns **zero** callers. Every call site in the repo lives inside the vendored
+`eq-intake/eq-platform` tree, and the guard is *deliberately stripped* on tenant
+planes — `supabase/tenant-migrations/0005_intake_cards_rpc.sql` and
+`docs/ARCHITECTURE-V2.md` both state why ("the tenant DB is single-tenant").
+
+That makes the one-line fix risk-free *and* inert on its own. The reachable gap
+is a different function. Of the nine intake functions on jvkn:
+
+- `eq_intake_rollback` — `authenticated` + `SECURITY DEFINER` + unvalidated
+  tenant param, but **always raises** since `2026_07_28_fix_eq_intake_rollback_dead_calls.sql`. Inert.
+- `eq_intake_event_rows` — reads the JWT claim itself. Correct.
+- **`eq_intake_find_template_by_signature`** — the only one both reachable by a
+  user and unguarded.
+
+Severity is low (intake is near-dormant — `eq_intake_events` has three rows
+ever; templates are import column-mappings, not people data) but the cross-tenant
+read is real. **Lesson worth keeping: fixing the guard blind would have hardened
+dead code and closed the ticket with the reachable path untouched.**
 
 **Counter-example worth copying:** `eq-field/netlify/functions/canon-read.js` ~160
 refuses and reports to Sentry when the session carries no `tenant_slug`, rather
@@ -145,9 +167,9 @@ had a scheduled reader (`check-identity-collisions.ts`).
 | `identity_recycle_review` | 1 row total, **inserted by hand** on 2026-09-14 during incident reconciliation — the trigger has never filed one |
 | `identity_collision_flags` | 2 rows, both resolved |
 
-Closed by [eq-shell #1927](https://github.com/eq-solutions/eq-shell/pull/1927),
-which adds `check-review-queues.ts` (21:55 UTC, alert-only, leads with the
-oldest row's age).
+**Closed** by [eq-shell #1927](https://github.com/eq-solutions/eq-shell/pull/1927)
+— merged 2026-09-15 as `1db2922a`. Adds `check-review-queues.ts` (21:55 UTC,
+alert-only, leads with the oldest row's age).
 
 The recycle queue's emptiness is the sharper lesson: with no reader, *"the
 detector works"* and *"the detector has never fired"* were indistinguishable
@@ -155,43 +177,49 @@ for months.
 
 ---
 
-## Proposed policy — NOT YET ADOPTED
+## Policy — ADOPTED 2026-09-15 (rule 2 staged)
 
-Offered for Royce's decision. Nothing below has been applied beyond #1927.
+Royce's call, 2026-09-15: adopt rules 1, 3 and 4 now; rule 5 was already
+satisfied by #1927; **stage rule 2**.
 
 > **Ambiguity is a stop condition, not a default-value problem.**
 
-1. **Never fabricate a tenant.** If the tenant cannot be established from a
-   trusted signed claim, raise. Do not fall back to own-tenant, home-tenant,
-   personal-tenant, an Origin header, a request-body field, or a hardcoded
-   uuid. A routing mistake should fail loudly rather than quietly become
-   another tenant's data.
-2. **One match links; zero or many holds.** Any identity match that resolves to
-   ≠1 candidate writes a review row and stops. `LIMIT 1` as a tie-break on a
-   *person* is never correct.
-3. **A flag is not a decision.** If a collision is worth recording, it is worth
-   stopping for. "Log it and proceed" is the worst of both — it creates the
-   duplicate *and* the paperwork, and Shape 6 shows two sites doing exactly
-   that today.
-4. **Guards fail closed.** `EXCEPTION WHEN OTHERS → RETURN event` on an auth
-   hook converts any error into "allow". Catch narrowly or not at all.
-5. **Every review queue has a watcher.** True as of #1927; keep it true when
-   adding a queue.
+1. ✅ **ADOPTED — Never fabricate a tenant.** If the tenant cannot be
+   established from a trusted signed claim, raise. Do not fall back to
+   own-tenant, home-tenant, personal-tenant, an Origin header, a request-body
+   field, or a hardcoded uuid. A routing mistake should fail loudly rather
+   than quietly become another tenant's data.
+2. 🕓 **STAGED — One match links; zero or many holds.** Any identity match that
+   resolves to ≠1 candidate writes a review row and stops. `LIMIT 1` as a
+   tie-break on a *person* is never correct. Accepted in principle; rollout
+   deferred because it changes behaviour at ~8 sites and will surface latent
+   duplicate data currently being absorbed silently. First site to land it:
+   `eq_cards_find_or_create_worker_for_invite` (decision 2 below).
+3. ✅ **ADOPTED — A flag is not a decision.** If a collision is worth
+   recording, it is worth stopping for. "Log it and proceed" is the worst of
+   both — it creates the duplicate *and* the paperwork, and Shape 6 shows two
+   sites doing exactly that today.
+4. ✅ **ADOPTED — Guards fail closed.** `EXCEPTION WHEN OTHERS → RETURN event`
+   on an auth hook converts any error into "allow". Catch narrowly or not at
+   all.
+5. ✅ **IN FORCE — Every review queue has a watcher.** Satisfied by #1927; keep
+   it true when adding a queue.
 
-Rule 2 is the expensive one and should be staged: it changes behaviour at ~8
-sites and will surface latent duplicate data that is currently being silently
-absorbed. Rules 1, 3, 4 are mostly additive.
+**What adoption means in practice:** these are review criteria for new work, not
+a mandate to retrofit all ~50 sites. A new or edited site that breaks rules 1,
+3 or 4 should be pushed back on. Existing violations get fixed as they are
+touched, or when they cause an incident — not in a sweep.
 
-## Decisions needed from Royce
+## Decisions — all six settled 2026-09-15
 
-| # | Decision | Why it needs you |
-|---|---|---|
-| 1 | `_eq_intake_check_tenant_match` fails open — fix is roughly one line (`IS DISTINCT FROM` plus an explicit null check) | It is a *security guard*. Tightening it will start rejecting any caller that legitimately has no tenant claim — unknown blast radius until we look at who calls it |
-| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | Changing the `ORDER BY` changes which human an invite attaches to. Product call, not a refactor |
-| 3 | `task_9b876f68` — the general "coalesce to own tenant" fix, across every tenant's templated copy, not a SKS-only patch | Touches every tenant plane; needs a staged rollout decision |
-| 4 | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) — `custom_access_token_hook` phone-fallback logging | Already open, already awaiting your go |
-| 5 | Should admin-invite (`invite-user.ts`) capture a phone number? | The original question from the Aditi duplicate-login investigation. Phone is the only key `handle_phone_dedup` can match on, so an admin-invited person is structurally invisible to it. Still never formally put to you |
-| 6 | Adopt the policy above, in whole or in part | Rules 1/3/4 are cheap. Rule 2 is the one with real blast radius |
+| # | Decision | Royce's call | State |
+|---|---|---|---|
+| 1 | `_eq_intake_check_tenant_match` fails open | **Check callers first, then fix** | Checked: **zero callers** — fix is inert on its own. Real target is `eq_intake_find_template_by_signature` (see Shape 1 note). Fix + wiring pending |
+| 2 | `eq_cards_find_or_create_worker_for_invite` prefers an already-claimed worker | **Stop and ask when >1 match** | Pending. First application of staged rule 2. Needs a design call: there is no review queue for this case today, so "ask" has to mean something concrete to the admin |
+| 3 | The `coalesce`-to-own-tenant fault, present in every tenant's templated copy | **Roll out company by company** | Relayed to `task_9b876f68`, which already owns it. Not duplicated here |
+| 4 | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) — `custom_access_token_hook` phone-fallback logging | **Merge** | Merging on green; all checks pass except the Netlify preview |
+| 5 | Should admin-invite capture a phone number? | **Make it required** | Pending — `invite-user.ts` plus the admin invite form |
+| 6 | Adopt the policy | **Adopt rules 1/3/4 now, stage rule 2** | Done — see the Policy section above |
 
 Related but separately tracked: **SEC-71** (2FA enforcement is client-side only —
 `shell-login.ts` issues a full session regardless of `requires_totp_enrollment`),
