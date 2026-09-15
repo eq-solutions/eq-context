@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 19:15 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 19:19 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 19:08 UTC → 2026-09-15 19:15 UTC)
+## Since last refresh (2026-09-15 19:15 UTC → 2026-09-15 19:19 UTC)
 
-- Merged: eq-shell [#1947](https://github.com/eq-solutions/eq-shell/pull/1947) docs(control-plane-ledger): record 2026_09_15e/f applied
-- Merged: eq-shell [#1930](https://github.com/eq-solutions/eq-shell/pull/1930) fix(join-tenant): stamp origin_org_id on public.workers rows
-- Merged: eq-shell [#1928](https://github.com/eq-solutions/eq-shell/pull/1928) feat(invite): require a mobile when issuing an admin invite
-- Merged: eq-shell [#1926](https://github.com/eq-solutions/eq-shell/pull/1926) docs(control-plane-ledger): record link_pending_invites dead
-- Merged: eq-shell [#1924](https://github.com/eq-solutions/eq-shell/pull/1924) fix(control-plane-migrate): per-file error isolation in the 
-- Merged: eq-shell [#1919](https://github.com/eq-solutions/eq-shell/pull/1919) fix(staff): sweep pending-credentials storage on employment 
-- Merged: eq-shell [#1918](https://github.com/eq-solutions/eq-shell/pull/1918) docs(control-plane-ledger): mark recycle-review-phone-dup-no
-- Merged: eq-shell [#1915](https://github.com/eq-solutions/eq-shell/pull/1915) fix(control-plane-drift): detect + backfill the auth.users d
+- Merged: eq-shell [#1948](https://github.com/eq-solutions/eq-shell/pull/1948) perf(entity-search): indexed, column-scoped search for eq_br
+- Merged: eq-shell [#1931](https://github.com/eq-solutions/eq-shell/pull/1931) docs(control-plane-ledger): 2026_09_15c applied; correct #19
+- Merged: eq-shell [#1929](https://github.com/eq-solutions/eq-shell/pull/1929) fix(intake): close the fail-open tenant guard on the control
+- Merged: eq-shell [#1927](https://github.com/eq-solutions/eq-shell/pull/1927) feat(identity): watch the two review queues nothing was read
+- Merged: eq-shell [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) fix(auth): log custom_access_token_hook phone-fallback match
+- Merged: eq-shell [#1923](https://github.com/eq-solutions/eq-shell/pull/1923) fix(auth): require email_confirmed_at before phone-otp email
+- Merged: eq-shell [#1922](https://github.com/eq-solutions/eq-shell/pull/1922) fix(ci): allowlist eq_get_user_active_tenant as eq-cards-sou
+- Merged: eq-field [#993](https://github.com/eq-solutions/eq-field/pull/993) v3.5.723 — Leave: split leave-cc.js + leave-lifecycle.js out
 
 ## ⚠ Needs you (7)
 
@@ -53,10 +53,10 @@ _…and 221 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pendi
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 3 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 1d |
-| eq-field | ✓ success | 0d ago | 0 | — |
-| eq-cards | ✓ success | 0d ago | 0 | — |
+| eq-field | ✓ success | 0d ago | 2 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Deploys
@@ -83,6 +83,7 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-15 | eq-shell | [#1948](https://github.com/eq-solutions/eq-shell/pull/1948) perf(entity-search): indexed, column-scoped search for eq_browse_ |
 | 2026-09-15 | eq-shell | [#1947](https://github.com/eq-solutions/eq-shell/pull/1947) docs(control-plane-ledger): record 2026_09_15e/f applied |
 | 2026-09-15 | eq-shell | [#1946](https://github.com/eq-solutions/eq-shell/pull/1946) fix(identity): DROP FUNCTION before recreating eq_list_recycle_re |
 | 2026-09-15 | eq-shell | [#1945](https://github.com/eq-solutions/eq-shell/pull/1945) feat(identity): add handle_email_dedup, the email sibling of hand |
@@ -97,12 +98,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-15 | eq-shell | [#1921](https://github.com/eq-solutions/eq-shell/pull/1921) docs(control-plane-ledger): record PR #1844's live-apply of worke |
 | 2026-09-15 | eq-shell | [#1934](https://github.com/eq-solutions/eq-shell/pull/1934) fix(invite): hold and log when a worker invite matches more than  |
 | 2026-09-15 | eq-shell | [#1932](https://github.com/eq-solutions/eq-shell/pull/1932) feat(records): "Find anything" search for mobile Records drawer + |
-| 2026-09-15 | eq-shell | [#1933](https://github.com/eq-solutions/eq-shell/pull/1933) docs(control-plane-ledger): withdraw the wrong "intake is vestigi |
 _Showing 15 of 100 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (308 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (307 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (73 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (75 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -111,7 +111,7 @@ _Showing 15 of 100 · full record in [sessions/](sessions/)_
 - **eq-ui** (2 open) · [eq/pending/eq-ui.md](eq/pending/eq-ui.md)
 - **eq-receipts** (4 open) · [eq/pending/eq-receipts.md](eq/pending/eq-receipts.md)
 - **eq-context** (44 open) · [eq/pending/eq-context.md](eq/pending/eq-context.md)
-- **cross-repo** (180 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
+- **cross-repo** (181 open) · [eq/pending/cross-repo.md](eq/pending/cross-repo.md)
 - **sks** (8 open) · [eq/pending/sks.md](eq/pending/sks.md)
 
 ## Pending (SKS)
@@ -134,7 +134,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 
 | File | Lines | Open (eng / you) | Done (unrotated) | Aging 45d+ |
 |------|------:|------------------:|------------------:|------------:|
-| [eq-shell](eq/pending/eq-shell.md) | 1808 | 243 / 70 | 11 | 99 |
+| [eq-shell](eq/pending/eq-shell.md) | 1807 | 242 / 70 | 11 | 99 |
 | [eq-cards](eq/pending/eq-cards.md) | 446 | 56 / 21 | 0 | 11 |
 | [eq-field](eq/pending/eq-field.md) | 1337 | 201 / 40 | 0 | 63 |
 | [eq-solves-service](eq/pending/eq-solves-service.md) | 473 | 57 / 20 | 1 | 28 |
@@ -143,7 +143,7 @@ _Hygiene signal, not an alert — a large open count is real backlog; a large do
 | [eq-ui](eq/pending/eq-ui.md) | 24 | 2 / 0 | 0 | 0 |
 | [eq-receipts](eq/pending/eq-receipts.md) | 46 | 3 / 1 | 0 | 4 |
 | [eq-context](eq/pending/eq-context.md) | 252 | 32 / 12 | 1 | 12 |
-| [cross-repo](eq/pending/cross-repo.md) | 948 | 137 / 46 | 0 | 90 |
+| [cross-repo](eq/pending/cross-repo.md) | 971 | 138 / 46 | 0 | 90 |
 | [sks](eq/pending/sks.md) | 55 | 3 / 5 | 0 | 6 |
 | [SKS](sks/pending.md) | 515 | 95 / 15 | 0 | 73 |
 | [SKS active](sks/active.md) | 119 | 0 / 0 | 0 | 0 |
@@ -200,4 +200,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 19:15 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 19:19 UTC._
