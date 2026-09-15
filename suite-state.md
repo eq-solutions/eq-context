@@ -60,10 +60,15 @@ _If this file is >48h old, the cron is broken._
 
 ## Open PRs (as of 2026-09-15)
 
+**eq-field:**
+- #994 v3.5.725 — Leave: fix madagins submissions, make canonical routing tenant-scalable
+
 **eq-service:**
 - #843 chore(deps): bump the eq-design-system group across 1 directory with 2 updates
 
 **eq-shell:**
+- #1949 docs(control-plane-ledger): refresh stale eq_cards_link_or_create_worker backfill copy
+- #1948 perf(entity-search): indexed, column-scoped search for eq_browse_entity
 - #1920 chore(intake): auto re-vendor eq-intake/eq-platform
 
 ---
@@ -85,8 +90,8 @@ _If this file is >48h old, the cron is broken._
     | Site | State | Last deploy |
     |------|-------|-------------|
     | eq-service | ready | 2026-09-15 |
-| eq-shell | building | 2026-09-15 |
-| eq-field | ready | 2026-09-15 |
+| eq-shell | new | 2026-09-15 |
+| eq-field | new | 2026-09-15 |
 
     **Migrations:** eq-service has 251 (latest: 0247) applied
 
