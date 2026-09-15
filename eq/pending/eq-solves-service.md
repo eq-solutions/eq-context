@@ -15,6 +15,16 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-service: the `assets`/`defects` sanity-check fix never actually landed despite looking merged — found, re-landed properly, verified against live main content (2026-09-15)
+*A real process bug, not a code bug: a second commit was pushed to `fix/cross-tenant-sweep-defects-bait-seed-wt` after PR #846 had already merged on its first commit alone. `gh pr edit` on an already-merged PR only updates the description text — the second commit sat orphaned on the branch, silently never part of `main`, while #846's own description kept describing an assertion that was never actually shipped. Caught by reading a concurrent (spawned) session's own investigation log, which had independently found the same gap while root-causing something else; confirmed directly against `origin/main`'s live file content before acting, not assumed from the earlier "merged" claim.*
+
+- Re-landed as [PR #852](https://github.com/eq-solutions/eq-service/pull/852), merged as `3ce3e4e` — verified twice this time: once via CI (`cross-tenant-sweep.test.ts` passes; only the known separate #845-shaped failures remain) and once directly against `origin/main`'s file content post-merge.
+- Corrected an earlier wrong comment on [PR #845](https://github.com/eq-solutions/eq-service/pull/845) that called it "superseded" — it isn't; it fixes a genuinely separate bug (see the entry below).
+
+**Lesson worth remembering:** pushing a follow-up commit to a PR branch does not retroactively join it once that PR has already merged — check `mergedAt` before assuming a push landed, or open a fresh PR instead.
+
+---
+
 ## eq-service: cross-tenant-sweep fully closed via PR #849 (found already merged, not this session's own fix); PR #845 identified as the real fix for the separate "caller identity null" failures; migration governance documented in CLAUDE.md (2026-09-15)
 *Follow-on to the two entries below (both now merged as #847) — #847 closed 22 of the then-known grant-gap tables, but its own merge-commit CI run still failed `cross-tenant-sweep.test.ts` on 14 more. Root-caused all 14 independently (migrations 0148/0149 never granted the `service.*` views they created; migration 0156 silently dropped `service.sites`'s grant on a bare `DROP VIEW` + `CREATE VIEW`; `contract_scopes` was missing its `app_data` base-table `SELECT`) and wrote a fix migration — but a concurrent session merged PR #849 with the identical, more thorough fix (live-verified via Supabase MCP, explicitly granted `service.site_contacts`, caught a deeper `app_data.staff_conversations` gap) while this session was still investigating. Own migration collided on the same number (`0246`) and broke CI outright.*
 
@@ -47,7 +57,7 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 ## eq-solves-service: cross-tenant-sweep's `defects` bait seed was silently failing every run — found, fixed, MERGED (2026-09-14)
 
 **Deferred:**
-- [ ] **The `baited.has('assets')`/`baited.has('defects')` sanity assertions still aren't in `cross-tenant-sweep.test.ts` on main — confirmed by reading the live file 2026-09-15.** Half of this item is now done: the app_data/service-schema grant fixes landed (#847 + #849) and the full sweep test is confirmed 3/3 green on main (run 34892994971) — the "green re-run" end-to-end confirmation this item was waiting on. The assertions themselves are the one remaining step — an unmerged worktree (`eq-service/.claude/worktrees/cross-tenant-sweep-defects-bait-seed`, branch `fix/cross-tenant-sweep-defects-bait-seed-wt`, commit `9f4f9b7`, message "extend the sanity check to cover assets and defects too") already has this exact fix sitting uncommitted-to-a-PR.
+- [x] **The `baited.has('assets')`/`baited.has('defects')` sanity assertions** — done. Re-landed as [PR #852](https://github.com/eq-solutions/eq-service/pull/852), merged, verified directly against `origin/main`'s file content, not just a green check. See the top 2026-09-15 entry for the full story of why this took two attempts.
 - [ ] **The missing-`SECURITY DEFINER`/grant bug class PR #845 fixes (`job_plans`/`maintenance_checks` triggers) may exist on other canonical objects too** — #845's own PR body flags this explicitly as out of scope for it; nobody owns checking the remaining ~24 canonical objects for the same pattern. _(added 2026-09-14)_
 
 ---
