@@ -8,18 +8,18 @@ status: live
 ---
 
 # EQ Suite — Health Digest
-_2026-09-15 10:09 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
+_2026-09-15 10:11 UTC · what needs your attention. Full snapshot: [suite-state.md](suite-state.md)._
 
-## Since last refresh (2026-09-15 10:01 UTC → 2026-09-15 10:09 UTC)
+## Since last refresh (2026-09-15 10:09 UTC → 2026-09-15 10:11 UTC)
 
-- Merged: eq-shell [#1940](https://github.com/eq-solutions/eq-shell/pull/1940) fix(invite): log the two pre-check "already has an account" 
-- Merged: eq-shell [#1939](https://github.com/eq-solutions/eq-shell/pull/1939) fix(licences): default never_expires on the two other licenc
-- Merged: eq-shell [#1923](https://github.com/eq-solutions/eq-shell/pull/1923) fix(auth): require email_confirmed_at before phone-otp email
-- Merged: eq-shell [#1922](https://github.com/eq-solutions/eq-shell/pull/1922) fix(ci): allowlist eq_get_user_active_tenant as eq-cards-sou
-- Merged: eq-shell [#1917](https://github.com/eq-solutions/eq-shell/pull/1917) docs(control-plane-ledger): live-verify 2026_08_30b/c phone-
-- Merged: eq-shell [#1916](https://github.com/eq-solutions/eq-shell/pull/1916) fix(auth): recycle-review approve stops grafting duplicate i
-- Merged: eq-shell [#1914](https://github.com/eq-solutions/eq-shell/pull/1914) fix(entity-browser): resolve staff_id/site_id to names inste
-- Merged: eq-shell [#1913](https://github.com/eq-solutions/eq-shell/pull/1913) feat(licences): repair script for Personal-Wallet licence-ph
+- Merged: eq-shell [#1942](https://github.com/eq-solutions/eq-shell/pull/1942) docs(control-plane-ledger): this tree HAS a CI apply path; r
+- Merged: eq-shell [#1941](https://github.com/eq-solutions/eq-shell/pull/1941) feat(staff): scheduled check for the licence-review backlog 
+- Merged: eq-shell [#1926](https://github.com/eq-solutions/eq-shell/pull/1926) docs(control-plane-ledger): record link_pending_invites dead
+- Merged: eq-shell [#1924](https://github.com/eq-solutions/eq-shell/pull/1924) fix(control-plane-migrate): per-file error isolation in the 
+- Merged: eq-shell [#1919](https://github.com/eq-solutions/eq-shell/pull/1919) fix(staff): sweep pending-credentials storage on employment 
+- Merged: eq-shell [#1918](https://github.com/eq-solutions/eq-shell/pull/1918) docs(control-plane-ledger): mark recycle-review-phone-dup-no
+- Merged: eq-shell [#1915](https://github.com/eq-solutions/eq-shell/pull/1915) fix(control-plane-drift): detect + backfill the auth.users d
+- Merged: eq-shell [#1912](https://github.com/eq-solutions/eq-shell/pull/1912) fix(licences): align licence-photo storage path segment 1 on
 
 ## ⚠ Needs you (5)
 
@@ -29,13 +29,14 @@ _2026-09-15 10:09 UTC · what needs your attention. Full snapshot: [suite-state.
 - 🟠 **Sentry new error** — `eq-field` [Error: data-jwt-mint-failed:http-500](https://eq-solutions.sentry.io/issues/146824438/)
 - 🟠 **Deploy new** — eq-shell (core.eq.solutions)
 
-## 🙋 Waiting on you (231)
+## 🙋 Waiting on you (232)
 
 _Items only you can clear — a confirm, a click-through, or a call. Not engineering backlog; the Pending sections below exclude these._
 
 - **eq-shell** · **Live browser verification still never obtained** — 7 attempts total now (one more this pass, same result). Consistently hangs on `netlify dev`'s proxy specifically, not a code problem (plain Vite connects fine on another port via the same tooling). Royce to try `netlify dev --filter eq-shell` from his own terminal.
 - **eq-shell** · **`task_7d7d8b41`** — likely superseded by merged work, two independent sessions now think so, still needs Royce's explicit yes/no before dismissing (not assumed).
 - **eq-shell** · **jvkn's service-role key (`eq-shell`'s `SUPABASE_SERVICE_ROLE_KEY`) is now sitting in plaintext in a chat transcript**, pasted while running the repair script's `--apply` locally — Claude never handled it directly. Rotation is Royce's call, still undecided. _(added 2026-09-15)_
+- **eq-shell** · **`chore/provisioning-completeness-check`** (unmerged worktree, `scripts/check-provisioning-completeness.mjs`) — a general-purpose live-vs-tracked drift detector built 2026-09-09 that would very likely have caught this exact class of gap on its own once merged and run against ehow. Flagged in PR #1911's description; spawned as background task `task_20490881` rather than merged unilaterally — prioritization is Royce's call. _(added 2026-09-14)_
 - **eq-shell** · **madagins' `app_data._eq_migrations` ledger corruption, independently re-confirmed live twice tonight** — 329 of 331 rows share the exact `applied_at` date as project creation (2026-09-09), consistent with an unverified `--bootstrap` run that stamped migrations as applied without running their SQL. Not new — already tracked and already owned by a background task spawned 2026-09-09 ("Royce's call on timing/ownership, and who ran the original bootstrap is still unknown"). Re-confirming here only because this session independently hit and re-verified the same fact twice; this migration (0320) was itself unaffected (brand-new filename). _(re-confirmed 2026-09-14)_
 - **eq-shell** · **Not merged or deployed** — waiting on Royce's explicit sign-off (auth-adjacent JWT-minting code; the edit itself was flagged by the Claude Code auto-mode classifier and only applied after explicit confirmation). _(added 2026-09-09)_
 - **eq-shell** · **Three §0 items from the same doc explicitly need Royce's call, not spawned:** eq-field's Apprentice-module unrecognized-tenant fallback (item 4), `sites.js`/`managers.js` gating Shell-ownership on the literal string `'sks'` (item 5), and `check-tenant-drift.mjs`'s own fixed 3-project `CANONICAL_PROJECTS` list (item 6) — all deferred pending his input, all in eq-field where 3 other worktrees are already active on adjacent code. _(added 2026-09-09)_
@@ -44,17 +45,16 @@ _Items only you can clear — a confirm, a click-through, or a call. Not enginee
 - **eq-shell** · **Live click-test (2026-09-09) — CSS confirmed deployed; visual behaviour unconfirmable from this environment; found one real boundary bug.** Confirmed live via `document.styleSheets` inspection on the deployed bundle: 18 media-query blocks matching `(pointer: coarse) and (hover: none) and (width <= 1024px)` OR'd with `(width <= 767px)` are genuinely present across the 4 touched files — the CSS shipped as described. Could not visually trigger it: Claude in Chrome's `resize_window` didn't change this tab's `innerWidth` at all (stayed 1912px regardless of the size requested), and the underlying hardware (Royce's Beelink) has no touch input (`navigator.maxTouchPoints: 0`), so `pointer: coarse` can never be genuinely true there — the same wall a same-day eq-field click-test already hit and documented two sections below (`sessions/2026-09-09.md` ~line 134: "this environment's Browser pane only emulates touch below 768px width"). Independently re-confirmed live rather than assumed from that note. **Real boundary bug found despite the visual block**: the literal rule is `width <= 1024px` — inclusive of exactly 1024px. A real landscape iPad reports exactly 1024px CSS width, so by this rule it would still match the touch condition and get the tablet treatment — contradicting the stated intent (eq-field PR #942's own record: "Landscape iPad (1024–1366px) intentionally out of scope"). If 1024 itself is meant to be excluded, all 4 files need `width < 1024px` (or `<= 1023px`), not `<= 1024px`. Needs an actual iPad or a tool with real device emulation to confirm the visual behaviour; the boundary math doesn't need one.
 - **eq-shell** · **Bulk backfill still blocked on Royce** — `scripts/import-sks-manager-lines.mjs` exists (double-gated dry-run/`--apply`, reuses the identity-bridge resolver from `etl-nspbmir-to-ehow.mjs`) but its `parseExport()` shape is provisional — nobody has seen a real export from `SKS_NSW_Org_Chart_Interactive.html`'s own Export function yet. Needs Royce to supply the file; run dry-run first, review the unmatched/ambiguous report with him before `--apply`. _(added 2026-09-07)_
 - **eq-shell** · **None of tonight's 4 fixes have been click-tested live by a person** — verified via full test suite + lint + an independent merge-readiness audit only. Worth a real pass once convenient: try resetting a platform_admin's PIN as a regular manager (should 403 `cannot-reset-platform-admin`); try switching tenant on a session that's been logged out/revoked elsewhere (should 401, not succeed).
-- **eq-shell** · **#711/SEC-71 — mandatory TOTP enforcement is genuinely client-side only**, reconfirmed live (`shell-login.ts:476-495` issues a full session regardless of the flag). The issue itself says it needs Royce's call on intended grace-period semantics before anyone implements a fix — not built.
-_…and 219 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
+_…and 220 more · [eq/pending.md](eq/pending.md) · [sks/pending.md](sks/pending.md) · [ops/pending.md](ops/pending.md)_
 
 ## Pulse
 
 | Repo | CI (main) | CI age | Open PRs | Oldest PR |
 |------|-----------|--------|----------|-----------|
-| eq-shell | ✓ success | 0d ago | 4 | 0d |
+| eq-shell | ✓ success | 0d ago | 2 | 0d |
 | eq-solves-service | ✓ success | 0d ago | 1 | 1d |
 | eq-field | ✓ success | 0d ago | 1 | 0d |
-| eq-cards | ✓ success | -1d ago | 1 | 0d |
+| eq-cards | ✓ success | 0d ago | 1 | 0d |
 | eq-solves-intake | ✓ success | 0d ago | 0 | — |
 
 ## Deploys
@@ -80,6 +80,8 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 
 | Merged | Repo | PR |
 |--------|------|----|
+| 2026-09-15 | eq-shell | [#1942](https://github.com/eq-solutions/eq-shell/pull/1942) docs(control-plane-ledger): this tree HAS a CI apply path; record |
+| 2026-09-15 | eq-shell | [#1941](https://github.com/eq-solutions/eq-shell/pull/1941) feat(staff): scheduled check for the licence-review backlog nothi |
 | 2026-09-15 | eq-shell | [#1940](https://github.com/eq-solutions/eq-shell/pull/1940) fix(invite): log the two pre-check "already has an account" refus |
 | 2026-09-15 | eq-shell | [#1939](https://github.com/eq-solutions/eq-shell/pull/1939) fix(licences): default never_expires on the two other licence-pro |
 | 2026-09-15 | eq-shell | [#1937](https://github.com/eq-solutions/eq-shell/pull/1937) feat(mobile): replace Home records list with a single search entr |
@@ -93,13 +95,11 @@ _[sentry.io/eq-solutions](https://eq-solutions.sentry.io/issues/?query=is%3Aunre
 | 2026-09-15 | eq-shell | [#1930](https://github.com/eq-solutions/eq-shell/pull/1930) fix(join-tenant): stamp origin_org_id on public.workers rows |
 | 2026-09-15 | eq-shell | [#1929](https://github.com/eq-solutions/eq-shell/pull/1929) fix(intake): close the fail-open tenant guard on the control plan |
 | 2026-09-15 | eq-shell | [#1928](https://github.com/eq-solutions/eq-shell/pull/1928) feat(invite): require a mobile when issuing an admin invite |
-| 2026-09-15 | eq-shell | [#1925](https://github.com/eq-solutions/eq-shell/pull/1925) fix(auth): log custom_access_token_hook phone-fallback matches fo |
-| 2026-09-15 | eq-shell | [#1927](https://github.com/eq-solutions/eq-shell/pull/1927) feat(identity): watch the two review queues nothing was reading |
 _Showing 15 of 99 · full record in [sessions/](sessions/)_
 
 ## Pending (EQ)
 
-- **eq-shell** (306 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
+- **eq-shell** (307 open) · [eq/pending/eq-shell.md](eq/pending/eq-shell.md)
 - **eq-cards** (72 open) · [eq/pending/eq-cards.md](eq/pending/eq-cards.md)
 - **eq-field** (239 open) · [eq/pending/eq-field.md](eq/pending/eq-field.md)
 - **eq-solves-service** (75 open) · [eq/pending/eq-solves-service.md](eq/pending/eq-solves-service.md)
@@ -197,4 +197,4 @@ _[sessions/](sessions/) · 5 shown_
 ✓ Honest — every load-bearing fact (Supabase project liveness, deploy URLs, no deleted refs used as live) matches reality.
 
 ---
-_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 10:09 UTC._
+_Generated deterministically (no LLM) by `.github/scripts/refresh_digest.py` · on merge + nightly · 2026-09-15 10:11 UTC._
