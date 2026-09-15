@@ -1,5 +1,10 @@
 # EQ Intake — Changelog
 
+## 2026-09-15 (commit `053c4f4`, pushed to `main`)
+- **Retired `scripts/apply-migrations.mjs` — it tracked a ledger table that was never real.** Deleted the script, removed `migrate`/`migrate:dry` from `eq-platform/package.json`, and rewrote `SPRINT-SUMMARY.md`'s migration-apply docs to point at eq-shell's `tenant-migrate.yml` pipe instead. The script's self-created `app_data.eq_migrations` (no underscore) was never the real ledger — every actual migration inserts into `app_data._eq_migrations` (see `sql/README.md`, "the One Pipe"), and the script got the name wrong from the day it was written, two days after the underscore convention was already established. CLAUDE.md Rule 2 (`sql/` is staging-only, not self-serve applyable to live tenant planes) made retiring it the right call independent of the table-name bug.
+- Confirmed live via Supabase MCP on both ehow and zaap: `app_data.eq_migrations` was never created on either — the script never successfully ran, anywhere, ever.
+- Closes a question spawned independently twice (`task_56b3f80c` here, `task_36ed655a` separately) — see `eq/pending/eq-solves-intake.md` for the concurrent-session detail.
+
 ## 2026-09-15 (commit `03188fa`, pushed to `main`)
 - **`sql/seed-schemas.ts` can actually run now.** Added a root-level `package.json` (`@supabase/supabase-js` + `tsx`, `npm run seed:schemas`) — the fix has to live at the repo root, not inside `eq-platform`, because `eq-platform` is a sibling of `sql/`/`scripts/`, not their ancestor, so nothing installed there was ever on Node's resolution path for either. Same fix un-blocked `scripts/apply-migrations.mjs` (this repo's actual migration runner) as a side effect. See `eq/pending/eq-solves-intake.md` for a same-day concurrent-session collision this surfaced.
 

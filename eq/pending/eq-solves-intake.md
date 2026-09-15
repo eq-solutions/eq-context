@@ -15,6 +15,26 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-solves-intake: apply-migrations.mjs retired — resolves the eq_migrations/_eq_migrations ledger question from the entry below (2026-09-15, third session same day)
+*Closes the still-open question the entry below names at its line 30 (`task_36ed655a`) — reached via a separately-spawned copy of the same question (`task_56b3f80c`), also started by Royce. See the load-bearing note below: this was independently duplicate-spawned, not a planned follow-up.*
+
+**Completed:**
+- Investigated via git archaeology: `app_data._eq_migrations` (leading underscore) is the real, live ledger — every migration 013–065 inserts into it, `sql/README.md` confirms it's shared with eq-shell ("the One Pipe"), and CLAUDE.md Rule 1 names it correctly. `scripts/apply-migrations.mjs` (created 2026-05-28, commit `f6f2f91`) tracked a separate, self-invented `app_data.eq_migrations` (no underscore) instead — wrong from the day it was written (two days *after* the underscore convention was already established by migration 013), not a later drift.
+- Ran `/brief` before any edit (this session's first `Edit` call was correctly blocked by the brief-gate hook — hadn't run it yet). Surfaced: `digest.md` 3 commits behind at read time; the live, unrelated `_eq_migrations` row-corruption on `eq-tenant-madagins` (already owned, untouched here); branch `claude/retire-stale-migration-script` (different file — `migrate-cards-to-canonical.mjs` — no overlap, checked directly).
+- Mid-brief, found the concurrent session's fix (`03188fa`, for `sql/seed-schemas.ts`'s identical missing-dependency bug) had incidentally made `apply-migrations.mjs`'s import resolve too. Re-verified live, then dropped "it doesn't even run" from the reasoning — the Rule 2 policy violation (self-applying to live tenant planes via a shadow ledger table) was the real, load-bearing reason regardless of whether the import happened to work.
+- Royce confirmed the brief ("go ahead"). Deleted `scripts/apply-migrations.mjs`; removed its `migrate`/`migrate:dry` scripts from `eq-platform/package.json`; rewrote `SPRINT-SUMMARY.md`'s migration-apply docs to point at eq-shell's `tenant-migrate.yml` pipe per Rule 2.
+- Closed the live-DB question definitively once a Supabase MCP connection became available mid-session: `execute_sql` against `information_schema.tables` confirmed on **both** ehow and zaap that `app_data.eq_migrations` (no underscore) was never created on either — the script never successfully ran, anywhere, ever.
+- Committed (`053c4f4`, only the 3 relevant files — left the working tree's unrelated `.claude/settings.local.json` edit untouched) and pushed to `main` on Royce's explicit "push it". `origin/main` tip confirmed as `053c4f4`.
+
+**Deferred:**
+- [ ] **Migration 033's `app_data.eq_exec_sql` RPC (SECURITY DEFINER, arbitrary-SQL exec) is now orphaned** — it existed only to support `apply-migrations.mjs`, now deleted. Low risk (already gated on the service-role key), but dropping/revoking it is a live-plane DDL change that belongs in eq-shell's migration pipe per Rule 2, not a drive-by here. _(added 2026-09-15)_
+
+**Notes (load-bearing):**
+- **This was independently duplicate-spawned work — not a planned follow-up.** The entry below logs this exact question as `task_36ed655a`, "Royce started it separately, still running as of that close." This session's copy of the same question was spawned separately as `task_56b3f80c` — also started by Royce (`dismiss_task` confirmed: "already started by the user"). Tried to find and message the `task_36ed655a` session before writing this: `ListAgents` showed a live `eq-solves-intake-50 [fc2d0d]` peer (started ~12h ago), but `list_sessions` had no title match for it — the same wall the entry below already hit trying to reach a different peer. **If `task_36ed655a`'s session is still active: this is already done.** `app_data.eq_migrations` vs `_eq_migrations` is resolved, `scripts/apply-migrations.mjs` is deleted, `053c4f4` is live on `origin/main` — re-doing this would be wasted work at best, a conflicting decision at worst.
+- **Distinguish from the entry below's `seed-schemas.ts` call** ("wire it up" — add the dependency, don't retire). That was Royce's answer for a *different* script doing a different job (schema-registry seeding, not live-plane migration apply). `apply-migrations.mjs`'s retirement wasn't a "does it run" call, it was a Rule 2 policy call (`sql/` is staging-only, not self-serve applyable to live tenant planes) — the two scripts landing on opposite fates is deliberate, not inconsistent.
+
+---
+
 ## eq-solves-intake: seed-schemas.ts's missing dependency fixed and shipped — closes the deferred item in the entry below (2026-09-15, second session same day)
 
 *Closes the `sql/seed-schemas.ts` deferred item in the schema-sync entry directly below — reached independently, in a separate concurrent session working the same repo. Royce answered the "add the dependency vs. retire the script" question directly (structured question, not the background task that entry names): **wire it up.***
