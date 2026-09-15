@@ -9,6 +9,20 @@ status: live
 
 # eq-shell changelog
 
+## 2026-09-15 (PR #1930 MERGED + LIVE — shell-join-tenant.ts now stamps origin_org_id on self-join worker writes; closes the Madagins/Aditi incident)
+- Root cause of the Madagins/Aditi cross-tenant incident: `shell-join-tenant.ts`'s Step 7 resolves the joining tenant's real org several steps before Step 10 writes `public.workers` — but never carried that org id into the write, in either the fresh-insert or claim-existing-stub branch. `workers-canonical-sync` (eq-cards) defaults any `origin_org_id IS NULL` row to SKS unconditionally, so a true self-join for any other tenant silently landed on SKS's own roster.
+- Both write paths now stamp `origin_org_id`: the insert directly, the update fill-if-missing (never overwrites a value another producer already set). New regression test verified non-vacuous (reverted the fix, confirmed the exact expected failure, restored).
+- [PR #1930](https://github.com/eq-solutions/eq-shell/pull/1930), full suite (488 tests) + typecheck + lint clean. Merged and confirmed genuinely live on core.eq.solutions by commit-ancestry check (not just "merged").
+
+## 2026-09-15 (PR #1925 MERGED + LIVE — custom_access_token_hook phone-fallback now logs to identity_recycle_review)
+- Every fallback-trust event in `custom_access_token_hook`'s phone-matching path now also logs to `shell_control.identity_recycle_review` (new `match_path='jwt_fallback'`) so a manager sees a cross-identity phone match within minutes, matching `handle_phone_dedup()`'s existing review-queue pattern. Visibility only — does not revoke an already-granted session (Option C, Royce's explicit choice over a stricter fail-closed alternative).
+- Live-verified before applying: the function had drifted since the tracked source — a `raw_app_meta_data` mirror block present as of 2026-07-28 had since been silently removed from production. Re-scoped to match current live behaviour plus only the intended logging addition.
+- Confirmed **not** a fix for the Madagins/Aditi incident specifically (see PR #1930 above for the real mechanism) — real hardening for a different, still-live gap: an unrelated person's phone coincidentally colliding with a new signup. Merged.
+
+## 2026-09-15 (PR #1921 OPEN — control-plane ledger: missing row for 2026_09_09b_worker_claimed_by_phone_check.sql)
+- Closes the one gap found reconciling the 8 files `migrate-control-plane.mjs --plan` reported pending against the new `shell_control._eq_control_plane_migrations` ledger table: all 8 confirmed already-applied to jvkn by hand, 7 already had a `CONTROL-PLANE-LEDGER.md` row, this one didn't. Sourced from its introducing PR (#1844)'s own account, not a fresh live re-check — Royce's call that this was sufficient.
+- Docs-only. [PR #1921](https://github.com/eq-solutions/eq-shell/pull/1921) — not yet merged.
+
 ## 2026-09-15 (PR #1924 MERGED — control-plane migration runner: per-file error isolation)
 - `scripts/migrate-control-plane.mjs`'s real-apply loop no longer aborts opaquely on a single file's SQL error. Extracted into `applyAllMigrations()` (new `scripts/_migrate-control-plane-apply.mjs`, split out so it's unit-testable without the parent script's top-level CLI/env/filesystem side effects) — every migration now classifies as applied/skipped/failed/notAttempted; fail-stop semantics unchanged (Royce's explicit design call, confirmed before implementation).
 - Fixes the exact gap [PR #1918](https://github.com/eq-solutions/eq-shell/pull/1918) hand-applied around. 6 new unit tests mock `_mgmt.mjs`, including the PR #1918 scenario itself; `control-plane-migrate.yml` was not dispatched at any point, per explicit instruction. `pnpm test`'s glob now covers `scripts/**/*.test.mjs` (previously uncovered).

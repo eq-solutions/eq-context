@@ -15,6 +15,21 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
+## eq-cards: migration 0172 applied — origin_org_id stamped on 3 worker-write RPCs, part of the now-closed Madagins/Aditi incident (2026-09-15)
+
+*Full incident writeup (root cause, all fixes, what's still genuinely open) lives in `eq/pending/eq-shell.md`'s 2026-09-15 "Madagins/Aditi... CLOSED" section — not duplicated here. This entry is eq-cards' own piece of it.*
+
+**Shipped:** [PR #360](https://github.com/eq-solutions/eq-cards/pull/360) / migration `0172` — `eq_cards_admin_upsert_worker`, `eq_cards_claim_invite`, and `eq_cards_respond_to_access_request` (the third found beyond the two originally suspected — it's the shared approval step for both self-signup and org-initiated connection requests) each had a confirmed org id in scope at write time but never stamped `public.workers.origin_org_id`. Every fill is `COALESCE(origin_org_id, <confirmed org>)` or `UPDATE ... WHERE origin_org_id IS NULL` — never overwrites an org another path already stamped correctly. Live-verified all three bodies against jvkn before applying — zero drift from tracked source. Applied, merged.
+
+**Deferred:**
+- [ ] `resolveTenantRoute()`'s default-to-SKS-when-unstamped behaviour itself — untouched, deliberately. No existing signal distinguishes "legitimately SKS-adjacent" from "should have been stamped." _(added 2026-09-15)_
+- [ ] `eq_cards_submit_access_request` creates an unstamped `workers` row at *application* time, before any approval — same downstream symptom, not fixed here (stamping pre-approval would be premature attribution). Flagged in migration `0172`'s own header. _(added 2026-09-15)_
+- [ ] No SQL test harness exists in this repo for PL/pgSQL RPCs (confirmed: no `supabase/tests/`, no pgtap in `ci.yml`) — `0172`'s verification queries are manual, in its own header. Not this session's to build. _(added 2026-09-15)_
+
+**Note:** an earlier same-day changelog entry for this PR said it "does NOT cover `shell-join-tenant.ts`... still open" — that gap was eq-shell's own piece (self-join path, not a Postgres RPC), closed separately the same session via eq-shell PR #1930. See `eq/pending/eq-shell.md`.
+
+---
+
 ## eq-cards + eq-shell + eq-context: licence-photos-org-drift sprint closed out — #358 merged after unsticking hung CI, migration 0171 applied, F18 tenant-UUID question resolved (2026-09-15)
 *Picked up a multi-repo sprint (licence-photos storage-path segment-1 convention, tracked in `eq-context/eq/sprints/2026-09-14-licence-photos-org-drift.md`) already worked by 4+ concurrent sessions. Re-verified every fact in the handoff brief against live state rather than trusting it — found #1912 already merged+deployed (brief said "open"), found a 4th untracked concurrent effort (admin-attach-licence-photo), found migration 0171 sitting unshipped in a worktree after its own session went idle.*
 

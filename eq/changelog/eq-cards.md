@@ -11,7 +11,7 @@ status: live
 
 ## 2026-09-15 (PR #360 MERGED, applied live to jvkn — origin_org_id now stamped on 3 more worker-write paths)
 - `eq_cards_admin_upsert_worker`, `eq_cards_claim_invite`, and `eq_cards_respond_to_access_request` each had a confirmed org id in scope at write time (already used unconditionally to grant real `org_memberships` in the same statement) but never stamped `public.workers.origin_org_id` with it — leaving those workers to fall through `workers-canonical-sync`'s default-to-SKS routing. Part of the Madagins/Aditi cross-tenant incident fix; full detail in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`.
-- Live-verified before applying (zero drift from tracked source) and again after (stamp present, grants intact). Does NOT cover `shell-join-tenant.ts` (eq-shell, app code not a Postgres RPC) — Aditi's own actual signup path — still open.
+- Live-verified before applying (zero drift from tracked source) and again after (stamp present, grants intact). Did not cover `shell-join-tenant.ts` (eq-shell, app code not a Postgres RPC) — Aditi's own actual signup path — that gap was closed separately the same session via eq-shell PR #1930, confirmed live by commit-ancestry check. Incident closed.
 
 ## 2026-09-15 (PR #359 OPEN, CI green — licences/profile "couldn't load" screen now reports to Sentry)
 - `licences_list_screen.dart`'s and `profile_screen.dart`'s generic error state (anything that isn't an auth failure) had zero Sentry reporting, despite `user_messages.dart`'s own doc comment claiming Sentry already had the underlying object. Confirmed live while investigating a reported "We couldn't load your licences" screenshot — the error type behind it was genuinely unknown and unrecoverable after the fact.

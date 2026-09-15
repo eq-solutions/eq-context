@@ -15,19 +15,33 @@ Split out of `eq/pending.md` (2026-08-17) — see `eq/pending.md` for why. SKS i
 
 ---
 
-## eq-shell + eq-cards: Madagins/Aditi cross-tenant incident — root cause found, two of three gaps shipped; her own actual path still unfixed (2026-09-15)
+## eq-shell + eq-cards: Madagins/Aditi cross-tenant incident — CLOSED, both producer-path gaps fixed (2026-09-15)
 
 Root cause (confirmed, ~5 sessions converged on it independently): `public.workers` rows written without a stamped `origin_org_id` get defaulted straight to SKS by `workers-canonical-sync`'s `resolveTenantRoute()` — deliberate, correct behavior for genuine SKS-adjacent labour hire (Nelson Sareto, Conor Horgan), wrong for anyone else. Not a JWT/auth-hook bug — both earlier theories (`field_people_iud`, `custom_access_token_hook`/PR #1925) are dead ends, disconfirmed by direct live-data checks; don't re-open either.
 
-**Shipped, applied to jvkn, and merged:** [eq-shell PR #1925](https://github.com/eq-solutions/eq-shell/pull/1925) (visibility hardening on the now-disconfirmed phone-fallback theory — real gap, just not this incident's cause) and [eq-cards PR #360](https://github.com/eq-solutions/eq-cards/pull/360) (stamps `origin_org_id` in the 3 Postgres RPCs that had a confirmed org in scope but never wrote it: `eq_cards_admin_upsert_worker`, `eq_cards_claim_invite`, `eq_cards_respond_to_access_request`). Both live-verified post-apply — zero drift, grants intact.
+**Shipped, applied to jvkn, and merged:** [eq-shell PR #1925](https://github.com/eq-solutions/eq-shell/pull/1925) (visibility hardening on the now-disconfirmed phone-fallback theory — real gap, just not this incident's cause), [eq-cards PR #360](https://github.com/eq-solutions/eq-cards/pull/360) (stamps `origin_org_id` in the 3 Postgres RPCs that had a confirmed org in scope but never wrote it: `eq_cards_admin_upsert_worker`, `eq_cards_claim_invite`, `eq_cards_respond_to_access_request`), and [eq-shell PR #1930](https://github.com/eq-solutions/eq-shell/pull/1930) (`shell-join-tenant.ts` — Aditi's own actual self-join path, both write branches). All live-verified post-apply — zero drift, grants intact — and #1930 additionally confirmed genuinely live on core.eq.solutions by commit-ancestry check.
 
-**Deferred:**
-- [ ] **`shell-join-tenant.ts` (app code, not a Postgres RPC) still doesn't stamp `origin_org_id`** — this is Aditi's own actual path, so #360 doesn't cover it. Confirmed live 2026-09-15: her `public.workers` row (`bc573ba3-4f02-4a35-a1fe-92f6ae89f269`) still shows `origin_org_id: null`. Needs the same fix #360 gave the 3 RPCs, in TypeScript this time. _(added 2026-09-15)_
+**Correction (this close):** an earlier version of this section said `shell-join-tenant.ts` was still unfixed and Aditi's own `workers` row (`bc573ba3-4f02-4a35-a1fe-92f6ae89f269`) still showed `origin_org_id: null` — stale as of a few minutes later the same session: PR #1930 closes exactly that gap. Don't re-open it.
+
+**Deferred (genuinely still open):**
 - [ ] **`resolveTenantRoute()`'s default-to-SKS-when-unstamped behavior itself** — the harder, deliberately parked design question: no existing signal distinguishes "should've been stamped but wasn't" from "genuinely SKS-adjacent." _(added 2026-09-15)_
 - [ ] **`eq_cards_submit_access_request` creates an unstamped `workers` row at submission time**, before any approval — same downstream symptom, deliberately left unfixed by #360 (stamping pre-approval would be premature attribution). _(added 2026-09-15)_
+- [ ] **The `users_email_unique` constraint violation at 23:23:34.414 UTC**, 0.24s before Aditi's identity row was created — flagged early as a live clue, never chased to a firm conclusion. Possibly moot now the mechanism is confirmed (one session's note suggests it's this same function's documented retry-without-email path, not a separate bug) — worth a two-minute sanity check before fully writing off. _(added 2026-09-15)_
 
 **Notes:**
 - Full technical trail — every query, every session's convergence, the disconfirmed theories' evidence — lives in eq-field memory `incident_madagins_demo_candidates_in_sks_roster.md`. Read that before re-deriving any of this.
+
+---
+
+## eq-shell: control-plane ledger reconciled — 8-file gap closed, one doc row still needs merging (2026-09-15)
+
+*Separate from the Madagins incident above. `migrate-control-plane.mjs --plan` reported 8 files pending against the new `shell_control._eq_control_plane_migrations` ledger table — all already applied to jvkn by hand, just never recorded in the new table (the old apply path never wrote to it). Individually verified each of the 8 against live jvkn (ledger-doc rows, introducing-PR history, or a fresh `pg_get_functiondef`/grant pull) before treating any as confirmed.*
+
+**Shipped:** 7 of 8 already had a `CONTROL-PLANE-LEDGER.md` row; added the missing one for `2026_09_09b_worker_claimed_by_phone_check.sql`, sourced from its introducing PR (#1844)'s own account (Royce's call that this was sufficient without a fresh live re-check). [PR #1921](https://github.com/eq-solutions/eq-shell/pull/1921) — **open, not merged** (docs-only, no schema change).
+
+**Deferred:**
+- [ ] **PR #1921 needs merging.** _(added 2026-09-15)_
+- [ ] **Backfilling `shell_control._eq_control_plane_migrations` itself** (via `--bootstrap`, seeding all 8 filenames+checksums with no SQL re-run) — left for Royce to dispatch himself via `control-plane-migrate.yml`'s workflow_dispatch. Not confirmed whether he has yet. _(added 2026-09-15)_
 
 ---
 
